@@ -1,0 +1,92 @@
+$primary: #201e1e;
+$secondary: #fbdb1d;
+$font-family: 'Roboto', sans-serif;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import '../node_modules/bootstrap/scss/bootstrap';
+
+body {
+  background-color: $secondary;
+  font-family: $font-family;
+  color: $primary;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  &.navbar-primary {
+    background-color: $primary;
+    .navbar-brand,
+    .nav-link {
+      color: white !important;
+    }
+  }
+  &.navbar-light {
+    background-color: lighten($primary, 40%);
+    .navbar-text a {
+      color: $primary;
+      &:hover {
+        color: darken($primary, 10%);
+      }
+    }
+  }
+
+  .center {
+    justify-content: center;
+    align-items: center;
+    margin-top: 0;
+  }
+}
+
+.box-shadow {
+  box-shadow:
+    rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px,
+    rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px,
+    rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.container {
+  margin-top: 20px;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: $primary;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.form-control {
+  margin-bottom: 15px;
+  border-color: $primary;
+}
+
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+  &:hover {
+    background-color: darken($primary, 10%);
+    border-color: darken($primary, 10%);
+  }
+}
+
+.alert {
+  margin-top: 20px;
+}
+
+.fii-background {
+  padding: 0;
+  background-image: url('./assets/fii_2.svg');
+  background-repeat: repeat;
+}

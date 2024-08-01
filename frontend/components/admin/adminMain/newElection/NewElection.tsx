@@ -1,0 +1,168 @@
+import React, { useContext, useEffect, useState } from 'react'
+import { Container, Row, Col, Form, Button, ListGroup } from 'react-bootstrap'
+import { AdminNavigation } from '../adminNavigation/AdminNavigation'
+import styles from './newElection.module.scss'
+import { ElectionContext } from '../../../../contexts/election/ElectionContext'
+import { ElectionData } from '../../../../../types/types'
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
+import {
+  modifyElection,
+  postNewElection,
+} from '../../../../api/admin/elections'
+import { LoadingSpinner } from '../../../shared/LoadingSpinner'
+
+// Used for both creating a new election and editing an existing one
+
+export const NewElection = () => {
+  const { electionStep } = useContext(ElectionStepContext)!
+  const { election, setElection } = useContext(ElectionContext)!
+  const [newElection, setNewElection] = useState<ElectionData>({
+    title: '',
+    description: '',
+    amountToElect: 0,
+    candidates: [],
+  })
+  const [newCandidate, setNewCandidate] = useState('')
+
+  useEffect(() => {
+    if (electionStep === 'EDIT' && election) {
+      setNewElection(election)
+    }
+  }, [electionStep, election])
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewElection((electionState) => ({
+      ...electionState,
+      [event.target.name]: event.target.value,
+    }))
+  }
+
+  const addCandidate = (candidateName: string) => {
+    setNewElection((electionState) => ({
+      ...electionState,
+      candidates: [...electionState.candidates, { name: candidateName }],
+    }))
+    setNewCandidate('')
+  }
+
+  const removeCandidate = (index: number) => {
+    setNewElection((electionState) => {
+      const updatedCandidates = electionState.candidates.filter(
+        (_, i) => i !== index
+      )
+
+      return {
+        ...electionState,
+        candidates: updatedCandidates,
+      }
+    })
+  }
+
+  const handleSubmit = async () => {
+    if (electionStep === 'NEW') {
+      const response = await postNewElection(newElection)
+      if (!response.ok) {
+        return
+      }
+      setElection(response.data)
+    } else {
+      const response = await modifyElection(election!.electionId, newElection)
+      if (!response.ok) {
+        return
+      }
+      setElection(response.data)
+    }
+  }
+
+  const disabled = !(
+    newElection.title &&
+    newElection.description &&
+    newElection.amountToElect &&
+    newElection.amountToElect > 0 &&
+    newElection.candidates.length
+  )
+
+  if (electionStep === 'EDIT' && !election) {
+    return <LoadingSpinner />
+  }
+
+  return (
+    <>
+      <AdminNavigation disableNavigation={disabled} onNext={handleSubmit} />
+      <Form className={styles.newElectionForm}>
+        <Row>
+          <Col>
+            <Form.Group className="mb-3" controlId="title">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                value={newElection.title}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="description">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="description"
+                value={newElection.description}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="amountToElect">
+              <Form.Label>Amount to elect</Form.Label>
+              <Form.Control
+                type="number"
+                name="amountToElect"
+                value={newElection.amountToElect}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group className="mb-3" controlId="newCandidate">
+              <Form.Label>New candidate</Form.Label>
+              <Form.Control
+                value={newCandidate}
+                type="text"
+                onChange={(e) => setNewCandidate(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="addCandidate">
+              <Button
+                variant="dark"
+                disabled={!newCandidate}
+                onClick={() => addCandidate(newCandidate)}
+              >
+                Add
+              </Button>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="candidates">
+              <Form.Label>Candidates</Form.Label>
+              <ListGroup>
+                {newElection.candidates.map((candidate, i) => (
+                  <ListGroup.Item key={i} className={styles.candidate}>
+                    <Row>
+                      <Col className="d-flex align-items-center">
+                        <b>{candidate.name}</b>
+                      </Col>
+                      <Col className="text-end">
+                        <Button
+                          variant="dark"
+                          onClick={() => removeCandidate(i)}
+                        >
+                          Remove
+                        </Button>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Form.Group>
+          </Col>
+        </Row>
+      </Form>
+    </>
+  )
+}

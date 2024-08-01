@@ -1,0 +1,23 @@
+.electionNavigationContainer {
+  display: flex;
+  margin-top: 0;
+
+  button:first-child {
+    margin-left: 0;
+    width: 150px;
+
+    &.hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  button:last-child {
+    margin-right: 0;
+    width: 150px;
+  }
+
+  h2 {
+    margin: auto;
+  }
+}

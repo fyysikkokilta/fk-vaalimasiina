@@ -1,0 +1,125 @@
+import { Request, Response, Router } from 'express'
+import {
+  addVoter,
+  disableVoter,
+  enableVoter,
+  getAllVoters,
+  getActiveVoters,
+  deleteVoter,
+} from '../../routes/admin/voters'
+import { validateVoterCode } from '../../validation/validation'
+
+export const handleGetVoters = async (req: Request, res: Response) => {
+  try {
+    const voters = await getAllVoters()
+    res.status(200).json(voters)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+export const handleAddVoter = async (req: Request, res: Response) => {
+  const { identifier } = req.body
+  try {
+    const result = await addVoter(identifier)
+
+    if (!result) {
+      res.status(409).json({ message: 'Voter already exists' })
+      return
+    }
+
+    res.status(200).json(result)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+export const handleDeleteVoter = async (req: Request, res: Response) => {
+  const { identifier } = req.params
+  try {
+    const deletedVoter = await deleteVoter(identifier)
+
+    if (!deletedVoter) {
+      res.status(404).json({ message: 'Voter not found' })
+      return
+    }
+
+    res.status(200).json(deletedVoter)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+export const handleDisableVoter = async (req: Request, res: Response) => {
+  const { identifier } = req.params
+  try {
+    const disabledVoter = await disableVoter(identifier)
+
+    if (!disabledVoter) {
+      res.status(404).json({ message: 'Voter not found' })
+      return
+    }
+
+    res.status(200).json(disabledVoter)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+export const handleEnableVoter = async (req: Request, res: Response) => {
+  const { identifier } = req.params
+  try {
+    const enabledVoter = await enableVoter(identifier)
+
+    if (!enabledVoter) {
+      res.status(404).json(enabledVoter)
+      return
+    }
+
+    res.status(200).json(enabledVoter)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+export const handleGetActiveVoterCount = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const voters = await getActiveVoters()
+    res.status(200).json(voters.length)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+const router = Router()
+
+router.get('/active/count', handleGetActiveVoterCount)
+
+router.use('/:identifier', (req, res, next) => {
+  if (!validateVoterCode(req.params.identifier)) {
+    res.status(400).json({ message: 'Invalid voter identifier' })
+    return
+  }
+  next()
+})
+
+router.post('/:identifier/enable', handleEnableVoter)
+router.post('/:identifier/disable', handleDisableVoter)
+router.delete('/:identifier', handleDeleteVoter)
+
+router.get('/', handleGetVoters)
+
+router.use('/', (req, res, next) => {
+  if (!validateVoterCode(req.body.identifier)) {
+    res.status(400).json({ message: 'Invalid voter identifier' })
+    return
+  }
+  next()
+})
+
+router.post('/', handleAddVoter)
+
+export default router
