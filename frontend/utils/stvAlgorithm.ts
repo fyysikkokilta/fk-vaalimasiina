@@ -1,10 +1,11 @@
+import { groupBy, sortBy } from 'lodash'
 import { Candidate, Vote } from '../../types/types'
 
 import shuffle from 'lodash/shuffle'
 
 type CandidateId = Candidate['candidateId']
 
-type Ballot = Vote['candidateIds']
+type Ballot = CandidateId[]
 
 interface WeightedVote {
   weight: number
@@ -139,13 +140,24 @@ const transferSurplusVotes = (
 
 export const calculateSTVResult = (
   candidates: Candidate[],
-  votes: Vote[],
+  votesWithPreferences: Vote[],
   numberOfSeats: number
 ): VotingResult => {
   const roundResults: VotingRoundResult[] = []
   let winnerCount = 0
   let votingIsFinished = false
   let round = 1
+
+  const votesGroupedByBallot = groupBy(
+    votesWithPreferences,
+    (vote) => vote.ballotId
+  )
+
+  const votes = Object.values(votesGroupedByBallot).map((votes) => ({
+    candidateIds: sortBy(votes, (vote) => vote.preferenceNumber).map(
+      (vote) => vote.candidateId
+    ),
+  }))
 
   const nonEmptyVotes = votes.filter((vote) => vote.candidateIds.length > 0)
   const nonEmptyVoteCount = nonEmptyVotes.length

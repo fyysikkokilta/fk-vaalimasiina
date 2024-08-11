@@ -1,4 +1,5 @@
-import { DataTypes, fn, Model, Optional, Sequelize } from 'sequelize'
+import { DataTypes, fn, HasOneGetAssociationMixin, Model, Optional, Sequelize } from 'sequelize'
+import Election from './election'
 
 export interface HasVotedAttributes {
   hasVotedId: string
@@ -13,6 +14,8 @@ export class HasVoted extends Model<HasVotedAttributes, HasVotedCreationAttribut
   public hasVotedId!: string
   public electionId!: string
   public voterId!: string
+
+  public getElection!: HasOneGetAssociationMixin<Election>
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date

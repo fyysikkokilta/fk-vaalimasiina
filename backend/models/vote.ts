@@ -2,17 +2,19 @@ import {
   DataTypes,
   fn,
   HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
   Model,
   Optional,
   Sequelize,
 } from 'sequelize'
 import Candidate from './candidate'
+import Election from './election'
 
 export interface VoteAttributes {
   voteId: string
+  ballotId: string
   electionId: string
-  candidateIds: string[]
+  candidateId: string
+  preferenceNumber: number
 }
 
 export interface VoteCreationAttributes
@@ -23,11 +25,13 @@ export class Vote
   implements VoteAttributes
 {
   public voteId!: string
+  public ballotId!: string
   public electionId!: Candidate['electionId']
-  public candidateIds!: Candidate['candidateId'][]
+  public candidateId!: Candidate['candidateId']
+  public preferenceNumber!: number
 
-  public getCandidates!: HasOneGetAssociationMixin<Vote>
-  public setCandidates!: HasOneSetAssociationMixin<Vote, number[]>
+  public getElection!: HasOneGetAssociationMixin<Election>
+  public getCandidate!: HasOneGetAssociationMixin<Candidate>
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -43,6 +47,10 @@ export function initVote(sequelize: Sequelize): void {
         allowNull: false,
         primaryKey: true,
       },
+      ballotId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
       electionId: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -51,13 +59,26 @@ export function initVote(sequelize: Sequelize): void {
           key: 'electionId',
         },
       },
-      candidateIds: {
-        type: DataTypes.ARRAY(DataTypes.UUID),
+      candidateId: {
+        type: DataTypes.UUID,
         allowNull: false,
-        // Make this reference the candidate model
+        references: {
+          model: 'candidates',
+          key: 'candidateId',
+        },
+      },
+      preferenceNumber: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
     },
     {
+      indexes: [
+        {
+          unique: true,
+          fields: ['ballotId', 'electionId', 'preferenceNumber'],
+        },
+      ],
       sequelize,
       tableName: 'votes',
       paranoid: true,

@@ -59,6 +59,13 @@ export const initDatabase = async () => {
     as: 'votes',
   })
 
+  Vote.belongsTo(Candidate, { foreignKey: 'candidateId', as: 'candidate' })
+  Candidate.hasMany(Vote, {
+    foreignKey: 'candidateId',
+    onDelete: 'CASCADE',
+    as: 'votes',
+  })
+
   HasVoted.belongsTo(Election, { foreignKey: 'electionId', as: 'election' })
   Election.hasMany(HasVoted, {
     foreignKey: 'electionId',

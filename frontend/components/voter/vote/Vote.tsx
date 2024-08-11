@@ -160,8 +160,8 @@ export const Vote = () => {
                               if (!e.target.value) {
                                 return
                               }
-                              setSelectedCandidates([
-                                ...selectedCandidates,
+                              setSelectedCandidates((prev) => [
+                                ...prev,
                                 e.target.value,
                               ])
                             }}

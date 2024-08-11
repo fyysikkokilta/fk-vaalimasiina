@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { getVotes } from '../../routes/admin/votes'
+import { getVoteCount, getVotes } from '../../routes/admin/votes'
 import { validateUuid } from '../../validation/validation'
 
 export const handleFetchVotesForElection = async (
@@ -18,8 +18,8 @@ export const handleFetchVotesForElection = async (
 export const handleGetVoteCount = async (req: Request, res: Response) => {
   const { electionId } = req.params
   try {
-    const votes = await getVotes(electionId)
-    res.status(200).json(votes.length)
+    const voteCount = await getVoteCount(electionId)
+    res.status(200).json(voteCount)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }

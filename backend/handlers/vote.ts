@@ -2,10 +2,11 @@ import { Router, Request, Response } from 'express'
 import { addVote, checkIfAlreadyVoted } from '../routes/vote'
 import { getVoterStatus } from '../routes/voter'
 import { validateUuid } from '../validation/validation'
+import { isValidBallot } from '../routes/elections'
 
 export const handleVote = async (req: Request, res: Response) => {
   const { electionId } = req.params
-  const { voterId, votes } = req.body
+  const { voterId, ballot } = req.body
 
   const validVoter = await getVoterStatus(voterId)
 
@@ -32,25 +33,27 @@ export const handleVote = async (req: Request, res: Response) => {
     return
   }
 
-  // Validate vote
-  // TODO: Better validation
-  votes.forEach((v: string) => {
-    if (typeof v !== 'string') {
-      res.status(400).json({ message: 'Invalid vote' })
-      return
-    }
-  })
+  // Validate that every candidate in the ballot is a valid candidate
+  const validBallot = await isValidBallot(electionId, ballot)
 
-  const savedVote = await addVote(voterId, electionId, votes)
+  if (!validBallot) {
+    res.status(400).json({ message: 'Invalid ballot' })
+    return
+  }
+
+  const savedVote = await addVote(voterId, electionId, ballot)
 
   if (!savedVote) {
     res.status(500).json({ message: 'Error saving vote' })
     return
   }
 
-  const voteData = savedVote.get({ plain: true })
+  const votesData = savedVote.map((v) => v.get({ plain: true }))
 
-  res.status(200).json(voteData.candidateIds)
+  //TODO: Could verify that the votes are correct and preferences are correct
+  const savedCandidateIds = votesData.map((v) => v.candidateId)
+
+  res.status(200).json(savedCandidateIds)
 }
 
 export const handleCheckIfAlreadyVoted = async (
@@ -104,14 +107,23 @@ router.use('/:electionId', (req, res, next) => {
 })
 
 router.use('/:electionId', (req, res, next) => {
-  const { votes } = req.body
-  if (!Array.isArray(votes)) {
-    res.status(400).json({ message: 'Invalid votes' })
+  const { ballot } = req.body
+  if (!Array.isArray(ballot)) {
+    res.status(400).json({ message: 'Invalid ballot' })
     return
   }
-  votes.forEach((v: string) => {
-    if (!validateUuid(v)) {
-      res.status(400).json({ message: 'Invalid vote' })
+
+  ballot.forEach((vote) => {
+    if (!validateUuid(vote.candidateId)) {
+      res.status(400).json({ message: 'Invalid candidate ID' })
+      return
+    }
+    if (
+      typeof vote.preferenceNumber !== 'number' ||
+      vote.preferenceNumber < 1 ||
+      vote.preferenceNumber > ballot.length
+    ) {
+      res.status(400).json({ message: 'Invalid preference number' })
       return
     }
   })
