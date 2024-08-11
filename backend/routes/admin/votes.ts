@@ -7,7 +7,7 @@ export const getVotes = async (electionId: string) => {
 
 export const getVotingStatus = async (electionId: string) => {
   const votes = await Vote.findAll({ where: { electionId } })
-  const voters = await Voter.findAll({ where: { loggedIn: true } }) //TODO: Able to get voters that are present in the election, this isn't quite it
+  const voters = await Voter.findAll({ where: { active: true } })
 
   return {
     amountOfVotes: votes.length,

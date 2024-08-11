@@ -42,6 +42,12 @@ export const handleVote = async (req: Request, res: Response) => {
   })
 
   const savedVote = await addVote(voterId, electionId, votes)
+
+  if (!savedVote) {
+    res.status(500).json({ message: 'Error saving vote' })
+    return
+  }
+
   const voteData = savedVote.get({ plain: true })
 
   res.status(200).json(voteData.candidateIds)

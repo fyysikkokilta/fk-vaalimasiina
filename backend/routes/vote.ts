@@ -1,6 +1,6 @@
-import { sha512 } from 'js-sha512'
 import Vote from '../models/vote'
 import { isNoElectionOngoing } from './elections'
+import { HasVoted } from '../models/hasVoted'
 
 export const addVote = async (
   voterId: string,
@@ -11,9 +11,32 @@ export const addVote = async (
     return null
   }
 
-  const hashedVoterId = sha512(voterId + process.env.SALT) // Hash the voterId to make the vote anonymous
+  const transaction = await Vote.sequelize!.transaction()
 
-  return Vote.create({ voterId: hashedVoterId, electionId, candidateIds })
+  try {
+    const vote = await Vote.create(
+      {
+        electionId,
+        candidateIds,
+      },
+      { transaction }
+    )
+
+    await HasVoted.create(
+      {
+        electionId,
+        voterId,
+      },
+      { transaction }
+    )
+
+    await transaction.commit()
+
+    return vote
+  } catch (error) {
+    await transaction.rollback()
+    return null
+  }
 }
 
 export const checkIfAlreadyVoted = async (
@@ -24,9 +47,9 @@ export const checkIfAlreadyVoted = async (
     return null
   }
 
-  const hashedVoterId = sha512(voterId + process.env.SALT) // Hash the voterId to make the vote anonymous
-  const vote = await Vote.findOne({
-    where: { voterId: hashedVoterId, electionId },
+  const vote = await HasVoted.findOne({
+    where: { voterId, electionId },
   })
+
   return !!vote
 }

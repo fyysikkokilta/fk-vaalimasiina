@@ -1,19 +1,16 @@
 import {
   DataTypes,
   fn,
-  HasOneCreateAssociationMixin,
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
   Model,
   Optional,
   Sequelize,
 } from 'sequelize'
-import Voter from './voter'
 import Candidate from './candidate'
 
 export interface VoteAttributes {
   voteId: string
-  voterId: string
   electionId: string
   candidateIds: string[]
 }
@@ -26,13 +23,8 @@ export class Vote
   implements VoteAttributes
 {
   public voteId!: string
-  public voterId!: Voter['voterId']
   public electionId!: Candidate['electionId']
   public candidateIds!: Candidate['candidateId'][]
-
-  public getVoter!: HasOneGetAssociationMixin<Vote>
-  public setVoter!: HasOneSetAssociationMixin<Vote, number>
-  public createVoter!: HasOneCreateAssociationMixin<Vote>
 
   public getCandidates!: HasOneGetAssociationMixin<Vote>
   public setCandidates!: HasOneSetAssociationMixin<Vote, number[]>
@@ -51,11 +43,6 @@ export function initVote(sequelize: Sequelize): void {
         allowNull: false,
         primaryKey: true,
       },
-      voterId: {
-        // This is not the actual voterId, but a hashed version of it to make the vote anonymous
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       electionId: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -71,12 +58,6 @@ export function initVote(sequelize: Sequelize): void {
       },
     },
     {
-      indexes: [
-        {
-          unique: true,
-          fields: ['voterId', 'electionId'],
-        },
-      ],
       sequelize,
       tableName: 'votes',
       paranoid: true,
