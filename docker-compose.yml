@@ -1,0 +1,43 @@
+services:
+  database-dev:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  web-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: npm run dev
+    depends_on:
+      - database-dev
+    environment:
+      - DB_HOST=database-dev
+      - NODE_ENV=development
+      - HOST=0.0.0.
+    volumes:
+      - type: bind
+        source: ./src/frontend
+        target: /opt/vaalimasiina/src/frontend
+      - type: bind
+        source: ./src/frontend/public
+        target: /opt/vaalimasiina/src/frontend/public
+      - type: bind
+        source: ./vite.config.ts
+        target: /opt/vaalimasiina/vite.config.ts
+      - type: bind
+        source: ./index.html
+        target: /opt/vaalimasiina/index.html
+      - type: bind
+        source: ./src/backend
+        target: /opt/vaalimasiina/src/backend
+      - type: bind
+        source: ./.env
+        target: /opt/vaalimasiina/.env
+    ports:
+      - "3000:3000"

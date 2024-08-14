@@ -1,17 +1,13 @@
 import { Options } from 'sequelize'
 
 //Postgres
-const sequalizeConfig: Options = {
+const config: Options = {
   dialect: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'postgres',
-  database: 'vaalimasiina',
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 }
 
-export const exportObject = {
-  development: sequalizeConfig,
-}
-
-export default exportObject
+export default config

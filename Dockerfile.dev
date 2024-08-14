@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /opt/vaalimasiina
+
+# Copy configuration files
+COPY .eslint* package.json package-lock.json ./
+
+# Set environment variables
+ENV NODE_ENV=development \
+    HOST=0.0.0.0
+
+# Install dependencies
+RUN npm set cache .npm && \
+    npm ci

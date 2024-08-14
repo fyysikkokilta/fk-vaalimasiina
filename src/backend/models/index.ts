@@ -3,7 +3,7 @@ import Election, { initElection } from './election'
 import Vote, { initVote } from './vote'
 import Voter, { initVoter } from './voter'
 import { Sequelize } from 'sequelize'
-import sequalizeConfig from './config'
+import sequelizeConfig from './config'
 import { SequelizeStorage, Umzug } from 'umzug'
 import migrations from './migrations'
 import { HasVoted, initHasVoted } from './hasVoted'
@@ -22,8 +22,7 @@ async function runMigration(sequelize: Sequelize) {
 }
 
 export const initDatabase = async () => {
-  const config = sequalizeConfig.development
-  const sequelize = new Sequelize(config)
+  const sequelize = new Sequelize(sequelizeConfig)
 
   try {
     sequelize.authenticate()

@@ -1,0 +1,27 @@
+services:
+  database-prod:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  web-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - database-prod
+    environment:
+      - DB_HOST=database-prod
+      - NODE_ENV=production
+      - PORT=3000
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+      
