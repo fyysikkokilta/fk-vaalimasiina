@@ -1,4 +1,4 @@
-import { VoteData } from '../../types/types'
+import { VoteData } from '../../../types/types'
 import Candidate from '../models/candidate'
 import Election, { ElectionStatus } from '../models/election'
 

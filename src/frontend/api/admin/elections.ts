@@ -1,4 +1,4 @@
-import { Election, ElectionData } from '../../../types/types'
+import { Election, ElectionData } from '../../../../types/types'
 import { api } from '../api'
 
 export const postNewElection = (election: ElectionData) => {

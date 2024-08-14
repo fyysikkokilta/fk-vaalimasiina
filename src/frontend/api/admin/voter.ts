@@ -1,4 +1,4 @@
-import { Voter } from '../../../types/types'
+import { Voter } from '../../../../types/types'
 import { api } from '../api'
 
 export const getVoterCodes = () => {

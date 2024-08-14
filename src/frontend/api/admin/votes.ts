@@ -1,4 +1,4 @@
-import { Vote } from '../../../types/types'
+import { Vote } from '../../../../types/types'
 import { api } from '../api'
 
 export const getVotesForElection = async (electionId: string) => {

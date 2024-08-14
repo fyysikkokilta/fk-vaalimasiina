@@ -1,4 +1,4 @@
-import { Election } from '../../types/types'
+import { Election } from '../../../types/types'
 import { api } from './api'
 
 export const fetchCurrentElection = async () => {

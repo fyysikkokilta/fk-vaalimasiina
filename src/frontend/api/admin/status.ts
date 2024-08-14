@@ -1,4 +1,4 @@
-import { ElectionStatus } from '../../../types/types'
+import { ElectionStatus } from '../../../../types/types'
 import { api } from '../api'
 
 export const fetchStatus = () => {

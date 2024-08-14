@@ -1,5 +1,5 @@
 import { groupBy, sortBy } from 'lodash'
-import { Candidate, Vote } from '../../types/types'
+import { Candidate, Vote } from '../../../types/types'
 
 import shuffle from 'lodash/shuffle'
 

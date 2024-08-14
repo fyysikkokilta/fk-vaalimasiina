@@ -9,7 +9,7 @@ import {
   Modal,
   Alert,
 } from 'react-bootstrap'
-import { Voter } from '../../../../types/types'
+import { Voter } from '../../../../../types/types'
 import {
   addVoterCode,
   deleteVoterCode,

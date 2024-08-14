@@ -2,7 +2,7 @@ import Vote from '../models/vote'
 import { isNoElectionOngoing } from './elections'
 import { HasVoted } from '../models/hasVoted'
 import { randomUUID } from 'crypto'
-import { VoteData } from '../../types/types'
+import { VoteData } from '../../../types/types'
 
 export const addVote = async (
   voterId: string,

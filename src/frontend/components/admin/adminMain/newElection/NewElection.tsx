@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button, ListGroup } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import styles from './newElection.module.scss'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
-import { ElectionData } from '../../../../../types/types'
+import { ElectionData } from '../../../../../../types/types'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import {
   modifyElection,

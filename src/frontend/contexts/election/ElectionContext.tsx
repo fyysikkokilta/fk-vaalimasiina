@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react'
 
-import { Election } from '../../../types/types'
+import { Election } from '../../../../types/types'
 import { fetchCurrentElection } from '../../api/elections'
 
 type ElectionContextType = {

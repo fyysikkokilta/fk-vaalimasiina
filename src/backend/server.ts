@@ -14,6 +14,7 @@ import voterRouter from './handlers/voter'
 import 'dotenv/config'
 import { initDatabase } from './models'
 import jsonwebtoken from 'jsonwebtoken'
+import ViteExpress from "vite-express";
 
 if (
   !process.env.PORT ||
@@ -37,13 +38,9 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.use('/api/admin/login', adminLoginRouter)
 
-app.use('/admin/login', adminLoginRouter)
-
-app.use('/admin', (req, res, next) => {
+app.use('/api/admin', (req, res, next) => {
   const authHeader = req.headers.authorization
 
   if (!authHeader) {
@@ -61,16 +58,14 @@ app.use('/admin', (req, res, next) => {
   next()
 })
 
-app.use('/admin/elections', adminElectionsRouter)
-app.use('/admin/status', adminStatusRouter)
-app.use('/admin/voters', adminVoterRouter)
-app.use('/admin/votes', adminVotesRouter)
+app.use('/api/admin/elections', adminElectionsRouter)
+app.use('/api/admin/status', adminStatusRouter)
+app.use('/api/admin/voters', adminVoterRouter)
+app.use('/api/admin/votes', adminVotesRouter)
 
-app.use('/elections', electionsRouter)
-app.use('/login', loginRouter)
-app.use('/vote', voteRouter)
-app.use('/voter', voterRouter)
+app.use('/api/elections', electionsRouter)
+app.use('/api/login', loginRouter)
+app.use('/api/vote', voteRouter)
+app.use('/api/voter', voterRouter)
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server listening on port ${process.env.PORT}`)
-})
+ViteExpress.listen(app, Number(process.env.PORT), () => console.log(`Server listening on port ${process.env.PORT}`))
