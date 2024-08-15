@@ -1,0 +1,101 @@
+{
+  "app": {
+    "title": "Guild of Physics Voting Machine",
+    "admin": "Admin",
+    "footer_link": "https://www.fyysikkokilta.fi/en",
+    "loading": "Loading..."
+  },
+  "voter": {
+    "login": {
+      "title": "Log in",
+      "intro": "Welcome to the Guild of Physics Voting Machine! Log in by entering your login code in the field below. If you don't have a login code yet, please inform the election officials.",
+      "intro_2": "Only regular members of the guild are allowed to vote. If you have received a login code but are not a regular member, please inform the election officials immediately. In this case, the login code you received will be invalidated.",
+      "code": "Login code",
+      "code_instruction": "Enter your login code",
+      "code_description": "You will receive a login code from the election officials. It will be invalidated if you leave the election meeting. You will need a new code if you return to vote.",
+      "alias": "Alias",
+      "alias_instruction": "Enter your alias",
+      "alias_description": "Your alias will be visible to the election officials. You can use your real name or come up with something else.",
+      "notice": "Always remember to inform the election officials of your code when you leave!",
+      "login_button": "Log in"
+    },
+    "vote": {
+      "title": "Voting",
+      "no_ongoing_election": "No ongoing election",
+      "no_ongoing_election_description": "You will be informed when voting starts and you can refresh the page",
+      "vote_instruction": "Select the candidates in the order you prefer and press \"Vote\" to vote",
+      "candidates": "Candidates",
+      "candidates_instruction": "Select a candidate",
+      "no_candidates": "No candidates yet",
+      "remove_selection": "Remove",
+      "vote_button": "Vote",
+      "already_voted": "You have already voted",
+      "logout_button": "Log out"
+    }
+  },
+  "admin": {
+    "admin": "Admin",
+    "main": "Main",
+    "voters": "Voters",
+    "login": {
+      "title": "Log in to admin",
+      "username": "Username",
+      "password": "Password",
+      "login_button": "Log in"
+    },
+    "admin_main": {
+      "new_election": {
+        "election_title": "Title",
+        "description": "Description",
+        "amount_to_choose": "Amount to elect",
+        "new_candidate": "New candidate",
+        "add_candidate": "Add candidate",
+        "remove_candidate": "Remove candidate",
+        "candidates": "Candidates"
+      },
+      "preview_election": {
+        "amount_to_choose": "To be elected",
+        "candidates": "Candidates",
+        "voters": "Voters"
+      },
+      "voting_inspection": {
+        "given_votes": "Given votes",
+        "voters": "Voters"
+      },
+      "results": {
+        "voters": "Voters",
+        "non_empty_votes": "Non-empty votes",
+        "round": "Round",
+        "remaining_to_choose": "Remaining to elect",
+        "election_threshold": "Election threshold",
+        "votes": "votes",
+        "chosen": "Chosen",
+        "not_chosen": "eliminated",
+        "chosen_candidates": "Chosen candidates"
+      }
+    },
+    "voter_management": {
+      "title": "Voter management",
+      "generate_new_code": "Generate a new voter code",
+      "generate_new_code_description": "A voter code is a unique code given to a voter.",
+      "generate_new_code_button": "Generate",
+      "new_voter_code": "New voter code",
+      "voter_code": "Voter code",
+      "activated": "Activated",
+      "logged_in": "Logged in",
+      "alias": "Alias",
+      "operations": "Operations",
+      "active": "Active",
+      "inactive": "Inactive",
+      "yes": "Yes",
+      "no": "No",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "remove": "Remove",
+      "remove_code": "Remove code",
+      "remove_code_description": "Are you sure you want to remove the voter code?",
+      "cancel_button": "Cancel",
+      "remove_code_button": "Remove"
+    }
+  }
+}

@@ -18,6 +18,7 @@ import {
   getVoterCodes,
 } from '../../../api/admin/voter'
 import { ElectionContext } from '../../../contexts/election/ElectionContext'
+import { useTranslation } from 'react-i18next'
 
 const sortVoters = (voters: Voter[]) => {
   return voters.sort((a, b) => {
@@ -37,6 +38,9 @@ export const VoterMain = () => {
   const [newVoterCode, setNewVoterCode] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [selectedVoter, setSelectedVoter] = useState<string | null>(null)
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'admin.voter_management',
+  })
 
   const fetchAndSetVoterCodes = async () => {
     const response = await getVoterCodes()
@@ -128,16 +132,15 @@ export const VoterMain = () => {
       <Row>
         <Col>
           <Card>
-            <Card.Header as="h2">Äänestäjähallinta</Card.Header>
+            <Card.Header as="h2">{t('title')}</Card.Header>
             <Card.Body>
               <Form>
                 <Form.Group controlId="formNewVoterCode">
                   <Col>
                     <Row>
-                      <Form.Label>Generoi uusi äänestäjäkoodi</Form.Label>
+                      <Form.Label>{t('generate_new_code')}</Form.Label>
                       <Form.Text className="text-muted">
-                        Äänestäjäkoodi on uniikki koodi, joka annetaan
-                        äänestäjälle.
+                        {t('generate_new_code_description')}
                       </Form.Text>
                     </Row>
                     <Button
@@ -146,13 +149,13 @@ export const VoterMain = () => {
                       className="mt-3"
                       disabled={voteOngoing}
                     >
-                      Generoi
+                      {t('generate_new_code_button')}
                     </Button>
                   </Col>
                 </Form.Group>
                 {newVoterCode && (
                   <Alert variant="success" className="mt-3">
-                    Uusi äänestäjäkoodi: {newVoterCode}
+                    {t('new_voter_code')}: {newVoterCode}
                   </Alert>
                 )}
               </Form>
@@ -160,11 +163,11 @@ export const VoterMain = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Äänestäjäkoodi</th>
-                    <th>Aktivoitu</th>
-                    <th>Kirjautunut</th>
-                    <th>Alias</th>
-                    <th>Toiminnot</th>
+                    <th>{t('voter_code')}</th>
+                    <th>{t('activated')}</th>
+                    <th>{t('logged_in')}</th>
+                    <th>{t('alias')}</th>
+                    <th>{t('operations')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -172,8 +175,8 @@ export const VoterMain = () => {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{voter.identifier}</td>
-                      <td>{voter.active ? 'Aktiivinen' : 'Disabloitu'}</td>
-                      <td>{voter.loggedIn ? 'Kyllä' : 'Ei'}</td>
+                      <td>{voter.active ? t('active') : t('inactive')}</td>
+                      <td>{voter.loggedIn ? t('yes') : t('no')}</td>
                       <td>{voter.alias}</td>
                       <td className="d-flex justify-content-center">
                         {voter.active ? (
@@ -183,7 +186,7 @@ export const VoterMain = () => {
                             className="m-1"
                             disabled={voteOngoing}
                           >
-                            Disabloi
+                            {t('deactivate')}
                           </Button>
                         ) : (
                           <Button
@@ -192,7 +195,7 @@ export const VoterMain = () => {
                             className="m-1"
                             disabled={voteOngoing}
                           >
-                            Aktivoi
+                            {t('activate')}
                           </Button>
                         )}
                         <Button
@@ -203,7 +206,7 @@ export const VoterMain = () => {
                           className="m-1"
                           disabled={voteOngoing}
                         >
-                          Poista
+                          {t('remove')}
                         </Button>
                       </td>
                     </tr>
@@ -217,15 +220,15 @@ export const VoterMain = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Poista koodi</Modal.Title>
+          <Modal.Title>{t('remove_code')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Oletko varma, että haluat poistaa koodin:&nbsp;
+          {t('remove_code_description')}:&nbsp;
           {selectedVoter}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
-            Peruuta
+            {t('cancel_button')}
           </Button>
           <Button
             variant="danger"
@@ -235,7 +238,7 @@ export const VoterMain = () => {
             }}
             disabled={voteOngoing}
           >
-            Poista
+            {t('remove_code_button')}
           </Button>
         </Modal.Footer>
       </Modal>

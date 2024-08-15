@@ -1,0 +1,101 @@
+{
+  "app": {
+    "title": "Fyysikkokillan vaalimasiina",
+    "admin": "Hallinta",
+    "footer_link": "https://www.fyysikkokilta.fi",
+    "loading": "Ladataan..."
+  },
+  "voter": {
+    "login": {
+      "title": "Kirjaudu sisään",
+      "intro": "Tervetuloa Fyysikkokillan vaalimasiinaan! Kirjaudu sisään antamalla kirjautumiskoodisi alla olevaan kenttään. Jos sinulla ei ole vielä kirjautumiskoodia, kerro siitä vaalitoimitsijalle.",
+      "intro_2": "Äänestää saavat vain killan varsinaiset jäsenet. Jos olet saanut kirjautumiskoodin, mutta et ole varsinainen jäsen, kerro siitä vaalitoimitsijalle pikimmiten. Tällöin saamasi kirjautumiskoodi mitätöidään.",
+      "code": "Kirjautumiskoodi",
+      "code_instruction": "Syötä kirjautumiskoodisi",
+      "code_description": "Saat kirjautumiskoodin vaalitoimitsijoilta. Se mitätöidään, jos poistut vaalilähetyksestä. Tarvitset uuden koodin, jos palaat äänestämään.",
+      "alias": "Nimimerkki",
+      "alias_instruction": "Syötä nimimerkkisi",
+      "alias_description": "Nimimerkkisi näkyy vaalitoimitsijoille. Voit käyttää oikeaa nimeäsi tai keksiä jotain muuta.",
+      "notice": "Muista aina ilmoittaa poistuessasi oman koodisi!",
+      "login_button": "Kirjaudu"
+    },
+    "vote": {
+      "title": "Äänestäminen",
+      "no_ongoing_election": "Ei vaaleja käynnissä",
+      "no_ongoing_election_description": "Sinulle kerrotaan, kun äänestäminen alkaa ja voit päivittää sivun",
+      "vote_instruction": "Valitse ehdokkaat haluamassasi järjestyksessä ja paina \"Äänestä\" äänestääksesi",
+      "candidates": "Ehdokkaat",
+      "candidates_instruction": "Valitse ehdokas",
+      "no_candidates": "Ei vielä ehdokkaita",
+      "remove_selection": "Poista",
+      "vote_button": "Äänestä",
+      "already_voted": "Olet jo äänestänyt",
+      "logout_button": "Kirjaudu ulos"
+    }
+  },
+  "admin": {
+    "admin": "Hallinta",
+    "main": "Etusivu",
+    "voters": "Äänestäjät",
+    "login": {
+      "title": "Hallintaan kirjautuminen",
+      "username": "Käyttäjätunnus",
+      "password": "Salasana",
+      "login_button": "Kirjaudu"
+    },
+    "admin_main": {
+      "new_election": {
+        "election_title": "Otsikko",
+        "description": "Kuvaus",
+        "amount_to_choose": "Valittavien määrä",
+        "new_candidate": "Uusi ehdokas",
+        "add_candidate": "Lisää ehdokas",
+        "remove_candidate": "Poista ehdokas",
+        "candidates": "Ehdokkaat"
+      },
+      "preview_election": {
+        "amount_to_choose": "Valitaan",
+        "candidates": "Ehdokkaat",
+        "voters": "Äänestäjiä"
+      },
+      "voting_inspection": {
+        "given_votes": "Annettuja ääniä",
+        "voters": "Äänestäjiä"
+      },
+      "results": {
+        "voters": "Äänestäjiä",
+        "non_empty_votes": "Epätyhjiä ääniä",
+        "round": "Kierros",
+        "remaining_to_choose": "Valittavia jäljellä",
+        "election_threshold": "Äänikynnys",
+        "votes": "ääntä",
+        "chosen": "Valittu",
+        "not_chosen": "putosi",
+        "chosen_candidates": "Valitut ehdokkaat"
+      }
+    },
+    "voter_management": {
+      "title": "Äänestäjähallinta",
+      "generate_new_code": "Generoi uusi äänestäjäkoodi",
+      "generate_new_code_description": "Äänestäjäkoodi on uniikki koodi, joka annetaan äänestäjälle.",
+      "generate_new_code_button": "Generoi",
+      "new_voter_code": "Uusi äänestäjäkoodi",
+      "voter_code": "Äänestäjäkoodi",
+      "activated": "Aktivoitu",
+      "logged_in": "Kirjautunut",
+      "alias": "Nimimerkki",
+      "operations": "Toiminnot",
+      "active": "Aktiivinen",
+      "inactive": "Ei aktiivinen",
+      "yes": "Kyllä",
+      "no": "Ei",
+      "deactivate": "Deaktivoi",
+      "activate": "Aktivoi",
+      "remove": "Poista",
+      "remove_code": "Poista koodi",
+      "remove_code_description": "Oletko varma, että haluat poistaa koodin",
+      "cancel_button": "Peruuta",
+      "remove_code_button": "Poista"
+    }
+  }
+}

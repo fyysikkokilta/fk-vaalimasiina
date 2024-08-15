@@ -3,11 +3,13 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
 import { useCookies } from 'react-cookie'
 import { login } from '../../../api/login'
 import { getVoterStatus } from '../../../api/voter'
+import { useTranslation } from 'react-i18next'
 
 export const Login = () => {
   const [cookies, setCookie, removeCookie] = useCookies(['token', 'alias'])
   const [identifier, setIdentifier] = useState('')
   const [alias, setAlias] = useState('')
+  const { t } = useTranslation("translation", { keyPrefix: "voter.login" })
 
   useEffect(() => {
     (async () => {
@@ -46,50 +48,42 @@ export const Login = () => {
       <Row className="justify-content-center">
         <Col md={6}>
           <Card className="box-shadow">
-            <Card.Header as="h2">Kirjaudu sisään</Card.Header>
+            <Card.Header as="h2">{t("title")}</Card.Header>
             <Card.Body>
               <Card.Text>
-                Tervetuloa Fyysikkokillan vaalimasiinaan! Kirjaudu sisään
-                antamalla kirjautumiskoodisi alla olevaan kenttään. Jos sinulla
-                ei ole vielä kirjautumiskoodia, kerro siitä vaalitoimitsijalle.
+                {t("intro")}
               </Card.Text>
               <Card.Text>
-                Äänestää saavat vain killan varsinaiset jäsenet. Jos olet saanut
-                kirjautumiskoodin, mutta et ole varsinainen jäsen, kerro siitä
-                vaalitoimitsijalle pikimmiten. Tällöin saamasi kirjautumiskoodi
-                mitätöidään.
+                {t("intro_2")}
               </Card.Text>
               <Card.Text>
-                <b>Kirjautumiskoodi</b>
+                <b>{t("code")}</b>
                 <br />
-                Saat kirjautumiskoodin vaalitoimitsijoilta. Se mitätöidään, jos
-                poistut vaalilähetyksestä. Tarvitset uuden koodin, jos palaat
-                äänestämään.
+                {t("code_description")}
               </Card.Text>
               <Card.Text>
-                <b>Alias</b>
+                <b>{t("alias")}</b>
                 <br />
-                Alias on nimimerkkisi, joka näkyy vaalilähetyksessä. Voit
-                käyttää oikeaa nimeäsi tai keksiä jotain muuta.
+                {t("alias_description")}
               </Card.Text>
               <Card.Text>
-                <b>Muista aina ilmoittaa poistuessasi oman koodisi!</b>
+                <b>{t("notice")}</b>
               </Card.Text>
               <Form>
                 <Form.Group controlId="formIdentifier">
-                  <Form.Label className="mt-3">Kirjautumiskoodi</Form.Label>
+                  <Form.Label className="mt-3">{t("code")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Syötä kirjautumiskoodisi"
+                    placeholder={t("code_instruction")}
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                   />
                 </Form.Group>
                 <Form.Group controlId="formAlias">
-                  <Form.Label className="mt-3">Alias</Form.Label>
+                  <Form.Label className="mt-3">{t("alias")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Syötä aliaksesi"
+                    placeholder={t("alias_instruction")}
                     value={alias}
                     onChange={(e) => setAlias(e.target.value)}
                   />
@@ -100,7 +94,7 @@ export const Login = () => {
                   onClick={handleLogin}
                   disabled={!identifier || !alias}
                 >
-                  Kirjaudu
+                  {t("login_button")}
                 </Button>
               </Form>
             </Card.Body>

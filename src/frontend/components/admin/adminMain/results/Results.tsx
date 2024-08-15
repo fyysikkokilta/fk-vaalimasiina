@@ -10,10 +10,14 @@ import styles from './results.module.scss'
 import { getVotesForElection } from '../../../../api/admin/votes'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { closeElection } from '../../../../api/admin/elections'
+import { useTranslation } from 'react-i18next'
 
 export const Results = () => {
   const { election } = useContext(ElectionContext)!
   const [votingResult, setVotingResult] = useState<VotingResult | null>(null)
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'admin.admin_main.results',
+  })
 
   useEffect(() => {
     ;(async () => {
@@ -55,11 +59,7 @@ export const Results = () => {
         onNext={() => closeElection(election.electionId)}
       />
       {!votingResult || !election ? (
-        <Container className="text-center">
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </Container>
+        <LoadingSpinner />
       ) : (
         <Container className={styles.resultsContainer}>
           <Row className="mb-4">
@@ -67,10 +67,10 @@ export const Results = () => {
               <h3>{election.title}</h3>
               <Row>
                 <span className="mt-3">
-                  Äänestäjiä: {votingResult.totalVoters}
+                  {t('voters')}: {votingResult.totalVoters}
                 </span>
                 <span className="mt-3">
-                  Epätyhjiä ääniä: {votingResult.totalVotes}
+                  {t('non_empty_votes')}: {votingResult.totalVotes}
                 </span>
               </Row>
             </Col>
@@ -80,28 +80,35 @@ export const Results = () => {
               ({ droppedCandidate, candidateResults, quota, round }) => (
                 <ListGroup.Item key={round} className="mb-3 text-center">
                   <Card>
-                    <Card.Header as="h5">Kierros {round}</Card.Header>
+                    <Card.Header as="h5">
+                      {t('round')} {round}
+                    </Card.Header>
                     <Card.Body>
                       <Card.Title>
-                        Valittavia jäljellä:&nbsp;
+                        {t('remaining_to_choose')}:&nbsp;
                         {election.amountToElect -
                           candidateResults.filter(
                             ({ isSelected }) => isSelected
                           ).length}
-                        &nbsp; Äänikynnys:&nbsp;{quota}
+                        &nbsp; {t('election_threshold')}:&nbsp;{quota}
                       </Card.Title>
                       <ListGroup variant="flush">
                         {candidateResults.map(({ data, isSelected }) => (
                           <ListGroup.Item key={data.id}>
-                            {getCandidateName(data.id)} - {data.voteCount} ääntä
+                            {getCandidateName(data.id)} - {data.voteCount}{' '}
+                            {t('votes')}
                             {isSelected && (
-                              <span className="text-success"> - Valittu</span>
+                              <span className="text-success">
+                                {' '}
+                                - {t('chosen')}
+                              </span>
                             )}
                           </ListGroup.Item>
                         ))}
                         {droppedCandidate && (
                           <ListGroup.Item className="text-danger">
-                            {getCandidateName(droppedCandidate.id)} putosi
+                            {getCandidateName(droppedCandidate.id)}{' '}
+                            {t('not_chosen')}
                           </ListGroup.Item>
                         )}
                       </ListGroup>
@@ -113,7 +120,7 @@ export const Results = () => {
           </ListGroup>
           <Row>
             <Col className="text-center">
-              <h4>Valitut ehdokkaat</h4>
+              <h4>{t('chosen_candidates')}</h4>
               <ListGroup>
                 {votingResult.winners.map((winnerId) => (
                   <ListGroup.Item key={winnerId}>

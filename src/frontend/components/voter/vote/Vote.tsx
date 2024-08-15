@@ -15,6 +15,7 @@ import { ElectionContext } from '../../../contexts/election/ElectionContext'
 import { getVoterStatus } from '../../../api/voter'
 import { logout } from '../../../api/login'
 import { vote, checkIfAlreadyVoted } from '../../../api/vote'
+import { useTranslation } from 'react-i18next'
 
 export const Vote = () => {
   const { election } = useContext(ElectionContext)!
@@ -22,6 +23,7 @@ export const Vote = () => {
   const [loading, setLoading] = useState(true)
   const [hasVoted, setHasVoted] = useState(false)
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
+  const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
   useEffect(() => {
     (async () => {
@@ -101,22 +103,21 @@ export const Vote = () => {
         <Row className="justify-content-center">
           <Col md={6}>
             <Card className="box-shadow">
-              <Card.Header as="h2">Äänestäminen</Card.Header>
+              <Card.Header as="h2">{t('title')}</Card.Header>
               <Alert
                 className="mx-5 d-flex flex-column text-center"
                 variant="info"
               >
                 <Alert.Heading className="mb-3">
-                  Ei vaaleja käynnissä
+                  {t('no_ongoing_election')}
                 </Alert.Heading>
                 <p>
-                  Sinulle kerrotaan, kun äänestäminen alkaa ja voit päivittää
-                  sivun
+                  {t('no_ongoing_election_description')}
                 </p>
               </Alert>
               <Col className="d-flex justify-content-center">
                 <Button className="mb-3" onClick={handleLogout}>
-                  Kirjaudu ulos
+                  {t('logout_button')}
                 </Button>
               </Col>
             </Card>
@@ -135,22 +136,21 @@ export const Vote = () => {
       <Row className="justify-content-center">
         <Col md={6}>
           <Card className="box-shadow">
-            <Card.Header as="h2">Äänestäminen</Card.Header>
+            <Card.Header as="h2">{t('title')}</Card.Header>
             <Card.Header as="h4">{election.title}</Card.Header>
             <Card.Body>
               <Card.Text>{election.description}</Card.Text>
               {hasVoted ? (
-                <Alert variant="success">Olet jo äänestänyt</Alert>
+                <Alert variant="success">{t('already_voted')}</Alert>
               ) : (
                 <Form>
                   <Form.Group>
                     <Row>
                       <Form.Text>
-                        Valitse ehdokkaat haluamassasi järjestyksessä ja paina
-                        "Äänestä" äänestääksesi
+                        <b>{t('vote_instruction')}</b>
                       </Form.Text>
                       <Form.Label className="mt-3">
-                        <b>Ehdokkaat</b>
+                        <b>{t("candidates")}</b>
                       </Form.Label>
                       {election.candidates.length > 0 ? (
                         <>
@@ -166,7 +166,7 @@ export const Vote = () => {
                               ])
                             }}
                           >
-                            <option value="">Valitse ehdokas</option>
+                            <option value="">{t("candidates_instruction")}</option>
                             {filteredCandidates.map((candidate) => (
                               <option
                                 key={candidate.candidateId}
@@ -192,7 +192,7 @@ export const Vote = () => {
                                     className="ms-auto"
                                     onClick={() => handleRemove(candidateId)}
                                   >
-                                    Poista
+                                    {t('remove_selection')}
                                   </Button>
                                 </ListGroup.Item>
                               )
@@ -200,18 +200,18 @@ export const Vote = () => {
                           </ListGroup>
                         </>
                       ) : (
-                        <Alert variant="warning">Ei vielä ehdokkaita</Alert>
+                        <Alert variant="warning">{t("no_candidates")}</Alert>
                       )}
                     </Row>
                   </Form.Group>
                   <Button variant="primary" onClick={handleVote}>
-                    Äänestä
+                    {t('vote_button')}
                   </Button>
                 </Form>
               )}
               <Col className="d-flex justify-content-center">
                 <Button className="mb-3" onClick={handleLogout}>
-                  Kirjaudu ulos
+                  {t('logout_button')}
                 </Button>
               </Col>
             </Card.Body>

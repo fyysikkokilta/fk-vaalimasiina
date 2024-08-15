@@ -9,10 +9,14 @@ import { VotingStatus } from '../../../../../../types/types'
 import { getVoteCount } from '../../../../api/admin/votes'
 import { getActiveVoterCount } from '../../../../api/admin/voter'
 import { endVoting } from '../../../../api/admin/elections'
+import { useTranslation } from 'react-i18next'
 
 export const VotingInspection = () => {
   const [votingStatus, setVotingStatus] = useState<VotingStatus | null>(null)
   const { election } = useContext(ElectionContext)!
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'admin.admin_main.voting_inspection',
+  })
 
   const fetchAndSetVotingStatus = async (electionId: string) => {
     const promises = await Promise.all([
@@ -63,12 +67,12 @@ export const VotingInspection = () => {
           <ListGroup>
             <ListGroup.Item>
               <span className={styles.votingStatus}>
-                Annettuja ääniä: {votingStatus.amountOfVotes}
+                {t('given_votes')}: {votingStatus.amountOfVotes}
               </span>
             </ListGroup.Item>
             <ListGroup.Item>
               <span className={styles.votingStatus}>
-                Äänestäjiä: {votingStatus.amountOfVoters}
+                {t('voters')}: {votingStatus.amountOfVoters}
               </span>
             </ListGroup.Item>
           </ListGroup>

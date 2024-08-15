@@ -10,6 +10,7 @@ import {
   postNewElection,
 } from '../../../../api/admin/elections'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
+import { useTranslation } from 'react-i18next'
 
 // Used for both creating a new election and editing an existing one
 
@@ -23,6 +24,9 @@ export const NewElection = () => {
     candidates: [],
   })
   const [newCandidate, setNewCandidate] = useState('')
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'admin.admin_main.new_election',
+  })
 
   useEffect(() => {
     if (electionStep === 'EDIT' && election) {
@@ -93,7 +97,7 @@ export const NewElection = () => {
         <Row>
           <Col>
             <Form.Group className="mb-3" controlId="title">
-              <Form.Label>Title</Form.Label>
+              <Form.Label>{t('election_title')}</Form.Label>
               <Form.Control
                 type="text"
                 name="title"
@@ -102,7 +106,7 @@ export const NewElection = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="description">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>{t('description')}</Form.Label>
               <Form.Control
                 as="textarea"
                 name="description"
@@ -111,7 +115,7 @@ export const NewElection = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="amountToElect">
-              <Form.Label>Amount to elect</Form.Label>
+              <Form.Label>{t('amount_to_choose')}</Form.Label>
               <Form.Control
                 type="number"
                 name="amountToElect"
@@ -122,7 +126,7 @@ export const NewElection = () => {
           </Col>
           <Col>
             <Form.Group className="mb-3" controlId="newCandidate">
-              <Form.Label>New candidate</Form.Label>
+              <Form.Label>{t('new_candidate')}</Form.Label>
               <Form.Control
                 value={newCandidate}
                 type="text"
@@ -135,11 +139,11 @@ export const NewElection = () => {
                 disabled={!newCandidate}
                 onClick={() => addCandidate(newCandidate)}
               >
-                Add
+                {t('add_candidate')}
               </Button>
             </Form.Group>
             <Form.Group className="mb-3" controlId="candidates">
-              <Form.Label>Candidates</Form.Label>
+              <Form.Label>{t('candidates')}</Form.Label>
               <ListGroup>
                 {newElection.candidates.map((candidate, i) => (
                   <ListGroup.Item key={i} className={styles.candidate}>
@@ -152,7 +156,7 @@ export const NewElection = () => {
                           variant="dark"
                           onClick={() => removeCandidate(i)}
                         >
-                          Remove
+                          {t('remove_candidate')}
                         </Button>
                       </Col>
                     </Row>

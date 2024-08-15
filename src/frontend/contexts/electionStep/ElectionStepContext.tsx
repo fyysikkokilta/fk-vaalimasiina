@@ -5,11 +5,15 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { electionStepSettings } from './electionStepSetting'
+import {
+  electionStepSettingsFinnish,
+  electionStepSettingsEnglish,
+} from './electionStepSetting'
 import { fetchStatus } from '../../api/admin/status'
 import { useCookies } from 'react-cookie'
+import { useTranslation } from 'react-i18next'
 
-type ElectionStep = keyof typeof electionStepSettings
+type ElectionStep = keyof typeof electionStepSettingsFinnish
 
 type StepSettings = {
   title: string
@@ -31,9 +35,15 @@ export const ElectionStepContext =
 export const ElectionStepProvider = ({ children }) => {
   const [cookies] = useCookies(['admin-token'])
   const [electionStep, setElectionStep] = useState<ElectionStep | null>(null)
+  const { i18n } = useTranslation()
+
+  const electionStepSettings =
+    i18n.language === 'fi'
+      ? electionStepSettingsFinnish
+      : electionStepSettingsEnglish
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (!cookies['admin-token']) {
         return
       }

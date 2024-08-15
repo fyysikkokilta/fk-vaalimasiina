@@ -7,9 +7,11 @@ import { VoterMain } from './voters/VoterMain'
 import { Card, Container } from 'react-bootstrap'
 import { useCookies } from 'react-cookie'
 import { AdminLogin } from './login/AdminLogin'
+import { useTranslation } from 'react-i18next'
 
 export const Admin = () => {
   const [cookies] = useCookies(['admin-token'])
+  const { t } = useTranslation('translation', { keyPrefix: 'admin' })
 
   if (!cookies['admin-token']) {
     return <AdminLogin />
@@ -18,15 +20,15 @@ export const Admin = () => {
   return (
     <Card className="box-shadow m-5">
       <Card.Header>
-        <h1>Admin</h1>
+        <h1>{t('admin')}</h1>
       </Card.Header>
       <Card.Body>
         <Container className={styles.adminTabLinkContainer}>
           <NavLink className={styles.adminTabLink} to="">
-            Etusivu
+            {t('main')}
           </NavLink>
           <NavLink className={styles.adminTabLink} to="voters">
-            Äänestäjät
+            {t('voters')}
           </NavLink>
         </Container>
         <Routes>

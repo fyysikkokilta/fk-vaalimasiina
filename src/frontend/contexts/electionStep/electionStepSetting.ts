@@ -1,4 +1,4 @@
-export const electionStepSettings = {
+export const electionStepSettingsFinnish = {
   NEW: {
     title: 'Uusi vaali',
     nextButton: 'Luo vaali',
@@ -26,6 +26,38 @@ export const electionStepSettings = {
   RESULTS: {
     title: 'Tulokset',
     nextButton: 'Seuraava vaali',
+    nextStep: 'NEW',
+  },
+}
+
+export const electionStepSettingsEnglish = {
+  NEW: {
+    title: 'New election',
+    nextButton: 'Create election',
+    nextStep: 'PREVIEW',
+  },
+  EDIT: {
+    title: 'Edit election',
+    backButton: 'Cancel',
+    previousStep: 'PREVIEW',
+    nextButton: 'Preview',
+    nextStep: 'PREVIEW',
+  },
+  PREVIEW: {
+    title: 'Preview',
+    backButton: 'Edit election',
+    previousStep: 'EDIT',
+    nextButton: 'Start voting',
+    nextStep: 'VOTING',
+  },
+  VOTING: {
+    title: 'Voting',
+    nextButton: 'End voting',
+    nextStep: 'RESULTS',
+  },
+  RESULTS: {
+    title: 'Results',
+    nextButton: 'Next election',
     nextStep: 'NEW',
   },
 }

@@ -2,17 +2,21 @@ import React, { useState, useEffect, useContext } from 'react'
 
 import styles from './previewElection.module.scss'
 
-import { Col, Container, ListGroup, Spinner } from 'react-bootstrap'
+import { Col, Container, ListGroup } from 'react-bootstrap'
 
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { startVoting } from '../../../../api/admin/elections'
 import { getActiveVoterCount } from '../../../../api/admin/voter'
+import { useTranslation } from 'react-i18next'
 
 export const PreviewElection = () => {
   const { election } = useContext(ElectionContext)!
   const [amountOfVoters, setAmountOfVoters] = useState<number>(0)
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'admin.admin_main.preview_election',
+  })
 
   const fetchAndSetVoterCount = async () => {
     const response = await getActiveVoterCount()
@@ -36,18 +40,16 @@ export const PreviewElection = () => {
     <>
       <AdminNavigation onNext={() => startVoting(election.electionId)} />
       {!election ? (
-        <Container className="text-center">
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </Container>
+        <LoadingSpinner />
       ) : (
         <Container className={styles.previewElectionContainer}>
           <Col>
             <h3>{election.title}</h3>
             <p>{election.description}</p>
-            <span>Valitaan: {election.amountToElect}</span>
-            <h4>Ehdokkaita</h4>
+            <span>
+              {t('amount_to_choose')}: {election.amountToElect}
+            </span>
+            <h4>{t('candidates')}</h4>
             <Col>
               <ListGroup numbered>
                 {election.candidates.map((candidate) => (
@@ -57,7 +59,7 @@ export const PreviewElection = () => {
                 ))}
               </ListGroup>
             </Col>
-            <h4 className="mt-3">Äänestäjiä</h4>
+            <h4 className="mt-3">{t('voters')}</h4>
             <p>{amountOfVoters}</p>
           </Col>
         </Container>
