@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express'
-import { getVoteCount, getVotes } from '../../routes/admin/votes'
+import { getVoteCount } from '../../routes/admin/votes'
 import { validateUuid } from '../../validation/validation'
+import { getVotes } from '../../routes/votes'
 
 export const handleFetchVotesForElection = async (
   req: Request,

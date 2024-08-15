@@ -1,6 +1,8 @@
 {
   "app": {
     "title": "Guild of Physics Voting Machine",
+    "main": "Main",
+    "previous_results": "Previous results",
     "admin": "Admin",
     "footer_link": "https://www.fyysikkokilta.fi/en",
     "loading": "Loading..."
@@ -61,17 +63,6 @@
       "voting_inspection": {
         "given_votes": "Given votes",
         "voters": "Voters"
-      },
-      "results": {
-        "voters": "Voters",
-        "non_empty_votes": "Non-empty votes",
-        "round": "Round",
-        "remaining_to_choose": "Remaining to elect",
-        "election_threshold": "Election threshold",
-        "votes": "votes",
-        "chosen": "Chosen",
-        "not_chosen": "eliminated",
-        "chosen_candidates": "Chosen candidates"
       }
     },
     "voter_management": {
@@ -97,5 +88,22 @@
       "cancel_button": "Cancel",
       "remove_code_button": "Remove"
     }
+  },
+  "results": {
+    "voters": "Voters",
+    "non_empty_votes": "Non-empty votes",
+    "round": "Round",
+    "remaining_to_choose": "Remaining to elect",
+    "election_threshold": "Election threshold",
+    "votes": "votes",
+    "chosen": "Chosen",
+    "not_chosen": "eliminated",
+    "chosen_candidates": "Chosen candidates"
+  },
+  "previous_results": {
+    "title": "Previous results",
+    "back_to_list": "Back to list",
+    "no_previous_results": "No previous results",
+    "no_previous_results_description": "There are no previous results to show"
   }
 }

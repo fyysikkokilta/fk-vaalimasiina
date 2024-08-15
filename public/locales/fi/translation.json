@@ -1,6 +1,8 @@
 {
   "app": {
     "title": "Fyysikkokillan vaalimasiina",
+    "main": "Etusivu",
+    "previous_results": "Edelliset tulokset",
     "admin": "Hallinta",
     "footer_link": "https://www.fyysikkokilta.fi",
     "loading": "Ladataan..."
@@ -61,17 +63,6 @@
       "voting_inspection": {
         "given_votes": "Annettuja ääniä",
         "voters": "Äänestäjiä"
-      },
-      "results": {
-        "voters": "Äänestäjiä",
-        "non_empty_votes": "Epätyhjiä ääniä",
-        "round": "Kierros",
-        "remaining_to_choose": "Valittavia jäljellä",
-        "election_threshold": "Äänikynnys",
-        "votes": "ääntä",
-        "chosen": "Valittu",
-        "not_chosen": "putosi",
-        "chosen_candidates": "Valitut ehdokkaat"
       }
     },
     "voter_management": {
@@ -97,5 +88,22 @@
       "cancel_button": "Peruuta",
       "remove_code_button": "Poista"
     }
+  },
+  "results": {
+    "voters": "Äänestäjiä",
+    "non_empty_votes": "Epätyhjiä ääniä",
+    "round": "Kierros",
+    "remaining_to_choose": "Valittavia jäljellä",
+    "election_threshold": "Äänikynnys",
+    "votes": "ääntä",
+    "chosen": "Valittu",
+    "not_chosen": "putosi",
+    "chosen_candidates": "Valitut ehdokkaat"
+  },
+  "previous_results": {
+    "title": "Edelliset tulokset",
+    "back_to_list": "Takaisin listaukseen",
+    "no_previous_results": "Ei aiempia tuloksia",
+    "no_previous_results_description": "Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu."
   }
 }

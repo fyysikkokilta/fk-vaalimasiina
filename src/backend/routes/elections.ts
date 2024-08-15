@@ -15,7 +15,14 @@ export const getElections = async () => {
 }
 
 export const getElectionById = async (electionId: string) => {
-  const election = await Election.findByPk(electionId)
+  const election = await Election.findByPk(electionId, {
+    include: [
+      {
+        model: Candidate,
+        as: 'candidates',
+      },
+    ],
+  })
   if (!election) {
     return null
   }
@@ -31,7 +38,10 @@ export const isNoElectionOngoing = async (electionId: string) => {
   return !ongoingElection
 }
 
-export const isValidBallot = async (electionId: string, ballot: VoteData["ballot"]) => {
+export const isValidBallot = async (
+  electionId: string,
+  ballot: VoteData['ballot']
+) => {
   const electionData = await Election.findByPk(electionId)
   if (!electionData) {
     return false
@@ -62,4 +72,15 @@ export const isValidBallot = async (electionId: string, ballot: VoteData["ballot
   )
 
   return validBallot && validPreferenceNumbers
+}
+
+export const checkIsCompletedElection = async (electionId: string) => {
+  const electionData = await Election.findByPk(electionId)
+  if (!electionData) {
+    return false
+  }
+
+  const election = electionData.get({ plain: true })
+
+  return election.status === ElectionStatus.CLOSED
 }

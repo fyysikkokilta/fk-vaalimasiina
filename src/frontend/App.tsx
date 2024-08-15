@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { Container, Navbar, Card, Button } from 'react-bootstrap'
+import { Container, Navbar, Card, Button, Nav } from 'react-bootstrap'
 import { Admin } from './components/admin/Admin'
 import { Voter } from './components/voter/Voter'
 import { ElectionStepProvider } from './contexts/electionStep/ElectionStepContext'
@@ -9,6 +9,8 @@ import { Flip, ToastContainer } from 'react-toastify'
 
 import 'react-toastify/scss/main.scss'
 import { useTranslation } from 'react-i18next'
+import { PreviousElectionList } from './components/results/PreviousElectionList'
+import { PreviousResults } from './components/results/PreviousResults'
 
 function App() {
   const { i18n, t } = useTranslation('translation', { keyPrefix: 'app' })
@@ -17,29 +19,27 @@ function App() {
     document.title = t('title')
   }, [i18n.language, t])
 
+  const isEnglish = i18n.language === 'en'
+
   return (
     <Container>
-      <Navbar bg="primary" variant="dark" className="box-shadow">
+      <Navbar bg="primary" variant="dark" expand="lg" className="box-shadow">
         <Container>
           <Navbar.Brand href="/">{t('title')}</Navbar.Brand>
-          <Navbar.Text>
-            <a href="/admin">{t('admin')}</a>
-          </Navbar.Text>
-          {i18n.language === 'en' ? (
-            <Button
-              variant="outline-light"
-              onClick={() => i18n.changeLanguage('fi')}
-            >
-              Suomeksi
-            </Button>
-          ) : (
-            <Button
-              variant="outline-light"
-              onClick={() => i18n.changeLanguage('en')}
-            >
-              In English
-            </Button>
-          )}
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="/">{t('main')}</Nav.Link>
+              <Nav.Link href="/elections">{t('previous_results')}</Nav.Link>
+              <Nav.Link href="/admin">{t('admin')}</Nav.Link>
+            </Nav>
+              <Button
+                variant="outline-light"
+                onClick={() => i18n.changeLanguage(isEnglish ? 'fi' : 'en')}
+              >
+                {isEnglish ? 'Suomeksi' : 'In English'}
+              </Button>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
       <Container className="mt-4">
@@ -56,6 +56,11 @@ function App() {
                       </ElectionStepProvider>
                     }
                   />
+                  <Route
+                    path="/elections/:electionId"
+                    element={<PreviousResults />}
+                  />
+                  <Route path="/elections" element={<PreviousElectionList />} />
                   <Route path="/" element={<Voter />} />
                 </Routes>
               </Router>

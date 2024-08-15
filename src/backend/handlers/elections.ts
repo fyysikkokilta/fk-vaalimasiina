@@ -40,8 +40,24 @@ export const handleFetchElectionById = async (req: Request, res: Response) => {
   }
 }
 
+export const handleFetchCompletedElections = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const elections = await getElections()
+    const completedElections = elections.filter(
+      (election) => election.status === 'CLOSED'
+    )
+    res.status(200).json(completedElections)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
 const router = Router()
 router.get('/', handleFetchCurrentElection)
+router.get('/completed', handleFetchCompletedElections)
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {

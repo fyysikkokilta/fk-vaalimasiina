@@ -10,11 +10,12 @@ import electionsRouter from './handlers/elections'
 import loginRouter from './handlers/login'
 import voteRouter from './handlers/vote'
 import voterRouter from './handlers/voter'
+import votesRouter from './handlers/votes'
 
 import 'dotenv/config'
 import { initDatabase } from './models'
 import jsonwebtoken from 'jsonwebtoken'
-import ViteExpress from "vite-express";
+import ViteExpress from 'vite-express'
 
 if (
   !process.env.PORT ||
@@ -67,5 +68,8 @@ app.use('/api/elections', electionsRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/vote', voteRouter)
 app.use('/api/voter', voterRouter)
+app.use('/api/votes', votesRouter)
 
-ViteExpress.listen(app, Number(process.env.PORT), () => console.log(`Server listening on port ${process.env.PORT}`))
+ViteExpress.listen(app, Number(process.env.PORT), () =>
+  console.log(`Server listening on port ${process.env.PORT}`)
+)
