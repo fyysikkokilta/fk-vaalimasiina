@@ -1,4 +1,4 @@
-import { Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
+import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
 import { Election } from '../../../../types/types'
 import { VotingResult } from '../../utils/stvAlgorithm'
 
@@ -25,6 +25,33 @@ export const ElectionResults = ({
     return candidate.name
   }
 
+  const exportBallotsToCSV = () => {
+    const headers = [
+      'Lipuke',
+      ...Array.from(
+        { length: election.candidates.length },
+        (_, i) => `Preference ${i + 1}`
+      ),
+    ]
+    const rows = votingResult.ballots.map((ballot, i) => [
+      i + 1,
+      ballot.map((candidateId) => getCandidateName(candidateId)),
+    ])
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) => row.join(',')),
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = election.title + '.csv'
+    a.click()
+  }
+
   return (
     <Container className={styles.resultsContainer}>
       <Row className="mb-4">
@@ -38,6 +65,9 @@ export const ElectionResults = ({
               {t('non_empty_votes')}: {votingResult.totalVotes}
             </span>
           </Row>
+          <Button onClick={exportBallotsToCSV} className="mt-3">
+            {t('export_csv')}
+          </Button>
         </Col>
       </Row>
       <ListGroup>

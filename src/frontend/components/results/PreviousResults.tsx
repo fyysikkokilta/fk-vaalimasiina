@@ -17,7 +17,7 @@ export const PreviousResults = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       // Fetch election
       const electionResponse = await fetchElectionById(electionId!)
 

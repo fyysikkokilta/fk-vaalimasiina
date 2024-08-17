@@ -36,6 +36,7 @@ export type VotingResult = {
   totalVotes: number
   roundResults: VotingRoundResult[]
   winners: CandidateId[]
+  ballots: Ballot[]
 }
 
 const getCurrentVoteCountsOfCandidates = (
@@ -212,10 +213,13 @@ export const calculateSTVResult = (
     .flatMap((res) => res.candidateResults.filter((c) => c.isSelected))
     .map((c) => c.data.id)
 
+  const ballots = votes.map((v) => v.candidateIds)
+
   return {
     totalVoters: votes.length,
     totalVotes: nonEmptyVoteCount,
     roundResults,
     winners,
+    ballots,
   }
 }

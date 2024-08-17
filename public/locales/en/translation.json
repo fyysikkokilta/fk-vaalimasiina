@@ -92,6 +92,7 @@
   "results": {
     "voters": "Voters",
     "non_empty_votes": "Non-empty votes",
+    "export_csv": "Download ballots as CSV",
     "round": "Round",
     "remaining_to_choose": "Remaining to elect",
     "election_threshold": "Election threshold",
