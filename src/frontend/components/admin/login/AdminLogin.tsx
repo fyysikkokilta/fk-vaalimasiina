@@ -31,7 +31,7 @@ export const AdminLogin = () => {
               <Form.Group className="mb-3" controlId="username">
                 <Form.Label>{t('username')}</Form.Label>
                 <Form.Control
-                  placeholder="Username"
+                  placeholder={t('username')}
                   onChange={(e) => {
                     setUsername(e.target.value)
                   }}
@@ -42,7 +42,7 @@ export const AdminLogin = () => {
                 <Form.Label>{t('password')}</Form.Label>
                 <Form.Control
                   type="password"
-                  placeholder="Password"
+                  placeholder={t('password')}
                   onChange={(e) => {
                     setPassword(e.target.value)
                   }}
