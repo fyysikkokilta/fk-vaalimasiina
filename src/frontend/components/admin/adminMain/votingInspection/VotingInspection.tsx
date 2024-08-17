@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 
 export const VotingInspection = () => {
   const [votingStatus, setVotingStatus] = useState<VotingStatus | null>(null)
-  const { election } = useContext(ElectionContext)!
+  const { election, setElection } = useContext(ElectionContext)!
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.voting_inspection',
   })
@@ -52,13 +52,18 @@ export const VotingInspection = () => {
     return <LoadingSpinner />
   }
 
+  const handleEndVoting = async () => {
+    await endVoting(election.electionId)
+    setElection((election) => ({ ...election!, status: 'FINISHED' }))
+  }
+
   return (
     <>
       <AdminNavigation
         disableNavigation={
           votingStatus.amountOfVotes !== votingStatus.amountOfVoters
         }
-        onNext={() => endVoting(election.electionId)}
+        onNext={handleEndVoting}
       />
       <Container className={styles.votingInspectionContainer}>
         <Col>

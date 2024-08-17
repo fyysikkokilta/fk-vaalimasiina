@@ -11,11 +11,11 @@ import { closeElection } from '../../../../api/admin/elections'
 import { ElectionResults } from '../../../shared/ElectionResults'
 
 export const Results = () => {
-  const { election } = useContext(ElectionContext)!
+  const { election, setElection } = useContext(ElectionContext)!
   const [votingResult, setVotingResult] = useState<VotingResult | null>(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (!election) {
         return
       }
@@ -40,12 +40,14 @@ export const Results = () => {
     return <LoadingSpinner />
   }
 
+  const handleCloseElection = async () => {
+    await closeElection(election.electionId)
+    setElection((election) => ({ ...election!, status: 'CLOSED' }))
+  }
+
   return (
     <>
-      <AdminNavigation
-        disableNavigation={false}
-        onNext={() => closeElection(election.electionId)}
-      />
+      <AdminNavigation disableNavigation={false} onNext={handleCloseElection} />
       {!votingResult || !election ? (
         <LoadingSpinner />
       ) : (

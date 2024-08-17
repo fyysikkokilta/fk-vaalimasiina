@@ -16,7 +16,7 @@ const checkIsElectionOngoingAndGetVoter = async (identifier: string) => {
 }
 
 export const addVoter = async (identifier: string) => {
-  if (await checkIsElectionOngoingAndGetVoter(identifier)) {
+  if (await isElectionOngoing()) {
     return null
   }
 

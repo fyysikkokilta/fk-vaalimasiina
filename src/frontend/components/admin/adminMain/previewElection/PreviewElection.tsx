@@ -12,7 +12,7 @@ import { getActiveVoterCount } from '../../../../api/admin/voter'
 import { useTranslation } from 'react-i18next'
 
 export const PreviewElection = () => {
-  const { election } = useContext(ElectionContext)!
+  const { election, setElection } = useContext(ElectionContext)!
   const [amountOfVoters, setAmountOfVoters] = useState<number>(0)
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.preview_election',
@@ -36,9 +36,14 @@ export const PreviewElection = () => {
     return <LoadingSpinner />
   }
 
+  const handleStartVoting = async () => {
+    await startVoting(election.electionId)
+    setElection((election) => ({ ...election!, status: 'ONGOING' }))
+  }
+
   return (
     <>
-      <AdminNavigation onNext={() => startVoting(election.electionId)} />
+      <AdminNavigation onNext={handleStartVoting} />
       {!election ? (
         <LoadingSpinner />
       ) : (
