@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Container, Row, Col, Form, Button, ListGroup } from 'react-bootstrap'
+import { Row, Col, Form, Button, ListGroup } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import styles from './newElection.module.scss'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
@@ -66,16 +66,17 @@ export const NewElection = () => {
     if (electionStep === 'NEW') {
       const response = await postNewElection(newElection)
       if (!response.ok) {
-        return
+        return false
       }
       setElection(response.data)
     } else {
       const response = await modifyElection(election!.electionId, newElection)
       if (!response.ok) {
-        return
+        return false
       }
       setElection(response.data)
     }
+    return true
   }
 
   const disabled = !(
@@ -92,7 +93,7 @@ export const NewElection = () => {
 
   return (
     <>
-      <AdminNavigation disableNavigation={disabled} onNext={handleSubmit} />
+      <AdminNavigation disableNext={disabled} onNext={handleSubmit} />
       <Form className={styles.newElectionForm}>
         <Row>
           <Col>

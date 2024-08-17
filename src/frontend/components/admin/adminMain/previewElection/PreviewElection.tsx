@@ -37,8 +37,12 @@ export const PreviewElection = () => {
   }
 
   const handleStartVoting = async () => {
-    await startVoting(election.electionId)
+    const response = await startVoting(election.electionId)
+    if (!response.ok) {
+      return false
+    }
     setElection((election) => ({ ...election!, status: 'ONGOING' }))
+    return true
   }
 
   return (

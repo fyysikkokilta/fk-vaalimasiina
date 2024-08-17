@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express'
 import { addCandidates, modifyCandidates } from '../../routes/admin/candidates'
 import { validateUuid } from '../../validation/validation'
 import {
+  abortVoting,
   closeElection,
   createElection,
   endVoting,
@@ -107,6 +108,22 @@ export const handleCloseElection = async (req: Request, res: Response) => {
   }
 }
 
+export const handleAbortVoting = async (req: Request, res: Response) => {
+  const { electionId } = req.params
+  try {
+    const election = await abortVoting(electionId)
+
+    if (!election) {
+      res.status(404).json({ message: 'Election not found' })
+      return
+    }
+
+    res.status(200).json(election)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
 const router = Router()
 
 router.use('/:electionId', (req, res, next) => {
@@ -121,6 +138,7 @@ router.put('/:electionId', handleModifyElection)
 router.post('/:electionId/start', handleStartVoting)
 router.post('/:electionId/end', handleEndVoting)
 router.post('/:electionId/close', handleCloseElection)
+router.post('/:electionId/abort', handleAbortVoting)
 
 router.use('/', (req, res, next) => {
   const { title, description, amountToElect, candidates } = req.body

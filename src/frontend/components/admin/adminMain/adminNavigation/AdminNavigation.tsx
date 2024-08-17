@@ -5,14 +5,16 @@ import { Button, Card } from 'react-bootstrap'
 import styles from './adminNavigation.module.scss'
 
 type AdminNavigationProps = {
-  disableNavigation?: boolean
-  onBack?: () => Promise<unknown>
-  onNext: () => Promise<unknown>
+  disablePrevious?: boolean
+  disableNext?: boolean
+  onBack?: () => Promise<boolean>
+  onNext: () => Promise<boolean>
 }
 
 export const AdminNavigation = ({
-  disableNavigation,
-  onBack = () => Promise.resolve(),
+  disablePrevious = false,
+  disableNext = false,
+  onBack = () => Promise.resolve(true),
   onNext,
 }: AdminNavigationProps) => {
   const { stepSettings, setElectionStep } = useContext(ElectionStepContext)!
@@ -23,22 +25,24 @@ export const AdminNavigation = ({
 
   const nextStep = async () => {
     if (stepSettings.nextButton) {
-      await onNext()
-      setElectionStep(stepSettings.nextStep)
+      if(await onNext()) {
+        setElectionStep(stepSettings.nextStep)
+      }
     }
   }
 
   const prevStep = async () => {
     if (stepSettings.backButton && stepSettings.previousStep) {
-      await onBack()
-      setElectionStep(stepSettings.previousStep)
+      if(await onBack()) {
+        setElectionStep(stepSettings.previousStep)
+      }
     }
   }
 
   return (
     <Card.Header className={styles.electionNavigationContainer}>
       <Button
-        disabled={disableNavigation}
+        disabled={disablePrevious}
         className={!stepSettings.backButton ? styles.hidden : ''}
         variant="light"
         onClick={prevStep}
@@ -46,7 +50,7 @@ export const AdminNavigation = ({
         {stepSettings.backButton}
       </Button>
       <Card.Header as="h2">{stepSettings.title}</Card.Header>
-      <Button disabled={disableNavigation} variant="light" onClick={nextStep}>
+      <Button disabled={disableNext} variant="light" onClick={nextStep}>
         {stepSettings.nextButton}
       </Button>
     </Card.Header>

@@ -1,4 +1,6 @@
 import Election, { ElectionStatus } from '../../models/election'
+import { HasVoted } from '../../models/hasVoted'
+import Vote from '../../models/vote'
 
 export const getElectionAndCheckStatus = async (
   electionId: string,
@@ -101,6 +103,33 @@ export const closeElection = async (electionId: string) => {
   }
 
   election.update({ status: ElectionStatus.CLOSED })
+
+  return election.get({ plain: true })
+}
+
+export const abortVoting = async (electionId: string) => {
+  const election = await getElectionAndCheckStatus(
+    electionId,
+    ElectionStatus.ONGOING
+  )
+  if (!election) {
+    return null
+  }
+
+  const transaction = await Election.sequelize!.transaction()
+
+  try {
+    await election.update({ status: ElectionStatus.CREATED }, { transaction })
+
+    await Vote.destroy({ where: { electionId }, transaction })
+
+    await HasVoted.destroy({ where: { electionId }, transaction })
+
+    await transaction.commit()
+  } catch (err) {
+    await transaction.rollback()
+    throw err
+  }
 
   return election.get({ plain: true })
 }

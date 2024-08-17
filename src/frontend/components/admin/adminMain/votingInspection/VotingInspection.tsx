@@ -8,7 +8,7 @@ import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { VotingStatus } from '../../../../../../types/types'
 import { getVoteCount } from '../../../../api/admin/votes'
 import { getActiveVoterCount } from '../../../../api/admin/voter'
-import { endVoting } from '../../../../api/admin/elections'
+import { abortVoting, endVoting } from '../../../../api/admin/elections'
 import { useTranslation } from 'react-i18next'
 
 export const VotingInspection = () => {
@@ -52,17 +52,30 @@ export const VotingInspection = () => {
     return <LoadingSpinner />
   }
 
+  const handleAbortVoting = async () => {
+    // TODO: Maybe show a confirmation dialog
+    const response = await abortVoting(election.electionId)
+    if (!response.ok) {
+      return false
+    }
+    setElection((election) => ({ ...election!, status: 'CREATED' }))
+    return true
+  }
+
   const handleEndVoting = async () => {
-    await endVoting(election.electionId)
+    const response = await endVoting(election.electionId)
+    if (!response.ok) {
+      return false
+    }
     setElection((election) => ({ ...election!, status: 'FINISHED' }))
+    return true
   }
 
   return (
     <>
       <AdminNavigation
-        disableNavigation={
-          votingStatus.amountOfVotes !== votingStatus.amountOfVoters
-        }
+        disableNext={votingStatus.amountOfVotes !== votingStatus.amountOfVoters}
+        onBack={handleAbortVoting}
         onNext={handleEndVoting}
       />
       <Container className={styles.votingInspectionContainer}>

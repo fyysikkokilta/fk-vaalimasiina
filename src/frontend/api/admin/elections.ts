@@ -38,3 +38,9 @@ export const closeElection = (electionId: string) => {
     method: 'POST',
   })
 }
+
+export const abortVoting = (electionId: string) => {
+  return api<Election>(`/api/admin/elections/${electionId}/abort`, {
+    method: 'POST',
+  })
+}

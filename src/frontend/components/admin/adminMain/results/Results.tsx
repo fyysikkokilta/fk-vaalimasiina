@@ -15,7 +15,7 @@ export const Results = () => {
   const [votingResult, setVotingResult] = useState<VotingResult | null>(null)
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (!election) {
         return
       }
@@ -41,13 +41,17 @@ export const Results = () => {
   }
 
   const handleCloseElection = async () => {
-    await closeElection(election.electionId)
+    const response = await closeElection(election.electionId)
+    if (!response.ok) {
+      return false
+    }
     setElection((election) => ({ ...election!, status: 'CLOSED' }))
+    return true
   }
 
   return (
     <>
-      <AdminNavigation disableNavigation={false} onNext={handleCloseElection} />
+      <AdminNavigation onNext={handleCloseElection} />
       {!votingResult || !election ? (
         <LoadingSpinner />
       ) : (

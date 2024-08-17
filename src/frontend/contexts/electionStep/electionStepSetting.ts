@@ -20,6 +20,8 @@ export const electionStepSettingsFinnish = {
   },
   VOTING: {
     title: 'Äänestys',
+    backButton: 'Keskeytä äänestys',
+    previousStep: 'PREVIEW',
     nextButton: 'Lopeta äänestys',
     nextStep: 'RESULTS',
   },
@@ -52,6 +54,8 @@ export const electionStepSettingsEnglish = {
   },
   VOTING: {
     title: 'Voting',
+    backButton: 'Abort voting',
+    previousStep: 'PREVIEW',
     nextButton: 'End voting',
     nextStep: 'RESULTS',
   },
