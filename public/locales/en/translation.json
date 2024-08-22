@@ -62,7 +62,9 @@
       },
       "voting_inspection": {
         "given_votes": "Given votes",
-        "voters": "Voters"
+        "voters": "Voters",
+        "hide_remaining_voters": "Hide remaining voters",
+        "show_remaining_voters": "Show remaining voters"
       }
     },
     "voter_management": {

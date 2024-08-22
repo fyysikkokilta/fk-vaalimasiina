@@ -36,3 +36,7 @@ export const enableVoterCode = (identifier: string) => {
 export const getActiveVoterCount = () => {
   return api<number>(`/api/admin/voters/active/count`)
 }
+
+export const getVotersRemaining = (electionId: string) => {
+  return api<Voter[]>(`/api/admin/voters/${electionId}/remaining`)
+}

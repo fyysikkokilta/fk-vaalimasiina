@@ -1,3 +1,4 @@
+import { HasVoted } from '../../models/hasVoted'
 import Voter from '../../models/voter'
 import { isElectionOngoing } from './elections'
 
@@ -73,4 +74,25 @@ export const getActiveVoters = async () => {
   return Voter.findAll({
     where: { active: true },
   })
+}
+
+export const getVotersWhoVoted = async (electionId: string) => {
+  return HasVoted.findAll({
+    where: { electionId },
+  })
+}
+
+export const getVotersRemaining = async (electionId: string) => {
+  const activeVoters = await getActiveVoters()
+  const alreadyVotedVoters = await getVotersWhoVoted(electionId)
+
+  const remainingVoters = activeVoters.filter(
+    (voter) =>
+      !alreadyVotedVoters.find(
+        (v) =>
+          v.get({ plain: true }).voterId === voter.get({ plain: true }).voterId
+      )
+  )
+
+  return remainingVoters.map((v) => v.get({ plain: true }))
 }

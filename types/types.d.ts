@@ -61,8 +61,3 @@ export type VoteData = {
   electionId: string
   ballot: { candidateId: string; preferenceNumber: number }[]
 }
-
-type VotingStatus = {
-  amountOfVotes: number
-  amountOfVoters: number
-}

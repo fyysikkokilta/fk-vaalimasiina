@@ -62,7 +62,9 @@
       },
       "voting_inspection": {
         "given_votes": "Annettuja ääniä",
-        "voters": "Äänestäjiä"
+        "voters": "Äänestäjiä",
+        "hide_remaining_voters": "Piilota jäljellä olevat äänestäjät",
+        "show_remaining_voters": "Näytä jäljellä olevat äänestäjät"
       }
     },
     "voter_management": {

@@ -1,54 +1,58 @@
 import React, { useState, useEffect, useContext } from 'react'
 
 import styles from './votingInspection.module.scss'
-import { Col, Container, ListGroup } from 'react-bootstrap'
+import { Button, Col, Container, ListGroup } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
-import { VotingStatus } from '../../../../../../types/types'
-import { getVoteCount } from '../../../../api/admin/votes'
-import { getActiveVoterCount } from '../../../../api/admin/voter'
+import {
+  getActiveVoterCount,
+  getVotersRemaining,
+} from '../../../../api/admin/voter'
 import { abortVoting, endVoting } from '../../../../api/admin/elections'
 import { useTranslation } from 'react-i18next'
+import { Voter } from '../../../../../../types/types'
 
 export const VotingInspection = () => {
-  const [votingStatus, setVotingStatus] = useState<VotingStatus | null>(null)
+  const [activeVoterCount, setActiveVoterCount] = useState<number | null>(null)
+  const [remainingVoters, setRemainingVoters] = useState<Voter[] | null>(null)
+  const [showRemainingVoters, setShowRemainingVoters] = useState(false)
   const { election, setElection } = useContext(ElectionContext)!
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.voting_inspection',
   })
 
-  const fetchAndSetVotingStatus = async (electionId: string) => {
-    const promises = await Promise.all([
-      getVoteCount(electionId),
-      getActiveVoterCount(),
-    ])
-    if (!promises[0].ok || !promises[1].ok) {
-      return null
+  useEffect(() => {
+    (async () => {
+      const response = await getActiveVoterCount()
+      if (!response.ok) {
+        return
+      }
+      setActiveVoterCount(response.data)
+    })()
+  }, [])
+
+  const fetchAndSetRemainingVoters = async (electionId: string) => {
+    const response = await getVotersRemaining(electionId)
+    if (!response.ok) {
+      return
     }
-    const [voteCount, voterCount] = [promises[0].data, promises[1].data]
-    if (voteCount === null || voterCount === null) {
-      return null
-    }
-    setVotingStatus({
-      amountOfVotes: voteCount,
-      amountOfVoters: voterCount,
-    })
+    setRemainingVoters(response.data)
   }
 
   useEffect(() => {
     if (!election) return
-    fetchAndSetVotingStatus(election.electionId)
+    fetchAndSetRemainingVoters(election.electionId)
 
     const interval = setInterval(
-      () => fetchAndSetVotingStatus(election.electionId),
+      () => fetchAndSetRemainingVoters(election.electionId),
       3000
     )
 
     return () => clearInterval(interval)
   }, [election])
 
-  if (!election || !votingStatus) {
+  if (!election || !activeVoterCount || !remainingVoters) {
     return <LoadingSpinner />
   }
 
@@ -71,10 +75,14 @@ export const VotingInspection = () => {
     return true
   }
 
+  const toggleRemainingVoters = () => {
+    setShowRemainingVoters(!showRemainingVoters)
+  }
+
   return (
     <>
       <AdminNavigation
-        disableNext={votingStatus.amountOfVotes !== votingStatus.amountOfVoters}
+        disableNext={remainingVoters.length > 0}
         onBack={handleAbortVoting}
         onNext={handleEndVoting}
       />
@@ -85,15 +93,27 @@ export const VotingInspection = () => {
           <ListGroup>
             <ListGroup.Item>
               <span className={styles.votingStatus}>
-                {t('given_votes')}: {votingStatus.amountOfVotes}
+                {t('given_votes')}: {activeVoterCount - remainingVoters.length}
               </span>
             </ListGroup.Item>
             <ListGroup.Item>
               <span className={styles.votingStatus}>
-                {t('voters')}: {votingStatus.amountOfVoters}
+                {t('voters')}: {activeVoterCount}
               </span>
             </ListGroup.Item>
           </ListGroup>
+          <Button onClick={toggleRemainingVoters} className="mt-3">
+            {showRemainingVoters
+              ? t('hide_remaining_voters')
+              : t('show_remaining_voters')}
+          </Button>
+          {showRemainingVoters && (
+            <ListGroup className="mt-3">
+              {remainingVoters.map((voter, index) => (
+                <ListGroup.Item key={index}>{voter.alias}</ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
         </Col>
       </Container>
     </>

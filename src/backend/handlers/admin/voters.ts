@@ -6,8 +6,9 @@ import {
   getAllVoters,
   getActiveVoters,
   deleteVoter,
+  getVotersRemaining,
 } from '../../routes/admin/voters'
-import { validateVoterCode } from '../../validation/validation'
+import { validateUuid, validateVoterCode } from '../../validation/validation'
 
 export const handleGetVoters = async (req: Request, res: Response) => {
   try {
@@ -94,9 +95,29 @@ export const handleGetActiveVoterCount = async (
   }
 }
 
+export const handleGetVotersRemaining = async (req: Request, res: Response) => {
+  const { electionId } = req.params
+  try {
+    const voters = await getVotersRemaining(electionId)
+    res.status(200).json(voters)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
 const router = Router()
 
 router.get('/active/count', handleGetActiveVoterCount)
+
+router.use('/:electionId', (req, res, next) => {
+  if (!validateUuid(req.params.electionId)) {
+    res.status(400).json({ key: 'invalid_election_id' })
+    return
+  }
+  next()
+})
+
+router.get('/:electionId/remaining', handleGetVotersRemaining)
 
 router.use('/:identifier', (req, res, next) => {
   if (!validateVoterCode(req.params.identifier)) {
