@@ -106,5 +106,28 @@
     "back_to_list": "Takaisin listaukseen",
     "no_previous_results": "Ei aiempia tuloksia",
     "no_previous_results_description": "Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu."
+  },
+  "errors": {
+    "unauthorized": "Ei oikeuksia",
+    "multiple_non_closed_elections": "Useita kesken olevia vaaleja",
+    "election_not_found": "Vaalia ei löytynyt",
+    "invalid_election_id": "Virheellinen vaalitunniste",
+    "voter_not_found": "Äänestäjää ei löytynyt",
+    "voter_not_activate": "Äänestäjä ei ole aktiivinen",
+    "voter_already_logged_in": "Äänestäjä on jo kirjautunut",
+    "voter_not_logged_in": "Äänestäjä ei ole kirjautunut",
+    "invalid_voter_code": "Virheellinen äänestäjäkoodi",
+    "invalid_voter_id": "Virheellinen äänestäjätunniste",
+    "voter_already_voted": "Äänestäjä on jo äänestänyt",
+    "invalid_ballot": "Virheellinen äänestyslippu",
+    "error_saving_ballot": "Virhe tallennettaessa äänestyslippua",
+    "invalid_candidate_id": "Virheellinen ehdokastunniste",
+    "invalid_preference_number": "Virheellinen preferenssinumero",
+    "election_not_completed": "Vaalit eivät ole vielä päättyneet",
+    "invalid_election_data": "Virheelliset vaalitiedot",
+    "invalid_candidate_data": "Virheelliset ehdokastiedot",
+    "invalid_credentials": "Virheelliset kirjautumistiedot",
+    "missing_username_or_password": "Käyttäjätunnus tai salasana puuttuu",
+    "voter_already_exists": "Äänestäjä on jo olemassa"
   }
 }

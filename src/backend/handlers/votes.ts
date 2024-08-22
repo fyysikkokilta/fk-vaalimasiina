@@ -11,7 +11,7 @@ export const handleGetVotesForCompletedElection = async (
   try {
     const isCompleted = checkIsCompletedElection(electionId)
     if (!isCompleted) {
-      res.status(400).json({ message: 'Election is not completed' })
+      res.status(400).json({ key: 'election_not_completed' })
       return
     }
     const votes = await getVotes(electionId)
@@ -25,7 +25,7 @@ const router = Router()
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {
-    res.status(400).json({ message: 'Invalid election ID' })
+    res.status(400).json({ key: 'invalid_election_id' })
     return
   }
   next()

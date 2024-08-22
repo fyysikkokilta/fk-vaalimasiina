@@ -24,7 +24,7 @@ export const handleAddVoter = async (req: Request, res: Response) => {
     const result = await addVoter(identifier)
 
     if (!result) {
-      res.status(409).json({ message: 'Voter already exists' })
+      res.status(409).json({ key: 'voter_already_exists' })
       return
     }
 
@@ -40,7 +40,7 @@ export const handleDeleteVoter = async (req: Request, res: Response) => {
     const deletedVoter = await deleteVoter(identifier)
 
     if (!deletedVoter) {
-      res.status(404).json({ message: 'Voter not found' })
+      res.status(404).json({ key: 'voter_not_found' })
       return
     }
 
@@ -56,7 +56,7 @@ export const handleDisableVoter = async (req: Request, res: Response) => {
     const disabledVoter = await disableVoter(identifier)
 
     if (!disabledVoter) {
-      res.status(404).json({ message: 'Voter not found' })
+      res.status(404).json({ key: 'voter_not_found' })
       return
     }
 
@@ -100,7 +100,7 @@ router.get('/active/count', handleGetActiveVoterCount)
 
 router.use('/:identifier', (req, res, next) => {
   if (!validateVoterCode(req.params.identifier)) {
-    res.status(400).json({ message: 'Invalid voter identifier' })
+    res.status(400).json({ key: 'invalid_voter_code' })
     return
   }
   next()
@@ -114,7 +114,7 @@ router.get('/', handleGetVoters)
 
 router.use('/', (req, res, next) => {
   if (!validateVoterCode(req.body.identifier)) {
-    res.status(400).json({ message: 'Invalid voter identifier' })
+    res.status(400).json({ key: 'invalid_voter_code' })
     return
   }
   next()

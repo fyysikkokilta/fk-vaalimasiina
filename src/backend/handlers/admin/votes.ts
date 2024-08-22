@@ -30,7 +30,7 @@ const router = Router()
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {
-    res.status(400).json({ message: 'Invalid election ID' })
+    res.status(400).json({ key: 'invalid_election_id' })
     return
   }
   next()

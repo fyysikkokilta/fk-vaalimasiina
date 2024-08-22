@@ -10,17 +10,17 @@ export const handleLogin = async (req: Request, res: Response) => {
   const validVoter = await getVoterStatusWithIdentifier(identifier)
 
   if (!validVoter) {
-    res.status(401).json({ message: 'Voter not found' })
+    res.status(401).json({ key: 'voter_not_found' })
     return
   }
 
   if (!validVoter.active) {
-    res.status(401).json({ message: 'Voter is not active' })
+    res.status(401).json({ key: 'voter_not_active' })
     return
   }
 
   if (validVoter.loggedIn) {
-    res.status(401).json({ message: 'Voter is already logged in' })
+    res.status(401).json({ key: 'voter_already_logged_in' })
     return
   }
 
@@ -34,17 +34,17 @@ export const handleLogout = async (req: Request, res: Response) => {
   const validVoter = await getVoterStatus(voterId)
 
   if (!validVoter) {
-    res.status(401).json({ message: 'Voter not found' })
+    res.status(401).json({ key: 'voter_not_found' })
     return
   }
 
   if (!validVoter.active) {
-    res.status(401).json({ message: 'Voter is not active' })
+    res.status(401).json({ key: 'voter_not_active' })
     return
   }
 
   if (!validVoter.loggedIn) {
-    res.status(401).json({ message: 'Voter is not logged in' })
+    res.status(401).json({ key: 'voter_not_logged_in' })
     return
   }
 
@@ -57,7 +57,7 @@ const router = Router()
 router.use('/login', (req, res, next) => {
   const { identifier } = req.body
   if (!validateVoterCode(identifier)) {
-    res.status(400).json({ message: 'Invalid voter identifier' })
+    res.status(400).json({ key: 'invalid_voter_code' })
     return
   }
   next()
@@ -68,7 +68,7 @@ router.post('/login', handleLogin)
 router.use('/logout', (req, res, next) => {
   const { voterId } = req.body
   if (!validateUuid(voterId)) {
-    res.status(400).json({ message: 'Invalid voter ID' })
+    res.status(400).json({ key: 'invalid_voter_id' })
     return
   }
   next()

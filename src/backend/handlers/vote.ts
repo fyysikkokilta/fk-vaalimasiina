@@ -11,17 +11,17 @@ export const handleVote = async (req: Request, res: Response) => {
   const validVoter = await getVoterStatus(voterId)
 
   if (!validVoter) {
-    res.status(404).json({ message: 'Voter not found' })
+    res.status(404).json({ key: 'voter_not_found' })
     return
   }
 
   if (!validVoter.active) {
-    res.status(401).json({ message: 'Voter is not active' })
+    res.status(401).json({ key: 'voter_not_active' })
     return
   }
 
   if (!validVoter.loggedIn) {
-    res.status(401).json({ message: 'Voter is not logged in' })
+    res.status(401).json({ key: 'voter_not_logged_in' })
     return
   }
 
@@ -29,7 +29,7 @@ export const handleVote = async (req: Request, res: Response) => {
   const alreadyVoted = await checkIfAlreadyVoted(voterId, electionId)
 
   if (alreadyVoted) {
-    res.status(403).json({ message: 'Already voted' })
+    res.status(403).json({ key: 'voter_already_voted' })
     return
   }
 
@@ -37,14 +37,14 @@ export const handleVote = async (req: Request, res: Response) => {
   const validBallot = await isValidBallot(electionId, ballot)
 
   if (!validBallot) {
-    res.status(400).json({ message: 'Invalid ballot' })
+    res.status(400).json({ key: 'invalid_ballot' })
     return
   }
 
   const savedVote = await addVote(voterId, electionId, ballot)
 
   if (!savedVote) {
-    res.status(500).json({ message: 'Error saving vote' })
+    res.status(500).json({ key: 'error_saving_vote' })
     return
   }
 
@@ -66,17 +66,17 @@ export const handleCheckIfAlreadyVoted = async (
   const validVoter = await getVoterStatus(voterId)
 
   if (!validVoter) {
-    res.status(404).json({ message: 'Voter not found' })
+    res.status(404).json({ key: 'voter_not_found' })
     return
   }
 
   if (!validVoter.active) {
-    res.status(401).json({ message: 'Voter is not active' })
+    res.status(401).json({ key: 'voter_not_active' })
     return
   }
 
   if (!validVoter.loggedIn) {
-    res.status(401).json({ message: 'Voter is not logged in' })
+    res.status(401).json({ key: 'voter_not_logged_in' })
     return
   }
 
@@ -89,7 +89,7 @@ const router = Router()
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {
-    res.status(400).json({ message: 'Invalid election ID' })
+    res.status(400).json({ key: 'invalid_election_id' })
     return
   }
   next()
@@ -100,7 +100,7 @@ router.post('/:electionId/check', handleCheckIfAlreadyVoted)
 router.use('/:electionId', (req, res, next) => {
   const { voterId } = req.body
   if (!validateUuid(voterId)) {
-    res.status(400).json({ message: 'Invalid voter ID' })
+    res.status(400).json({ key: 'invalid_voter_id' })
     return
   }
   next()
@@ -109,13 +109,13 @@ router.use('/:electionId', (req, res, next) => {
 router.use('/:electionId', (req, res, next) => {
   const { ballot } = req.body
   if (!Array.isArray(ballot)) {
-    res.status(400).json({ message: 'Invalid ballot' })
+    res.status(400).json({ key: 'invalid_ballot' })
     return
   }
 
   ballot.forEach((vote) => {
     if (!validateUuid(vote.candidateId)) {
-      res.status(400).json({ message: 'Invalid candidate ID' })
+      res.status(400).json({ key: 'invalid_candidate_id' })
       return
     }
     if (
@@ -123,7 +123,7 @@ router.use('/:electionId', (req, res, next) => {
       vote.preferenceNumber < 1 ||
       vote.preferenceNumber > ballot.length
     ) {
-      res.status(400).json({ message: 'Invalid preference number' })
+      res.status(400).json({ key: 'invalid_preference_number' })
       return
     }
   })

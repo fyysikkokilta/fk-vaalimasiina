@@ -6,7 +6,7 @@ export const authenticate = async (req: Request, res: Response) => {
   const jwt = await authenticateAdmin(username, password)
 
   if (!jwt) {
-    res.status(401).json({ message: 'Incorrect credentials' })
+    res.status(401).json({ key: 'invalid_credentials' })
     return
   }
 
@@ -19,7 +19,7 @@ router.use('/', (req, res, next) => {
   const { username, password } = req.body
 
   if (!username || !password) {
-    res.status(401).json({ message: 'Missing username or password' })
+    res.status(401).json({ key: 'missing_username_or_password' })
     return
   }
 

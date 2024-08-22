@@ -16,7 +16,7 @@ const router = Router()
 
 router.use('/:voterId', (req, res, next) => {
   if (!validateUuid(req.params.voterId)) {
-    res.status(400).json({ message: 'Invalid voter ID' })
+    res.status(400).json({ key: 'invalid_voter_id' })
     return
   }
   next()

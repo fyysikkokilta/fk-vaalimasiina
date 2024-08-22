@@ -14,7 +14,7 @@ export const handleFetchCurrentElection = async (
     )
 
     if (allNonClosedElections.length > 1) {
-      res.status(500).json({ message: 'Multiple non-closed elections' })
+      res.status(500).json({ key: 'multiple_non_closed_elections' })
       return
     }
 
@@ -31,7 +31,7 @@ export const handleFetchElectionById = async (req: Request, res: Response) => {
   try {
     const election = await getElectionById(electionId)
     if (!election) {
-      res.status(404).json({ message: 'Election not found' })
+      res.status(404).json({ key: 'election_not_found' })
       return
     }
     res.status(200).json(election)
@@ -61,7 +61,7 @@ router.get('/completed', handleFetchCompletedElections)
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {
-    res.status(400).json({ message: 'Invalid election ID' })
+    res.status(400).json({ key: 'invalid_election_id' })
     return
   }
   next()

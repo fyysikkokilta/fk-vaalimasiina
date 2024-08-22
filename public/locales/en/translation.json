@@ -106,5 +106,28 @@
     "back_to_list": "Back to list",
     "no_previous_results": "No previous results",
     "no_previous_results_description": "There are no previous results to show"
+  },
+  "errors": {
+    "unauthorized": "Unauthorized",
+    "multiple_non_closed_elections": "Multiple non-closed elections",
+    "election_not_found": "Election not found",
+    "invalid_election_id": "Invalid election ID",
+    "voter_not_found": "Voter not found",
+    "voter_not_activate": "Voter is not activate",
+    "voter_already_logged_in": "Voter is already logged in",
+    "voter_not_logged_in": "Voter is not logged in",
+    "invalid_voter_code": "Invalid voter code",
+    "invalid_voter_id": "Invalid voter ID",
+    "voter_already_voted": "Voter has already voted",
+    "invalid_ballot": "Invalid ballot",
+    "error_saving_ballot": "Error saving ballot",
+    "invalid_candidate_id": "Invalid candidate ID",
+    "invalid_preference_number": "Invalid preference number",
+    "election_not_completed": "Election is not completed",
+    "invalid_election_data": "Invalid election data",
+    "invalid_candidate_data": "Invalid candidate data",
+    "invalid_credentials": "Invalid credentials",
+    "missing_username_or_password": "Missing username or password",
+    "voter_already_exists": "Voter already exists"
   }
 }

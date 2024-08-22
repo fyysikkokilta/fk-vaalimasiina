@@ -44,7 +44,7 @@ export const handleModifyElection = async (req: Request, res: Response) => {
     )
 
     if (!modifiedElection) {
-      res.status(404).json({ message: 'Election not found' })
+      res.status(404).json({ key: 'election_not_found' })
       return
     }
 
@@ -66,7 +66,7 @@ export const handleStartVoting = async (req: Request, res: Response) => {
     const election = await startVoting(electionId)
 
     if (!election) {
-      res.status(404).json({ message: 'Election not found' })
+      res.status(404).json({ key: 'election_not_found' })
       return
     }
 
@@ -82,7 +82,7 @@ export const handleEndVoting = async (req: Request, res: Response) => {
     const election = await endVoting(electionId)
 
     if (!election) {
-      res.status(404).json({ message: 'Election not found' })
+      res.status(404).json({ key: 'election_not_found' })
       return
     }
 
@@ -98,7 +98,7 @@ export const handleCloseElection = async (req: Request, res: Response) => {
     const election = await closeElection(electionId)
 
     if (!election) {
-      res.status(404).json({ message: 'Election not found' })
+      res.status(404).json({ key: 'election_not_found' })
       return
     }
 
@@ -114,7 +114,7 @@ export const handleAbortVoting = async (req: Request, res: Response) => {
     const election = await abortVoting(electionId)
 
     if (!election) {
-      res.status(404).json({ message: 'Election not found' })
+      res.status(404).json({ key: 'election_not_found' })
       return
     }
 
@@ -128,7 +128,7 @@ const router = Router()
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {
-    res.status(400).json({ message: 'Invalid election ID' })
+    res.status(400).json({ key: 'invalid_election_id' })
     return
   }
   next()
@@ -149,13 +149,13 @@ router.use('/', (req, res, next) => {
     !Array.isArray(candidates) ||
     candidates.length === 0
   ) {
-    res.status(400).json({ message: 'Invalid election data' })
+    res.status(400).json({ key: 'invalid_election_data' })
     return
   }
 
   candidates.forEach((candidate: { name: string }) => {
     if (!candidate.name) {
-      res.status(400).json({ message: 'Invalid candidate data' })
+      res.status(400).json({ key: 'invalid_candidate_data' })
       return
     }
   })

@@ -49,7 +49,7 @@ app.use('/api/admin', (req, res, next) => {
   const authHeader = req.headers.authorization
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'Unauthorized' })
+    return res.status(401).json({ key: 'unauthorized' })
   }
 
   const jwt = authHeader.split(' ')[1]
@@ -57,7 +57,7 @@ app.use('/api/admin', (req, res, next) => {
   try {
     jsonwebtoken.verify(jwt, process.env.JWT_SECRET!)
   } catch (err) {
-    return res.status(401).json({ message: 'Unauthorized' })
+    return res.status(401).json({ key: 'unauthorized' })
   }
 
   next()
