@@ -12,6 +12,10 @@ import voteRouter from './handlers/vote'
 import voterRouter from './handlers/voter'
 import votesRouter from './handlers/votes'
 
+import testElectionsRouter from './handlers/test/elections'
+import testVoteRouter from './handlers/test/vote'
+import testVoterRouter from './handlers/test/voter'
+
 import 'dotenv/config'
 import { initDatabase } from './models'
 import jsonwebtoken from 'jsonwebtoken'
@@ -69,6 +73,12 @@ app.use('/api/login', loginRouter)
 app.use('/api/vote', voteRouter)
 app.use('/api/voter', voterRouter)
 app.use('/api/votes', votesRouter)
+
+if (process.env.NODE_ENV === 'development') {
+  app.use('/api/test/elections', testElectionsRouter)
+  app.use('/api/test/vote', testVoteRouter)
+  app.use('/api/test/voter', testVoterRouter)
+}
 
 ViteExpress.listen(app, Number(process.env.PORT), () =>
   console.log(`Server listening on port ${process.env.PORT}`)
