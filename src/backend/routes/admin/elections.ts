@@ -121,9 +121,9 @@ export const abortVoting = async (electionId: string) => {
   try {
     await election.update({ status: ElectionStatus.CREATED }, { transaction })
 
-    await Vote.destroy({ where: { electionId }, transaction })
+    await Vote.destroy({ where: { electionId }, transaction, force: true })
 
-    await HasVoted.destroy({ where: { electionId }, transaction })
+    await HasVoted.destroy({ where: { electionId }, transaction, force: true })
 
     await transaction.commit()
   } catch (err) {
