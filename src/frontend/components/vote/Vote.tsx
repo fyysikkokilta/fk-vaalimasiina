@@ -27,7 +27,7 @@ export const Vote = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (!votingId) {
         navigate('/')
         return
@@ -48,10 +48,7 @@ export const Vote = () => {
   }
 
   const handleVote = async () => {
-    const response = await vote(
-      voter!.voterId,
-      selectedCandidates
-    )
+    const response = await vote(voter!.voterId, selectedCandidates)
 
     if (!response.ok) {
       return
@@ -65,7 +62,11 @@ export const Vote = () => {
     setSelectedCandidates(selectedCandidates.filter((id) => id !== candidateId))
   }
 
-  if (!election || election.status !== 'ONGOING' || voter?.electionId !== election.electionId) {
+  if (
+    !election ||
+    election.status !== 'ONGOING' ||
+    voter?.electionId !== election.electionId
+  ) {
     return (
       <Container id="vote-container" className="mt-5 mb-5">
         <Row className="justify-content-center">

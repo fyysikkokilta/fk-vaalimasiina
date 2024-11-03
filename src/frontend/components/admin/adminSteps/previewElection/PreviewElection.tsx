@@ -23,9 +23,11 @@ export const PreviewElection = () => {
 
   const validateEmails = (emails: string) => {
     const emailArray = emails.split('\n')
-    return emailArray.every((email) => {
+    const emailsOkay = emailArray.every((email) => {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     })
+    const allEmailsUnique = emailArray.length === new Set(emailArray).size
+    return emailsOkay && allEmailsUnique
   }
 
   const handleSubmit = async () => {
@@ -39,7 +41,10 @@ export const PreviewElection = () => {
 
   return (
     <>
-      <AdminNavigation disableNext={!validateEmails(emails)} onNext={handleSubmit} />
+      <AdminNavigation
+        disableNext={!validateEmails(emails)}
+        onNext={handleSubmit}
+      />
       {!election ? (
         <LoadingSpinner />
       ) : (

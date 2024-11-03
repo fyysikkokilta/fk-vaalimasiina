@@ -4,7 +4,7 @@
 ------------------------------------- */
 * {
   margin: 0;
-  font-family: 'Source Sans Pro', 'Calibri',  Helvetica, Arial, sans-serif;
+  font-family: 'Source Sans Pro', 'Calibri', Helvetica, Arial, sans-serif;
   box-sizing: border-box;
   font-size: 14px;
 }
@@ -96,7 +96,8 @@ body {
 h1,
 h2,
 h3 {
-  font-family: 'Lora', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+  font-family: 'Lora', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande',
+    sans-serif;
   color: #000;
   margin: 40px 0 0;
   line-height: 1.2em;
@@ -144,7 +145,7 @@ ol li {
     LINKS & BUTTONS
 ------------------------------------- */
 a {
-  color: #FF8A04;
+  color: #ff8a04;
   text-decoration: underline;
 }
 

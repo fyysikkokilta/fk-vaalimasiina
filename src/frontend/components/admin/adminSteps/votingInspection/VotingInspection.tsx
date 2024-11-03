@@ -105,7 +105,9 @@ export const VotingInspection = () => {
 
   const validOldEmail = !!allVoters.find((v) => v.email === oldEmail)
   const validNewEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
-  const validEmailChange = validOldEmail && validNewEmail
+  const newEmailNotInOtherEmails = !!allVoters.find((v) => v.email === newEmail)
+  const validEmailChange =
+    validOldEmail && validNewEmail && newEmailNotInOtherEmails
 
   return (
     <>

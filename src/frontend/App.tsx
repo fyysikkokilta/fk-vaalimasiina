@@ -34,12 +34,12 @@ function App() {
               <Nav.Link href="/elections">{t('previous_results')}</Nav.Link>
               <Nav.Link href="/admin">{t('admin')}</Nav.Link>
             </Nav>
-              <Button
-                variant="outline-light"
-                onClick={() => i18n.changeLanguage(isEnglish ? 'fi' : 'en')}
-              >
-                {isEnglish ? 'Suomeksi' : 'In English'}
-              </Button>
+            <Button
+              variant="outline-light"
+              onClick={() => i18n.changeLanguage(isEnglish ? 'fi' : 'en')}
+            >
+              {isEnglish ? 'Suomeksi' : 'In English'}
+            </Button>
           </Navbar.Collapse>
         </Container>
       </Navbar>

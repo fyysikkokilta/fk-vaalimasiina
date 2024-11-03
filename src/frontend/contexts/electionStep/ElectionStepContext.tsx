@@ -43,7 +43,7 @@ export const ElectionStepProvider = ({ children }) => {
       : electionStepSettingsEnglish
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (!cookies['admin-token']) {
         return
       }

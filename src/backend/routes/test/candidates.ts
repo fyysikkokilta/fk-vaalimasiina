@@ -1,4 +1,4 @@
-import Candidate from "../../models/candidate"
+import Candidate from '../../models/candidate'
 
 export const createTestCandidates = async (
   electionId: string,

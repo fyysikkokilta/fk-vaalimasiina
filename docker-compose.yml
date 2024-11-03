@@ -6,7 +6,7 @@ services:
       - POSTGRES_USER=$DB_USERNAME
       - POSTGRES_PASSWORD=$DB_PASSWORD
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - ./data:/var/lib/postgresql/data
   web-dev:
@@ -40,4 +40,4 @@ services:
         source: ./.env
         target: /opt/vaalimasiina/.env
     ports:
-      - "3000:3000"
+      - '3000:3000'

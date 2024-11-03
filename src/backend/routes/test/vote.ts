@@ -18,10 +18,7 @@ export const createTestVote = async (
     { returning: true }
   )
 
-  await Voter.update(
-    { hasVoted: true },
-    { where: { voterId, electionId } }
-  )
+  await Voter.update({ hasVoted: true }, { where: { voterId, electionId } })
 
   return votes.map((vote) => vote.get({ plain: true }))
 }

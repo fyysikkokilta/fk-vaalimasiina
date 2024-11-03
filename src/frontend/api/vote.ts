@@ -1,9 +1,6 @@
 import { api } from './api'
 
-export const vote = async (
-  voterId: string,
-  votes: string[]
-) => {
+export const vote = async (voterId: string, votes: string[]) => {
   const ballot = votes.map((candidateId, index) => ({
     candidateId,
     // TODO: Handle preference number in the UI state

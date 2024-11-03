@@ -1,5 +1,11 @@
 import { Request, Response, Router } from 'express'
-import { createTestVoter, disableTestVoter, enableTestVoter, loginTestVoter, logoutTestVoter } from '../../routes/test/voter'
+import {
+  createTestVoter,
+  disableTestVoter,
+  enableTestVoter,
+  loginTestVoter,
+  logoutTestVoter,
+} from '../../routes/test/voter'
 
 export const handleCreateTestVoter = async (req: Request, res: Response) => {
   const { identifier, alias } = req.body
