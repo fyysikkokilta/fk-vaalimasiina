@@ -8,23 +8,16 @@
     "loading": "Ladataan..."
   },
   "voter": {
-    "login": {
-      "title": "Kirjaudu sisään",
-      "intro": "Tervetuloa Fyysikkokillan vaalimasiinaan! Kirjaudu sisään antamalla kirjautumiskoodisi alla olevaan kenttään. Jos sinulla ei ole vielä kirjautumiskoodia, kerro siitä vaalitoimitsijalle.",
-      "intro_2": "Äänestää saavat vain killan varsinaiset jäsenet. Jos olet saanut kirjautumiskoodin, mutta et ole varsinainen jäsen, kerro siitä vaalitoimitsijalle pikimmiten. Tällöin saamasi kirjautumiskoodi mitätöidään.",
-      "code": "Kirjautumiskoodi",
-      "code_instruction": "Syötä kirjautumiskoodisi",
-      "code_description": "Saat kirjautumiskoodin vaalitoimitsijoilta. Se mitätöidään, jos poistut vaalilähetyksestä. Tarvitset uuden koodin, jos palaat äänestämään.",
-      "alias": "Nimimerkki",
-      "alias_instruction": "Syötä nimimerkkisi",
-      "alias_description": "Nimimerkkisi näkyy vaalitoimitsijoille. Voit käyttää oikeaa nimeäsi tai keksiä jotain muuta.",
-      "notice": "Muista aina ilmoittaa poistuessasi oman koodisi!",
-      "login_button": "Kirjaudu"
+    "info": {
+      "title": "Tervetuloa Fyysikkokillan vaalimasiinaan!",
+      "info": "Tämä on Fyysikkokillan vaalimasiinan etusivu! Saat sähköpostitse uniikin äänestyslinkin, kun äänestys alkaa.",
+      "info_2": "Vain killan varsinaiset jäsenet saavat äänestää. Poistu kokouksesta, jos et ole varsinainen jäsen. Jos olet saanut äänestyslinkin, mutta et ole varsinainen jäsen, ilmoita asiasta puheenjohtajalle tai sihteerille välittömästi.",
+      "info_3": "Jos sinulla on kysyttävää tai ongelmia, ota yhteyttä puheenjohtajaan tai sihteeriin."
     },
     "vote": {
       "title": "Äänestäminen",
-      "no_ongoing_election": "Ei vaaleja käynnissä",
-      "no_ongoing_election_description": "Sinulle kerrotaan, kun äänestäminen alkaa ja voit päivittää sivun",
+      "election_not_ongoing": "Tämän äänestyslinkin äänestys ei ole käynnissä",
+      "election_not_ongoing_description": "Tämän äänestyslinkin äänestys ei ole käynnissä. Äänestys on todennäköisesti loppunut jo. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
       "vote_instruction": "Valitse ehdokkaat haluamassasi järjestyksessä ja paina \"Äänestä\" äänestääksesi",
       "candidates": "Ehdokkaat",
       "candidates_instruction": "Valitse ehdokas",
@@ -32,7 +25,7 @@
       "remove_selection": "Poista",
       "vote_button": "Äänestä",
       "already_voted": "Olet jo äänestänyt",
-      "logout_button": "Kirjaudu ulos"
+      "back_to_frontpage": "Takaisin etusivulle"
     }
   },
   "admin": {
@@ -58,7 +51,9 @@
       "preview_election": {
         "amount_to_choose": "Valitaan",
         "candidates": "Ehdokkaat",
-        "voters": "Äänestäjiä"
+        "voters": "Äänestäjiä",
+        "email_list_instruction": "Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna",
+        "email_list_placeholder": "sähköposti@mail.com\nsähköposti2@mail.com\n"
       },
       "voting_inspection": {
         "given_votes": "Annettuja ääniä",
@@ -115,11 +110,8 @@
     "election_not_found": "Vaalia ei löytynyt",
     "invalid_election_id": "Virheellinen vaalitunniste",
     "voter_not_found": "Äänestäjää ei löytynyt",
-    "voter_not_activate": "Äänestäjä ei ole aktiivinen",
-    "voter_already_logged_in": "Äänestäjä on jo kirjautunut",
-    "voter_not_logged_in": "Äänestäjä ei ole kirjautunut",
-    "invalid_voter_code": "Virheellinen äänestäjäkoodi",
     "invalid_voter_id": "Virheellinen äänestäjätunniste",
+    "invalid_voting_id": "Virheellinen äänestyslinkki",
     "voter_already_voted": "Äänestäjä on jo äänestänyt",
     "invalid_ballot": "Virheellinen äänestyslippu",
     "error_saving_ballot": "Virhe tallennettaessa äänestyslippua",

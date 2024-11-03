@@ -21,9 +21,13 @@ export const modifyElection = (electionId: string, election: ElectionData) => {
   })
 }
 
-export const startVoting = (electionId: string) => {
+export const startVoting = (electionId: string, emails: string[]) => {
   return api<Election>(`/api/admin/elections/${electionId}/start`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ emails }),
   })
 }
 

@@ -1,6 +1,6 @@
 import Vote from '../models/vote'
+import Voter from '../models/voter'
 import { isNoElectionOngoing } from './elections'
-import { HasVoted } from '../models/hasVoted'
 import { randomUUID } from 'crypto'
 import { VoteData } from '../../../types/types'
 
@@ -27,12 +27,9 @@ export const addVote = async (
       { transaction }
     )
 
-    await HasVoted.create(
-      {
-        electionId,
-        voterId,
-      },
-      { transaction }
+    await Voter.update(
+      { hasVoted: true },
+      { where: { voterId, electionId }, transaction }
     )
 
     await transaction.commit()
@@ -42,19 +39,4 @@ export const addVote = async (
     await transaction.rollback()
     return null
   }
-}
-
-export const checkIfAlreadyVoted = async (
-  voterId: string,
-  electionId: string
-) => {
-  if (await isNoElectionOngoing(electionId)) {
-    return null
-  }
-
-  const vote = await HasVoted.findOne({
-    where: { voterId, electionId },
-  })
-
-  return !!vote
 }

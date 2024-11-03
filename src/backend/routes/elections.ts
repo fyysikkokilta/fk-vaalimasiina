@@ -84,3 +84,14 @@ export const checkIsCompletedElection = async (electionId: string) => {
 
   return election.status === ElectionStatus.CLOSED
 }
+
+export const checkIsOnGoingElection = async (electionId: string) => {
+  const electionData = await Election.findByPk(electionId)
+  if (!electionData) {
+    return false
+  }
+
+  const election = electionData.get({ plain: true })
+
+  return election.status === ElectionStatus.ONGOING
+}

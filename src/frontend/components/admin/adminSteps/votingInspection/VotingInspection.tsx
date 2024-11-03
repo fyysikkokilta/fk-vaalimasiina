@@ -6,16 +6,16 @@ import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import {
-  getActiveVoterCount,
-  getVotersRemaining,
-} from '../../../../api/admin/voter'
+  getAllVotersForElection,
+  getVotersWhoVoted,
+} from '../../../../api/admin/voters'
 import { abortVoting, endVoting } from '../../../../api/admin/elections'
 import { useTranslation } from 'react-i18next'
 import { Voter } from '../../../../../../types/types'
 
 export const VotingInspection = () => {
-  const [activeVoterCount, setActiveVoterCount] = useState<number | null>(null)
-  const [remainingVoters, setRemainingVoters] = useState<Voter[] | null>(null)
+  const [allVoters, setAllVoters] = useState<Voter[] | null>(null)
+  const [votersWhoVoted, setVotersWhoVoted] = useState<Voter[] | null>(null)
   const [showRemainingVoters, setShowRemainingVoters] = useState(false)
   const { election, setElection } = useContext(ElectionContext)!
   const { t } = useTranslation('translation', {
@@ -24,20 +24,21 @@ export const VotingInspection = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await getActiveVoterCount()
+      if (!election) return
+      const response = await getAllVotersForElection(election.electionId)
       if (!response.ok) {
         return
       }
-      setActiveVoterCount(response.data)
+      setAllVoters(response.data)
     })()
-  }, [])
+  }, [election])
 
   const fetchAndSetRemainingVoters = async (electionId: string) => {
-    const response = await getVotersRemaining(electionId)
+    const response = await getVotersWhoVoted(electionId)
     if (!response.ok) {
       return
     }
-    setRemainingVoters(response.data)
+    setVotersWhoVoted(response.data)
   }
 
   useEffect(() => {
@@ -52,12 +53,11 @@ export const VotingInspection = () => {
     return () => clearInterval(interval)
   }, [election])
 
-  if (!election || !activeVoterCount || !remainingVoters) {
+  if (!election || !allVoters || !votersWhoVoted) {
     return <LoadingSpinner />
   }
 
   const handleAbortVoting = async () => {
-    // TODO: Maybe show a confirmation dialog
     const response = await abortVoting(election.electionId)
     if (!response.ok) {
       return false
@@ -79,6 +79,10 @@ export const VotingInspection = () => {
     setShowRemainingVoters(!showRemainingVoters)
   }
 
+  const remainingVoters = allVoters.filter(
+    (voter) => !votersWhoVoted.find((v) => v.voterId === voter.voterId)
+  )
+
   return (
     <>
       <AdminNavigation
@@ -93,12 +97,12 @@ export const VotingInspection = () => {
           <ListGroup>
             <ListGroup.Item>
               <span className={styles.votingStatus}>
-                {t('given_votes')}: {activeVoterCount - remainingVoters.length}
+                {t('given_votes')}: {votersWhoVoted.length}
               </span>
             </ListGroup.Item>
             <ListGroup.Item>
               <span className={styles.votingStatus}>
-                {t('voters')}: {activeVoterCount}
+                {t('voters')}: {allVoters.length}
               </span>
             </ListGroup.Item>
           </ListGroup>
@@ -109,8 +113,8 @@ export const VotingInspection = () => {
           </Button>
           {showRemainingVoters && (
             <ListGroup className="mt-3">
-              {remainingVoters.map((voter, index) => (
-                <ListGroup.Item key={index}>{voter.alias}</ListGroup.Item>
+              {remainingVoters.map((voter) => (
+                <ListGroup.Item key={voter.voterId}>{voter.email}</ListGroup.Item>
               ))}
             </ListGroup>
           )}

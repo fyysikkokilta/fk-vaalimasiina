@@ -1,43 +1,35 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 
 import styles from './previewElection.module.scss'
 
-import { Col, Container, ListGroup } from 'react-bootstrap'
+import { Col, Container, Form, ListGroup } from 'react-bootstrap'
 
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { startVoting } from '../../../../api/admin/elections'
-import { getActiveVoterCount } from '../../../../api/admin/voter'
 import { useTranslation } from 'react-i18next'
 
 export const PreviewElection = () => {
   const { election, setElection } = useContext(ElectionContext)!
-  const [amountOfVoters, setAmountOfVoters] = useState<number>(0)
+  const [emails, setEmails] = useState('')
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.preview_election',
   })
-
-  const fetchAndSetVoterCount = async () => {
-    const response = await getActiveVoterCount()
-    if (!response.ok) {
-      return
-    }
-    setAmountOfVoters(response.data)
-  }
-
-  useEffect(() => {
-    fetchAndSetVoterCount()
-    const interval = setInterval(() => fetchAndSetVoterCount(), 3000)
-    return () => clearInterval(interval)
-  }, [])
 
   if (!election) {
     return <LoadingSpinner />
   }
 
-  const handleStartVoting = async () => {
-    const response = await startVoting(election.electionId)
+  const validateEmails = (emails: string) => {
+    const emailArray = emails.split('\n')
+    return emailArray.every((email) => {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    })
+  }
+
+  const handleSubmit = async () => {
+    const response = await startVoting(election.electionId, emails.split('\n'))
     if (!response.ok) {
       return false
     }
@@ -47,7 +39,7 @@ export const PreviewElection = () => {
 
   return (
     <>
-      <AdminNavigation onNext={handleStartVoting} />
+      <AdminNavigation disableNext={!validateEmails(emails)} onNext={handleSubmit} />
       {!election ? (
         <LoadingSpinner />
       ) : (
@@ -69,7 +61,17 @@ export const PreviewElection = () => {
               </ListGroup>
             </Col>
             <h4 className="mt-3">{t('voters')}</h4>
-            <p>{amountOfVoters}</p>
+            <Form.Group controlId="emailList">
+              <Form.Label>{t('email_list_instruction')}</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={5}
+                value={emails}
+                isValid={validateEmails(emails)}
+                onChange={(e) => setEmails(e.target.value)}
+                placeholder={t('email_list_placeholder')}
+              />
+            </Form.Group>
           </Col>
         </Container>
       )}

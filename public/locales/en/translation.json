@@ -8,23 +8,16 @@
     "loading": "Loading..."
   },
   "voter": {
-    "login": {
-      "title": "Log in",
-      "intro": "Welcome to the Guild of Physics Voting Machine! Log in by entering your login code in the field below. If you don't have a login code yet, please inform the election officials.",
-      "intro_2": "Only regular members of the guild are allowed to vote. If you have received a login code but are not a regular member, please inform the election officials immediately. In this case, the login code you received will be invalidated.",
-      "code": "Login code",
-      "code_instruction": "Enter your login code",
-      "code_description": "You will receive a login code from the election officials. It will be invalidated if you leave the election meeting. You will need a new code if you return to vote.",
-      "alias": "Alias",
-      "alias_instruction": "Enter your alias",
-      "alias_description": "Your alias will be visible to the election officials. You can use your real name or come up with something else.",
-      "notice": "Always remember to inform the election officials of your code when you leave!",
-      "login_button": "Log in"
+    "info": {
+      "title": "Welcome to the Guild of Physics Voting Machine!",
+      "info": "This is the frontpage of the Guild of Physics Voting Machine! You will get a unique voting link by email when the voting starts.",
+      "info_2": "Only full members of the guild are allowed to vote. Please exit the meeting if you are not a full member. If you have received a voting link but are not a full member, please inform the chairperson or secretary immediately.",
+      "info_3": "If you have any questions or problems, please contact the chairperson or secretary."
     },
     "vote": {
       "title": "Voting",
-      "no_ongoing_election": "No ongoing election",
-      "no_ongoing_election_description": "You will be informed when voting starts and you can refresh the page",
+      "election_not_ongoing": "The voting for this voting link is not ongoing",
+      "election_not_ongoing_description": "The voting for this voting link is not ongoing. The voting has probably already ended. If you think this is an error, please contact the chairperson or secretary.",
       "vote_instruction": "Select the candidates in the order you prefer and press \"Vote\" to vote",
       "candidates": "Candidates",
       "candidates_instruction": "Select a candidate",
@@ -32,7 +25,7 @@
       "remove_selection": "Remove",
       "vote_button": "Vote",
       "already_voted": "You have already voted",
-      "logout_button": "Log out"
+      "back_to_frontpage": "Back to frontpage"
     }
   },
   "admin": {
@@ -58,7 +51,9 @@
       "preview_election": {
         "amount_to_choose": "To be elected",
         "candidates": "Candidates",
-        "voters": "Voters"
+        "voters": "Voters",
+        "email_list_instruction": "Add the voters' email addresses here separated by line breaks",
+        "email_list_placeholder": "email@email.com\nemail2@mail.com"
       },
       "voting_inspection": {
         "given_votes": "Given votes",
@@ -66,29 +61,6 @@
         "hide_remaining_voters": "Hide remaining voters",
         "show_remaining_voters": "Show remaining voters"
       }
-    },
-    "voter_management": {
-      "title": "Voter management",
-      "generate_new_code": "Generate a new voter code",
-      "generate_new_code_description": "A voter code is a unique code given to a voter.",
-      "generate_new_code_button": "Generate",
-      "new_voter_code": "New voter code",
-      "voter_code": "Voter code",
-      "activated": "Activated",
-      "logged_in": "Logged in",
-      "alias": "Alias",
-      "operations": "Operations",
-      "active": "Active",
-      "inactive": "Inactive",
-      "yes": "Yes",
-      "no": "No",
-      "deactivate": "Deactivate",
-      "activate": "Activate",
-      "remove": "Remove",
-      "remove_code": "Remove code",
-      "remove_code_description": "Are you sure you want to remove the voter code?",
-      "cancel_button": "Cancel",
-      "remove_code_button": "Remove"
     }
   },
   "results": {
@@ -115,11 +87,8 @@
     "election_not_found": "Election not found",
     "invalid_election_id": "Invalid election ID",
     "voter_not_found": "Voter not found",
-    "voter_not_activate": "Voter is not activate",
-    "voter_already_logged_in": "Voter is already logged in",
-    "voter_not_logged_in": "Voter is not logged in",
-    "invalid_voter_code": "Invalid voter code",
     "invalid_voter_id": "Invalid voter ID",
+    "invalid_voting_id": "Invalid voting link",
     "voter_already_voted": "Voter has already voted",
     "invalid_ballot": "Invalid ballot",
     "error_saving_ballot": "Error saving ballot",

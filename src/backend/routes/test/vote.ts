@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto'
 import Vote from '../../models/vote'
-import { HasVoted } from '../../models/hasVoted'
+import Voter from '../../models/voter'
 
 export const createTestVote = async (
   voterId: string,
@@ -18,10 +18,10 @@ export const createTestVote = async (
     { returning: true }
   )
 
-  await HasVoted.create({
-    voterId,
-    electionId,
-  })
+  await Voter.update(
+    { hasVoted: true },
+    { where: { voterId, electionId } }
+  )
 
   return votes.map((vote) => vote.get({ plain: true }))
 }

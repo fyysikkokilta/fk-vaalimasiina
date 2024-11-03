@@ -1,6 +1,6 @@
 import Election, { ElectionStatus } from '../../models/election'
-import { HasVoted } from '../../models/hasVoted'
 import Vote from '../../models/vote'
+import Voter from '../../models/voter'
 
 export const getElectionAndCheckStatus = async (
   electionId: string,
@@ -65,7 +65,7 @@ export const updateElection = async (
   return election.get({ plain: true })
 }
 
-export const startVoting = async (electionId: string) => {
+export const startVoting = async (electionId: string, emails: string[]) => {
   const election = await getElectionAndCheckStatus(
     electionId,
     ElectionStatus.CREATED
@@ -75,6 +75,14 @@ export const startVoting = async (electionId: string) => {
   }
 
   election.update({ status: ElectionStatus.ONGOING })
+
+  await Voter.bulkCreate(
+    emails.map((email) => ({
+      electionId,
+      email,
+      hasVoted: false,
+    }))
+  )
 
   return election.get({ plain: true })
 }
@@ -123,7 +131,7 @@ export const abortVoting = async (electionId: string) => {
 
     await Vote.destroy({ where: { electionId }, transaction, force: true })
 
-    await HasVoted.destroy({ where: { electionId }, transaction, force: true })
+    await Voter.destroy({ where: { electionId }, transaction, force: true })
 
     await transaction.commit()
   } catch (err) {

@@ -5,11 +5,3 @@ export const validateUuid = (uuid: string) => {
 
   return matches !== null
 }
-
-export const validateVoterCode = (voterCode: string) => {
-  const matches = voterCode.match(/^VOTER-[0-9A-Za-z]{9}$/)
-
-  return matches !== null
-}
-
-// TODO: Maybe use some library for this (like Joi)

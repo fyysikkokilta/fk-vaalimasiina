@@ -1,16 +1,9 @@
-export type VoterData = {
-  identifier: string
-  active: boolean
-  loggedIn: boolean
-  alias: string
-}
-
 export type Voter = {
   voterId: string
-  identifier: string
-  alias: string
-  loggedIn: boolean
-  active: boolean
+  electionId: string
+  email: string
+  votingId: string
+  hasVoted: boolean
   createdAt: string
   updatedAt: string
 }

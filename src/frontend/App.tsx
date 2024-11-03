@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Container, Navbar, Card, Button, Nav } from 'react-bootstrap'
 import { Admin } from './components/admin/Admin'
-import { Voter } from './components/voter/Voter'
+import { Vote } from './components/vote/Vote'
 import { ElectionStepProvider } from './contexts/electionStep/ElectionStepContext'
 import { ElectionProvider } from './contexts/election/ElectionContext'
 import { Flip, ToastContainer } from 'react-toastify'
@@ -11,6 +11,7 @@ import 'react-toastify/scss/main.scss'
 import { useTranslation } from 'react-i18next'
 import { PreviousElectionList } from './components/results/PreviousElectionList'
 import { PreviousResults } from './components/results/PreviousResults'
+import { Info } from './components/info/Info'
 
 function App() {
   const { i18n, t } = useTranslation('translation', { keyPrefix: 'app' })
@@ -61,7 +62,8 @@ function App() {
                     element={<PreviousResults />}
                   />
                   <Route path="/elections" element={<PreviousElectionList />} />
-                  <Route path="/" element={<Voter />} />
+                  <Route path="/vote/:votingId" element={<Vote />} />
+                  <Route path="*" element={<Info />} />
                 </Routes>
               </Router>
             </ElectionProvider>

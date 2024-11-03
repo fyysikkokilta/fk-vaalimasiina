@@ -6,7 +6,6 @@ import { Sequelize } from 'sequelize'
 import sequelizeConfig from './config'
 import { SequelizeStorage, Umzug } from 'umzug'
 import migrations from './migrations'
-import { HasVoted, initHasVoted } from './hasVoted'
 
 async function runMigration(sequelize: Sequelize) {
   const storage = new SequelizeStorage({ sequelize })
@@ -42,7 +41,6 @@ export const initDatabase = async () => {
   initElection(sequelize)
   initVote(sequelize)
   initVoter(sequelize)
-  initHasVoted(sequelize)
 
   Candidate.belongsTo(Election, { foreignKey: 'electionId', as: 'election' })
   Election.hasMany(Candidate, {
@@ -65,18 +63,11 @@ export const initDatabase = async () => {
     as: 'votes',
   })
 
-  HasVoted.belongsTo(Election, { foreignKey: 'electionId', as: 'election' })
-  Election.hasMany(HasVoted, {
+  Voter.belongsTo(Election, { foreignKey: 'electionId', as: 'election' })
+  Election.hasMany(Voter, {
     foreignKey: 'electionId',
     onDelete: 'CASCADE',
-    as: 'hasVoted',
-  })
-
-  HasVoted.belongsTo(Voter, { foreignKey: 'voterId', as: 'voter' })
-  Voter.hasMany(HasVoted, {
-    foreignKey: 'voterId',
-    onDelete: 'CASCADE',
-    as: 'hasVoted',
+    as: 'voters',
   })
 
   await runMigration(sequelize)

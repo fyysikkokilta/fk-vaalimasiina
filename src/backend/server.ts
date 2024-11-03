@@ -7,9 +7,8 @@ import adminVoterRouter from './handlers/admin/voters'
 import adminVotesRouter from './handlers/admin/votes'
 
 import electionsRouter from './handlers/elections'
-import loginRouter from './handlers/login'
 import voteRouter from './handlers/vote'
-import voterRouter from './handlers/voter'
+import votersRouter from './handlers/voters'
 import votesRouter from './handlers/votes'
 
 import testElectionsRouter from './handlers/test/elections'
@@ -69,9 +68,8 @@ app.use('/api/admin/voters', adminVoterRouter)
 app.use('/api/admin/votes', adminVotesRouter)
 
 app.use('/api/elections', electionsRouter)
-app.use('/api/login', loginRouter)
 app.use('/api/vote', voteRouter)
-app.use('/api/voter', voterRouter)
+app.use('/api/voters', votersRouter)
 app.use('/api/votes', votesRouter)
 
 if (process.env.NODE_ENV === 'development') {

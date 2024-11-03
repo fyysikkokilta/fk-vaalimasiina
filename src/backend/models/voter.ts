@@ -2,24 +2,24 @@ import { DataTypes, fn, Model, Optional, Sequelize } from 'sequelize'
 
 export interface VoterAttributes {
   voterId: string
-  identifier: string
-  alias: string
-  loggedIn: boolean
-  active: boolean
+  electionId: string
+  email: string
+  votingId: string
+  hasVoted: boolean
 }
 
 export interface VoterCreationAttributes
-  extends Optional<VoterAttributes, 'voterId'> {}
+  extends Optional<VoterAttributes, 'voterId' | 'votingId'> {}
 
 export class Voter
   extends Model<VoterAttributes, VoterCreationAttributes>
   implements VoterAttributes
 {
   public voterId!: string
-  public identifier!: string
-  public alias!: string
-  public loggedIn!: boolean
-  public active!: boolean
+  public electionId!: string
+  public email!: string
+  public votingId!: string
+  public hasVoted!: boolean
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -35,21 +35,27 @@ export function initVoter(sequelize: Sequelize): void {
         allowNull: false,
         primaryKey: true,
       },
-      identifier: {
+      electionId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: 'elections',
+          key: 'electionId',
+        },
+      },
+      email: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      alias: {
-        type: DataTypes.STRING,
+      votingId: {
+        type: DataTypes.UUID,
+        defaultValue: fn('gen_random_uuid'),
         allowNull: false,
       },
-      loggedIn: {
+      hasVoted: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-      },
-      active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
+        defaultValue: false,
       },
     },
     {

@@ -62,8 +62,9 @@ export const handleModifyElection = async (req: Request, res: Response) => {
 
 export const handleStartVoting = async (req: Request, res: Response) => {
   const { electionId } = req.params
+  const { emails } = req.body
   try {
-    const election = await startVoting(electionId)
+    const election = await startVoting(electionId, emails)
 
     if (!election) {
       res.status(404).json({ key: 'election_not_found' })

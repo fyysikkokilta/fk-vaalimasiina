@@ -9,69 +9,47 @@ import {
   Row,
   Col,
 } from 'react-bootstrap'
-import { LoadingSpinner } from '../../shared/LoadingSpinner'
-import { useCookies } from 'react-cookie'
-import { ElectionContext } from '../../../contexts/election/ElectionContext'
-import { getVoterStatus } from '../../../api/voter'
-import { logout } from '../../../api/login'
-import { vote, checkIfAlreadyVoted } from '../../../api/vote'
+import { LoadingSpinner } from '../shared/LoadingSpinner'
+import { ElectionContext } from '../../contexts/election/ElectionContext'
+import { vote } from '../../api/vote'
 import { useTranslation } from 'react-i18next'
+import { useParams, useNavigate } from 'react-router-dom'
+import { getVoter } from '../../api/voters'
+import { Voter } from '../../../../types/types'
 
 export const Vote = () => {
   const { election } = useContext(ElectionContext)!
-  const [cookies, , removeCookie] = useCookies(['token'])
+  const { votingId } = useParams()
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [hasVoted, setHasVoted] = useState(false)
+  const [voter, setVoter] = useState<Voter | null>(null)
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
   useEffect(() => {
     (async () => {
-      if (!cookies.token) {
+      if (!votingId) {
+        navigate('/')
         return
       }
 
-      const statusResponse = await getVoterStatus(cookies.token)
-
-      if (!statusResponse.ok) {
-        removeCookie('token')
+      const voterResponse = await getVoter(votingId)
+      if (!voterResponse.ok) {
         setLoading(false)
         return
       }
-
-      if (!statusResponse.data.active || !statusResponse.data.loggedIn) {
-        removeCookie('token')
-      }
-
-      if (!election) {
-        setLoading(false)
-        return
-      }
-
-      const votedResponse = await checkIfAlreadyVoted(
-        cookies.token,
-        election.electionId
-      )
-      if (!votedResponse.ok) {
-        setLoading(false)
-        return
-      }
-      setHasVoted(votedResponse.data)
+      setVoter(voterResponse.data)
       setLoading(false)
     })()
-  }, [cookies.token, election, removeCookie])
+  }, [navigate, votingId])
 
   if (loading) {
     return <LoadingSpinner />
   }
 
   const handleVote = async () => {
-    if (!cookies.token) {
-      return
-    }
     const response = await vote(
-      cookies.token,
-      election!.electionId!,
+      voter!.voterId,
       selectedCandidates
     )
 
@@ -79,7 +57,7 @@ export const Vote = () => {
       return
     }
 
-    setHasVoted(true)
+    setVoter((prev) => ({ ...prev!, hasVoted: true }))
     setSelectedCandidates([])
   }
 
@@ -87,17 +65,7 @@ export const Vote = () => {
     setSelectedCandidates(selectedCandidates.filter((id) => id !== candidateId))
   }
 
-  const handleLogout = async () => {
-    const response = await logout(cookies.token)
-
-    if (!response.ok) {
-      return
-    }
-
-    removeCookie('token')
-  }
-
-  if (!election || election.status !== 'ONGOING') {
+  if (!election || election.status !== 'ONGOING' || voter?.electionId !== election.electionId) {
     return (
       <Container id="vote-container" className="mt-5 mb-5">
         <Row className="justify-content-center">
@@ -109,15 +77,13 @@ export const Vote = () => {
                 variant="info"
               >
                 <Alert.Heading className="mb-3">
-                  {t('no_ongoing_election')}
+                  {t('election_not_ongoing')}
                 </Alert.Heading>
-                <p>
-                  {t('no_ongoing_election_description')}
-                </p>
+                <p>{t('election_not_ongoing_description')}</p>
               </Alert>
               <Col className="d-flex justify-content-center">
-                <Button className="mb-3" onClick={handleLogout}>
-                  {t('logout_button')}
+                <Button className="mb-3" onClick={() => navigate('/')}>
+                  {t('back_to_frontpage')}
                 </Button>
               </Col>
             </Card>
@@ -140,7 +106,7 @@ export const Vote = () => {
             <Card.Header as="h4">{election.title}</Card.Header>
             <Card.Body>
               <Card.Text>{election.description}</Card.Text>
-              {hasVoted ? (
+              {voter.hasVoted ? (
                 <Alert variant="success">{t('already_voted')}</Alert>
               ) : (
                 <Form>
@@ -150,7 +116,7 @@ export const Vote = () => {
                         <b>{t('vote_instruction')}</b>
                       </Form.Text>
                       <Form.Label className="mt-3">
-                        <b>{t("candidates")}</b>
+                        <b>{t('candidates')}</b>
                       </Form.Label>
                       {election.candidates.length > 0 ? (
                         <>
@@ -166,7 +132,9 @@ export const Vote = () => {
                               ])
                             }}
                           >
-                            <option value="">{t("candidates_instruction")}</option>
+                            <option value="">
+                              {t('candidates_instruction')}
+                            </option>
                             {filteredCandidates.map((candidate) => (
                               <option
                                 key={candidate.candidateId}
@@ -200,7 +168,7 @@ export const Vote = () => {
                           </ListGroup>
                         </>
                       ) : (
-                        <Alert variant="warning">{t("no_candidates")}</Alert>
+                        <Alert variant="warning">{t('no_candidates')}</Alert>
                       )}
                     </Row>
                   </Form.Group>
@@ -210,8 +178,8 @@ export const Vote = () => {
                 </Form>
               )}
               <Col className="d-flex justify-content-center">
-                <Button className="mb-3" onClick={handleLogout}>
-                  {t('logout_button')}
+                <Button className="mb-3" onClick={() => navigate('/')}>
+                  {t('back_to_frontpage')}
                 </Button>
               </Col>
             </Card.Body>
