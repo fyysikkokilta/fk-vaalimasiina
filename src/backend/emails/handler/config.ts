@@ -2,6 +2,8 @@ import nodemailer, { Transporter } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import mailgun from "nodemailer-mailgun-transport";
 
+import 'dotenv/config'
+
 const mailTransporter: Transporter = (() => {
   if (process.env.MAILGUN_API_KEY) {
     if (!process.env.MAILGUN_DOMAIN) {
