@@ -27,7 +27,8 @@ export const VotingInspection = () => {
   const [newEmail, setNewEmail] = useState('')
 
   useEffect(() => {
-    (async () => {
+    // eslint-disable-next-line no-extra-semi
+    ;(async () => {
       if (!election) return
       const response = await getAllVotersForElection(election.electionId)
       if (!response.ok) {
