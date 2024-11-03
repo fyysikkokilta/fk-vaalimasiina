@@ -57,7 +57,10 @@
         "given_votes": "Annettuja ääniä",
         "voters": "Äänestäjiä",
         "hide_remaining_voters": "Piilota jäljellä olevat äänestäjät",
-        "show_remaining_voters": "Näytä jäljellä olevat äänestäjät"
+        "show_remaining_voters": "Näytä jäljellä olevat äänestäjät",
+        "old_email": "Vaihdettava sähköposti",
+        "new_email": "Uusi sähköposti",
+        "change_email": "Vaihda sähköposti"
       }
     },
     "voter_management": {

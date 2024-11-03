@@ -1,5 +1,9 @@
 import { Request, Response, Router } from 'express'
-import { changeVoterEmail, getVotersForElection, getVotersWhoVoted } from '../../routes/admin/voters'
+import {
+  changeVoterEmail,
+  getVotersForElection,
+  getVotersWhoVoted,
+} from '../../routes/admin/voters'
 import { validateUuid } from '../../validation/validation'
 
 export const handleChangeVoterEmail = async (req: Request, res: Response) => {
@@ -23,7 +27,10 @@ export const handleGetVotersWhoVoted = async (req: Request, res: Response) => {
   }
 }
 
-export const handleGetAllVotersForElection = async (req: Request, res: Response) => {
+export const handleGetAllVotersForElection = async (
+  req: Request,
+  res: Response
+) => {
   const { electionId } = req.params
   try {
     const voters = await getVotersForElection(electionId)
@@ -58,6 +65,6 @@ router.use('/:voterId', (req, res, next) => {
   next()
 })
 
-router.post('/:voterId', handleChangeVoterEmail)
+router.put('/:voterId', handleChangeVoterEmail)
 
 export default router

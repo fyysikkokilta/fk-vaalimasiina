@@ -1,7 +1,26 @@
+import EmailService from '../../emails/handler'
 import Voter from '../../models/voter'
+import { getElectionById } from '../elections'
 
 export const changeVoterEmail = async (voterId: string, email: string) => {
-  return Voter.update({ email }, { where: { voterId } })
+  const rows = await Voter.update(
+    { email },
+    { where: { voterId }, returning: true }
+  )
+
+  if (rows[0] > 1 || rows[0] === 0) {
+    throw new Error('Multiple or no rows were changed')
+  }
+
+  const voterData = rows[1][0].get({ plain: true })
+  const election = await getElectionById(voterData.electionId)
+
+  await EmailService.sendVotingMail(email, {
+    election: election!,
+    votingId: voterData.votingId,
+  })
+
+  return voterData
 }
 
 export const getVotersForElection = async (electionId: string) => {

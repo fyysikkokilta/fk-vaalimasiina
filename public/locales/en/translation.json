@@ -57,7 +57,10 @@
         "given_votes": "Given votes",
         "voters": "Voters",
         "hide_remaining_voters": "Hide remaining voters",
-        "show_remaining_voters": "Show remaining voters"
+        "show_remaining_voters": "Show remaining voters",
+        "old_email": "Email to change",
+        "new_email": "New email",
+        "change_email": "Change email"
       }
     }
   },

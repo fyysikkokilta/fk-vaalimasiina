@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
 
 import styles from './votingInspection.module.scss'
-import { Button, Col, Container, ListGroup } from 'react-bootstrap'
+import { Button, Col, Container, Form, ListGroup } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import {
+  changeVoterEmail,
   getAllVotersForElection,
   getVotersWhoVoted,
 } from '../../../../api/admin/voters'
@@ -21,6 +22,9 @@ export const VotingInspection = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.voting_inspection',
   })
+
+  const [oldEmail, setOldEmail] = useState('')
+  const [newEmail, setNewEmail] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -79,9 +83,29 @@ export const VotingInspection = () => {
     setShowRemainingVoters(!showRemainingVoters)
   }
 
+  const handleEmailChange = async () => {
+    const voterId = allVoters.find((v) => v.email === oldEmail)!.voterId
+    const response = await changeVoterEmail(voterId, newEmail)
+    if (!response.ok) {
+      return
+    }
+    setAllVoters((previous) =>
+      previous!.map((voter) => ({
+        ...voter,
+        email: voter.voterId === voterId ? newEmail : voter.email,
+      }))
+    )
+    setOldEmail('')
+    setNewEmail('')
+  }
+
   const remainingVoters = allVoters.filter(
     (voter) => !votersWhoVoted.find((v) => v.voterId === voter.voterId)
   )
+
+  const validOldEmail = !!allVoters.find((v) => v.email === oldEmail)
+  const validNewEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
+  const validEmailChange = validOldEmail && validNewEmail
 
   return (
     <>
@@ -112,11 +136,39 @@ export const VotingInspection = () => {
               : t('show_remaining_voters')}
           </Button>
           {showRemainingVoters && (
-            <ListGroup className="mt-3">
-              {remainingVoters.map((voter) => (
-                <ListGroup.Item key={voter.voterId}>{voter.email}</ListGroup.Item>
-              ))}
-            </ListGroup>
+            <>
+              <Form className="mt-3">
+                <Form.Group controlId="oldEmail">
+                  <Form.Label>{t('old_email')}</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={oldEmail}
+                    onChange={(e) => setOldEmail(e.target.value)}
+                  />
+                </Form.Group>
+                <Form.Group controlId="newEmail">
+                  <Form.Label>{t('new_email')}</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                  />
+                </Form.Group>
+                <Button
+                  onClick={handleEmailChange}
+                  disabled={!validEmailChange}
+                >
+                  {t('change_email')}
+                </Button>
+              </Form>
+              <ListGroup className="mt-3">
+                {remainingVoters.map((voter) => (
+                  <ListGroup.Item key={voter.voterId}>
+                    {voter.email}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </>
           )}
         </Col>
       </Container>
