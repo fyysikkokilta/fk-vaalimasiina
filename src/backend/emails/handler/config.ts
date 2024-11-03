@@ -13,7 +13,7 @@ const mailTransporter: Transporter = (() => {
           api_key: process.env.MAILGUN_API_KEY,
           domain: process.env.MAILGUN_DOMAIN,
         },
-        host: process.env.mailgunHost,
+        host: process.env.MAILGUN_HOST,
       }),
     );
   }
@@ -25,7 +25,7 @@ const mailTransporter: Transporter = (() => {
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT ?? undefined,
-      secure: process.env.SMPT_TLS,
+      secure: process.env.SMTP_TLS,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
