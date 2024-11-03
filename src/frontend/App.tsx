@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Container, Navbar, Card, Button, Nav } from 'react-bootstrap'
 import { Admin } from './components/admin/Admin'
@@ -13,12 +13,12 @@ import { PreviousElectionList } from './components/results/PreviousElectionList'
 import { PreviousResults } from './components/results/PreviousResults'
 import { Info } from './components/info/Info'
 
+const APP_TITLE = import.meta.env.VITE_BRANDING_HEADER_TITLE_TEXT
+const APP_HOME_LINK = import.meta.env.VITE_BRANDING_FOOTER_HOME_LINK
+const APP_HOME_TEXT = import.meta.env.VITE_BRANDING_FOOTER_HOME_TEXT
+
 function App() {
   const { i18n, t } = useTranslation('translation', { keyPrefix: 'app' })
-
-  useEffect(() => {
-    document.title = t('title')
-  }, [i18n.language, t])
 
   const isEnglish = i18n.language === 'en'
 
@@ -26,7 +26,7 @@ function App() {
     <Container>
       <Navbar bg="primary" variant="dark" expand="lg" className="box-shadow">
         <Container>
-          <Navbar.Brand href="/">{t('title')}</Navbar.Brand>
+          <Navbar.Brand href="/">{APP_TITLE}</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
@@ -73,7 +73,7 @@ function App() {
       <Navbar bg="primary" variant="dark" className="box-shadow mt-4">
         <Container className="center">
           <Navbar.Text>
-            <a href={t('footer_link')}>www.fyysikkokilta.fi</a>
+            <a href={APP_HOME_LINK}>{APP_HOME_TEXT}</a>
           </Navbar.Text>
         </Container>
       </Navbar>

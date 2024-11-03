@@ -1,16 +1,14 @@
 {
   "app": {
-    "title": "Fyysikkokillan vaalimasiina",
     "main": "Etusivu",
     "previous_results": "Edelliset tulokset",
     "admin": "Hallinta",
-    "footer_link": "https://www.fyysikkokilta.fi",
     "loading": "Ladataan..."
   },
   "voter": {
     "info": {
-      "title": "Tervetuloa Fyysikkokillan vaalimasiinaan!",
-      "info": "Tämä on Fyysikkokillan vaalimasiinan etusivu! Saat sähköpostitse uniikin äänestyslinkin, kun äänestys alkaa.",
+      "title": "Tervetuloa vaalimasiinaan!",
+      "info": "Tämä on vaalimasiinan etusivu! Saat sähköpostitse uniikin äänestyslinkin, kun äänestys alkaa.",
       "info_2": "Vain killan varsinaiset jäsenet saavat äänestää. Poistu kokouksesta, jos et ole varsinainen jäsen. Jos olet saanut äänestyslinkin, mutta et ole varsinainen jäsen, ilmoita asiasta puheenjohtajalle tai sihteerille välittömästi.",
       "info_3": "Jos sinulla on kysyttävää tai ongelmia, ota yhteyttä puheenjohtajaan tai sihteeriin."
     },

@@ -30,7 +30,8 @@ if (
   !process.env.ADMIN_USERNAME ||
   !process.env.ADMIN_PASSWORD ||
   !process.env.SECRET_KEY ||
-  !process.env.JWT_SECRET
+  !process.env.JWT_SECRET ||
+  !process.env.BASE_URL
 ) {
   throw new Error('Environment variables not set')
 }

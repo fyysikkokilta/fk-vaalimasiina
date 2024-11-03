@@ -1,16 +1,14 @@
 {
   "app": {
-    "title": "Guild of Physics Voting Machine",
     "main": "Main",
     "previous_results": "Previous results",
     "admin": "Admin",
-    "footer_link": "https://www.fyysikkokilta.fi/en",
     "loading": "Loading..."
   },
   "voter": {
     "info": {
-      "title": "Welcome to the Guild of Physics Voting Machine!",
-      "info": "This is the frontpage of the Guild of Physics Voting Machine! You will get a unique voting link by email when the voting starts.",
+      "title": "Welcome to the Voting Machine!",
+      "info": "This is the frontpage of the Voting Machine! You will get a unique voting link by email when the voting starts.",
       "info_2": "Only full members of the guild are allowed to vote. Please exit the meeting if you are not a full member. If you have received a voting link but are not a full member, please inform the chairperson or secretary immediately.",
       "info_3": "If you have any questions or problems, please contact the chairperson or secretary."
     },

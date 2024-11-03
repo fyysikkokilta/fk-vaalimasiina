@@ -1,3 +1,4 @@
+import EmailService from '../../emails/handler'
 import Election, { ElectionStatus } from '../../models/election'
 import Vote from '../../models/vote'
 import Voter from '../../models/voter'
@@ -76,12 +77,22 @@ export const startVoting = async (electionId: string, emails: string[]) => {
 
   election.update({ status: ElectionStatus.ONGOING })
 
-  await Voter.bulkCreate(
+  const insertedVoters = await Voter.bulkCreate(
     emails.map((email) => ({
       electionId,
       email,
       hasVoted: false,
     }))
+  )
+
+  await Promise.all(
+    insertedVoters.map((voter) => {
+      const voterData = voter.get({ plain: true })
+      return EmailService.sendVotingMail(voterData.email, {
+        election: election.get({ plain: true }),
+        votingId: voterData.votingId,
+      })
+    })
   )
 
   return election.get({ plain: true })
