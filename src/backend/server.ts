@@ -29,7 +29,6 @@ if (
   !process.env.DB_NAME ||
   !process.env.ADMIN_USERNAME ||
   !process.env.ADMIN_PASSWORD ||
-  !process.env.SECRET_KEY ||
   !process.env.JWT_SECRET ||
   !process.env.BASE_URL
 ) {

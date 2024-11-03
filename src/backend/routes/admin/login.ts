@@ -1,4 +1,3 @@
-import { sha512 } from 'js-sha512'
 import jsonwebtoken from 'jsonwebtoken'
 
 export const authenticateAdmin = async (username: string, password: string) => {
@@ -13,9 +12,7 @@ export const authenticateAdmin = async (username: string, password: string) => {
     }
   }
 
-  const hashed = sha512(password + process.env.SECRET_KEY)
-
-  if (adminUsername !== username || adminPassword !== hashed) {
+  if (adminUsername !== username || adminPassword !== password) {
     return null
   }
 
