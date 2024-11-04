@@ -6,7 +6,7 @@ export const vote = async (voterId: string, votes: string[]) => {
     // TODO: Handle preference number in the UI state
     preferenceNumber: index + 1,
   }))
-  return await api<string[]>(`/api/vote`, {
+  return await api<string>(`/api/vote`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

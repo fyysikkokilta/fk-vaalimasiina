@@ -1,11 +1,19 @@
 {
   "app": {
     "main": "Etusivu",
+    "audit": "Tarkastusnäkymä",
     "previous_results": "Edelliset tulokset",
     "admin": "Hallinta",
     "loading": "Ladataan..."
   },
   "voter": {
+    "audit": {
+      "title": "Tarkastusnäkymä",
+      "ballot_id": "Äänestyslipun tunniste",
+      "ballot": "Äänestyslippu",
+      "election_not_ongoing_or_finished": "Ei käynnissä olevaa tai päättynyttä vaalia",
+      "election_not_ongoing_or_finished_description": "Voit tarkastella vain käynnissä olevaa tai juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin."
+    },
     "info": {
       "title": "Tervetuloa vaalimasiinaan!",
       "info": "Tämä on vaalimasiinan etusivu! Saat sähköpostitse uniikin äänestyslinkin, kun äänestys alkaa.",
@@ -22,8 +30,10 @@
       "no_candidates": "Ei vielä ehdokkaita",
       "remove_selection": "Poista",
       "vote_button": "Äänestä",
-      "already_voted": "Olet jo äänestänyt",
-      "back_to_frontpage": "Takaisin etusivulle"
+      "already_voted": "Olet jo äänestänyt!",
+      "back_to_frontpage": "Takaisin etusivulle",
+      "ballot_id": "Äänestyslipun tunniste",
+      "audit_info": "Alla on äänestyslippusi tunniste. Voit tarkastaa, että äänestyslippusi on oikein ja otettu huomioon tuloksessa tarkastusnäkymässä. Ota tunniste talteen, sillä et voi saada sitä enää myöhemmin uudelleen."
     }
   },
   "admin": {

@@ -1,12 +1,12 @@
 import Vote from '../models/vote'
 import Voter from '../models/voter'
 import { isNoElectionOngoing } from './elections'
-import { randomUUID } from 'crypto'
 import { VoteData } from '../../../types/types'
 
 export const addVote = async (
   voterId: string,
   electionId: string,
+  ballotId: string,
   ballot: VoteData['ballot']
 ) => {
   if (await isNoElectionOngoing(electionId)) {
@@ -16,7 +16,6 @@ export const addVote = async (
   const transaction = await Vote.sequelize!.transaction()
 
   try {
-    const ballotId = randomUUID() // Generate a random ballot ID for the vote
     const vote = await Vote.bulkCreate(
       ballot.map((b) => ({
         ballotId,

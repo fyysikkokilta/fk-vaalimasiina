@@ -78,6 +78,10 @@ export function initVote(sequelize: Sequelize): void {
           unique: true,
           fields: ['ballotId', 'electionId', 'preferenceNumber'],
         },
+        {
+          unique: true,
+          fields: ['ballotId', 'electionId', 'candidateId'],
+        }
       ],
       sequelize,
       tableName: 'votes',

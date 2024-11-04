@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { PreviousElectionList } from './components/results/PreviousElectionList'
 import { PreviousResults } from './components/results/PreviousResults'
 import { Info } from './components/info/Info'
+import { Audit } from './components/audit/Audit'
 
 const APP_TITLE = import.meta.env.VITE_BRANDING_HEADER_TITLE_TEXT
 const APP_HOME_LINK = import.meta.env.VITE_BRANDING_FOOTER_HOME_LINK
@@ -31,6 +32,7 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/">{t('main')}</Nav.Link>
+              <Nav.Link href="/audit">{t('audit')}</Nav.Link>
               <Nav.Link href="/elections">{t('previous_results')}</Nav.Link>
               <Nav.Link href="/admin">{t('admin')}</Nav.Link>
             </Nav>
@@ -57,6 +59,7 @@ function App() {
                       </ElectionStepProvider>
                     }
                   />
+                  <Route path="/audit" element={<Audit />} />
                   <Route
                     path="/elections/:electionId"
                     element={<PreviousResults />}

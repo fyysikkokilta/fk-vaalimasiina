@@ -23,6 +23,7 @@ export const Vote = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [voter, setVoter] = useState<Voter | null>(null)
+  const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
@@ -55,6 +56,7 @@ export const Vote = () => {
       return
     }
 
+    setBallotId(response.data)
     setVoter((prev) => ({ ...prev!, hasVoted: true }))
     setSelectedCandidates([])
   }
@@ -109,7 +111,17 @@ export const Vote = () => {
             <Card.Body>
               <Card.Text>{election.description}</Card.Text>
               {voter.hasVoted ? (
-                <Alert variant="success">{t('already_voted')}</Alert>
+                <Alert variant="success">
+                  <Alert.Heading>{t('already_voted')}</Alert.Heading>
+                  {ballotId && (
+                    <>
+                      <p>{t('audit_info')}</p>
+                      <span>
+                        {t('ballot_id')}: <b>{ballotId}</b>
+                      </span>
+                    </>
+                  )}
+                </Alert>
               ) : (
                 <Form>
                   <Form.Group>

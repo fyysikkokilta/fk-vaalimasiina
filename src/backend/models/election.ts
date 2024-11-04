@@ -45,7 +45,6 @@ export function initElection(sequelize: Sequelize): void {
       title: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       description: {
         type: DataTypes.STRING,

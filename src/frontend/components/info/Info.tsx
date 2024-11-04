@@ -8,7 +8,7 @@ export const Info = () => {
   return (
     <Container className="mt-5 mb-5">
       <Row className="justify-content-center">
-        <Col md={6}>
+        <Col md={8}>
           <Card className="box-shadow">
             <Card.Header as="h2">{t('title')}</Card.Header>
             <Card.Body>

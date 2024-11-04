@@ -1,11 +1,19 @@
 {
   "app": {
     "main": "Main",
+    "audit": "Audit view",
     "previous_results": "Previous results",
     "admin": "Admin",
     "loading": "Loading..."
   },
   "voter": {
+    "audit": {
+      "title": "Audit view",
+      "ballot_id": "Ballot ID",
+      "ballot": "Ballot",
+      "election_not_ongoing_or_finished": "There is no ongoing or finished election",
+      "election_not_ongoing_or_finished_description": "You can audit only the election that is ongoing or has just finished. If you think this is an error, please contact the chairperson or secretary."
+    },
     "info": {
       "title": "Welcome to the Voting Machine!",
       "info": "This is the frontpage of the Voting Machine! You will get a unique voting link by email when the voting starts.",
@@ -22,8 +30,10 @@
       "no_candidates": "No candidates yet",
       "remove_selection": "Remove",
       "vote_button": "Vote",
-      "already_voted": "You have already voted",
-      "back_to_frontpage": "Back to frontpage"
+      "already_voted": "You have already voted!",
+      "back_to_frontpage": "Back to frontpage",
+      "ballot_id": "Ballot ID",
+      "audit_info": "Below is the ID of your ballot. You can check that your ballot is correct and taken into account in the audit view. Save the ID, as you cannot get it again later."
     }
   },
   "admin": {

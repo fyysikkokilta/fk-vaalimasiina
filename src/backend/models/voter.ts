@@ -44,7 +44,6 @@ export function initVoter(sequelize: Sequelize): void {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       hasVoted: {
         type: DataTypes.BOOLEAN,

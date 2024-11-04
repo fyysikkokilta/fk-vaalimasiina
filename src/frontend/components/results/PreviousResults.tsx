@@ -3,7 +3,7 @@ import { calculateSTVResult, VotingResult } from '../../utils/stvAlgorithm'
 import { ElectionResults } from '../shared/ElectionResults'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 import { Election } from '../../../../types/types'
-import { getVotesForCompletedElection } from '../../api/votes'
+import { getVotesForElection } from '../../api/votes'
 import { fetchElectionById } from '../../api/elections'
 import { NavLink, useParams } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
@@ -34,7 +34,7 @@ export const PreviousResults = () => {
       setElection(election)
 
       // Fetch voting results
-      const response = await getVotesForCompletedElection(election.electionId)
+      const response = await getVotesForElection(election.electionId)
 
       if (!response.ok) {
         return
