@@ -8,6 +8,10 @@ export type Voter = {
   updatedAt: string
 }
 
+export type VoterData = {
+  email: string
+}
+
 export type ElectionData = {
   title: string
   description: string

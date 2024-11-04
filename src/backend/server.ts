@@ -12,8 +12,9 @@ import votersRouter from './handlers/voters'
 import votesRouter from './handlers/votes'
 
 import testElectionsRouter from './handlers/test/elections'
-import testVoteRouter from './handlers/test/vote'
-import testVoterRouter from './handlers/test/voter'
+import testVoteRouter from './handlers/test/votes'
+import testVoterRouter from './handlers/test/voters'
+import testDbRouter from './handlers/test/db'
 
 import 'dotenv/config'
 import { initDatabase } from './models'
@@ -74,8 +75,9 @@ app.use('/api/votes', votesRouter)
 
 if (process.env.NODE_ENV === 'development') {
   app.use('/api/test/elections', testElectionsRouter)
-  app.use('/api/test/vote', testVoteRouter)
-  app.use('/api/test/voter', testVoterRouter)
+  app.use('/api/test/votes', testVoteRouter)
+  app.use('/api/test/voters', testVoterRouter)
+  app.use('/api/test/db', testDbRouter)
 }
 
 ViteExpress.listen(app, Number(process.env.PORT), () =>

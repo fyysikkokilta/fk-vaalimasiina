@@ -20,9 +20,9 @@ export const createTestElection = async (
 
   const newElection = newElectionData.get({ plain: true })
 
-  await createTestCandidates(newElection.electionId, candidates)
+  const candidatesData = await createTestCandidates(newElection.electionId, candidates)
 
-  return newElection
+  return { ...newElection, candidates: candidatesData }
 }
 
 export const changeTestElectionStatus = async (

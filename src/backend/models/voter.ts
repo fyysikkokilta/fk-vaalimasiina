@@ -46,6 +46,7 @@ export function initVoter(sequelize: Sequelize): void {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       votingId: {
         type: DataTypes.UUID,
@@ -59,6 +60,16 @@ export function initVoter(sequelize: Sequelize): void {
       },
     },
     {
+      indexes: [
+        {
+          unique: true,
+          fields: ['electionId', 'email'],
+        },
+        {
+          unique: true,
+          fields: ['voterId', 'votingId'],
+        }
+      ],
       sequelize,
       tableName: 'voters',
       paranoid: true,

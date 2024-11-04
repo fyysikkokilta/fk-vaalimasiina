@@ -48,6 +48,7 @@ export function initCandidate(sequelize: Sequelize): void {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       electionId: {
         type: DataTypes.UUID,

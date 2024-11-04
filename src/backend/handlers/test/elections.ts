@@ -6,7 +6,7 @@ import {
 
 export const handleCreateTestElection = async (req: Request, res: Response) => {
   const { title, description, amountToElect, candidates, status } = req.body
-  const election = createTestElection(
+  const election = await createTestElection(
     title,
     description,
     amountToElect,
@@ -23,7 +23,7 @@ export const handleChangeTestElectionStatus = async (
 ) => {
   const { electionId } = req.params
   const { status } = req.body
-  const election = changeTestElectionStatus(electionId, status)
+  const election = await changeTestElectionStatus(electionId, status)
 
   res.status(200).json(election)
 }
