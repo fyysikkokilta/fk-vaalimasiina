@@ -17,7 +17,7 @@ export const changeVoterEmail = async (voterId: string, email: string) => {
 
   await EmailService.sendVotingMail(email, {
     election: election!,
-    votingId: voterData.votingId,
+    voterId: voterData.voterId,
   })
 
   return voterData

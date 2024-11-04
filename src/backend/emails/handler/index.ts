@@ -7,7 +7,7 @@ import mailTransporter from './config'
 
 export interface VotingMailParams {
   election: ElectionAttributes
-  votingId: string
+  voterId: string
 }
 
 const __filename = fileURLToPath(import.meta.url)
@@ -48,7 +48,7 @@ export default class EmailService {
           footerText: process.env.BRANDING_MAIL_FOOTER_TEXT,
           footerLink: process.env.BRANDING_MAIL_FOOTER_LINK,
         },
-        votingLink: `${process.env.BASE_URL}/vote/${params.votingId}`,
+        votingLink: `${process.env.BASE_URL}/vote/${params.voterId}`,
       }
       const template = votingMailPath
       const html = await email.render(template, brandedParams)

@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express'
 import { validateUuid } from '../validation/validation'
-import { getVoterByVotingId } from '../routes/voter'
+import { getVoter } from '../routes/voter'
 
 export const handleGetVoter = async (req: Request, res: Response) => {
-  const { votingId } = req.params
+  const { voterId } = req.params
   try {
-    const voter = await getVoterByVotingId(votingId)
+    const voter = await getVoter(voterId)
     if (!voter) {
       res.status(404).json({ key: 'voter_not_found' })
       return
@@ -18,14 +18,14 @@ export const handleGetVoter = async (req: Request, res: Response) => {
 
 const router = Router()
 
-router.use('/:votingId', (req, res, next) => {
-  if (!validateUuid(req.params.votingId)) {
-    res.status(400).json({ key: 'invalid_voting_id' })
+router.use('/:voterId', (req, res, next) => {
+  if (!validateUuid(req.params.voterId)) {
+    res.status(400).json({ key: 'invalid_voter_id' })
     return
   }
   next()
 })
 
-router.get('/:votingId', handleGetVoter)
+router.get('/:voterId', handleGetVoter)
 
 export default router

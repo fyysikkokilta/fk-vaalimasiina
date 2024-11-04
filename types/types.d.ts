@@ -2,7 +2,6 @@ export type Voter = {
   voterId: string
   electionId: string
   email: string
-  votingId: string
   hasVoted: boolean
   createdAt: string
   updatedAt: string

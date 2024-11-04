@@ -90,7 +90,7 @@ export const startVoting = async (electionId: string, emails: string[]) => {
       const voterData = voter.get({ plain: true })
       return EmailService.sendVotingMail(voterData.email, {
         election: election.get({ plain: true }),
-        votingId: voterData.votingId,
+        voterId: voterData.voterId,
       })
     })
   )

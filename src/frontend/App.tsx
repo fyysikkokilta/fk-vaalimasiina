@@ -62,7 +62,7 @@ function App() {
                     element={<PreviousResults />}
                   />
                   <Route path="/elections" element={<PreviousElectionList />} />
-                  <Route path="/vote/:votingId" element={<Vote />} />
+                  <Route path="/vote/:voterId" element={<Vote />} />
                   <Route path="*" element={<Info />} />
                 </Routes>
               </Router>

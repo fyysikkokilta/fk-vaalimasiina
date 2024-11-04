@@ -19,7 +19,7 @@ import { Voter } from '../../../../types/types'
 
 export const Vote = () => {
   const { election } = useContext(ElectionContext)!
-  const { votingId } = useParams()
+  const { voterId } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [voter, setVoter] = useState<Voter | null>(null)
@@ -27,13 +27,14 @@ export const Vote = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
   useEffect(() => {
+    // eslint-disable-next-line no-extra-semi
     ;(async () => {
-      if (!votingId) {
+      if (!voterId) {
         navigate('/')
         return
       }
 
-      const voterResponse = await getVoter(votingId)
+      const voterResponse = await getVoter(voterId)
       if (!voterResponse.ok) {
         setLoading(false)
         return
@@ -41,7 +42,7 @@ export const Vote = () => {
       setVoter(voterResponse.data)
       setLoading(false)
     })()
-  }, [navigate, votingId])
+  }, [navigate, voterId])
 
   if (loading) {
     return <LoadingSpinner />

@@ -4,12 +4,11 @@ export interface VoterAttributes {
   voterId: string
   electionId: string
   email: string
-  votingId: string
   hasVoted: boolean
 }
 
 export interface VoterCreationAttributes
-  extends Optional<VoterAttributes, 'voterId' | 'votingId'> {}
+  extends Optional<VoterAttributes, 'voterId'> {}
 
 export class Voter
   extends Model<VoterAttributes, VoterCreationAttributes>
@@ -18,7 +17,6 @@ export class Voter
   public voterId!: string
   public electionId!: string
   public email!: string
-  public votingId!: string
   public hasVoted!: boolean
 
   public readonly createdAt!: Date
@@ -48,11 +46,6 @@ export function initVoter(sequelize: Sequelize): void {
         allowNull: false,
         unique: true,
       },
-      votingId: {
-        type: DataTypes.UUID,
-        defaultValue: fn('gen_random_uuid'),
-        allowNull: false,
-      },
       hasVoted: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -65,10 +58,6 @@ export function initVoter(sequelize: Sequelize): void {
           unique: true,
           fields: ['electionId', 'email'],
         },
-        {
-          unique: true,
-          fields: ['voterId', 'votingId'],
-        }
       ],
       sequelize,
       tableName: 'voters',
