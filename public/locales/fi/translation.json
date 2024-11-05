@@ -73,29 +73,6 @@
         "new_email": "Uusi sähköposti",
         "change_email": "Vaihda sähköposti"
       }
-    },
-    "voter_management": {
-      "title": "Äänestäjähallinta",
-      "generate_new_code": "Generoi uusi äänestäjäkoodi",
-      "generate_new_code_description": "Äänestäjäkoodi on uniikki koodi, joka annetaan äänestäjälle.",
-      "generate_new_code_button": "Generoi",
-      "new_voter_code": "Uusi äänestäjäkoodi",
-      "voter_code": "Äänestäjäkoodi",
-      "activated": "Aktivoitu",
-      "logged_in": "Kirjautunut",
-      "alias": "Nimimerkki",
-      "operations": "Toiminnot",
-      "active": "Aktiivinen",
-      "inactive": "Ei aktiivinen",
-      "yes": "Kyllä",
-      "no": "Ei",
-      "deactivate": "Deaktivoi",
-      "activate": "Aktivoi",
-      "remove": "Poista",
-      "remove_code": "Poista koodi",
-      "remove_code_description": "Oletko varma, että haluat poistaa koodin",
-      "cancel_button": "Peruuta",
-      "remove_code_button": "Poista"
     }
   },
   "results": {
@@ -108,7 +85,8 @@
     "votes": "ääntä",
     "chosen": "Valittu",
     "not_chosen": "putosi",
-    "chosen_candidates": "Valitut ehdokkaat"
+    "chosen_candidates": "Valitut ehdokkaat",
+    "tie_breaker": "Tasatilanteen ratkaisu (arvonta)"
   },
   "previous_results": {
     "title": "Edelliset tulokset",

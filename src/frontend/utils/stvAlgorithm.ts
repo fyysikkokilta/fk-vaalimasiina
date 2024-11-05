@@ -29,6 +29,7 @@ interface VotingRoundResult {
   quota: number
   candidateResults: PassingCandidateResult[]
   droppedCandidate: CandidateResultData | null
+  tieBreaker?: boolean
 }
 
 export type VotingResult = {
@@ -69,7 +70,7 @@ const dropOneCandidate = (
   const candidatesWithMinVotes = voteCounts.filter(
     ([, votes]) => votes === minVotes
   )
-  const candidateToBeDropped = shuffle(candidatesWithMinVotes)[0] // TODO
+  const candidateToBeDropped = shuffle(candidatesWithMinVotes)[0]
 
   const votesOfDroppedCandidate = voteMap.get(candidateToBeDropped[0])!
   voteMap.delete(candidateToBeDropped[0])
@@ -96,6 +97,7 @@ const dropOneCandidate = (
       id: candidateToBeDropped[0],
       voteCount: candidateToBeDropped[1],
     },
+    tieBreaker: candidatesWithMinVotes.length > 1,
   }
 }
 

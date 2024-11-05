@@ -73,7 +73,7 @@ export const ElectionResults = ({
       </Row>
       <ListGroup>
         {votingResult.roundResults.map(
-          ({ droppedCandidate, candidateResults, quota, round }) => (
+          ({ droppedCandidate, candidateResults, quota, round, tieBreaker }) => (
             <ListGroup.Item key={round} className="mb-3 text-center">
               <Card>
                 <Card.Header as="h5">
@@ -101,6 +101,7 @@ export const ElectionResults = ({
                       <ListGroup.Item className="text-danger">
                         {getCandidateName(droppedCandidate.id)}{' '}
                         {t('not_chosen')}
+                        {tieBreaker && ` - ${t('tie_breaker')}`}
                       </ListGroup.Item>
                     )}
                   </ListGroup>

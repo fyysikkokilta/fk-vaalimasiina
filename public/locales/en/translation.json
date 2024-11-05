@@ -85,7 +85,8 @@
     "votes": "votes",
     "chosen": "Chosen",
     "not_chosen": "eliminated",
-    "chosen_candidates": "Chosen candidates"
+    "chosen_candidates": "Chosen candidates",
+    "tie_breaker": "Tie breaker (random)"
   },
   "previous_results": {
     "title": "Previous results",
