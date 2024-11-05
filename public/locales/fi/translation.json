@@ -12,7 +12,8 @@
       "ballot_id": "Äänestyslipun tunniste",
       "ballot": "Äänestyslippu",
       "election_not_ongoing_or_finished": "Ei käynnissä olevaa tai päättynyttä vaalia",
-      "election_not_ongoing_or_finished_description": "Voit tarkastella vain käynnissä olevaa tai juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin."
+      "election_not_ongoing_or_finished_description": "Voit tarkastella vain käynnissä olevaa tai juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+      "empty_vote_notice": "Tyhjiä ääniä ei erikseen tallenneta tietokantaan, vaan näistä tallennetaan vain tieto, että ääni on käytetty. Tämä tarkoittaa, että tyhjät äänet eivät näy tarkastusnäkymässä."
     },
     "info": {
       "title": "Tervetuloa vaalimasiinaan!",

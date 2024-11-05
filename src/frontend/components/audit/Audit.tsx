@@ -80,6 +80,9 @@ export const Audit = () => {
         <Card.Header as="h2">{t('title')}</Card.Header>
         <Card.Header as="h4">{election.title}</Card.Header>
         <Card.Body>
+          <div className="mb-2">
+            {t('empty_vote_notice')}
+          </div>
           <Table striped bordered hover>
             <thead>
               <tr>

@@ -12,7 +12,8 @@
       "ballot_id": "Ballot ID",
       "ballot": "Ballot",
       "election_not_ongoing_or_finished": "There is no ongoing or finished election",
-      "election_not_ongoing_or_finished_description": "You can audit only the election that is ongoing or has just finished. If you think this is an error, please contact the chairperson or secretary."
+      "election_not_ongoing_or_finished_description": "You can audit only the election that is ongoing or has just finished. If you think this is an error, please contact the chairperson or secretary.",
+      "empty_vote_notice": "Empty votes are not saved separately in the database, only the information that the vote has been used is saved. This means that empty votes are not shown in the audit view."
     },
     "info": {
       "title": "Welcome to the Voting Machine!",
