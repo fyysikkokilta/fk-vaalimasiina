@@ -79,6 +79,8 @@
     "voters": "Äänestäjiä",
     "non_empty_votes": "Epätyhjiä ääniä",
     "export_csv": "Lataa äänestysliput CSV-tiedostona",
+    "export_minutes": "Kopioi tulokset leikepöydälle",
+    "minutes_copied_to_clipboard": "Tulokset kopioitu leikepöydälle",
     "round": "Kierros",
     "remaining_to_choose": "Valittavia jäljellä",
     "election_threshold": "Äänikynnys",

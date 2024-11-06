@@ -79,6 +79,8 @@
     "voters": "Voters",
     "non_empty_votes": "Non-empty votes",
     "export_csv": "Download ballots as CSV",
+    "export_minutes": "Copy results to clipboard",
+    "minutes_copied_to_clipboard": "Results copied to clipboard",
     "round": "Round",
     "remaining_to_choose": "Remaining to elect",
     "election_threshold": "Election threshold",

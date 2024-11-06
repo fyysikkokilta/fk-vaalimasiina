@@ -5,6 +5,7 @@ import { VotingResult } from '../../utils/stvAlgorithm'
 
 import styles from './electionResults.module.scss'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 
 type ElectionResultsProps = {
   election: Election
@@ -53,6 +54,86 @@ export const ElectionResults = ({
     a.click()
   }
 
+  const getMinutesParagraphs = () => {
+    const totalVotes = votingResult.totalVotes
+    const emptyVotes = votingResult.ballots.filter(
+      (ballot) => ballot.length === 0
+    ).length
+    const candidatesNamesAndIdsSorted = election.candidates
+      .map((candidate) => ({
+        name: candidate.name,
+        id: candidate.candidateId,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+
+    const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes > 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes > 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
+    const firstDecimalVotesRound = votingResult.roundResults.find(
+      ({ candidateResults, droppedCandidate }) => {
+        return (
+          candidateResults.some(({ data }) => data.voteCount % 1 !== 0) ||
+          (droppedCandidate && droppedCandidate.voteCount % 1 !== 0)
+        )
+      }
+    )
+    const secondParagraph = firstDecimalVotesRound
+      ? `Siirtoäänivaalitavasta johtuen päädyttiin desimaaliääniin ${firstDecimalVotesRound.round} kierroksella. Äänet on kirjattu pöytäkirjaan kahden desimaalin tarkkuudella.`
+      : null
+
+    const winners: string[] = []
+
+    const roundParagraphs = votingResult.roundResults.map(
+      ({ round, candidateResults, droppedCandidate, quota, tieBreaker }) => {
+        const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${candidatesNamesAndIdsSorted
+          .map(({ name, id }) => {
+            const candidate = candidateResults.find((c) => c.data.id === id)
+            return `${name} ${candidate ? Math.round((candidate.data.voteCount + Number.EPSILON) * 100) / 100 : '-'} ${candidate?.isSelected ? '(valittu)' : ''}`
+          })
+          .join('; ')}.`
+        const winnersThisRound = candidateResults.filter(
+          ({ data }) =>
+            data.voteCount >= quota && winners.indexOf(data.id) === -1
+        )
+        const winnersNames = winnersThisRound
+          .map(({ data }) => getCandidateName(data.id))
+          .join(' ja ')
+        winners.push(...winnersThisRound.map(({ data }) => data.id))
+
+        const winnersString =
+          winnersThisRound.length > 0
+            ? `${winnersNames} ${winnersThisRound.length > 1 ? 'ylittivät' : 'ylitti'} äänikynnyksen ja merkittiin täten äänestyksessä ${winnersThisRound.length > 1 ? 'valituiksi' : 'valituksi'}.`
+            : null
+        const droppedCandidateString = droppedCandidate
+          ? `Kukaan ei ylittänyt äänikynnystä ${round}. kierroksella, joten pudotettiin vähiten ääniä saanut ehdokas ${getCandidateName(droppedCandidate.id)} pois. ${tieBreaker ? 'Pudotuksen ratkaisi arpa.' : ''}`
+          : null
+
+        const winnersExtraParagraph =
+          winnersThisRound.length > 0 &&
+          round !== votingResult.roundResults.length
+            ? `${round + 1}. kierroksella jaettiin ${winnersNames} äänikynnyksen ylittäneet ${winnersThisRound.map(({ data }) => data.voteCount - quota).join('ja')} ääntä muille ehdokkaille siirtoäänivaalitavan määräämillä kertoimilla painotettuna.`
+            : null
+
+        const paragraph = [
+          voteNameString,
+          winnersString,
+          droppedCandidateString,
+        ]
+          .filter((s) => s)
+          .join(' ')
+
+        return [paragraph, winnersExtraParagraph].filter((s) => s).join('\n\n')
+      }
+    )
+
+    const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${votingResult.winners.map((id) => getCandidateName(id)).join('ja')} Fyysikkokillan rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
+
+    navigator.clipboard.writeText(
+      [firstParagraph, secondParagraph, ...roundParagraphs, winnersParagraph]
+        .filter((s) => s)
+        .join('\n\n')
+    )
+    toast.success(t('minutes_copied_to_clipboard'))
+  }
+
   return (
     <Container className={styles.resultsContainer}>
       <Row className="mb-4">
@@ -66,14 +147,23 @@ export const ElectionResults = ({
               {t('non_empty_votes')}: {votingResult.totalVotes}
             </span>
           </Row>
-          <Button onClick={exportBallotsToCSV} className="mt-3">
+          <Button onClick={exportBallotsToCSV} className="mt-3 mx-2">
             {t('export_csv')}
+          </Button>
+          <Button onClick={getMinutesParagraphs} className="mt-3 mx-2">
+            {t('export_minutes')}
           </Button>
         </Col>
       </Row>
       <ListGroup>
         {votingResult.roundResults.map(
-          ({ droppedCandidate, candidateResults, quota, round, tieBreaker }) => (
+          ({
+            droppedCandidate,
+            candidateResults,
+            quota,
+            round,
+            tieBreaker,
+          }) => (
             <ListGroup.Item key={round} className="mb-3 text-center">
               <Card>
                 <Card.Header as="h5">
@@ -99,8 +189,8 @@ export const ElectionResults = ({
                     ))}
                     {droppedCandidate && (
                       <ListGroup.Item className="text-danger">
-                        {getCandidateName(droppedCandidate.id)} - {droppedCandidate.voteCount}{' '}
-                        {t('votes')} - {' '}
+                        {getCandidateName(droppedCandidate.id)} -{' '}
+                        {droppedCandidate.voteCount} {t('votes')} -{' '}
                         {t('not_chosen')}
                         {tieBreaker && ` - ${t('tie_breaker')}`}
                       </ListGroup.Item>
