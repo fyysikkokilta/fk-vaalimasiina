@@ -3,7 +3,6 @@ import { addVote } from '../routes/vote'
 import { getVoter } from '../routes/voter'
 import { validateUuid } from '../validation/validation'
 import { checkIsOnGoingElection, isValidBallot } from '../routes/elections'
-import { randomUUID } from 'crypto'
 
 export const handleVote = async (req: Request, res: Response) => {
   const { voterId, ballot } = req.body
@@ -36,15 +35,14 @@ export const handleVote = async (req: Request, res: Response) => {
     return
   }
 
-  const ballotId = randomUUID() // Generate a random ballot ID for the vote
-  const savedVote = await addVote(voterId, electionId, ballotId, ballot)
+  const savedBallot = await addVote(voterId, electionId, ballot)
 
-  if (!savedVote) {
+  if (!savedBallot) {
     res.status(500).json({ key: 'error_saving_ballot' })
     return
   }
 
-  res.status(200).json(ballotId)
+  res.status(200).json(savedBallot.ballotId)
 }
 
 const router = Router()

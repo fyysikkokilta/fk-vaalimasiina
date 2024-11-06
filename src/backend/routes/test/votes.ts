@@ -1,7 +1,8 @@
-import { randomUUID } from 'crypto'
-import Vote from '../../models/vote'
+import Ballot from '../../models/ballot'
 import Voter from '../../models/voter'
 import Op from 'sequelize/lib/operators'
+import Vote from '../../models/vote'
+import { CreationAttributes } from 'sequelize'
 
 export const createTestVotes = async (
   electionId: string,
@@ -10,19 +11,26 @@ export const createTestVotes = async (
     ballot: { candidateId: string; preferenceNumber: number }[]
   }[]
 ) => {
-  const votes = await Vote.bulkCreate(
-    voterIdBallotPairs
-      .map(({ ballot }) => {
-        const ballotId = randomUUID()
-        return ballot.map((vote) => ({
-          ballotId,
-          candidateId: vote.candidateId,
-          preferenceNumber: vote.preferenceNumber,
+  const ballots = await Ballot.bulkCreate(
+    voterIdBallotPairs.map(
+      (pair) =>
+        ({
           electionId,
-        }))
-      })
-      .flat(),
-    { returning: true }
+          votes: pair.ballot.map((vote) => ({
+            candidateId: vote.candidateId,
+            preferenceNumber: vote.preferenceNumber,
+          })),
+        }) as CreationAttributes<Ballot>
+    ),
+    {
+      returning: true,
+      include: [
+        {
+          model: Vote,
+          as: 'votes',
+        },
+      ],
+    }
   )
 
   await Voter.update(
@@ -34,5 +42,5 @@ export const createTestVotes = async (
     }
   )
 
-  return votes.map((vote) => vote.get({ plain: true }))
+  return ballots.map((ballot) => ballot.get({ plain: true }))
 }

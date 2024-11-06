@@ -1,4 +1,7 @@
-import { DataTypes, fn, Model, Optional, Sequelize } from 'sequelize'
+import { Association, CreationOptional, DataTypes, fn, HasManyGetAssociationsMixin, Model, NonAttribute, Optional, Sequelize } from 'sequelize'
+import Candidate from './candidate'
+import Ballot from './ballot'
+import Voter from './voter'
 
 export enum ElectionStatus {
   CREATED = 'CREATED',
@@ -27,10 +30,23 @@ export class Election
   public description!: string
   public amountToElect!: number
   public status!: ElectionStatus
+  public candidates?: NonAttribute<Candidate[]>
+  public ballots?: NonAttribute<Ballot[]>
+  public voters?: NonAttribute<Voter[]>
 
-  public readonly createdAt!: Date
-  public readonly updatedAt!: Date
-  public readonly deletedAt!: Date
+  public getCandidates!: HasManyGetAssociationsMixin<Candidate>
+  public getBallots!: HasManyGetAssociationsMixin<Ballot>
+  public getVoters!: HasManyGetAssociationsMixin<Voter>
+
+  public readonly createdAt!: CreationOptional<Date>
+  public readonly updatedAt!: CreationOptional<Date>
+  public readonly deletedAt!: CreationOptional<Date>
+
+  public static associations: {
+    candidates: Association<Election, Candidate>
+    ballots: Association<Election, Ballot>
+    voters: Association<Election, Voter>
+  }
 }
 
 export function initElection(sequelize: Sequelize): void {

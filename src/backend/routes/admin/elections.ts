@@ -1,6 +1,8 @@
+import { CreationAttributes } from 'sequelize'
 import EmailService from '../../emails/handler'
+import Ballot from '../../models/ballot'
+import Candidate from '../../models/candidate'
 import Election, { ElectionStatus } from '../../models/election'
-import Vote from '../../models/vote'
 import Voter from '../../models/voter'
 
 export const getElectionAndCheckStatus = async (
@@ -30,7 +32,8 @@ export const isElectionOngoing = async () => {
 export const createElection = async (
   title: string,
   description: string,
-  amountToElect: number
+  amountToElect: number,
+  candidates: { name: string }[]
 ) => {
   const newElection = await Election.create(
     {
@@ -38,9 +41,16 @@ export const createElection = async (
       description,
       amountToElect,
       status: ElectionStatus.CREATED,
-    },
+      candidates: candidates.map((candidate) => ({
+        name: candidate.name,
+      })),
+    } as CreationAttributes<Election>,
     {
       returning: true,
+      include: {
+        model: Candidate,
+        as: 'candidates',
+      }
     }
   )
 
@@ -140,9 +150,9 @@ export const abortVoting = async (electionId: string) => {
   try {
     await election.update({ status: ElectionStatus.CREATED }, { transaction })
 
-    await Vote.destroy({ where: { electionId }, transaction, force: true })
+    await Ballot.destroy({ where: { electionId }, transaction })
 
-    await Voter.destroy({ where: { electionId }, transaction, force: true })
+    await Voter.destroy({ where: { electionId }, transaction })
 
     await transaction.commit()
   } catch (err) {

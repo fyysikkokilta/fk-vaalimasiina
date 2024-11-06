@@ -1,4 +1,5 @@
-import { DataTypes, fn, Model, Optional, Sequelize } from 'sequelize'
+import { Association, CreationOptional, DataTypes, fn, HasOneGetAssociationMixin, Model, NonAttribute, Optional, Sequelize } from 'sequelize'
+import Election from './election'
 
 export interface VoterAttributes {
   voterId: string
@@ -15,13 +16,20 @@ export class Voter
   implements VoterAttributes
 {
   public voterId!: string
-  public electionId!: string
+  public electionId!: Election['electionId']
   public email!: string
   public hasVoted!: boolean
+  public election?: NonAttribute<Election>
 
-  public readonly createdAt!: Date
-  public readonly updatedAt!: Date
-  public readonly deletedAt!: Date
+  public getElection!: HasOneGetAssociationMixin<Election>
+
+  public readonly createdAt!: CreationOptional<Date>
+  public readonly updatedAt!: CreationOptional<Date>
+  public readonly deletedAt!: CreationOptional<Date>
+
+  public static associations: {
+    election: Association<Voter, Election>
+  }
 }
 
 export function initVoter(sequelize: Sequelize): void {

@@ -1,15 +1,15 @@
-import { groupBy, sortBy } from 'lodash'
-import { Candidate, Vote } from '../../../types/types'
+import { orderBy } from 'lodash'
+import { Candidate, Ballot } from '../../../types/types'
 
 import shuffle from 'lodash/shuffle'
 
 type CandidateId = Candidate['candidateId']
 
-type Ballot = CandidateId[]
+type BallotData = CandidateId[]
 
 interface WeightedVote {
   weight: number
-  vote: Ballot
+  vote: BallotData
 }
 
 type VoteMap = Map<CandidateId, WeightedVote[]>
@@ -37,7 +37,7 @@ export type VotingResult = {
   totalVotes: number
   roundResults: VotingRoundResult[]
   winners: CandidateId[]
-  ballots: Ballot[]
+  ballots: BallotData[]
 }
 
 const getCurrentVoteCountsOfCandidates = (
@@ -53,7 +53,7 @@ const getCurrentVoteCountsOfCandidates = (
 
 const findNextPreference = (
   voteMap: VoteMap,
-  vote: Ballot
+  vote: BallotData
 ): CandidateId | undefined => {
   return vote.find((c) => voteMap.has(c))
 }
@@ -143,7 +143,7 @@ const transferSurplusVotes = (
 
 export const calculateSTVResult = (
   candidates: Candidate[],
-  votesWithPreferences: Vote[],
+  ballots: Ballot[],
   numberOfSeats: number
 ): VotingResult => {
   const roundResults: VotingRoundResult[] = []
@@ -151,25 +151,15 @@ export const calculateSTVResult = (
   let votingIsFinished = false
   let round = 1
 
-  const votesGroupedByBallot = groupBy(
-    votesWithPreferences,
-    (vote) => vote.ballotId
-  )
-
-  const votes = Object.values(votesGroupedByBallot).map((votes) => ({
-    candidateIds: sortBy(votes, (vote) => vote.preferenceNumber).map(
-      (vote) => vote.candidateId
-    ),
-  }))
-
-  const nonEmptyVotes = votes.filter((vote) => vote.candidateIds.length > 0)
-  const nonEmptyVoteCount = nonEmptyVotes.length
+  const nonEmptyBallots = ballots.filter((ballot) => ballot.votes.length > 0)
+  const nonEmptyVoteCount = nonEmptyBallots.length
   const quota = Math.floor(nonEmptyVoteCount / (numberOfSeats + 1)) + 1
 
   const voteMap: VoteMap = new Map()
   candidates.forEach((c) => voteMap.set(c.candidateId, []))
 
-  votes.forEach(({ candidateIds }) => {
+  nonEmptyBallots.forEach(({ votes }) => {
+    const candidateIds = orderBy(votes, 'preferenceNumber').map(v => v.candidateId)
     const id = candidateIds[0]
     if (id) {
       const weightedVotes = voteMap.get(id)!
@@ -215,13 +205,11 @@ export const calculateSTVResult = (
     .flatMap((res) => res.candidateResults.filter((c) => c.isSelected))
     .map((c) => c.data.id)
 
-  const ballots = votes.map((v) => v.candidateIds)
-
   return {
-    totalVoters: votes.length,
+    totalVoters: ballots.length,
     totalVotes: nonEmptyVoteCount,
     roundResults,
     winners,
-    ballots,
+    ballots: ballots.map((b) => b.votes.map((v) => v.candidateId)),
   }
 }

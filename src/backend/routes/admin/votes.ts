@@ -1,6 +1,7 @@
-import Vote from '../../models/vote'
+import Ballot from '../../models/ballot'
 
 export const getVoteCount = async (electionId: string) => {
-  // Count the number of votes for an election group by ballot ID
-  return Vote.count({ where: { electionId }, distinct: true, col: 'ballotId' })
+  return Ballot.count({
+    where: { electionId },
+  })
 }

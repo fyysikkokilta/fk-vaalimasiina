@@ -43,12 +43,10 @@ export type Candidate = {
   updatedAt: string
 }
 
-export type Vote = {
-  voteId: string
+export type Ballot = {
   ballotId: string
   electionId: string
-  candidateId: string
-  preferenceNumber: number
+  votes: { candidateId: string; preferenceNumber: number }[]
   createdAt: string
   updatedAt: string
 }

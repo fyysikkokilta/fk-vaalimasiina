@@ -1,3 +1,4 @@
+import Ballot, { initBallot } from './ballot'
 import Candidate, { initCandidate } from './candidate'
 import Election, { initElection } from './election'
 import Vote, { initVote } from './vote'
@@ -37,6 +38,7 @@ export const initDatabase = async () => {
     )
     throw error
   }
+  initBallot(sequelize)
   initCandidate(sequelize)
   initElection(sequelize)
   initVote(sequelize)
@@ -49,9 +51,9 @@ export const initDatabase = async () => {
     as: 'candidates',
   })
 
-  Vote.belongsTo(Election, { foreignKey: 'electionId', as: 'election' })
-  Election.hasMany(Vote, {
-    foreignKey: 'electionId',
+  Vote.belongsTo(Ballot, { foreignKey: 'ballotId', as: 'ballot' })
+  Ballot.hasMany(Vote, {
+    foreignKey: 'ballotId',
     onDelete: 'CASCADE',
     as: 'votes',
   })

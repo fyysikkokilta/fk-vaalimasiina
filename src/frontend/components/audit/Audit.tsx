@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Container, Table, Alert, Card, Row, Col } from 'react-bootstrap'
 import { getVotesForElection } from '../../api/votes'
-import { Vote } from '../../../../types/types'
+import { Ballot } from '../../../../types/types'
 import { ElectionContext } from '../../contexts/election/ElectionContext'
-import { groupBy, orderBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
+import { orderBy } from 'lodash'
 
 export const Audit = () => {
   const { election } = useContext(ElectionContext)!
-  const [votes, setVotes] = useState<Vote[]>([])
+  const [ballots, setBallots] = useState<Ballot[]>([])
   const [loading, setLoading] = useState(true)
   const { t } = useTranslation('translation', { keyPrefix: 'voter.audit' })
 
@@ -25,7 +25,7 @@ export const Audit = () => {
         return
       }
 
-      setVotes(response.data)
+      setBallots(response.data)
       setLoading(false)
     })()
   }, [election])
@@ -59,13 +59,6 @@ export const Audit = () => {
     return <LoadingSpinner />
   }
 
-  const ballots = Object.entries(groupBy(votes, 'ballotId')).map(
-    ([ballotId, votes]) => ({
-      ballotId,
-      votes: orderBy(votes, 'preferenceNumber'),
-    })
-  )
-
   const getCandidateName = (candidateId: string) => {
     const candidate = election.candidates.find(
       (candidate) => candidate.candidateId === candidateId
@@ -80,9 +73,6 @@ export const Audit = () => {
         <Card.Header as="h2">{t('title')}</Card.Header>
         <Card.Header as="h4">{election.title}</Card.Header>
         <Card.Body>
-          <div className="mb-2">
-            {t('empty_vote_notice')}
-          </div>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -100,7 +90,7 @@ export const Audit = () => {
                         <tr>
                           <td colSpan={2}>
                             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                              {audit.votes.map((vote, index) => (
+                              {audit.votes.length > 0 ? orderBy(audit.votes, 'preferenceNumber').map((vote, index) => (
                                 <div
                                   key={index}
                                   style={{ marginRight: '10px' }}
@@ -108,7 +98,7 @@ export const Audit = () => {
                                   {vote.preferenceNumber}.{' '}
                                   {getCandidateName(vote.candidateId)}
                                 </div>
-                              ))}
+                              )) : t('empty_ballot')}
                             </div>
                           </td>
                         </tr>

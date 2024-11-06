@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { addCandidates, modifyCandidates } from '../../routes/admin/candidates'
+import { modifyCandidates } from '../../routes/admin/candidates'
 import { validateUuid } from '../../validation/validation'
 import {
   abortVoting,
@@ -13,20 +13,9 @@ import {
 export const handleNewElection = async (req: Request, res: Response) => {
   const { title, description, amountToElect, candidates } = req.body
   try {
-    const election = await createElection(title, description, amountToElect)
-    const insertedCandidates = await addCandidates(
-      election.electionId,
-      candidates
-    )
-    const insertedCandidatesPlain = insertedCandidates.map((candidate) =>
-      candidate.get({ plain: true })
-    )
+    const election = await createElection(title, description, amountToElect, candidates)
 
-    const electionWithCandidates = {
-      ...election,
-      candidates: insertedCandidatesPlain,
-    }
-    res.status(201).json(electionWithCandidates)
+    res.status(201).json(election)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }

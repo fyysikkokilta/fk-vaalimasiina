@@ -1,12 +1,13 @@
-import Vote from '../models/vote'
+import Ballot from '../models/ballot'
 import Voter from '../models/voter'
 import { isNoElectionOngoing } from './elections'
 import { VoteData } from '../../../types/types'
+import Vote from '../models/vote'
+import { CreationAttributes } from 'sequelize'
 
 export const addVote = async (
   voterId: string,
   electionId: string,
-  ballotId: string,
   ballot: VoteData['ballot']
 ) => {
   if (await isNoElectionOngoing(electionId)) {
@@ -16,14 +17,21 @@ export const addVote = async (
   const transaction = await Vote.sequelize!.transaction()
 
   try {
-    const vote = await Vote.bulkCreate(
-      ballot.map((b) => ({
-        ballotId,
+    const savedBallot = await Ballot.create(
+      {
         electionId,
-        candidateId: b.candidateId,
-        preferenceNumber: b.preferenceNumber,
-      })),
-      { transaction }
+        votes: ballot.map((vote) => ({
+          candidateId: vote.candidateId,
+          preferenceNumber: vote.preferenceNumber,
+        })),
+      } as CreationAttributes<Ballot>,
+      {
+        transaction,
+        include: {
+          model: Vote,
+          as: 'votes',
+        }
+      }
     )
 
     await Voter.update(
@@ -33,7 +41,7 @@ export const addVote = async (
 
     await transaction.commit()
 
-    return vote
+    return savedBallot.get({ plain: true })
   } catch (error) {
     await transaction.rollback()
     return null

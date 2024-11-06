@@ -1,14 +1,16 @@
 import {
+  Association,
+  CreationOptional,
   DataTypes,
   fn,
-  HasOneCreateAssociationMixin,
   HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
   Model,
+  NonAttribute,
   Optional,
   Sequelize,
 } from 'sequelize'
 import { Election } from './election'
+import Ballot from './ballot'
 
 export interface CandidateAttributes {
   candidateId: string
@@ -26,14 +28,19 @@ export class Candidate
   public candidateId!: string
   public name!: string
   public electionId!: Election['electionId']
+  public ballots?: NonAttribute<Ballot[]>
+  public election?: NonAttribute<Election>
 
   public getElection!: HasOneGetAssociationMixin<Candidate>
-  public setElection!: HasOneSetAssociationMixin<Candidate, number>
-  public createElection!: HasOneCreateAssociationMixin<Candidate>
 
-  public readonly createdAt!: Date
-  public readonly updatedAt!: Date
-  public readonly deletedAt!: Date
+  public readonly createdAt!: CreationOptional<Date>
+  public readonly updatedAt!: CreationOptional<Date>
+  public readonly deletedAt!: CreationOptional<Date>
+
+  public static associations: {
+    ballots: Association<Candidate, Ballot>
+    election: Association<Candidate, Election>
+  }
 }
 
 export function initCandidate(sequelize: Sequelize): void {

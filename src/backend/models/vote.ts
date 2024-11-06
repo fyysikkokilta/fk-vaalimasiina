@@ -1,18 +1,20 @@
 import {
+  Association,
+  CreationOptional,
   DataTypes,
   fn,
   HasOneGetAssociationMixin,
   Model,
+  NonAttribute,
   Optional,
   Sequelize,
 } from 'sequelize'
 import Candidate from './candidate'
-import Election from './election'
+import Ballot from './ballot'
 
 export interface VoteAttributes {
   voteId: string
   ballotId: string
-  electionId: string
   candidateId: string
   preferenceNumber: number
 }
@@ -25,17 +27,23 @@ export class Vote
   implements VoteAttributes
 {
   public voteId!: string
-  public ballotId!: string
-  public electionId!: Candidate['electionId']
+  public ballotId!: Ballot['ballotId']
   public candidateId!: Candidate['candidateId']
   public preferenceNumber!: number
+  public ballot?: NonAttribute<Ballot>
+  public candidate?: NonAttribute<Candidate>
 
-  public getElection!: HasOneGetAssociationMixin<Election>
+  public getBallot!: HasOneGetAssociationMixin<Vote>
   public getCandidate!: HasOneGetAssociationMixin<Candidate>
 
-  public readonly createdAt!: Date
-  public readonly updatedAt!: Date
-  public readonly deletedAt!: Date
+  public readonly createdAt!: CreationOptional<Date>
+  public readonly updatedAt!: CreationOptional<Date>
+  public readonly deletedAt!: CreationOptional<Date>
+
+  public static associations: {
+    ballot: Association<Vote, Ballot>
+    candidate: Association<Vote, Candidate>
+  }
 }
 
 export function initVote(sequelize: Sequelize): void {
@@ -50,13 +58,9 @@ export function initVote(sequelize: Sequelize): void {
       ballotId: {
         type: DataTypes.UUID,
         allowNull: false,
-      },
-      electionId: {
-        type: DataTypes.UUID,
-        allowNull: false,
         references: {
-          model: 'elections',
-          key: 'electionId',
+          model: 'ballots',
+          key: 'ballotId',
         },
       },
       candidateId: {
@@ -76,11 +80,11 @@ export function initVote(sequelize: Sequelize): void {
       indexes: [
         {
           unique: true,
-          fields: ['ballotId', 'electionId', 'preferenceNumber'],
+          fields: ['ballotId', 'preferenceNumber'],
         },
         {
           unique: true,
-          fields: ['ballotId', 'electionId', 'candidateId'],
+          fields: ['ballotId', 'candidateId'],
         }
       ],
       sequelize,
