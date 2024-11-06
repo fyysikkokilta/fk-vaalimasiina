@@ -84,7 +84,7 @@
     "election_threshold": "Äänikynnys",
     "votes": "ääntä",
     "chosen": "Valittu",
-    "not_chosen": "putosi",
+    "not_chosen": "Putosi",
     "chosen_candidates": "Valitut ehdokkaat",
     "tie_breaker": "Tasatilanteen ratkaisu (arvonta)"
   },

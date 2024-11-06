@@ -1,6 +1,7 @@
 import React, {
   createContext,
   Dispatch,
+  ReactNode,
   SetStateAction,
   useEffect,
   useState,
@@ -32,7 +33,7 @@ type ElectionStepContextType = {
 export const ElectionStepContext =
   createContext<ElectionStepContextType | null>(null)
 
-export const ElectionStepProvider = ({ children }) => {
+export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
   const [cookies] = useCookies(['admin-token'])
   const [electionStep, setElectionStep] = useState<ElectionStep | null>(null)
   const { i18n } = useTranslation()
@@ -43,6 +44,7 @@ export const ElectionStepProvider = ({ children }) => {
       : electionStepSettingsEnglish
 
   useEffect(() => {
+    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       if (!cookies['admin-token']) {
         return

@@ -1,7 +1,6 @@
-import { orderBy } from 'lodash'
+import seedrandom from 'seedrandom'
+import _lodash, { orderBy } from 'lodash'
 import { Candidate, Ballot } from '../../../types/types'
-
-import shuffle from 'lodash/shuffle'
 
 type CandidateId = Candidate['candidateId']
 
@@ -61,7 +60,8 @@ const findNextPreference = (
 const dropOneCandidate = (
   voteMap: VoteMap,
   quota: number,
-  round: number
+  round: number,
+  electionId: string
 ): VotingRoundResult => {
   const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
   voteCounts.sort((a, b) => a[1] - b[1])
@@ -70,7 +70,23 @@ const dropOneCandidate = (
   const candidatesWithMinVotes = voteCounts.filter(
     ([, votes]) => votes === minVotes
   )
-  const candidateToBeDropped = shuffle(candidatesWithMinVotes)[0]
+
+  /**
+   * If there is a tie, we need to randomly select one of the candidates
+   * to be dropped. However, we need to make sure that the result is the same
+   * every time the function is called with the same election ballots. To
+   * achieve this, we seed the random number generator with the election ID.
+   * This way, the random number generator will always produce the same
+   * sequence of random numbers for the same election.
+   * 
+   * Since the election ID is pretty much random, this should is enough to
+   * ensure that the result is random but always the same for the same election.
+   */
+
+  seedrandom(electionId, { global: true });
+  const _ = _lodash.runInContext();
+
+  const candidateToBeDropped = _.shuffle(candidatesWithMinVotes)[0]
 
   const votesOfDroppedCandidate = voteMap.get(candidateToBeDropped[0])!
   voteMap.delete(candidateToBeDropped[0])
@@ -144,7 +160,8 @@ const transferSurplusVotes = (
 export const calculateSTVResult = (
   candidates: Candidate[],
   ballots: Ballot[],
-  numberOfSeats: number
+  numberOfSeats: number,
+  electionId: string
 ): VotingResult => {
   const roundResults: VotingRoundResult[] = []
   let winnerCount = 0
@@ -189,7 +206,7 @@ export const calculateSTVResult = (
         round
       )
     } else {
-      roundResult = dropOneCandidate(voteMap, quota, round)
+      roundResult = dropOneCandidate(voteMap, quota, round, electionId)
     }
 
     roundResults.push(roundResult)

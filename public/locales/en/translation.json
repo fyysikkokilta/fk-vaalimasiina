@@ -84,7 +84,7 @@
     "election_threshold": "Election threshold",
     "votes": "votes",
     "chosen": "Chosen",
-    "not_chosen": "eliminated",
+    "not_chosen": "Eliminated",
     "chosen_candidates": "Chosen candidates",
     "tie_breaker": "Tie breaker (random)"
   },

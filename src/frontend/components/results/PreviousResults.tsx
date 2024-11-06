@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { calculateSTVResult, VotingResult } from '../../utils/stvAlgorithm'
 import { ElectionResults } from '../shared/ElectionResults'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
@@ -17,6 +17,7 @@ export const PreviousResults = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
 
   useEffect(() => {
+    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       // Fetch election
       const electionResponse = await fetchElectionById(electionId!)
@@ -44,7 +45,8 @@ export const PreviousResults = () => {
         calculateSTVResult(
           election.candidates,
           response.data,
-          election.amountToElect
+          election.amountToElect,
+          election.electionId
         )
       )
     })()

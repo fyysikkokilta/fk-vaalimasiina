@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Election } from '../../../../types/types'
 import { Link } from 'react-router-dom'
 import { fetchCompletedElections } from '../../api/elections'
@@ -12,6 +12,7 @@ export const PreviousElectionList = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
 
   useEffect(() => {
+    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       const electionsData = await fetchCompletedElections()
 

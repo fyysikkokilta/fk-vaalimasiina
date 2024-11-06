@@ -99,7 +99,8 @@ export const ElectionResults = ({
                     ))}
                     {droppedCandidate && (
                       <ListGroup.Item className="text-danger">
-                        {getCandidateName(droppedCandidate.id)}{' '}
+                        {getCandidateName(droppedCandidate.id)} - {droppedCandidate.voteCount}{' '}
+                        {t('votes')} - {' '}
                         {t('not_chosen')}
                         {tieBreaker && ` - ${t('tie_breaker')}`}
                       </ListGroup.Item>
