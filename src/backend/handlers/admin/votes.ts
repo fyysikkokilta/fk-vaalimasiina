@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express'
-import { getVoteCount } from '../../routes/admin/votes'
 import { validateUuid } from '../../validation/validation'
 import { getVotes } from '../../routes/votes'
 
@@ -16,16 +15,6 @@ export const handleFetchVotesForElection = async (
   }
 }
 
-export const handleGetVoteCount = async (req: Request, res: Response) => {
-  const { electionId } = req.params
-  try {
-    const voteCount = await getVoteCount(electionId)
-    res.status(200).json(voteCount)
-  } catch (err) {
-    res.status(500).json({ message: err.message })
-  }
-}
-
 const router = Router()
 
 router.use('/:electionId', (req, res, next) => {
@@ -36,7 +25,6 @@ router.use('/:electionId', (req, res, next) => {
   next()
 })
 
-router.get('/:electionId/count', handleGetVoteCount)
 router.get('/:electionId', handleFetchVotesForElection)
 
 export default router
