@@ -14,8 +14,8 @@ import Ballot from './ballot'
 
 export interface CandidateAttributes {
   candidateId: string
-  name: string
   electionId: string
+  name: string
 }
 
 export interface CandidateCreationAttributes
@@ -26,8 +26,8 @@ export class Candidate
   implements CandidateAttributes
 {
   public candidateId!: string
-  public name!: string
   public electionId!: Election['electionId']
+  public name!: string
   public ballots?: NonAttribute<Ballot[]>
   public election?: NonAttribute<Election>
 
@@ -52,10 +52,6 @@ export function initCandidate(sequelize: Sequelize): void {
         allowNull: false,
         primaryKey: true,
       },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       electionId: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -64,13 +60,17 @@ export function initCandidate(sequelize: Sequelize): void {
           key: 'electionId',
         },
       },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       indexes: [
         {
           unique: true,
           fields: ['candidateId', 'electionId'],
-        },
+        }
       ],
       sequelize,
       tableName: 'candidates',
