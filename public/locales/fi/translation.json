@@ -82,12 +82,12 @@
     "export_minutes": "Kopioi tulokset leikepöydälle",
     "minutes_copied_to_clipboard": "Tulokset kopioitu leikepöydälle",
     "round": "Kierros",
-    "remaining_to_choose": "Valittavia jäljellä",
     "election_threshold": "Äänikynnys",
     "votes": "ääntä",
     "chosen": "Valittu",
     "not_chosen": "Putosi",
     "chosen_candidates": "Valitut ehdokkaat",
+    "empty_votes": "Tyhjiä",
     "tie_breaker": "Tasatilanteen ratkaisu (arvonta)"
   },
   "previous_results": {

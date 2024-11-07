@@ -86,6 +86,14 @@ export const ElectionResults = ({
 
     const roundParagraphs = votingResult.roundResults.map(
       ({ round, candidateResults, droppedCandidate, quota, tieBreaker }) => {
+        const emptyVotes =
+          votingResult.totalVotes -
+          roundToTwoDecimals(
+            candidateResults.reduce(
+              (sum, { data }) => sum + data.voteCount,
+              0
+            ) + (droppedCandidate?.voteCount || 0)
+          )
         const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${candidatesNamesAndIdsSorted
           .map(({ name, id }) => {
             const candidate = candidateResults
@@ -97,7 +105,7 @@ export const ElectionResults = ({
               .find((c) => c.data.id === id)
             return `${name} ${candidate ? roundToTwoDecimals(candidate.data.voteCount) : '-'}${candidate?.isSelected ? ' (valittu)' : ''}`
           })
-          .join('; ')}.`
+          .join('; ')}; tyhjiä ${emptyVotes}.`
         const winnersThisRound = candidateResults.filter(
           ({ data }) =>
             data.voteCount >= quota && winners.indexOf(data.id) === -1
@@ -180,10 +188,6 @@ export const ElectionResults = ({
                 </Card.Header>
                 <Card.Body>
                   <Card.Title>
-                    {t('remaining_to_choose')}:&nbsp;
-                    {election.amountToElect -
-                      candidateResults.filter(({ isSelected }) => isSelected)
-                        .length}
                     &nbsp; {t('election_threshold')}:&nbsp;{quota}
                   </Card.Title>
                   <ListGroup variant="flush">
@@ -213,6 +217,18 @@ export const ElectionResults = ({
                         {tieBreaker && ` - ${t('tie_breaker')}`}
                       </ListGroup.Item>
                     )}
+                    {
+                      <ListGroup.Item>
+                        {t('empty_votes')}:{' '}
+                        {votingResult.totalVotes -
+                          roundToTwoDecimals(
+                            candidateResults.reduce(
+                              (sum, { data }) => sum + data.voteCount,
+                              0
+                            ) + (droppedCandidate?.voteCount || 0)
+                          )}
+                      </ListGroup.Item>
+                    }
                   </ListGroup>
                 </Card.Body>
               </Card>

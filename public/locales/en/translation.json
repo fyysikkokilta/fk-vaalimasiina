@@ -82,12 +82,12 @@
     "export_minutes": "Copy results to clipboard",
     "minutes_copied_to_clipboard": "Results copied to clipboard",
     "round": "Round",
-    "remaining_to_choose": "Remaining to elect",
     "election_threshold": "Election threshold",
     "votes": "votes",
     "chosen": "Chosen",
     "not_chosen": "Eliminated",
     "chosen_candidates": "Chosen candidates",
+    "empty_votes": "Empty",
     "tie_breaker": "Tie breaker (random)"
   },
   "previous_results": {
