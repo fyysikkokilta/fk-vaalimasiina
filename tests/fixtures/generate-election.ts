@@ -9,22 +9,35 @@ import {
 import { readFixture } from './read-fixture'
 
 const main = async () => {
-  const voteFileName = 'captain-votes.csv'
+  const args = process.argv.slice(2)
+  if (args.length < 2) {
+    console.error(
+      'Usage: ts-node generate-election.ts <amountToElect> <voteFileName>'
+    )
+    process.exit(1)
+  }
+
+  const amountToElect = parseInt(args[0], 10)
+  const voteFileName = args[1]
+
+  if (isNaN(amountToElect) || amountToElect <= 0) {
+    console.error('Invalid amountToElect. It should be a positive integer.')
+    process.exit(1)
+  }
   const voteFixture = await readFixture(voteFileName)
 
   await resetDatabase()
 
-  const title = 'Captain Election'
-  const description = 'Vote for your captain'
-  const amountToElect = 2
-  const candidates: CandidateData[] = [
-    { name: '2' },
-    { name: '3' },
-    { name: '4' },
-    { name: '5' },
-    { name: '6' },
-    { name: '7' },
-  ]
+  const title = 'Test Election'
+  const description = 'Vote for your favorite'
+  const candidates = voteFixture.reduce<CandidateData[]>((acc, votes) => {
+    votes.forEach((name) => {
+      if (!acc.some((c) => c.name === name)) {
+        acc.push({ name })
+      }
+    })
+    return acc
+  }, [])
   const status = 'CLOSED' as const
 
   const electionData = {
@@ -38,7 +51,7 @@ const main = async () => {
   const election = await insertElection(electionData)
 
   const votersData = voteFixture.map(() => {
-    return `${randomUUID()}@example.com`
+    return `${randomUUID()}@mail.com`
   })
 
   const voters = await insertVoters({

@@ -8,7 +8,7 @@
     "start": "cross-env NODE_ENV=production tsx src/backend/server.ts",
     "build": "vite build",
     "test-stv": "node --loader ts-node/esm ./src/frontend/components/admin/adminMain/results/stvAlgorithm",
-    "generate-captain-election": "node --loader ts-node/esm ./tests/fixtures/generate-captain-election",
+    "generate-election": "node --loader ts-node/esm ./tests/fixtures/generate-election",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type:check": "tsc --noEmit",
     "prettier:format": "prettier --write ."
