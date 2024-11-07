@@ -1,5 +1,5 @@
 import { APIRequestContext } from '@playwright/test'
-import { Election, Vote, Voter } from '../../types/types'
+import { Ballot, Election, Voter } from '../../types/types'
 
 export const resetDatabase = async (request: APIRequestContext) => {
   await request.post('/api/test/db')
@@ -38,5 +38,5 @@ export const insertVotes = async (
   }
 ) => {
   const response = await request.post('/api/test/votes', { data })
-  return response.json() as Promise<Vote[]>
+  return response.json() as Promise<Ballot[]>
 }
