@@ -12,16 +12,16 @@ import { Election, Voter } from '../types/types'
 let election: Election
 let voters: Voter[]
 
-test.beforeEach(async ({ page, request }) => {
-  await resetDatabase(request)
-  election = await insertElection(request, {
+test.beforeEach(async ({ page }) => {
+  await resetDatabase()
+  election = await insertElection({
     title: 'Election 1',
     description: 'Description 1',
     amountToElect: 1,
     candidates: [{ name: 'Candidate 1' }],
     status: 'ONGOING',
   })
-  voters = await insertVoters(request, {
+  voters = await insertVoters({
     electionId: election.electionId,
     emails: [
       'email1@email.com',
@@ -72,8 +72,8 @@ test.describe('with no given votes', () => {
 })
 
 test.describe('with some votes', () => {
-  test.beforeEach(async ({ request }) => {
-    await insertVotes(request, {
+  test.beforeEach(async () => {
+    await insertVotes({
       electionId: election.electionId,
       voterIdBallotPairs: [
         {
@@ -124,8 +124,8 @@ test.describe('with some votes', () => {
 })
 
 test.describe('with all votes', () => {
-  test.beforeEach(async ({ request }) => {
-    await insertVotes(request, {
+  test.beforeEach(async () => {
+    await insertVotes({
       electionId: election.electionId,
       voterIdBallotPairs: [
         {

@@ -3,9 +3,9 @@ import { expect, test } from '@playwright/test'
 import { loginAdmin } from './utils/admin-login'
 import { insertElection, resetDatabase } from './utils/db'
 
-test.beforeEach(async ({ page, request }) => {
-  await resetDatabase(request)
-  await insertElection(request, {
+test.beforeEach(async ({ page }) => {
+  await resetDatabase()
+  await insertElection({
     title: 'Election 1',
     description: 'Description 1',
     amountToElect: 1,

@@ -20,6 +20,9 @@ export const ElectionResults = ({
     keyPrefix: 'results',
   })
 
+  const roundToTwoDecimals = (num: number) =>
+    Math.round((num + Number.EPSILON) * 100) / 100
+
   const getCandidateName = (candidateId: string) => {
     const candidate = election.candidates.find(
       (c) => c.candidateId === candidateId
@@ -85,8 +88,14 @@ export const ElectionResults = ({
       ({ round, candidateResults, droppedCandidate, quota, tieBreaker }) => {
         const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${candidatesNamesAndIdsSorted
           .map(({ name, id }) => {
-            const candidate = candidateResults.find((c) => c.data.id === id)
-            return `${name} ${candidate ? Math.round((candidate.data.voteCount + Number.EPSILON) * 100) / 100 : '-'} ${candidate?.isSelected ? '(valittu)' : ''}`
+            const candidate = candidateResults
+              .concat(
+                droppedCandidate
+                  ? [{ data: droppedCandidate, isSelected: false }]
+                  : []
+              )
+              .find((c) => c.data.id === id)
+            return `${name} ${candidate ? roundToTwoDecimals(candidate.data.voteCount) : '-'}${candidate?.isSelected ? ' (valittu)' : ''}`
           })
           .join('; ')}.`
         const winnersThisRound = candidateResults.filter(
@@ -109,7 +118,7 @@ export const ElectionResults = ({
         const winnersExtraParagraph =
           winnersThisRound.length > 0 &&
           round !== votingResult.roundResults.length
-            ? `${round + 1}. kierroksella jaettiin ${winnersNames} äänikynnyksen ylittäneet ${winnersThisRound.map(({ data }) => data.voteCount - quota).join('ja')} ääntä muille ehdokkaille siirtoäänivaalitavan määräämillä kertoimilla painotettuna.`
+            ? `${round + 1}. kierroksella jaettiin ${winnersNames} äänikynnyksen ylittäneet ${winnersThisRound.map(({ data }) => data.voteCount - quota).join(' ja ')} ääntä muille ehdokkaille siirtoäänivaalitavan määräämillä kertoimilla painotettuna.`
             : null
 
         const paragraph = [
@@ -124,7 +133,7 @@ export const ElectionResults = ({
       }
     )
 
-    const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${votingResult.winners.map((id) => getCandidateName(id)).join('ja')} Fyysikkokillan rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
+    const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${votingResult.winners.map((id) => getCandidateName(id)).join(' ja ')} Fyysikkokillan rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
 
     navigator.clipboard.writeText(
       [firstParagraph, secondParagraph, ...roundParagraphs, winnersParagraph]
@@ -178,20 +187,29 @@ export const ElectionResults = ({
                     &nbsp; {t('election_threshold')}:&nbsp;{quota}
                   </Card.Title>
                   <ListGroup variant="flush">
-                    {candidateResults.map(({ data, isSelected }) => (
-                      <ListGroup.Item key={data.id}>
-                        {getCandidateName(data.id)} - {data.voteCount}{' '}
-                        {t('votes')}
-                        {isSelected && (
-                          <span className="text-success"> - {t('chosen')}</span>
-                        )}
-                      </ListGroup.Item>
-                    ))}
+                    {candidateResults
+                      .sort((a, b) =>
+                        getCandidateName(a.data.id).localeCompare(
+                          getCandidateName(b.data.id)
+                        )
+                      )
+                      .map(({ data, isSelected }) => (
+                        <ListGroup.Item key={data.id}>
+                          {getCandidateName(data.id)} -{' '}
+                          {roundToTwoDecimals(data.voteCount)} {t('votes')}
+                          {isSelected && (
+                            <span className="text-success">
+                              {' '}
+                              - {t('chosen')}
+                            </span>
+                          )}
+                        </ListGroup.Item>
+                      ))}
                     {droppedCandidate && (
                       <ListGroup.Item className="text-danger">
                         {getCandidateName(droppedCandidate.id)} -{' '}
-                        {droppedCandidate.voteCount} {t('votes')} -{' '}
-                        {t('not_chosen')}
+                        {roundToTwoDecimals(droppedCandidate.voteCount)}{' '}
+                        {t('votes')} - {t('not_chosen')}
                         {tieBreaker && ` - ${t('tie_breaker')}`}
                       </ListGroup.Item>
                     )}
@@ -206,11 +224,15 @@ export const ElectionResults = ({
         <Col className="text-center">
           <h4>{t('chosen_candidates')}</h4>
           <ListGroup>
-            {votingResult.winners.map((winnerId) => (
-              <ListGroup.Item key={winnerId}>
-                {getCandidateName(winnerId)}
-              </ListGroup.Item>
-            ))}
+            {votingResult.winners
+              .map((id) => ({
+                id,
+                name: getCandidateName(id),
+              }))
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((winner) => (
+                <ListGroup.Item key={winner.id}>{winner.name}</ListGroup.Item>
+              ))}
           </ListGroup>
         </Col>
       </Row>

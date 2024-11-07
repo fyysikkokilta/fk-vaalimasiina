@@ -44,7 +44,7 @@ const getCurrentVoteCountsOfCandidates = (
 ): [CandidateId, number][] => {
   const counts: [CandidateId, number][] = []
   voteMap.forEach((votes, id) => {
-    const totalVotes = votes.reduce((sum, v) => sum + v.weight, 0)
+    const totalVotes = votes.reduce((sum, v) => sum + v.weight, 0.0)
     counts.push([id, totalVotes])
   })
   return counts
@@ -61,7 +61,8 @@ const dropOneCandidate = (
   voteMap: VoteMap,
   quota: number,
   round: number,
-  electionId: string
+  electionId: string,
+  previouslySelectedCandidates: Set<CandidateId>
 ): VotingRoundResult => {
   const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
   voteCounts.sort((a, b) => a[1] - b[1])
@@ -78,13 +79,13 @@ const dropOneCandidate = (
    * achieve this, we seed the random number generator with the election ID.
    * This way, the random number generator will always produce the same
    * sequence of random numbers for the same election.
-   * 
+   *
    * Since the election ID is pretty much random, this should is enough to
    * ensure that the result is random but always the same for the same election.
    */
 
-  seedrandom(electionId, { global: true });
-  const _ = _lodash.runInContext();
+  seedrandom(electionId, { global: true })
+  const _ = _lodash.runInContext()
 
   const candidateToBeDropped = _.shuffle(candidatesWithMinVotes)[0]
 
@@ -104,6 +105,12 @@ const dropOneCandidate = (
       isSelected: false,
     }))
     .filter((result) => result.data.id !== candidateToBeDropped[0])
+    .concat(
+      Array.from(previouslySelectedCandidates).map((c) => ({
+        data: { id: c, voteCount: quota },
+        isSelected: true,
+      }))
+    )
 
   return {
     round,
@@ -121,18 +128,20 @@ const transferSurplusVotes = (
   voteMap: VoteMap,
   electedCandidates: Set<CandidateId>,
   quota: number,
-  round: number
+  round: number,
+  previouslySelectedCandidates: Set<CandidateId>
 ): VotingRoundResult => {
   const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
-  voteCounts.sort((a, b) => b[1] - a[1])
 
   electedCandidates.forEach((candidate) => {
-    const votes = voteMap.get(candidate)!
-    const totalVotes = votes.reduce((sum, v) => sum + v.weight, 0)
+    const votesOfWinner = voteMap.get(candidate)!
+    const totalVotes = votesOfWinner.reduce((sum, v) => sum + v.weight, 0)
     const surplus = totalVotes - quota
 
+    voteMap.delete(candidate)
+
     if (surplus > 0) {
-      votes.forEach((vote) => {
+      votesOfWinner.forEach((vote) => {
         vote.weight = (vote.weight / totalVotes) * surplus
         const secondaryPreference = findNextPreference(voteMap, vote.vote)
         if (secondaryPreference) {
@@ -140,19 +149,26 @@ const transferSurplusVotes = (
         }
       })
     }
-
-    voteMap.delete(candidate)
   })
 
-  const candidateResults = voteCounts.map(([c, v]) => ({
-    data: { id: c, voteCount: v },
-    isSelected: electedCandidates.has(c),
-  }))
+  const candidateResults = voteCounts
+    .map(([c, v]) => ({
+      data: { id: c, voteCount: v },
+      isSelected: electedCandidates.has(c),
+    }))
+    .concat(
+      Array.from(previouslySelectedCandidates)
+        .filter((c) => !electedCandidates.has(c))
+        .map((c) => ({
+          data: { id: c, voteCount: quota },
+          isSelected: true,
+        }))
+    )
 
   return {
     round,
     quota,
-    candidateResults: candidateResults,
+    candidateResults,
     droppedCandidate: null,
   }
 }
@@ -175,8 +191,12 @@ export const calculateSTVResult = (
   const voteMap: VoteMap = new Map()
   candidates.forEach((c) => voteMap.set(c.candidateId, []))
 
+  const previouslySelectedCandidates = new Set<CandidateId>()
+
   nonEmptyBallots.forEach(({ votes }) => {
-    const candidateIds = orderBy(votes, 'preferenceNumber').map(v => v.candidateId)
+    const candidateIds = orderBy(votes, 'preferenceNumber').map(
+      (v) => v.candidateId
+    )
     const id = candidateIds[0]
     if (id) {
       const weightedVotes = voteMap.get(id)!
@@ -197,16 +217,25 @@ export const calculateSTVResult = (
         .map(([id]) => id)
     )
 
+    electedCandidates.forEach((c) => previouslySelectedCandidates.add(c))
+
     let roundResult: VotingRoundResult
     if (electedCandidates.size > 0) {
       roundResult = transferSurplusVotes(
         voteMap,
         electedCandidates,
         quota,
-        round
+        round,
+        previouslySelectedCandidates
       )
     } else {
-      roundResult = dropOneCandidate(voteMap, quota, round, electionId)
+      roundResult = dropOneCandidate(
+        voteMap,
+        quota,
+        round,
+        electionId,
+        previouslySelectedCandidates
+      )
     }
 
     roundResults.push(roundResult)
@@ -218,9 +247,9 @@ export const calculateSTVResult = (
     }
   }
 
-  const winners = roundResults
-    .flatMap((res) => res.candidateResults.filter((c) => c.isSelected))
-    .map((c) => c.data.id)
+  const winners = roundResults[roundResults.length - 1].candidateResults
+    .filter((result) => result.isSelected)
+    .map((result) => result.data.id)
 
   return {
     totalVoters: ballots.length,
