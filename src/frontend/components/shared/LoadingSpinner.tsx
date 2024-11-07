@@ -7,9 +7,8 @@ export const LoadingSpinner = () => {
   return (
     <Card className="box-shadow m-5">
       <Container className="text-center">
-        <Spinner animation="border" role="status">
-          <span className="sr-only">{t('loading')}</span>
-        </Spinner>
+        <span className="sr-only">{t('loading')}</span>
+        <Spinner animation="border" role="status" />
       </Container>
     </Card>
   )
