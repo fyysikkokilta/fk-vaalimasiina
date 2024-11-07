@@ -32,7 +32,7 @@ export const ElectionResults = ({
 
   const exportBallotsToCSV = () => {
     const headers = [
-      'Lipuke',
+      'Ballot',
       ...Array.from(
         { length: election.candidates.length },
         (_, i) => `Preference ${i + 1}`
@@ -40,12 +40,12 @@ export const ElectionResults = ({
     ]
     const rows = votingResult.ballots.map((ballot, i) => [
       i + 1,
-      ballot.map((candidateId) => getCandidateName(candidateId)),
+      ...ballot.map((candidateId) => getCandidateName(candidateId)),
     ])
 
     const csvContent = [
-      headers.join(','),
-      ...rows.map((row) => row.join(',')),
+      headers.join(';'),
+      ...rows.map((row) => row.join(';')),
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
