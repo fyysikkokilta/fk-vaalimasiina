@@ -31,17 +31,14 @@ export const ElectionResults = ({
   }
 
   const exportBallotsToCSV = () => {
-    const headers = [
-      'Ballot',
-      ...Array.from(
-        { length: election.candidates.length },
-        (_, i) => `Preference ${i + 1}`
-      ),
-    ]
-    const rows = votingResult.ballots.map((ballot, i) => [
-      i + 1,
-      ...ballot.map((candidateId) => getCandidateName(candidateId)),
-    ])
+    const headers = Array.from(
+      { length: election.candidates.length },
+      (_, i) => `Preference ${i + 1}`
+    )
+
+    const rows = votingResult.ballots.map((ballot) =>
+      ballot.map((candidateId) => getCandidateName(candidateId))
+    )
 
     const csvContent = [
       headers.join(';'),
@@ -226,7 +223,7 @@ export const ElectionResults = ({
                               (sum, { data }) => sum + data.voteCount,
                               0
                             ) +
-                            (droppedCandidate?.voteCount || 0))
+                              (droppedCandidate?.voteCount || 0))
                         )}
                       </ListGroup.Item>
                     }

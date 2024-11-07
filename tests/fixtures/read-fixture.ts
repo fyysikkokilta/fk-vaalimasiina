@@ -7,7 +7,7 @@ const readCSV = async (filePath: string) => {
   const rows: string[][] = []
   return new Promise<string[][]>((resolve, reject) => {
     fs.createReadStream(filePath)
-      .pipe(parse({ delimiter: ';' }))
+      .pipe(parse({ delimiter: ';', fromLine: 2 })) // Skip the header
       .on('data', (row: string[]) => rows.push(row.filter(Boolean)))
       .on('end', () => resolve(rows))
       .on('error', reject)
