@@ -3,7 +3,6 @@ import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
 import { Election } from '../../../../types/types'
 import { VotingResult } from '../../utils/stvAlgorithm'
 
-import styles from './electionResults.module.scss'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
@@ -149,7 +148,7 @@ export const ElectionResults = ({
   }
 
   return (
-    <Container className={styles.resultsContainer}>
+    <Container>
       <Row className="mb-4">
         <Col className="mb-3 text-center">
           <h3>{election.title}</h3>

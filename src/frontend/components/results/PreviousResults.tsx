@@ -8,7 +8,6 @@ import { fetchElectionById } from '../../api/elections'
 import { NavLink, useParams } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import styles from './previousResults.module.scss'
 
 export const PreviousResults = () => {
   const { electionId } = useParams<{ electionId: string }>()
@@ -58,19 +57,19 @@ export const PreviousResults = () => {
 
   return (
     <Card className="box-shadow m-5">
-      <Card.Header className={styles.previousResultsHeader}>
-        <div className={styles.link}>
-          <NavLink to="/elections" className="btn btn-secondary">
-            {t('back_to_list')}
-          </NavLink>
-        </div>
-        <h1>{t('title')}</h1>
-      </Card.Header>
+      <Card.Header as="h2">{t('title')}</Card.Header>
       <Card.Body>
         {!votingResult || !election ? (
           <LoadingSpinner />
         ) : (
-          <ElectionResults election={election} votingResult={votingResult} />
+          <>
+            <div className="d-flex justify-content-center mb-3">
+              <NavLink to="/elections" className="btn btn-secondary">
+                {t('back_to_list')}
+              </NavLink>
+            </div>
+            <ElectionResults election={election} votingResult={votingResult} />
+          </>
         )}
       </Card.Body>
     </Card>

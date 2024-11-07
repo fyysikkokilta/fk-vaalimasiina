@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Row, Col, Form, Button, ListGroup } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
-import styles from './newElection.module.scss'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { ElectionData } from '../../../../../../types/types'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
@@ -94,7 +93,7 @@ export const NewElection = () => {
   return (
     <>
       <AdminNavigation disableNext={disabled} onNext={handleSubmit} />
-      <Form className={styles.newElectionForm}>
+      <Form className="mt-3">
         <Row>
           <Col>
             <Form.Group className="mb-3" controlId="title">
@@ -147,7 +146,7 @@ export const NewElection = () => {
               <Form.Label>{t('candidates')}</Form.Label>
               <ListGroup>
                 {newElection.candidates.map((candidate, i) => (
-                  <ListGroup.Item key={i} className={styles.candidate}>
+                  <ListGroup.Item key={i}>
                     <Row>
                       <Col className="d-flex align-items-center">
                         <b>{candidate.name}</b>

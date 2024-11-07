@@ -152,7 +152,7 @@ export const abortVoting = async (electionId: string) => {
 
     await Ballot.destroy({ where: { electionId }, transaction })
 
-    await Voter.destroy({ where: { electionId }, transaction })
+    await Voter.destroy({ where: { electionId }, transaction, force: true })
 
     await transaction.commit()
   } catch (err) {

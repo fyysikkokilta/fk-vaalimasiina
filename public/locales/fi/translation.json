@@ -60,13 +60,14 @@
       "preview_election": {
         "amount_to_choose": "Valitaan",
         "candidates": "Ehdokkaat",
-        "voters": "Äänestäjiä",
+        "voters": "Äänestäjät",
         "email_list_instruction": "Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna",
         "email_list_placeholder": "sähköposti@mail.com\nsähköposti2@mail.com\n"
       },
       "voting_inspection": {
         "given_votes": "Annettuja ääniä",
         "voters": "Äänestäjiä",
+        "remaining_voters": "Jäljellä olevat äänestäjät",
         "hide_remaining_voters": "Piilota jäljellä olevat äänestäjät",
         "show_remaining_voters": "Näytä jäljellä olevat äänestäjät",
         "old_email": "Vaihdettava sähköposti",

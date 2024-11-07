@@ -32,9 +32,7 @@ export const PreviousElectionList = () => {
 
   return (
     <Card className="box-shadow m-5">
-      <Card.Header>
-        <h1>{t('title')}</h1>
-      </Card.Header>
+      <Card.Header as="h2">{t('title')}</Card.Header>
       <Card.Body>
         {elections.length > 0 ? (
           <Container>

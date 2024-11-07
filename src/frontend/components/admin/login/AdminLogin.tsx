@@ -21,9 +21,7 @@ export const AdminLogin = () => {
   }
   return (
     <Card className="box-shadow m-5">
-      <Card.Header>
-        <h1>{t('title')}</h1>
-      </Card.Header>
+      <Card.Header as="h2">{t('title')}</Card.Header>
       <Card.Body>
         <Row className="justify-content-center">
           <Col md={6}>

@@ -67,6 +67,7 @@
       "voting_inspection": {
         "given_votes": "Given votes",
         "voters": "Voters",
+        "remaining_voters": "Remaining voters",
         "hide_remaining_voters": "Hide remaining voters",
         "show_remaining_voters": "Show remaining voters",
         "old_email": "Email to change",

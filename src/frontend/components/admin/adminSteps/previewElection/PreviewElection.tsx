@@ -1,7 +1,5 @@
 import React, { useState, useContext } from 'react'
 
-import styles from './previewElection.module.scss'
-
 import { Col, Container, Form, ListGroup } from 'react-bootstrap'
 
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
@@ -48,36 +46,34 @@ export const PreviewElection = () => {
       {!election ? (
         <LoadingSpinner />
       ) : (
-        <Container className={styles.previewElectionContainer}>
+        <Container className="d-flex flex-column align-items-center">
+          <h3 className="mb-3">{election.title}</h3>
+          <div className="mb-3">{election.description}</div>
+          <div className="mb-3">
+            {t('amount_to_choose')}: {election.amountToElect}
+          </div>
+          <h4>{t('candidates')}</h4>
           <Col>
-            <h3>{election.title}</h3>
-            <p>{election.description}</p>
-            <span>
-              {t('amount_to_choose')}: {election.amountToElect}
-            </span>
-            <h4>{t('candidates')}</h4>
-            <Col>
-              <ListGroup numbered>
-                {election.candidates.map((candidate) => (
-                  <ListGroup.Item key={candidate.candidateId}>
-                    {candidate.name}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Col>
-            <h4 className="mt-3">{t('voters')}</h4>
-            <Form.Group controlId="emailList">
-              <Form.Label>{t('email_list_instruction')}</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={5}
-                value={emails}
-                isValid={validateEmails(emails)}
-                onChange={(e) => setEmails(e.target.value)}
-                placeholder={t('email_list_placeholder')}
-              />
-            </Form.Group>
+            <ListGroup numbered>
+              {election.candidates.map((candidate) => (
+                <ListGroup.Item key={candidate.candidateId}>
+                  {candidate.name}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
           </Col>
+          <h4 className="mt-3">{t('voters')}</h4>
+          <Form.Group controlId="emailList">
+            <Form.Label>{t('email_list_instruction')}</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={5}
+              value={emails}
+              isValid={validateEmails(emails)}
+              onChange={(e) => setEmails(e.target.value)}
+              placeholder={t('email_list_placeholder')}
+            />
+          </Form.Group>
         </Container>
       )}
     </>
