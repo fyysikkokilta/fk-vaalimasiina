@@ -220,13 +220,14 @@ export const ElectionResults = ({
                     {
                       <ListGroup.Item>
                         {t('empty_votes')}:{' '}
-                        {votingResult.totalVotes -
-                          roundToTwoDecimals(
-                            candidateResults.reduce(
+                        {roundToTwoDecimals(
+                          votingResult.totalVotes -
+                            (candidateResults.reduce(
                               (sum, { data }) => sum + data.voteCount,
                               0
-                            ) + (droppedCandidate?.voteCount || 0)
-                          )}
+                            ) +
+                            (droppedCandidate?.voteCount || 0))
+                        )}
                       </ListGroup.Item>
                     }
                   </ListGroup>
