@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
     description: 'Description 1',
     amountToElect: 1,
     candidates: [{ name: 'Candidate 1' }],
-    status: 'CREATED',
+    status: 'CREATED'
   })
   await loginAdmin(page)
   await expect(

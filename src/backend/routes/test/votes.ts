@@ -18,8 +18,8 @@ export const createTestVotes = async (
           electionId,
           votes: pair.ballot.map((vote) => ({
             candidateId: vote.candidateId,
-            preferenceNumber: vote.preferenceNumber,
-          })),
+            preferenceNumber: vote.preferenceNumber
+          }))
         }) as CreationAttributes<Ballot>
     ),
     {
@@ -27,9 +27,9 @@ export const createTestVotes = async (
       include: [
         {
           model: Vote,
-          as: 'votes',
-        },
-      ],
+          as: 'votes'
+        }
+      ]
     }
   )
 
@@ -37,8 +37,8 @@ export const createTestVotes = async (
     { hasVoted: true },
     {
       where: {
-        voterId: { [Op.in]: voterIdBallotPairs.map((e) => e.voterId) },
-      },
+        voterId: { [Op.in]: voterIdBallotPairs.map((e) => e.voterId) }
+      }
     }
   )
 

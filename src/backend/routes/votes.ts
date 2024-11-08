@@ -6,7 +6,7 @@ export const getVotes = async (electionId: string) => {
     where: { electionId },
     include: {
       model: Vote,
-      as: 'votes',
+      as: 'votes'
     }
   })
   return ballots.map((ballot) => ballot.get({ plain: true }))

@@ -1,4 +1,14 @@
-import { Association, CreationOptional, DataTypes, fn, HasOneGetAssociationMixin, Model, NonAttribute, Optional, Sequelize } from 'sequelize'
+import {
+  Association,
+  CreationOptional,
+  DataTypes,
+  fn,
+  HasOneGetAssociationMixin,
+  Model,
+  NonAttribute,
+  Optional,
+  Sequelize
+} from 'sequelize'
 import Election from './election'
 
 export interface VoterAttributes {
@@ -39,36 +49,36 @@ export function initVoter(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         defaultValue: fn('gen_random_uuid'),
         allowNull: false,
-        primaryKey: true,
+        primaryKey: true
       },
       electionId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'elections',
-          key: 'electionId',
-        },
+          key: 'electionId'
+        }
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       hasVoted: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false,
-      },
+        defaultValue: false
+      }
     },
     {
       indexes: [
         {
           unique: true,
-          fields: ['electionId', 'email'],
-        },
+          fields: ['electionId', 'email']
+        }
       ],
       sequelize,
       tableName: 'voters',
-      paranoid: true,
+      paranoid: true
     }
   )
 }

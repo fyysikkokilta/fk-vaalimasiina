@@ -7,4 +7,3 @@ test.beforeEach(async ({ page }) => {
   await resetDatabase()
   await loginAdmin(page)
 })
-

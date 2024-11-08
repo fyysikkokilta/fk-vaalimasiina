@@ -22,14 +22,14 @@ export const addVote = async (
         electionId,
         votes: ballot.map((vote) => ({
           candidateId: vote.candidateId,
-          preferenceNumber: vote.preferenceNumber,
-        })),
+          preferenceNumber: vote.preferenceNumber
+        }))
       } as CreationAttributes<Ballot>,
       {
         transaction,
         include: {
           model: Vote,
-          as: 'votes',
+          as: 'votes'
         }
       }
     )

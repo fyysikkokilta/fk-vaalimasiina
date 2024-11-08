@@ -7,7 +7,7 @@ import {
   Model,
   NonAttribute,
   Optional,
-  Sequelize,
+  Sequelize
 } from 'sequelize'
 import { Election } from './election'
 import Ballot from './ballot'
@@ -50,31 +50,31 @@ export function initCandidate(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         defaultValue: fn('gen_random_uuid'),
         allowNull: false,
-        primaryKey: true,
+        primaryKey: true
       },
       electionId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'elections',
-          key: 'electionId',
-        },
+          key: 'electionId'
+        }
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
-      },
+        allowNull: false
+      }
     },
     {
       indexes: [
         {
           unique: true,
-          fields: ['candidateId', 'electionId'],
+          fields: ['candidateId', 'electionId']
         }
       ],
       sequelize,
       tableName: 'candidates',
-      paranoid: true,
+      paranoid: true
     }
   )
 }

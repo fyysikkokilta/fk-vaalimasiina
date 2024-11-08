@@ -6,7 +6,7 @@ import { ElectionData } from '../../../../../../types/types'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import {
   modifyElection,
-  postNewElection,
+  postNewElection
 } from '../../../../api/admin/elections'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { useTranslation } from 'react-i18next'
@@ -20,11 +20,11 @@ export const NewElection = () => {
     title: '',
     description: '',
     amountToElect: 0,
-    candidates: [],
+    candidates: []
   })
   const [newCandidate, setNewCandidate] = useState('')
   const { t } = useTranslation('translation', {
-    keyPrefix: 'admin.admin_main.new_election',
+    keyPrefix: 'admin.admin_main.new_election'
   })
 
   useEffect(() => {
@@ -36,14 +36,14 @@ export const NewElection = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewElection((electionState) => ({
       ...electionState,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     }))
   }
 
   const addCandidate = (candidateName: string) => {
     setNewElection((electionState) => ({
       ...electionState,
-      candidates: [...electionState.candidates, { name: candidateName }],
+      candidates: [...electionState.candidates, { name: candidateName }]
     }))
     setNewCandidate('')
   }
@@ -56,7 +56,7 @@ export const NewElection = () => {
 
       return {
         ...electionState,
-        candidates: updatedCandidates,
+        candidates: updatedCandidates
       }
     })
   }

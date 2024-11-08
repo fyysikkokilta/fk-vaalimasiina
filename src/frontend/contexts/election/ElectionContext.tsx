@@ -4,7 +4,7 @@ import React, {
   ReactNode,
   SetStateAction,
   useEffect,
-  useState,
+  useState
 } from 'react'
 
 import { Election } from '../../../../types/types'

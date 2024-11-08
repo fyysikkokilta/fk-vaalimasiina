@@ -1,4 +1,14 @@
-import { Association, CreationOptional, DataTypes, fn, HasManyGetAssociationsMixin, Model, NonAttribute, Optional, Sequelize } from 'sequelize'
+import {
+  Association,
+  CreationOptional,
+  DataTypes,
+  fn,
+  HasManyGetAssociationsMixin,
+  Model,
+  NonAttribute,
+  Optional,
+  Sequelize
+} from 'sequelize'
 import Candidate from './candidate'
 import Ballot from './ballot'
 import Voter from './voter'
@@ -7,7 +17,7 @@ export enum ElectionStatus {
   CREATED = 'CREATED',
   ONGOING = 'ONGOING',
   FINISHED = 'FINISHED',
-  CLOSED = 'CLOSED',
+  CLOSED = 'CLOSED'
 }
 
 export interface ElectionAttributes {
@@ -56,29 +66,29 @@ export function initElection(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         defaultValue: fn('gen_random_uuid'),
         allowNull: false,
-        primaryKey: true,
+        primaryKey: true
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       description: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       amountToElect: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: false
       },
       status: {
         type: DataTypes.ENUM('CREATED', 'ONGOING', 'FINISHED', 'CLOSED'),
-        allowNull: false,
-      },
+        allowNull: false
+      }
     },
     {
       sequelize,
       tableName: 'elections',
-      paranoid: true,
+      paranoid: true
     }
   )
 }

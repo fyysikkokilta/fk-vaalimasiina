@@ -13,10 +13,10 @@ type ElectionResultsProps = {
 
 export const ElectionResults = ({
   election,
-  votingResult,
+  votingResult
 }: ElectionResultsProps) => {
   const { t } = useTranslation('translation', {
-    keyPrefix: 'results',
+    keyPrefix: 'results'
   })
 
   const roundToTwoDecimals = (num: number) =>
@@ -41,7 +41,7 @@ export const ElectionResults = ({
 
     const csvContent = [
       headers.join(';'),
-      ...rows.map((row) => row.join(';')),
+      ...rows.map((row) => row.join(';'))
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
@@ -61,7 +61,7 @@ export const ElectionResults = ({
     const candidatesNamesAndIdsSorted = election.candidates
       .map((candidate) => ({
         name: candidate.name,
-        id: candidate.candidateId,
+        id: candidate.candidateId
       }))
       .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -128,7 +128,7 @@ export const ElectionResults = ({
         const paragraph = [
           voteNameString,
           winnersString,
-          droppedCandidateString,
+          droppedCandidateString
         ]
           .filter((s) => s)
           .join(' ')
@@ -175,7 +175,7 @@ export const ElectionResults = ({
             candidateResults,
             quota,
             round,
-            tieBreaker,
+            tieBreaker
           }) => (
             <ListGroup.Item key={round} className="mb-3 text-center">
               <Card>
@@ -240,7 +240,7 @@ export const ElectionResults = ({
             {votingResult.winners
               .map((id) => ({
                 id,
-                name: getCandidateName(id),
+                name: getCandidateName(id)
               }))
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((winner) => (

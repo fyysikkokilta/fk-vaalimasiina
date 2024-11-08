@@ -12,7 +12,7 @@ export const PreviewElection = () => {
   const { election, setElection } = useContext(ElectionContext)!
   const [emails, setEmails] = useState('')
   const { t } = useTranslation('translation', {
-    keyPrefix: 'admin.admin_main.preview_election',
+    keyPrefix: 'admin.admin_main.preview_election'
   })
 
   if (!election) {

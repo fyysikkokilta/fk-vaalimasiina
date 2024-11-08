@@ -3,7 +3,7 @@ import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import {
   calculateSTVResult,
-  VotingResult,
+  VotingResult
 } from '../../../../utils/stvAlgorithm'
 import { getVotesForElection } from '../../../../api/admin/votes'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'

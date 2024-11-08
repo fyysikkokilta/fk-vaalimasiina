@@ -7,7 +7,7 @@ import {
   Alert,
   ListGroup,
   Row,
-  Col,
+  Col
 } from 'react-bootstrap'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 import { ElectionContext } from '../../contexts/election/ElectionContext'
@@ -141,7 +141,7 @@ export const Vote = () => {
                               }
                               setSelectedCandidates((prev) => [
                                 ...prev,
-                                e.target.value,
+                                e.target.value
                               ])
                             }}
                           >

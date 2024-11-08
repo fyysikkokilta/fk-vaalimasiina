@@ -23,7 +23,7 @@ export const getElectionAndCheckStatus = async (
 
 export const isElectionOngoing = async () => {
   const ongoingElection = await Election.findOne({
-    where: { status: ElectionStatus.ONGOING },
+    where: { status: ElectionStatus.ONGOING }
   })
 
   return !!ongoingElection
@@ -42,14 +42,14 @@ export const createElection = async (
       amountToElect,
       status: ElectionStatus.CREATED,
       candidates: candidates.map((candidate) => ({
-        name: candidate.name,
-      })),
+        name: candidate.name
+      }))
     } as CreationAttributes<Election>,
     {
       returning: true,
       include: {
         model: Candidate,
-        as: 'candidates',
+        as: 'candidates'
       }
     }
   )
@@ -91,7 +91,7 @@ export const startVoting = async (electionId: string, emails: string[]) => {
     emails.map((email) => ({
       electionId,
       email,
-      hasVoted: false,
+      hasVoted: false
     }))
   )
 
@@ -100,7 +100,7 @@ export const startVoting = async (electionId: string, emails: string[]) => {
       const voterData = voter.get({ plain: true })
       return EmailService.sendVotingMail(voterData.email, {
         election: election.get({ plain: true }),
-        voterId: voterData.voterId,
+        voterId: voterData.voterId
       })
     })
   )

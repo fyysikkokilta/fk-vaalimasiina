@@ -7,7 +7,7 @@ import {
   Model,
   NonAttribute,
   Optional,
-  Sequelize,
+  Sequelize
 } from 'sequelize'
 import Candidate from './candidate'
 import Ballot from './ballot'
@@ -53,43 +53,43 @@ export function initVote(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         defaultValue: fn('gen_random_uuid'),
         allowNull: false,
-        primaryKey: true,
+        primaryKey: true
       },
       ballotId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'ballots',
-          key: 'ballotId',
-        },
+          key: 'ballotId'
+        }
       },
       candidateId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'candidates',
-          key: 'candidateId',
-        },
+          key: 'candidateId'
+        }
       },
       preferenceNumber: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+        allowNull: false
+      }
     },
     {
       indexes: [
         {
           unique: true,
-          fields: ['ballotId', 'preferenceNumber'],
+          fields: ['ballotId', 'preferenceNumber']
         },
         {
           unique: true,
-          fields: ['ballotId', 'candidateId'],
+          fields: ['ballotId', 'candidateId']
         }
       ],
       sequelize,
       tableName: 'votes',
-      paranoid: true,
+      paranoid: true
     }
   )
 }

@@ -22,9 +22,9 @@ const TEMPLATE_OPTIONS = {
   juiceResources: {
     preserveImportant: true,
     webResources: {
-      relativeTo: CSS_DIR,
-    },
-  },
+      relativeTo: CSS_DIR
+    }
+  }
 }
 
 export default class EmailService {
@@ -33,7 +33,7 @@ export default class EmailService {
       to,
       from: process.env.MAIL_FROM,
       subject,
-      html,
+      html
     }
 
     return mailTransporter.sendMail(msg)
@@ -46,9 +46,9 @@ export default class EmailService {
         ...params,
         branding: {
           footerText: process.env.BRANDING_MAIL_FOOTER_TEXT,
-          footerLink: process.env.BRANDING_MAIL_FOOTER_LINK,
+          footerLink: process.env.BRANDING_MAIL_FOOTER_LINK
         },
-        votingLink: `${process.env.BASE_URL}/vote/${params.voterId}`,
+        votingLink: `${process.env.BASE_URL}/vote/${params.voterId}`
       }
       const template = votingMailPath
       const html = await email.render(template, brandedParams)

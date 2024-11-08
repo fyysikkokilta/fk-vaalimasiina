@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express'
 import {
   changeVoterEmail,
   getVotersForElection,
-  getVotersWhoVoted,
+  getVotersWhoVoted
 } from '../../routes/admin/voters'
 import { validateUuid } from '../../validation/validation'
 

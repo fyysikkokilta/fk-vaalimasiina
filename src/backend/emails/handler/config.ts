@@ -15,9 +15,9 @@ const mailTransporter: Transporter = (() => {
       mailgun({
         auth: {
           api_key: process.env.MAILGUN_API_KEY,
-          domain: process.env.MAILGUN_DOMAIN,
+          domain: process.env.MAILGUN_DOMAIN
         },
-        host: process.env.MAILGUN_HOST,
+        host: process.env.MAILGUN_HOST
       })
     )
   }
@@ -34,8 +34,8 @@ const mailTransporter: Transporter = (() => {
       secure: process.env.SMTP_TLS,
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
+        pass: process.env.SMTP_PASSWORD
+      }
     } as SMTPTransport.Options)
   }
 
@@ -58,7 +58,7 @@ const mailTransporter: Transporter = (() => {
         console.log(data)
         callback(null, { envelope, messageId } as SMTPTransport.SentMessageInfo)
       })
-    },
+    }
   })
 })()
 

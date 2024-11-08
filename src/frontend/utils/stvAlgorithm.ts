@@ -102,13 +102,13 @@ const dropOneCandidate = (
   const candidateResults = voteCounts
     .map(([c, v]) => ({
       data: { id: c, voteCount: v },
-      isSelected: false,
+      isSelected: false
     }))
     .filter((result) => result.data.id !== candidateToBeDropped[0])
     .concat(
       Array.from(previouslySelectedCandidates).map((c) => ({
         data: { id: c, voteCount: quota },
-        isSelected: true,
+        isSelected: true
       }))
     )
 
@@ -118,9 +118,9 @@ const dropOneCandidate = (
     candidateResults,
     droppedCandidate: {
       id: candidateToBeDropped[0],
-      voteCount: candidateToBeDropped[1],
+      voteCount: candidateToBeDropped[1]
     },
-    tieBreaker: candidatesWithMinVotes.length > 1,
+    tieBreaker: candidatesWithMinVotes.length > 1
   }
 }
 
@@ -154,14 +154,14 @@ const transferSurplusVotes = (
   const candidateResults = voteCounts
     .map(([c, v]) => ({
       data: { id: c, voteCount: v },
-      isSelected: electedCandidates.has(c),
+      isSelected: electedCandidates.has(c)
     }))
     .concat(
       Array.from(previouslySelectedCandidates)
         .filter((c) => !electedCandidates.has(c))
         .map((c) => ({
           data: { id: c, voteCount: quota },
-          isSelected: true,
+          isSelected: true
         }))
     )
 
@@ -169,7 +169,7 @@ const transferSurplusVotes = (
     round,
     quota,
     candidateResults,
-    droppedCandidate: null,
+    droppedCandidate: null
   }
 }
 
@@ -256,6 +256,6 @@ export const calculateSTVResult = (
     totalVotes: nonEmptyVoteCount,
     roundResults,
     winners,
-    ballots: ballots.map((b) => b.votes.map((v) => v.candidateId)),
+    ballots: ballots.map((b) => b.votes.map((v) => v.candidateId))
   }
 }

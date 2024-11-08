@@ -7,13 +7,18 @@ import {
   createElection,
   endVoting,
   startVoting,
-  updateElection,
+  updateElection
 } from '../../routes/admin/elections'
 
 export const handleNewElection = async (req: Request, res: Response) => {
   const { title, description, amountToElect, candidates } = req.body
   try {
-    const election = await createElection(title, description, amountToElect, candidates)
+    const election = await createElection(
+      title,
+      description,
+      amountToElect,
+      candidates
+    )
 
     res.status(201).json(election)
   } catch (err) {
@@ -41,7 +46,7 @@ export const handleModifyElection = async (req: Request, res: Response) => {
 
     const electionWithCandidates = {
       ...modifiedElection,
-      candidates: modifiedCandidates,
+      candidates: modifiedCandidates
     }
     res.status(200).json(electionWithCandidates)
   } catch (err) {

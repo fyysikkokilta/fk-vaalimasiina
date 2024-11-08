@@ -7,7 +7,7 @@ export const createTestCandidates = async (
   const newCandidates = await Candidate.bulkCreate(
     candidates.map((candidate) => ({
       ...candidate,
-      electionId,
+      electionId
     })),
     { returning: true }
   )

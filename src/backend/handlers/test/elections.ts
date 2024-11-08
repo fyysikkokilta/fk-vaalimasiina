@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
 import {
   changeTestElectionStatus,
-  createTestElection,
+  createTestElection
 } from '../../routes/test/elections'
 
 export const handleCreateTestElection = async (req: Request, res: Response) => {

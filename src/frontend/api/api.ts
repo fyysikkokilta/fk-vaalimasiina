@@ -24,12 +24,12 @@ export const api = async <T>(
 
   const headers = new Headers({
     ...(init?.headers || {}),
-    Authorization: adminToken ? `Bearer ${adminToken}` : '',
+    Authorization: adminToken ? `Bearer ${adminToken}` : ''
   })
 
   init = {
     ...init,
-    headers,
+    headers
   }
   const response = await fetch(url, init)
 
@@ -46,13 +46,13 @@ export const api = async <T>(
     return {
       ok: false,
       status: response.status,
-      message: await getErrorMessage(response),
+      message: await getErrorMessage(response)
     }
   }
 
   return {
     ok: true,
     status: response.status,
-    data: await response.json(),
+    data: await response.json()
   }
 }

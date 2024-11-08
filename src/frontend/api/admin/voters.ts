@@ -5,9 +5,9 @@ export const changeVoterEmail = (voterId: string, email: string) => {
   return api<Voter>(`/api/admin/voters/${voterId}`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email })
   })
 }
 

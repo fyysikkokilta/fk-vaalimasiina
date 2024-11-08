@@ -7,9 +7,9 @@ export const getElections = async () => {
     include: [
       {
         model: Candidate,
-        as: 'candidates',
-      },
-    ],
+        as: 'candidates'
+      }
+    ]
   })
   return elections.map((election) => election.get({ plain: true }))
 }
@@ -19,9 +19,9 @@ export const getElectionById = async (electionId: string) => {
     include: [
       {
         model: Candidate,
-        as: 'candidates',
-      },
-    ],
+        as: 'candidates'
+      }
+    ]
   })
   if (!election) {
     return null
@@ -32,7 +32,7 @@ export const getElectionById = async (electionId: string) => {
 
 export const isNoElectionOngoing = async (electionId: string) => {
   const ongoingElection = await Election.findOne({
-    where: { electionId, status: ElectionStatus.ONGOING },
+    where: { electionId, status: ElectionStatus.ONGOING }
   })
 
   return !ongoingElection
@@ -48,7 +48,7 @@ export const isValidBallot = async (
   }
 
   const candidatesData = await Candidate.findAll({
-    where: { electionId },
+    where: { electionId }
   })
 
   const candidates = candidatesData.map((candidate) =>

@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
     description: 'Description 1',
     amountToElect: 1,
     candidates: [{ name: 'Candidate 1' }],
-    status: 'CREATED',
+    status: 'CREATED'
   })
   await loginAdmin(page)
   await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
@@ -39,7 +39,7 @@ test('should show voter email box', async ({ page }) => {
 })
 
 test("shouldn't allow starting voting without inputing emails", async ({
-  page,
+  page
 }) => {
   await expect(
     page.getByRole('button', { name: 'Start voting' })
@@ -72,7 +72,7 @@ test.describe('voter email box', () => {
   })
 
   test('should allow multiple emails separated by line break', async ({
-    page,
+    page
   }) => {
     await page.fill('#emailList', 'email@email.com\nemai2@email.com')
     await expect(

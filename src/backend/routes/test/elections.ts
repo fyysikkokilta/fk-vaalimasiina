@@ -13,14 +13,17 @@ export const createTestElection = async (
       title,
       description,
       amountToElect,
-      status,
+      status
     },
     { returning: true }
   )
 
   const newElection = newElectionData.get({ plain: true })
 
-  const candidatesData = await createTestCandidates(newElection.electionId, candidates)
+  const candidatesData = await createTestCandidates(
+    newElection.electionId,
+    candidates
+  )
 
   return { ...newElection, candidates: candidatesData }
 }

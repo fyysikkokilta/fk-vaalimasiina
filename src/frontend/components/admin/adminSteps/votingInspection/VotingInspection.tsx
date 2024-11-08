@@ -7,7 +7,7 @@ import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import {
   changeVoterEmail,
   getAllVotersForElection,
-  getVotersWhoVoted,
+  getVotersWhoVoted
 } from '../../../../api/admin/voters'
 import { abortVoting, endVoting } from '../../../../api/admin/elections'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,7 @@ export const VotingInspection = () => {
   const [showRemainingVoters, setShowRemainingVoters] = useState(false)
   const { election, setElection } = useContext(ElectionContext)!
   const { t } = useTranslation('translation', {
-    keyPrefix: 'admin.admin_main.voting_inspection',
+    keyPrefix: 'admin.admin_main.voting_inspection'
   })
 
   const [oldEmail, setOldEmail] = useState('')
@@ -91,7 +91,7 @@ export const VotingInspection = () => {
     setAllVoters((previous) =>
       previous!.map((voter) => ({
         ...voter,
-        email: voter.voterId === voterId ? newEmail : voter.email,
+        email: voter.voterId === voterId ? newEmail : voter.email
       }))
     )
     setOldEmail('')

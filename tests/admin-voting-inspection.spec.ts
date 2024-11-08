@@ -5,7 +5,7 @@ import {
   insertElection,
   insertVoters,
   insertVotes,
-  resetDatabase,
+  resetDatabase
 } from './utils/db'
 import { Election, Voter } from '../types/types'
 
@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
     description: 'Description 1',
     amountToElect: 1,
     candidates: [{ name: 'Candidate 1' }],
-    status: 'ONGOING',
+    status: 'ONGOING'
   })
   voters = await insertVoters({
     electionId: election.electionId,
@@ -27,8 +27,8 @@ test.beforeEach(async ({ page }) => {
       'email1@email.com',
       'email2@email.com',
       'email3@email.com',
-      'email4@email.com',
-    ],
+      'email4@email.com'
+    ]
   })
   await loginAdmin(page)
   await expect(page.getByRole('heading', { name: 'Voting' })).toBeVisible()
@@ -81,20 +81,20 @@ test.describe('with some votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1,
-            },
-          ],
+              preferenceNumber: 1
+            }
+          ]
         },
         {
           voterId: voters[1].voterId,
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1,
-            },
-          ],
-        },
-      ],
+              preferenceNumber: 1
+            }
+          ]
+        }
+      ]
     })
   })
 
@@ -110,7 +110,9 @@ test.describe('with some votes', () => {
 
   test('should allow to abort voting', async ({ page }) => {
     await page.getByRole('button', { name: 'Abort voting' }).click()
-    await expect(page.getByRole('heading', { name: 'Election 1' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'Election 1' })
+    ).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
   })
 
@@ -133,38 +135,38 @@ test.describe('with all votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1,
-            },
-          ],
+              preferenceNumber: 1
+            }
+          ]
         },
         {
           voterId: voters[1].voterId,
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1,
-            },
-          ],
+              preferenceNumber: 1
+            }
+          ]
         },
         {
           voterId: voters[2].voterId,
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1,
-            },
-          ],
+              preferenceNumber: 1
+            }
+          ]
         },
         {
           voterId: voters[3].voterId,
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1,
-            },
-          ],
-        },
-      ],
+              preferenceNumber: 1
+            }
+          ]
+        }
+      ]
     })
   })
 
@@ -179,7 +181,7 @@ test.describe('with all votes', () => {
   })
 
   test("should't have amy emails in the remaining voters list", async ({
-    page,
+    page
   }) => {
     await page.getByRole('button', { name: 'Show remaining voters' }).click()
     await expect(page.getByText('email.com')).toHaveCount(0)
@@ -203,7 +205,7 @@ test.describe('change email form', () => {
   })
 
   test("shouldn't allow to change email with invalid email", async ({
-    page,
+    page
   }) => {
     await page.fill('#oldEmail', 'email4@email.com')
     await page.fill('#newEmail', 'email5')
@@ -213,7 +215,7 @@ test.describe('change email form', () => {
   })
 
   test("shouldn't allow to change an old email that doesn't exist", async ({
-    page,
+    page
   }) => {
     await page.fill('#oldEmail', 'email5@email.com')
     await page.fill('#newEmail', 'email6@email.com')
@@ -223,7 +225,7 @@ test.describe('change email form', () => {
   })
 
   test("shouldn't allow to change email to one that exists", async ({
-    page,
+    page
   }) => {
     await page.fill('#oldEmail', 'email4@email.com')
     await page.fill('#newEmail', 'email3@email.com')

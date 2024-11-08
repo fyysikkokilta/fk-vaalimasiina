@@ -17,7 +17,7 @@ export const changeVoterEmail = async (voterId: string, email: string) => {
 
   await EmailService.sendVotingMail(email, {
     election: election!,
-    voterId: voterData.voterId,
+    voterId: voterData.voterId
   })
 
   return voterData
@@ -26,7 +26,7 @@ export const changeVoterEmail = async (voterId: string, email: string) => {
 export const getVotersForElection = async (electionId: string) => {
   const voters = await Voter.findAll({
     where: { electionId },
-    attributes: ['voterId', 'email'],
+    attributes: ['voterId', 'email']
   })
 
   return voters.map((voter) => voter.get({ plain: true }))
@@ -35,7 +35,7 @@ export const getVotersForElection = async (electionId: string) => {
 export const getVotersWhoVoted = async (electionId: string) => {
   const voters = await Voter.findAll({
     where: { electionId, hasVoted: true },
-    attributes: ['voterId', 'email'],
+    attributes: ['voterId', 'email']
   })
 
   return voters.map((voter) => voter.get({ plain: true }))

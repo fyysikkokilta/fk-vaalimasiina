@@ -16,7 +16,7 @@ async function runMigration(sequelize: Sequelize) {
     migrations,
     storage,
     logger: console,
-    context: sequelize,
+    context: sequelize
   })
   await umzug.up()
 }
@@ -48,28 +48,28 @@ export const initDatabase = async () => {
   Election.hasMany(Candidate, {
     foreignKey: 'electionId',
     onDelete: 'CASCADE',
-    as: 'candidates',
+    as: 'candidates'
   })
 
   Vote.belongsTo(Ballot, { foreignKey: 'ballotId', as: 'ballot' })
   Ballot.hasMany(Vote, {
     foreignKey: 'ballotId',
     onDelete: 'CASCADE',
-    as: 'votes',
+    as: 'votes'
   })
 
   Vote.belongsTo(Candidate, { foreignKey: 'candidateId', as: 'candidate' })
   Candidate.hasMany(Vote, {
     foreignKey: 'candidateId',
     onDelete: 'CASCADE',
-    as: 'votes',
+    as: 'votes'
   })
 
   Voter.belongsTo(Election, { foreignKey: 'electionId', as: 'election' })
   Election.hasMany(Voter, {
     foreignKey: 'electionId',
     onDelete: 'CASCADE',
-    as: 'voters',
+    as: 'voters'
   })
 
   await runMigration(sequelize)

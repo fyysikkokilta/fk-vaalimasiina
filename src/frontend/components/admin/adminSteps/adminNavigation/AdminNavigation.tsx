@@ -13,7 +13,7 @@ export const AdminNavigation = ({
   disablePrevious = false,
   disableNext = false,
   onBack = () => Promise.resolve(true),
-  onNext,
+  onNext
 }: AdminNavigationProps) => {
   const { stepSettings, setElectionStep } = useContext(ElectionStepContext)!
 

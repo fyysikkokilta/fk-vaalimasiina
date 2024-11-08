@@ -7,7 +7,7 @@ export const authenticateAdmin = async (username: string, password: string) => {
   if (process.env.NODE_ENV === 'development') {
     if (username === 'admin' && password === 'password') {
       return jsonwebtoken.sign({ username }, process.env.JWT_SECRET!, {
-        expiresIn: '10h',
+        expiresIn: '10h'
       })
     }
   }
@@ -17,6 +17,6 @@ export const authenticateAdmin = async (username: string, password: string) => {
   }
 
   return jsonwebtoken.sign({ username }, process.env.JWT_SECRET!, {
-    expiresIn: '10h',
+    expiresIn: '10h'
   })
 }

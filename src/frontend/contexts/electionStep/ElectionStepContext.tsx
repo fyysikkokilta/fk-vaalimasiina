@@ -4,11 +4,11 @@ import React, {
   ReactNode,
   SetStateAction,
   useEffect,
-  useState,
+  useState
 } from 'react'
 import {
   electionStepSettingsFinnish,
-  electionStepSettingsEnglish,
+  electionStepSettingsEnglish
 } from './electionStepSetting'
 import { fetchStatus } from '../../api/admin/status'
 import { useCookies } from 'react-cookie'

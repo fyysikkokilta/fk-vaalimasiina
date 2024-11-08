@@ -8,7 +8,7 @@ export const createTestVoters = async (
     emails.map((email) => ({
       email,
       electionId,
-      hasVoted: false,
+      hasVoted: false
     })),
     { returning: true }
   )

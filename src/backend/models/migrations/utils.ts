@@ -15,7 +15,7 @@ export function defineMigration(
       sequelize.transaction((transaction) =>
         migration.up({
           ...params,
-          context: { sequelize, transaction },
+          context: { sequelize, transaction }
         })
       ),
     down:
@@ -24,8 +24,8 @@ export function defineMigration(
         sequelize.transaction((transaction) =>
           migration.down!({
             ...params,
-            context: { sequelize, transaction },
+            context: { sequelize, transaction }
           })
-        )),
+        ))
   }
 }

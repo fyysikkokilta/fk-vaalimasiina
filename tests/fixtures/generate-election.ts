@@ -4,7 +4,7 @@ import {
   insertElection,
   insertVoters,
   insertVotes,
-  resetDatabase,
+  resetDatabase
 } from '../utils/db'
 import { readFixture } from './read-fixture'
 
@@ -45,7 +45,7 @@ const main = async () => {
     description,
     amountToElect,
     candidates,
-    status,
+    status
   }
 
   const election = await insertElection(electionData)
@@ -56,7 +56,7 @@ const main = async () => {
 
   const voters = await insertVoters({
     electionId: election.electionId,
-    emails: votersData,
+    emails: votersData
   })
 
   const voterIdBallotPairs = voteFixture.map((votes, index) => {
@@ -64,14 +64,14 @@ const main = async () => {
     const ballot = votes.map((name, preferenceNumber) => ({
       candidateId: election.candidates.find((c) => c.name === name)!
         .candidateId,
-      preferenceNumber: preferenceNumber + 1,
+      preferenceNumber: preferenceNumber + 1
     }))
     return { voterId, ballot }
   })
 
   await insertVotes({
     electionId: election.electionId,
-    voterIdBallotPairs,
+    voterIdBallotPairs
   })
 
   console.log('done')
