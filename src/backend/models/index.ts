@@ -26,15 +26,12 @@ export const initDatabase = async () => {
 
   try {
     sequelize.authenticate()
-    console.log('Connection has been established successfully.')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cfg = (sequelize.connectionManager as any).config
-    console.log(`Connected to ${cfg.host} as ${cfg.username}.`)
+    console.log(
+      `Connected to ${sequelizeConfig.host} as ${sequelizeConfig.username}.`
+    )
   } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cfg = (sequelize.connectionManager as any).config
     console.error(
-      `Error connecting to ${cfg.host} as ${cfg.username}: ${error}`
+      `Error connecting to ${sequelizeConfig.host} as ${sequelizeConfig.username}: ${error}`
     )
     throw error
   }
