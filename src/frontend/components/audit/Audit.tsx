@@ -14,7 +14,6 @@ export const Audit = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'voter.audit' })
 
   useEffect(() => {
-    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       if (!election) {
         return
@@ -90,15 +89,19 @@ export const Audit = () => {
                         <tr>
                           <td colSpan={2}>
                             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                              {audit.votes.length > 0 ? orderBy(audit.votes, 'preferenceNumber').map((vote, index) => (
-                                <div
-                                  key={index}
-                                  style={{ marginRight: '10px' }}
-                                >
-                                  {vote.preferenceNumber}.{' '}
-                                  {getCandidateName(vote.candidateId)}
-                                </div>
-                              )) : t('empty_ballot')}
+                              {audit.votes.length > 0
+                                ? orderBy(audit.votes, 'preferenceNumber').map(
+                                    (vote, index) => (
+                                      <div
+                                        key={index}
+                                        style={{ marginRight: '10px' }}
+                                      >
+                                        {vote.preferenceNumber}.{' '}
+                                        {getCandidateName(vote.candidateId)}
+                                      </div>
+                                    )
+                                  )
+                                : t('empty_ballot')}
                             </div>
                           </td>
                         </tr>

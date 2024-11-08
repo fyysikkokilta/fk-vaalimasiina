@@ -44,7 +44,6 @@ export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
       : electionStepSettingsEnglish
 
   useEffect(() => {
-    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       if (!cookies['admin-token']) {
         return

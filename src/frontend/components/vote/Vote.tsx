@@ -28,7 +28,6 @@ export const Vote = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
   useEffect(() => {
-    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       if (!voterId) {
         navigate('/')

@@ -15,7 +15,6 @@ export const Results = () => {
   const [votingResult, setVotingResult] = useState<VotingResult | null>(null)
 
   useEffect(() => {
-    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       if (!election) {
         return

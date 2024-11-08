@@ -16,7 +16,6 @@ export const PreviousResults = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
 
   useEffect(() => {
-    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       // Fetch election
       const electionResponse = await fetchElectionById(electionId!)

@@ -21,7 +21,6 @@ export const ElectionProvider = ({ children }: { children: ReactNode }) => {
   const [election, setElection] = useState<Election | null>(null)
 
   useEffect(() => {
-    // eslint-disable-next-line no-extra-semi
     ;(async () => {
       const response = await fetchCurrentElection()
 
