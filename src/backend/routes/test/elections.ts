@@ -1,44 +1,56 @@
-import Election, { ElectionStatus } from '../../models/election'
-import { createTestCandidates } from './candidates'
+import { eq } from 'drizzle-orm'
+import { db } from '../../db'
+import { candidatesTable, electionsTable } from '../../db/schema'
 
 export const createTestElection = async (
   title: string,
   description: string,
-  amountToElect: number,
-  candidates: { name: string }[],
-  status: ElectionStatus
+  seats: number,
+  candidatesData: { name: string }[],
+  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 ) => {
-  const newElectionData = await Election.create(
-    {
-      title,
-      description,
-      amountToElect,
-      status
-    },
-    { returning: true }
-  )
+  return db.transaction(async (transaction) => {
+    const elections = await transaction
+      .insert(electionsTable)
+      .values([
+        {
+          title,
+          description,
+          seats,
+          status
+        }
+      ])
+      .returning()
 
-  const newElection = newElectionData.get({ plain: true })
+    const candidates = await transaction
+      .insert(candidatesTable)
+      .values(
+        candidatesData.map((candidate) => ({
+          electionId: elections[0].electionId,
+          name: candidate.name
+        }))
+      )
+      .returning()
 
-  const candidatesData = await createTestCandidates(
-    newElection.electionId,
-    candidates
-  )
-
-  return { ...newElection, candidates: candidatesData }
+    return { ...elections[0], candidates }
+  })
 }
 
 export const changeTestElectionStatus = async (
   electionId: string,
-  status: ElectionStatus
+  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 ) => {
-  const election = await Election.findByPk(electionId)
+  const elections = await db
+    .update(electionsTable)
+    .set({
+      status
+    })
+    .where(eq(electionsTable.electionId, electionId))
+    .returning()
 
-  if (!election) {
+  if (!elections[0]) {
     return null
   }
 
-  await election.update({ status })
-
-  return election.get({ plain: true })
+  return elections[0] || null
 }

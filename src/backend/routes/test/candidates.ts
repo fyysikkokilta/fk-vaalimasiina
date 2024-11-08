@@ -1,16 +1,17 @@
-import Candidate from '../../models/candidate'
+import { db } from '../../db'
+import { candidatesTable } from '../../db/schema'
 
 export const createTestCandidates = async (
   electionId: string,
   candidates: { name: string }[]
 ) => {
-  const newCandidates = await Candidate.bulkCreate(
-    candidates.map((candidate) => ({
-      ...candidate,
-      electionId
-    })),
-    { returning: true }
-  )
-
-  return newCandidates.map((candidate) => candidate.get({ plain: true }))
+  return db
+    .insert(candidatesTable)
+    .values(
+      candidates.map((candidate) => ({
+        electionId,
+        name: candidate.name
+      }))
+    )
+    .returning()
 }

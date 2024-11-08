@@ -1,8 +1,6 @@
-import Ballot from '../../models/ballot'
-import Voter from '../../models/voter'
-import Op from 'sequelize/lib/operators'
-import Vote from '../../models/vote'
-import { CreationAttributes } from 'sequelize'
+import { inArray } from 'drizzle-orm'
+import { db } from '../../db'
+import { ballotsTable, votersTable, votesTable } from '../../db/schema'
 
 export const createTestVotes = async (
   electionId: string,
@@ -11,36 +9,44 @@ export const createTestVotes = async (
     ballot: { candidateId: string; preferenceNumber: number }[]
   }[]
 ) => {
-  const ballots = await Ballot.bulkCreate(
-    voterIdBallotPairs.map(
-      (pair) =>
-        ({
-          electionId,
-          votes: pair.ballot.map((vote) => ({
-            candidateId: vote.candidateId,
-            preferenceNumber: vote.preferenceNumber
-          }))
-        }) as CreationAttributes<Ballot>
-    ),
-    {
-      returning: true,
-      include: [
-        {
-          model: Vote,
-          as: 'votes'
-        }
-      ]
-    }
-  )
+  return db.transaction(async (transaction) => {
+    const ballots = await transaction
+      .insert(ballotsTable)
+      .values(
+        voterIdBallotPairs.map(() => ({
+          electionId
+        }))
+      )
+      .returning()
 
-  await Voter.update(
-    { hasVoted: true },
-    {
-      where: {
-        voterId: { [Op.in]: voterIdBallotPairs.map((e) => e.voterId) }
-      }
-    }
-  )
+    const votes = await transaction
+      .insert(votesTable)
+      .values(
+        ballots
+          .map((ballot, index) =>
+            voterIdBallotPairs[index].ballot.map((vote) => ({
+              ballotId: ballot.ballotId,
+              candidateId: vote.candidateId,
+              preferenceNumber: vote.preferenceNumber
+            }))
+          )
+          .flat()
+      )
+      .returning()
 
-  return ballots.map((ballot) => ballot.get({ plain: true }))
+    await transaction
+      .update(votersTable)
+      .set({ hasVoted: true })
+      .where(
+        inArray(
+          votersTable.voterId,
+          voterIdBallotPairs.map((pair) => pair.voterId)
+        )
+      )
+
+    return ballots.map((ballot) => ({
+      ...ballot,
+      votes: votes.filter((vote) => vote.ballotId === ballot.ballotId)
+    }))
+  })
 }

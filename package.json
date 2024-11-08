@@ -11,7 +11,8 @@
     "generate-election": "node --loader ts-node/esm ./tests/fixtures/generate-election",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type:check": "tsc --noEmit",
-    "prettier:format": "prettier --write ."
+    "prettier:format": "prettier --write .",
+    "generate-migrations": "drizzle-kit generate"
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
@@ -19,6 +20,7 @@
     "cross-env": "^7.0.3",
     "csv-parse": "^5.5.6",
     "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.1",
     "email-templates": "^12.0.1",
     "express": "^4.19.2",
     "i18next": "^23.12.6",
@@ -28,7 +30,7 @@
     "lodash": "^4.17.21",
     "nodemailer": "^6.9.16",
     "nodemailer-mailgun-transport": "^2.1.5",
-    "pg": "^8.12.0",
+    "postgres": "^3.4.5",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.4",
     "react-cookie": "^7.2.0",
@@ -37,12 +39,9 @@
     "react-router-dom": "^6.22.3",
     "react-toastify": "^10.0.5",
     "seedrandom": "^3.0.5",
-    "sequelize": "^6.37.3",
-    "styled-components": "^6.1.12",
     "ts-node": "^10.9.2",
     "tsx": "^4.3.0",
     "typescript": "^5.3.2",
-    "umzug": "^3.8.0",
     "universal-cookie": "^7.2.0",
     "vite-express": "^0.18.0"
   },
@@ -65,6 +64,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
     "concurrently": "^8.2.2",
+    "drizzle-kit": "^0.28.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",

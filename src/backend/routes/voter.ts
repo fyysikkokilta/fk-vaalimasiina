@@ -1,6 +1,9 @@
-import Voter from '../models/voter'
+import { db } from '../db'
 
 export const getVoter = async (voterId: string) => {
-  const voterData = await Voter.findByPk(voterId)
-  return voterData?.get({ plain: true })
+  const voter = await db.query.votersTable.findFirst({
+    where: (votersTable, { eq }) => eq(votersTable.voterId, voterId)
+  })
+
+  return voter || null
 }

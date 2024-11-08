@@ -14,7 +14,7 @@ export type VoterData = {
 export type ElectionData = {
   title: string
   description: string
-  amountToElect: number
+  seats: number
   candidates: CandidateData[]
 }
 
@@ -24,7 +24,7 @@ export type Election = {
   electionId: string
   title: string
   description: string
-  amountToElect: number
+  seats: number
   candidates: Candidate[]
   status: ElectionStatus
   createdAt: string

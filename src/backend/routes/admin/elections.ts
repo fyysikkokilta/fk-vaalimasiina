@@ -1,164 +1,174 @@
-import { CreationAttributes } from 'sequelize'
 import EmailService from '../../emails/handler'
-import Ballot from '../../models/ballot'
-import Candidate from '../../models/candidate'
-import Election, { ElectionStatus } from '../../models/election'
-import Voter from '../../models/voter'
-
-export const getElectionAndCheckStatus = async (
-  electionId: string,
-  status: ElectionStatus
-) => {
-  const election = await Election.findByPk(electionId)
-  if (!election) {
-    return null
-  }
-
-  if (election.get('status', { plain: true }) !== status) {
-    return null
-  }
-
-  return election
-}
-
-export const isElectionOngoing = async () => {
-  const ongoingElection = await Election.findOne({
-    where: { status: ElectionStatus.ONGOING }
-  })
-
-  return !!ongoingElection
-}
+import { db } from '../../db'
+import {
+  ballotsTable,
+  candidatesTable,
+  electionsTable,
+  votersTable
+} from '../../db/schema'
+import { eq } from 'drizzle-orm'
 
 export const createElection = async (
   title: string,
   description: string,
-  amountToElect: number,
-  candidates: { name: string }[]
+  seats: number,
+  candidatesData: { name: string }[]
 ) => {
-  const newElection = await Election.create(
-    {
-      title,
-      description,
-      amountToElect,
-      status: ElectionStatus.CREATED,
-      candidates: candidates.map((candidate) => ({
-        name: candidate.name
-      }))
-    } as CreationAttributes<Election>,
-    {
-      returning: true,
-      include: {
-        model: Candidate,
-        as: 'candidates'
-      }
-    }
-  )
+  return db.transaction(async (transaction) => {
+    const elections = await transaction
+      .insert(electionsTable)
+      .values([
+        {
+          title,
+          description,
+          seats
+        }
+      ])
+      .returning()
 
-  return newElection.get({ plain: true })
+    const candidates = await transaction
+      .insert(candidatesTable)
+      .values(
+        candidatesData.map((candidate) => ({
+          electionId: elections[0].electionId,
+          name: candidate.name
+        }))
+      )
+      .returning()
+
+    return { ...elections[0], candidates }
+  })
 }
 
 export const updateElection = async (
   electionId: string,
   title: string,
   description: string,
-  amountToElect: number
+  seats: number,
+  candidatesData: { name: string }[]
 ) => {
-  const election = await getElectionAndCheckStatus(
-    electionId,
-    ElectionStatus.CREATED
-  )
-  if (!election) {
-    return null
-  }
+  const election = await db.transaction(async (transaction) => {
+    const elections = await transaction
+      .update(electionsTable)
+      .set({
+        title,
+        description,
+        seats
+      })
+      .where(eq(electionsTable.electionId, electionId))
+      .returning()
 
-  election.update({ title, description, amountToElect })
+    if (!elections[0]) {
+      return null
+    }
 
-  return election.get({ plain: true })
+    await transaction
+      .delete(candidatesTable)
+      .where(eq(candidatesTable.electionId, electionId))
+
+    const candidates = await transaction
+      .insert(candidatesTable)
+      .values(
+        candidatesData.map((candidate) => ({
+          electionId,
+          name: candidate.name
+        }))
+      )
+      .returning()
+
+    return { ...elections[0], candidates }
+  })
+
+  return election || null
 }
 
 export const startVoting = async (electionId: string, emails: string[]) => {
-  const election = await getElectionAndCheckStatus(
-    electionId,
-    ElectionStatus.CREATED
+  const [election, insertedVoters] = await db.transaction(
+    async (transaction) => {
+      const elections = await transaction
+        .update(electionsTable)
+        .set({
+          status: 'ONGOING'
+        })
+        .where(eq(electionsTable.electionId, electionId))
+        .returning()
+
+      if (!elections[0]) {
+        return [null, []]
+      }
+
+      const voters = await transaction
+        .insert(votersTable)
+        .values(
+          emails.map((email) => ({
+            electionId,
+            email
+          }))
+        )
+        .returning()
+
+      return [elections[0], voters]
+    }
   )
+
   if (!election) {
     return null
   }
 
-  election.update({ status: ElectionStatus.ONGOING })
-
-  const insertedVoters = await Voter.bulkCreate(
-    emails.map((email) => ({
-      electionId,
-      email,
-      hasVoted: false
-    }))
-  )
-
   await Promise.all(
     insertedVoters.map((voter) => {
-      const voterData = voter.get({ plain: true })
-      return EmailService.sendVotingMail(voterData.email, {
-        election: election.get({ plain: true }),
-        voterId: voterData.voterId
+      return EmailService.sendVotingMail(voter.email, {
+        election: election,
+        voterId: voter.voterId
       })
     })
   )
 
-  return election.get({ plain: true })
+  return election
 }
 
 export const endVoting = async (electionId: string) => {
-  const election = await getElectionAndCheckStatus(
-    electionId,
-    ElectionStatus.ONGOING
-  )
-  if (!election) {
-    return null
-  }
+  const elections = await db
+    .update(electionsTable)
+    .set({
+      status: 'FINISHED'
+    })
+    .where(eq(electionsTable.electionId, electionId))
+    .returning()
 
-  election.update({ status: ElectionStatus.FINISHED })
-
-  return election.get({ plain: true })
+  return elections[0] || null
 }
 
 export const closeElection = async (electionId: string) => {
-  const election = await getElectionAndCheckStatus(
-    electionId,
-    ElectionStatus.FINISHED
-  )
-  if (!election) {
-    return null
-  }
+  const elections = await db
+    .update(electionsTable)
+    .set({
+      status: 'CLOSED'
+    })
+    .where(eq(electionsTable.electionId, electionId))
+    .returning()
 
-  election.update({ status: ElectionStatus.CLOSED })
-
-  return election.get({ plain: true })
+  return elections[0] || null
 }
 
 export const abortVoting = async (electionId: string) => {
-  const election = await getElectionAndCheckStatus(
-    electionId,
-    ElectionStatus.ONGOING
-  )
-  if (!election) {
-    return null
-  }
+  const elections = await db.transaction(async (transaction) => {
+    await transaction
+      .delete(votersTable)
+      .where(eq(votersTable.electionId, electionId))
 
-  const transaction = await Election.sequelize!.transaction()
+    await transaction
+      .delete(ballotsTable)
+      .where(eq(ballotsTable.electionId, electionId))
 
-  try {
-    await election.update({ status: ElectionStatus.CREATED }, { transaction })
+    return await transaction
+      .update(electionsTable)
+      .set({
+        status: 'CREATED'
+      })
+      .where(eq(electionsTable.electionId, electionId))
+      .returning()
+  })
 
-    await Ballot.destroy({ where: { electionId }, transaction })
-
-    await Voter.destroy({ where: { electionId }, transaction, force: true })
-
-    await transaction.commit()
-  } catch (err) {
-    await transaction.rollback()
-    throw err
-  }
-
-  return election.get({ plain: true })
+  return elections[0] || null
 }

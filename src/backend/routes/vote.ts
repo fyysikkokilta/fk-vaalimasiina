@@ -1,9 +1,8 @@
-import Ballot from '../models/ballot'
-import Voter from '../models/voter'
+import { db } from '../db'
+import { ballotsTable, votesTable, votersTable } from '../db/schema'
 import { isNoElectionOngoing } from './elections'
 import { VoteData } from '../../../types/types'
-import Vote from '../models/vote'
-import { CreationAttributes } from 'sequelize'
+import { eq } from 'drizzle-orm'
 
 export const addVote = async (
   voterId: string,
@@ -14,36 +13,27 @@ export const addVote = async (
     return null
   }
 
-  const transaction = await Vote.sequelize!.transaction()
+  return db.transaction(async (transaction) => {
+    const ballots = await transaction
+      .insert(ballotsTable)
+      .values({ electionId })
+      .returning({ ballotId: ballotsTable.ballotId })
 
-  try {
-    const savedBallot = await Ballot.create(
-      {
-        electionId,
-        votes: ballot.map((vote) => ({
+    if (ballot.length > 0) {
+      await transaction.insert(votesTable).values(
+        ballot.map((vote) => ({
+          ballotId: ballots[0].ballotId,
           candidateId: vote.candidateId,
           preferenceNumber: vote.preferenceNumber
         }))
-      } as CreationAttributes<Ballot>,
-      {
-        transaction,
-        include: {
-          model: Vote,
-          as: 'votes'
-        }
-      }
-    )
+      )
+    }
 
-    await Voter.update(
-      { hasVoted: true },
-      { where: { voterId, electionId }, transaction }
-    )
+    await transaction
+      .update(votersTable)
+      .set({ hasVoted: true })
+      .where(eq(votersTable.voterId, voterId))
 
-    await transaction.commit()
-
-    return savedBallot.get({ plain: true })
-  } catch (error) {
-    await transaction.rollback()
-    return null
-  }
+    return ballots[0].ballotId
+  })
 }

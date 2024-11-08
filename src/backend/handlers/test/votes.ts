@@ -7,6 +7,7 @@ export const handleCreateTestVotes = async (req: Request, res: Response) => {
     const votes = await createTestVotes(electionId, voterIdBallotPairs)
     res.status(201).json(votes)
   } catch (err) {
+    console.log(err)
     res.status(500).json({ message: err.message })
   }
 }

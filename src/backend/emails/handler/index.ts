@@ -2,7 +2,7 @@ import Email from 'email-templates'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { ElectionAttributes } from '../../models/election'
+import { ElectionAttributes } from '../../db/election'
 import mailTransporter from './config'
 
 export interface VotingMailParams {

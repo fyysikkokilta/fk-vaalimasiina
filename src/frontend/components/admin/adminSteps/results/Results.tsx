@@ -30,7 +30,7 @@ export const Results = () => {
         calculateSTVResult(
           election.candidates,
           response.data,
-          election.amountToElect,
+          election.seats,
           election.electionId
         )
       )

@@ -17,7 +17,7 @@ import testVoterRouter from './handlers/test/voters'
 import testDbRouter from './handlers/test/db'
 
 import 'dotenv/config'
-import { initDatabase } from './models'
+import { runMigrations } from './db'
 import jsonwebtoken from 'jsonwebtoken'
 import ViteExpress from 'vite-express'
 
@@ -36,7 +36,7 @@ if (
   throw new Error('Environment variables not set')
 }
 
-await initDatabase()
+await runMigrations()
 
 const app = express()
 

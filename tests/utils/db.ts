@@ -12,7 +12,7 @@ export const resetDatabase = async () => {
 export const insertElection = async (data: {
   title: string
   description: string
-  amountToElect: number
+  seats: number
   candidates: { name: string }[]
   status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 }) => {

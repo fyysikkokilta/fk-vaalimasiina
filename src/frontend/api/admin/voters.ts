@@ -11,10 +11,6 @@ export const changeVoterEmail = (voterId: string, email: string) => {
   })
 }
 
-export const getVotersWhoVoted = (electionId: string) => {
-  return api<Voter[]>(`/api/admin/voters/${electionId}/voted`)
-}
-
-export const getAllVotersForElection = (electionId: string) => {
+export const getVoters = (electionId: string) => {
   return api<Voter[]>(`/api/admin/voters/${electionId}`)
 }

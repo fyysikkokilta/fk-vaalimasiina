@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await insertElection({
     title: 'Election 1',
     description: 'Description 1',
-    amountToElect: 1,
+    seats: 1,
     candidates: [{ name: 'Candidate 1' }],
     status: 'CREATED'
   })
@@ -33,7 +33,7 @@ test('should show correct navigation buttons', async ({ page }) => {
 test('should show correct election data', async ({ page }) => {
   await expect(page.locator('#title')).toHaveValue('Election 1')
   await expect(page.locator('#description')).toHaveValue('Description 1')
-  await expect(page.locator('#amountToElect')).toHaveValue('1')
+  await expect(page.locator('#seats')).toHaveValue('1')
   await expect(
     page.getByRole('button', { name: 'Remove candidate' })
   ).toHaveCount(1)
@@ -43,7 +43,7 @@ test('should show correct election data', async ({ page }) => {
 test('should modify election', async ({ page }) => {
   await page.fill('#title', 'Election 2')
   await page.fill('#description', 'Description 2')
-  await page.fill('#amountToElect', '2')
+  await page.fill('#seats', '2')
 
   await page.fill('#newCandidate', 'Candidate 2')
   await page.click('text=Add candidate')
@@ -62,7 +62,7 @@ test('should modify election', async ({ page }) => {
 test('should cancel modify election', async ({ page }) => {
   await page.fill('#title', 'Election 2')
   await page.fill('#description', 'Description 2')
-  await page.fill('#amountToElect', '2')
+  await page.fill('#seats', '2')
 
   await page.fill('#newCandidate', 'Candidate 2')
   await page.click('text=Add candidate')

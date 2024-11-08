@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await insertElection({
     title: 'Election 1',
     description: 'Description 1',
-    amountToElect: 1,
+    seats: 1,
     candidates: [{ name: 'Candidate 1' }],
     status: 'CREATED'
   })

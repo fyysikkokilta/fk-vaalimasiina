@@ -1,13 +1,10 @@
-import Ballot from '../models/ballot'
-import Vote from '../models/vote'
+import { db } from '../db'
 
 export const getVotes = async (electionId: string) => {
-  const ballots = await Ballot.findAll({
-    where: { electionId },
-    include: {
-      model: Vote,
-      as: 'votes'
-    }
+  return db.query.ballotsTable.findMany({
+    with: {
+      votes: true
+    },
+    where: (ballotsTable, { eq }) => eq(ballotsTable.electionId, electionId)
   })
-  return ballots.map((ballot) => ballot.get({ plain: true }))
 }

@@ -1,9 +1,5 @@
 import { Request, Response, Router } from 'express'
-import {
-  changeVoterEmail,
-  getVotersForElection,
-  getVotersWhoVoted
-} from '../../routes/admin/voters'
+import { changeVoterEmail, getVoters } from '../../routes/admin/voters'
 import { validateUuid } from '../../validation/validation'
 
 export const handleChangeVoterEmail = async (req: Request, res: Response) => {
@@ -17,23 +13,10 @@ export const handleChangeVoterEmail = async (req: Request, res: Response) => {
   }
 }
 
-export const handleGetVotersWhoVoted = async (req: Request, res: Response) => {
+export const handleGetVoters = async (req: Request, res: Response) => {
   const { electionId } = req.params
   try {
-    const voters = await getVotersWhoVoted(electionId)
-    res.status(200).json(voters)
-  } catch (err) {
-    res.status(500).json({ message: err.message })
-  }
-}
-
-export const handleGetAllVotersForElection = async (
-  req: Request,
-  res: Response
-) => {
-  const { electionId } = req.params
-  try {
-    const voters = await getVotersForElection(electionId)
+    const voters = await getVoters(electionId)
     res.status(200).json(voters)
   } catch (err) {
     res.status(500).json({ message: err.message })
@@ -50,8 +33,7 @@ router.use('/:electionId', (req, res, next) => {
   next()
 })
 
-router.get('/:electionId/voted', handleGetVotersWhoVoted)
-router.get('/:electionId', handleGetAllVotersForElection)
+router.get('/:electionId', handleGetVoters)
 
 router.use('/:voterId', (req, res, next) => {
   if (!validateUuid(req.params.voterId)) {

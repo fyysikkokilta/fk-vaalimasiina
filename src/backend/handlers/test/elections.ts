@@ -5,11 +5,11 @@ import {
 } from '../../routes/test/elections'
 
 export const handleCreateTestElection = async (req: Request, res: Response) => {
-  const { title, description, amountToElect, candidates, status } = req.body
+  const { title, description, seats, candidates, status } = req.body
   const election = await createTestElection(
     title,
     description,
-    amountToElect,
+    seats,
     candidates,
     status
   )

@@ -4,18 +4,13 @@ import { Button, Col, Container, Form, ListGroup, Row } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
-import {
-  changeVoterEmail,
-  getAllVotersForElection,
-  getVotersWhoVoted
-} from '../../../../api/admin/voters'
+import { changeVoterEmail, getVoters } from '../../../../api/admin/voters'
 import { abortVoting, endVoting } from '../../../../api/admin/elections'
 import { useTranslation } from 'react-i18next'
 import { Voter } from '../../../../../../types/types'
 
 export const VotingInspection = () => {
-  const [allVoters, setAllVoters] = useState<Voter[] | null>(null)
-  const [votersWhoVoted, setVotersWhoVoted] = useState<Voter[] | null>(null)
+  const [voters, setVoters] = useState<Voter[] | null>(null)
   const [showRemainingVoters, setShowRemainingVoters] = useState(false)
   const { election, setElection } = useContext(ElectionContext)!
   const { t } = useTranslation('translation', {
@@ -25,23 +20,12 @@ export const VotingInspection = () => {
   const [oldEmail, setOldEmail] = useState('')
   const [newEmail, setNewEmail] = useState('')
 
-  useEffect(() => {
-    ;(async () => {
-      if (!election) return
-      const response = await getAllVotersForElection(election.electionId)
-      if (!response.ok) {
-        return
-      }
-      setAllVoters(response.data)
-    })()
-  }, [election])
-
   const fetchAndSetRemainingVoters = async (electionId: string) => {
-    const response = await getVotersWhoVoted(electionId)
+    const response = await getVoters(electionId)
     if (!response.ok) {
       return
     }
-    setVotersWhoVoted(response.data)
+    setVoters(response.data)
   }
 
   useEffect(() => {
@@ -56,7 +40,7 @@ export const VotingInspection = () => {
     return () => clearInterval(interval)
   }, [election])
 
-  if (!election || !allVoters || !votersWhoVoted) {
+  if (!election || !voters) {
     return <LoadingSpinner />
   }
 
@@ -83,28 +67,21 @@ export const VotingInspection = () => {
   }
 
   const handleEmailChange = async () => {
-    const voterId = allVoters.find((v) => v.email === oldEmail)!.voterId
+    const voterId = voters.find((v) => v.email === oldEmail)!.voterId
     const response = await changeVoterEmail(voterId, newEmail)
     if (!response.ok) {
       return
     }
-    setAllVoters((previous) =>
-      previous!.map((voter) => ({
-        ...voter,
-        email: voter.voterId === voterId ? newEmail : voter.email
-      }))
-    )
     setOldEmail('')
     setNewEmail('')
   }
 
-  const remainingVoters = allVoters.filter(
-    (voter) => !votersWhoVoted.find((v) => v.voterId === voter.voterId)
-  )
+  const remainingVoters = voters.filter((voter) => !voter.hasVoted)
+  const votersWhoVoted = voters.filter((voter) => voter.hasVoted)
 
-  const validOldEmail = !!allVoters.find((v) => v.email === oldEmail)
+  const validOldEmail = !!voters.find((v) => v.email === oldEmail)
   const validNewEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
-  const newEmailNotInOtherEmails = allVoters.every((v) => v.email !== newEmail)
+  const newEmailNotInOtherEmails = voters.every((v) => v.email !== newEmail)
   const validEmailChange =
     validOldEmail && validNewEmail && newEmailNotInOtherEmails
 
@@ -126,7 +103,7 @@ export const VotingInspection = () => {
           </ListGroup.Item>
           <ListGroup.Item>
             <span>
-              {t('voters')}: {allVoters.length}
+              {t('voters')}: {voters.length}
             </span>
           </ListGroup.Item>
         </ListGroup>

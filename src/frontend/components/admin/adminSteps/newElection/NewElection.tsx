@@ -19,7 +19,7 @@ export const NewElection = () => {
   const [newElection, setNewElection] = useState<ElectionData>({
     title: '',
     description: '',
-    amountToElect: 0,
+    seats: 0,
     candidates: []
   })
   const [newCandidate, setNewCandidate] = useState('')
@@ -81,8 +81,8 @@ export const NewElection = () => {
   const disabled = !(
     newElection.title &&
     newElection.description &&
-    newElection.amountToElect &&
-    newElection.amountToElect > 0 &&
+    newElection.seats &&
+    newElection.seats > 0 &&
     newElection.candidates.length
   )
 
@@ -114,12 +114,12 @@ export const NewElection = () => {
                 onChange={handleChange}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="amountToElect">
+            <Form.Group className="mb-3" controlId="seats">
               <Form.Label>{t('amount_to_choose')}</Form.Label>
               <Form.Control
                 type="number"
-                name="amountToElect"
-                value={newElection.amountToElect}
+                name="seats"
+                value={newElection.seats}
                 onChange={handleChange}
               />
             </Form.Group>

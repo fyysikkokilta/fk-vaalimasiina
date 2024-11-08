@@ -22,7 +22,7 @@ test('should show correct navigation buttons', async ({ page }) => {
 test('should create a new election', async ({ page }) => {
   await page.fill('#title', 'Test Election')
   await page.fill('#description', 'Test Election Description')
-  await page.fill('#amountToElect', '1')
+  await page.fill('#seats', '1')
 
   await page.fill('#newCandidate', 'Test Candidate 1')
   await page.click('text=Add candidate')

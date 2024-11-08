@@ -35,14 +35,14 @@ export const handleVote = async (req: Request, res: Response) => {
     return
   }
 
-  const savedBallot = await addVote(voterId, electionId, ballot)
+  const ballotId = await addVote(voterId, electionId, ballot)
 
-  if (!savedBallot) {
+  if (!ballotId) {
     res.status(500).json({ key: 'error_saving_ballot' })
     return
   }
 
-  res.status(200).json(savedBallot.ballotId)
+  res.status(200).json(ballotId)
 }
 
 const router = Router()

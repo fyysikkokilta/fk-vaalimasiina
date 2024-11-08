@@ -11,17 +11,15 @@ import { readFixture } from './read-fixture'
 const main = async () => {
   const args = process.argv.slice(2)
   if (args.length < 2) {
-    console.error(
-      'Usage: ts-node generate-election.ts <amountToElect> <voteFileName>'
-    )
+    console.error('Usage: ts-node generate-election.ts <seats> <voteFileName>')
     process.exit(1)
   }
 
-  const amountToElect = parseInt(args[0], 10)
+  const seats = parseInt(args[0], 10)
   const voteFileName = args[1]
 
-  if (isNaN(amountToElect) || amountToElect <= 0) {
-    console.error('Invalid amountToElect. It should be a positive integer.')
+  if (isNaN(seats) || seats <= 0) {
+    console.error('Invalid seats. It should be a positive integer.')
     process.exit(1)
   }
   const voteFixture = await readFixture(voteFileName)
@@ -43,7 +41,7 @@ const main = async () => {
   const electionData = {
     title,
     description,
-    amountToElect,
+    seats,
     candidates,
     status
   }

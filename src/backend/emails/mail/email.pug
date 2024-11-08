@@ -10,7 +10,7 @@ block mainContent
     ul 
       li #[strong Äänestyksen nimi:] #{election.title}
       li #[strong Äänestyksen kuvaus:] #{election.description}
-      li #[strong Valittavien määrä:] #{election.amountToElect}
+      li #[strong Valittavien määrä:] #{election.seats}
   div.content-block
     p.bodyText Voit äänestää vain kerran eikä omaa ääntä voi muuttaa äänestämisen jälkeen. Äänestyslinkki on henkilökohtainen, ethän jaa sitä eteenpäin.
   div.content-block
@@ -26,7 +26,7 @@ block mainContent
     ul 
       li #[strong Election name:] #{election.title}
       li #[strong Election description:] #{election.description}
-      li #[strong Amount to elect:] #{election.amountToElect}
+      li #[strong Amount to elect:] #{election.seats}
   div.content-block
     p.bodyText You can only vote once and you cannot change your vote after voting. The voting link is personal, please do not share it.
   div.content-block

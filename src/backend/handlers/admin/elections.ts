@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express'
-import { modifyCandidates } from '../../routes/admin/candidates'
 import { validateUuid } from '../../validation/validation'
 import {
   abortVoting,
@@ -11,14 +10,9 @@ import {
 } from '../../routes/admin/elections'
 
 export const handleNewElection = async (req: Request, res: Response) => {
-  const { title, description, amountToElect, candidates } = req.body
+  const { title, description, seats, candidates } = req.body
   try {
-    const election = await createElection(
-      title,
-      description,
-      amountToElect,
-      candidates
-    )
+    const election = await createElection(title, description, seats, candidates)
 
     res.status(201).json(election)
   } catch (err) {
@@ -28,13 +22,14 @@ export const handleNewElection = async (req: Request, res: Response) => {
 
 export const handleModifyElection = async (req: Request, res: Response) => {
   const { electionId } = req.params
-  const { title, description, amountToElect, candidates } = req.body
+  const { title, description, seats, candidates } = req.body
   try {
     const modifiedElection = await updateElection(
       electionId,
       title,
       description,
-      amountToElect
+      seats,
+      candidates
     )
 
     if (!modifiedElection) {
@@ -42,13 +37,7 @@ export const handleModifyElection = async (req: Request, res: Response) => {
       return
     }
 
-    const modifiedCandidates = await modifyCandidates(electionId, candidates)
-
-    const electionWithCandidates = {
-      ...modifiedElection,
-      candidates: modifiedCandidates
-    }
-    res.status(200).json(electionWithCandidates)
+    res.status(200).json(modifiedElection)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
@@ -136,11 +125,11 @@ router.post('/:electionId/close', handleCloseElection)
 router.post('/:electionId/abort', handleAbortVoting)
 
 router.use('/', (req, res, next) => {
-  const { title, description, amountToElect, candidates } = req.body
+  const { title, description, seats, candidates } = req.body
   if (
     !title ||
     !description ||
-    !amountToElect ||
+    !seats ||
     !Array.isArray(candidates) ||
     candidates.length === 0
   ) {
