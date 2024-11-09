@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM node:20-alpine as builder
+FROM node:22-alpine as builder
 
 # Install brotli
 RUN apk add --no-cache brotli
@@ -39,7 +39,7 @@ RUN find dist -type f \
     -regex ".*\.\(js\|json\|html\|map\|css\|svg\|ico\|txt\)" -exec gzip -k "{}" \; -exec brotli "{}" \;
 
 # Stage 2: Final Image
-FROM node:20-alpine
+FROM node:22-alpine
 
 # Set environment variables
 ENV NODE_ENV=production

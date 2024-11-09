@@ -20,19 +20,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "useUnknownInCatchVariables": false,
-    "paths": {
-      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
-    }
-  },
-  "ts-node": {
-    "transpileOnly": true,
-    "compilerOptions": {
-      "module": "ESNext",
-      "esModuleInterop": true
-    },
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
+    "useUnknownInCatchVariables": false
   },
   "include": ["src/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]

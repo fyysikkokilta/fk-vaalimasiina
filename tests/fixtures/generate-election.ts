@@ -11,7 +11,7 @@ import { readFixture } from './read-fixture'
 const main = async () => {
   const args = process.argv.slice(2)
   if (args.length < 2) {
-    console.error('Usage: ts-node generate-election.ts <seats> <voteFileName>')
+    console.error('Usage: tsx generate-election.ts <seats> <voteFileName>')
     process.exit(1)
   }
 
