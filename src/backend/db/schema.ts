@@ -1,11 +1,14 @@
+import { SQL, sql } from 'drizzle-orm'
 import {
   boolean,
-  uniqueIndex,
   integer,
   pgEnum,
   pgTable,
   uuid,
-  varchar
+  varchar,
+  unique,
+  AnyPgColumn,
+  uniqueIndex
 } from 'drizzle-orm/pg-core'
 
 export const statusEnum = pgEnum('election_status', [
@@ -36,9 +39,16 @@ export const votersTable = pgTable(
     hasVoted: boolean('has_voted').notNull().default(false)
   },
   (table) => [
-    uniqueIndex('idx_voters_electionId_email').on(table.electionId, table.email)
+    uniqueIndex('unique_voters_electionId_email').on(
+      table.electionId,
+      lower(table.email)
+    )
   ]
 )
+
+export function lower(email: AnyPgColumn): SQL {
+  return sql`lower(${email})`
+}
 
 export const candidatesTable = pgTable('candidates', {
   candidateId: uuid('candidate_id').primaryKey().notNull().defaultRandom(),
@@ -76,11 +86,11 @@ export const votesTable = pgTable(
     preferenceNumber: integer('preference_number').notNull()
   },
   (table) => [
-    uniqueIndex('idx_votes_ballotId_preferenceNumber').on(
+    unique('unique_votes_ballotId_preferenceNumber').on(
       table.ballotId,
       table.preferenceNumber
     ),
-    uniqueIndex('idx_votes_ballotId_candidateId').on(
+    unique('unique_votes_ballotId_candidateId').on(
       table.ballotId,
       table.candidateId
     )

@@ -20,7 +20,9 @@ export const PreviewElection = () => {
   }
 
   const validateEmails = (emails: string) => {
-    const emailArray = emails.split('\n')
+    const emailArray = emails
+      .split('\n')
+      .map((email) => email.trim().toLowerCase())
     const emailsOkay = emailArray.every((email) => {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     })
