@@ -81,7 +81,8 @@ export const ElectionResults = ({
     const winners: string[] = []
 
     const roundParagraphs = votingResult.roundResults.map(
-      ({ round, candidateResults, droppedCandidate, quota, tieBreaker }) => {
+      ({ round, candidateResults, droppedCandidate, tieBreaker }) => {
+        const quota = votingResult.quota
         const emptyVotes =
           votingResult.totalVotes -
           roundToTwoDecimals(
@@ -170,21 +171,19 @@ export const ElectionResults = ({
       </Row>
       <ListGroup>
         {votingResult.roundResults.map(
-          ({
-            droppedCandidate,
-            candidateResults,
-            quota,
-            round,
-            tieBreaker
-          }) => (
-            <ListGroup.Item key={round} className="mb-3 text-center">
+          ({ droppedCandidate, candidateResults, round, tieBreaker }) => (
+            <ListGroup.Item
+              id={`round-${round}`}
+              key={round}
+              className="mb-3 text-center"
+            >
               <Card>
                 <Card.Header as="h5">
                   {t('round')} {round}
                 </Card.Header>
                 <Card.Body>
                   <Card.Title>
-                    &nbsp; {t('election_threshold')}:&nbsp;{quota}
+                    &nbsp; {t('election_threshold')}:&nbsp;{votingResult.quota}
                   </Card.Title>
                   <ListGroup variant="flush">
                     {candidateResults
@@ -234,7 +233,7 @@ export const ElectionResults = ({
         )}
       </ListGroup>
       <Row>
-        <Col className="text-center">
+        <Col id="winners" className="text-center">
           <h4>{t('chosen_candidates')}</h4>
           <ListGroup>
             {votingResult.winners

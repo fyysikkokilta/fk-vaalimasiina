@@ -1,6 +1,6 @@
 import seedrandom from 'seedrandom'
-import _lodash, { orderBy } from 'lodash'
-import { Candidate, Ballot } from '../../../types/types'
+import _ from 'lodash'
+import { Candidate, Ballot, Election } from '../../../types/types'
 
 type CandidateId = Candidate['candidateId']
 
@@ -25,15 +25,16 @@ interface PassingCandidateResult {
 
 interface VotingRoundResult {
   round: number
-  quota: number
   candidateResults: PassingCandidateResult[]
-  droppedCandidate: CandidateResultData | null
+  emptyVotes: number
+  droppedCandidate?: CandidateResultData
   tieBreaker?: boolean
 }
 
 export type VotingResult = {
   totalVoters: number
   totalVotes: number
+  quota: number
   roundResults: VotingRoundResult[]
   winners: CandidateId[]
   ballots: BallotData[]
@@ -59,6 +60,7 @@ const findNextPreference = (
 
 const dropOneCandidate = (
   voteMap: VoteMap,
+  totalVotes: number,
   quota: number,
   round: number,
   electionId: string,
@@ -85,9 +87,9 @@ const dropOneCandidate = (
    */
 
   seedrandom(electionId, { global: true })
-  const _ = _lodash.runInContext()
+  const lodash = _.runInContext()
 
-  const candidateToBeDropped = _.shuffle(candidatesWithMinVotes)[0]
+  const candidateToBeDropped = lodash.shuffle(candidatesWithMinVotes)[0]
 
   const votesOfDroppedCandidate = voteMap.get(candidateToBeDropped[0])!
   voteMap.delete(candidateToBeDropped[0])
@@ -114,8 +116,13 @@ const dropOneCandidate = (
 
   return {
     round,
-    quota,
     candidateResults,
+    emptyVotes:
+      totalVotes -
+      candidateResults.reduce(
+        (sum, { data }) => sum + data.voteCount,
+        minVotes
+      ),
     droppedCandidate: {
       id: candidateToBeDropped[0],
       voteCount: candidateToBeDropped[1]
@@ -126,6 +133,7 @@ const dropOneCandidate = (
 
 const transferSurplusVotes = (
   voteMap: VoteMap,
+  totalVotes: number,
   electedCandidates: Set<CandidateId>,
   quota: number,
   round: number,
@@ -167,17 +175,16 @@ const transferSurplusVotes = (
 
   return {
     round,
-    quota,
     candidateResults,
-    droppedCandidate: null
+    emptyVotes:
+      totalVotes -
+      candidateResults.reduce((sum, { data }) => sum + data.voteCount, 0)
   }
 }
 
 export const calculateSTVResult = (
-  candidates: Candidate[],
-  ballots: Ballot[],
-  numberOfSeats: number,
-  electionId: string
+  election: Election,
+  ballots: Ballot[]
 ): VotingResult => {
   const roundResults: VotingRoundResult[] = []
   let winnerCount = 0
@@ -186,15 +193,15 @@ export const calculateSTVResult = (
 
   const nonEmptyBallots = ballots.filter((ballot) => ballot.votes.length > 0)
   const nonEmptyVoteCount = nonEmptyBallots.length
-  const quota = Math.floor(nonEmptyVoteCount / (numberOfSeats + 1)) + 1
+  const quota = Math.floor(nonEmptyVoteCount / (election.seats + 1)) + 1
 
   const voteMap: VoteMap = new Map()
-  candidates.forEach((c) => voteMap.set(c.candidateId, []))
+  election.candidates.forEach((c) => voteMap.set(c.candidateId, []))
 
   const previouslySelectedCandidates = new Set<CandidateId>()
 
   nonEmptyBallots.forEach(({ votes }) => {
-    const candidateIds = orderBy(votes, 'preferenceNumber').map(
+    const candidateIds = _.orderBy(votes, 'preferenceNumber').map(
       (v) => v.candidateId
     )
     const id = candidateIds[0]
@@ -205,11 +212,11 @@ export const calculateSTVResult = (
   })
 
   while (!votingIsFinished) {
-    if (round > candidates.length + 1) {
+    if (round > election.candidates.length + 1) {
       throw new Error('Too many voting rounds!')
     }
 
-    const acceptAllCandidates = voteMap.size + winnerCount <= numberOfSeats
+    const acceptAllCandidates = voteMap.size + winnerCount <= election.seats
 
     const electedCandidates = new Set(
       getCurrentVoteCountsOfCandidates(voteMap)
@@ -223,6 +230,7 @@ export const calculateSTVResult = (
     if (electedCandidates.size > 0) {
       roundResult = transferSurplusVotes(
         voteMap,
+        nonEmptyVoteCount,
         electedCandidates,
         quota,
         round,
@@ -231,9 +239,10 @@ export const calculateSTVResult = (
     } else {
       roundResult = dropOneCandidate(
         voteMap,
+        nonEmptyVoteCount,
         quota,
         round,
-        electionId,
+        election.electionId,
         previouslySelectedCandidates
       )
     }
@@ -242,7 +251,7 @@ export const calculateSTVResult = (
     winnerCount += electedCandidates.size
     round += 1
 
-    if (winnerCount === numberOfSeats || voteMap.size === 0) {
+    if (winnerCount === election.seats || voteMap.size === 0) {
       votingIsFinished = true
     }
   }
@@ -254,6 +263,7 @@ export const calculateSTVResult = (
   return {
     totalVoters: ballots.length,
     totalVotes: nonEmptyVoteCount,
+    quota,
     roundResults,
     winners,
     ballots: ballots.map((b) => b.votes.map((v) => v.candidateId))

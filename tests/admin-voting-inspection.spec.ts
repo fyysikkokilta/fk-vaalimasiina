@@ -23,12 +23,7 @@ test.beforeEach(async ({ page }) => {
   })
   voters = await insertVoters({
     electionId: election.electionId,
-    emails: [
-      'email1@email.com',
-      'email2@email.com',
-      'email3@email.com',
-      'email4@email.com'
-    ]
+    emails: Array.from({ length: 4 }, (_, i) => `email${i + 1}@email.com`)
   })
   await loginAdmin(page)
   await expect(page.getByRole('heading', { name: 'Voting' })).toBeVisible()

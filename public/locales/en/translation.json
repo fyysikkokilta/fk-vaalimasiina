@@ -85,9 +85,9 @@
     "round": "Round",
     "election_threshold": "Election threshold",
     "votes": "votes",
-    "chosen": "Chosen",
+    "chosen": "Elected",
     "not_chosen": "Eliminated",
-    "chosen_candidates": "Chosen candidates",
+    "chosen_candidates": "Elected candidates",
     "empty_votes": "Empty",
     "tie_breaker": "Tie breaker (random)"
   },

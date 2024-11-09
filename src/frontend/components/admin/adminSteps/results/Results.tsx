@@ -26,14 +26,7 @@ export const Results = () => {
         return
       }
 
-      setVotingResult(
-        calculateSTVResult(
-          election.candidates,
-          response.data,
-          election.seats,
-          election.electionId
-        )
-      )
+      setVotingResult(calculateSTVResult(election, response.data))
     })()
   }, [election])
 

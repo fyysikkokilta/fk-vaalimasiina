@@ -5,7 +5,7 @@ import { Ballot } from '../../../../types/types'
 import { ElectionContext } from '../../contexts/election/ElectionContext'
 import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
-import { orderBy } from 'lodash'
+import _ from 'lodash'
 
 export const Audit = () => {
   const { election } = useContext(ElectionContext)!
@@ -90,17 +90,18 @@ export const Audit = () => {
                           <td colSpan={2}>
                             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                               {audit.votes.length > 0
-                                ? orderBy(audit.votes, 'preferenceNumber').map(
-                                    (vote, index) => (
-                                      <div
-                                        key={index}
-                                        style={{ marginRight: '10px' }}
-                                      >
-                                        {vote.preferenceNumber}.{' '}
-                                        {getCandidateName(vote.candidateId)}
-                                      </div>
-                                    )
-                                  )
+                                ? _.orderBy(
+                                    audit.votes,
+                                    'preferenceNumber'
+                                  ).map((vote, index) => (
+                                    <div
+                                      key={index}
+                                      style={{ marginRight: '10px' }}
+                                    >
+                                      {vote.preferenceNumber}.{' '}
+                                      {getCandidateName(vote.candidateId)}
+                                    </div>
+                                  ))
                                 : t('empty_ballot')}
                             </div>
                           </td>
