@@ -11,7 +11,15 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type:check": "tsc --noEmit",
     "prettier:format": "prettier --write .",
-    "generate-migrations": "drizzle-kit generate"
+    "generate-migrations": "drizzle-kit generate",
+    "prepare": "simple-git-hooks"
+  },
+  "simple-git-hooks": {
+    "pre-commit": [
+      "npm run lint",
+      "npm run type:check",
+      "npm run prettier:format"
+    ]
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
@@ -69,6 +77,7 @@
     "prettier": "^3.3.3",
     "sass": "^1.80.6",
     "sass-loader": "^16.0.3",
+    "simple-git-hooks": "^2.11.1",
     "tslib": "^2.8.1",
     "typescript": "^5.5.4",
     "vite": "^5.4.10"
