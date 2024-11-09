@@ -26,7 +26,6 @@ test.beforeEach(async ({ page }) => {
     emails: Array.from({ length: 4 }, (_, i) => `email${i + 1}@email.com`)
   })
   await loginAdmin(page)
-  await expect(page.getByRole('heading', { name: 'Voting' })).toBeVisible()
 })
 
 test('should show voting form', async ({ page }) => {

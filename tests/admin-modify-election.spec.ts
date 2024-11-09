@@ -13,10 +13,7 @@ test.beforeEach(async ({ page }) => {
     status: 'CREATED'
   })
   await loginAdmin(page)
-  await expect(
-    page.getByRole('button', { name: 'Edit election' })
-  ).toBeVisible()
-  await page.click('text=Edit election')
+  await page.getByRole('button', { name: 'Edit election' }).click()
 })
 
 test('should show modify election form', async ({ page }) => {

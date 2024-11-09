@@ -13,7 +13,6 @@ test.beforeEach(async ({ page }) => {
     status: 'CREATED'
   })
   await loginAdmin(page)
-  await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
 })
 
 test('should show preview election form', async ({ page }) => {

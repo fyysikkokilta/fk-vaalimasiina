@@ -1,13 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { loginAdmin } from './utils/admin-login'
-import {
-  createElectionWithVotersAndBallots,
-  insertElection,
-  insertVoters,
-  insertVotes,
-  resetDatabase
-} from './utils/db'
+import { createElectionWithVotersAndBallots, resetDatabase } from './utils/db'
 import {
   calculateSTVResult,
   VotingResult

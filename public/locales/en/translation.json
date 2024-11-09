@@ -1,14 +1,14 @@
 {
   "app": {
     "main": "Main",
-    "audit": "Audit view",
+    "audit": "Auditing",
     "previous_results": "Previous results",
     "admin": "Admin",
     "loading": "Loading..."
   },
   "voter": {
     "audit": {
-      "title": "Audit view",
+      "title": "Auditing",
       "ballot_id": "Ballot ID",
       "ballot": "Ballot",
       "election_not_ongoing_or_finished": "There is no ongoing or finished election",

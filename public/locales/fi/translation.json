@@ -1,14 +1,14 @@
 {
   "app": {
     "main": "Etusivu",
-    "audit": "Tarkastusnäkymä",
+    "audit": "Auditointi",
     "previous_results": "Edelliset tulokset",
     "admin": "Hallinta",
     "loading": "Ladataan..."
   },
   "voter": {
     "audit": {
-      "title": "Tarkastusnäkymä",
+      "title": "Auditointi",
       "ballot_id": "Äänestyslipun tunniste",
       "ballot": "Äänestyslippu",
       "election_not_ongoing_or_finished": "Ei käynnissä olevaa tai päättynyttä vaalia",
