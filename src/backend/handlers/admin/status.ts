@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { getElections } from '../../routes/elections'
 
-export const handleFetchtatus = async (req: Request, res: Response) => {
+export const handleFetchtatus = async (_req: Request, res: Response) => {
   // Return NEW if no elections in state 'CREATED'
   // Return PREVIEW if one in state 'CREATED'
   // Return VOTING if one in state 'ONGOING'

@@ -6,7 +6,7 @@ import {
   calculateSTVResult,
   VotingResult
 } from '../src/frontend/utils/stvAlgorithm'
-import { Ballot, Election, Voter } from '../types/types'
+import { Ballot, Election } from '../types/types'
 
 let election: Election
 let ballots: Ballot[]

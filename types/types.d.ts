@@ -3,8 +3,6 @@ export type Voter = {
   electionId: string
   email: string
   hasVoted: boolean
-  createdAt: string
-  updatedAt: string
 }
 
 export type VoterData = {
@@ -27,8 +25,6 @@ export type Election = {
   seats: number
   candidates: Candidate[]
   status: ElectionStatus
-  createdAt: string
-  updatedAt: string
 }
 
 export type CandidateData = {
@@ -39,16 +35,12 @@ export type Candidate = {
   candidateId: string
   electionId: string
   name: string
-  createdAt: string
-  updatedAt: string
 }
 
 export type Ballot = {
   ballotId: string
   electionId: string
   votes: { candidateId: string; preferenceNumber: number }[]
-  createdAt: string
-  updatedAt: string
 }
 
 export type VoteData = {

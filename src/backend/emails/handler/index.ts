@@ -2,11 +2,11 @@ import Email from 'email-templates'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { ElectionAttributes } from '../../db/election'
 import mailTransporter from './config'
+import { Election } from '../../../../types/types'
 
 export interface VotingMailParams {
-  election: ElectionAttributes
+  election: Omit<Election, 'candidates'>
   voterId: string
 }
 

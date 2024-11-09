@@ -12,6 +12,7 @@ export const getErrorMessage = async (response: Response) => {
       return body.message as string
     }
   } catch (e) {
+    console.error(e)
     return response.statusText
   }
 

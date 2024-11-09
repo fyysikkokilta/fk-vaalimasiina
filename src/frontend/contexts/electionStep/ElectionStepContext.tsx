@@ -1,22 +1,9 @@
-import React, {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState
-} from 'react'
-import {
-  electionStepSettingsFinnish,
-  electionStepSettingsEnglish
-} from './electionStepSetting'
-import { fetchStatus } from '../../api/admin/status'
-import { useCookies } from 'react-cookie'
-import { useTranslation } from 'react-i18next'
+import { createContext, Dispatch, SetStateAction } from 'react'
+import { electionStepSettingsFinnish } from './electionStepSetting'
 
-type ElectionStep = keyof typeof electionStepSettingsFinnish
+export type ElectionStep = keyof typeof electionStepSettingsFinnish
 
-type StepSettings = {
+export type StepSettings = {
   title: string
   nextButton: string
   nextStep: ElectionStep
@@ -32,38 +19,3 @@ type ElectionStepContextType = {
 
 export const ElectionStepContext =
   createContext<ElectionStepContextType | null>(null)
-
-export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
-  const [cookies] = useCookies(['admin-token'])
-  const [electionStep, setElectionStep] = useState<ElectionStep | null>(null)
-  const { i18n } = useTranslation()
-
-  const electionStepSettings =
-    i18n.language === 'fi'
-      ? electionStepSettingsFinnish
-      : electionStepSettingsEnglish
-
-  useEffect(() => {
-    ;(async () => {
-      if (!cookies['admin-token']) {
-        return
-      }
-      const response = await fetchStatus()
-      if (!response.ok) {
-        return
-      }
-      setElectionStep(response.data.status as ElectionStep)
-    })()
-  }, [cookies])
-
-  const stepSettings = electionStep
-    ? (electionStepSettings[electionStep] as StepSettings)
-    : null
-  return (
-    <ElectionStepContext.Provider
-      value={{ stepSettings, electionStep, setElectionStep }}
-    >
-      {children}
-    </ElectionStepContext.Provider>
-  )
-}

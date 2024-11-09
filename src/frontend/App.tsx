@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Container, Navbar, Card, Button, Nav } from 'react-bootstrap'
 import { Admin } from './components/admin/Admin'
 import { Vote } from './components/vote/Vote'
-import { ElectionStepProvider } from './contexts/electionStep/ElectionStepContext'
-import { ElectionProvider } from './contexts/election/ElectionContext'
 import { Flip, ToastContainer } from 'react-toastify'
 
 import 'react-toastify/scss/main.scss'
@@ -13,6 +11,8 @@ import { PreviousElectionList } from './components/results/PreviousElectionList'
 import { PreviousResults } from './components/results/PreviousResults'
 import { Info } from './components/info/Info'
 import { Audit } from './components/audit/Audit'
+import { ElectionStepProvider } from './contexts/electionStep/ElectionStepProvider'
+import { ElectionProvider } from './contexts/election/ElectionProvider'
 
 const APP_TITLE = import.meta.env.VITE_BRANDING_HEADER_TITLE_TEXT
 const APP_HOME_LINK = import.meta.env.VITE_BRANDING_FOOTER_HOME_LINK

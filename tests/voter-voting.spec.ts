@@ -1,17 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-import {
-  insertElection,
-  insertVoters,
-  insertVotes,
-  resetDatabase
-} from './utils/db'
+import { insertElection, insertVoters, resetDatabase } from './utils/db'
 import { Election, Voter } from '../types/types'
 
 let election: Election
 let voters: Voter[]
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async () => {
   await resetDatabase()
   election = await insertElection({
     title: 'Election 1',

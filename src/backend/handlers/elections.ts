@@ -3,7 +3,7 @@ import { getElections, getElectionById } from '../routes/elections'
 import { validateUuid } from '../validation/validation'
 
 export const handleFetchCurrentElection = async (
-  req: Request,
+  _req: Request,
   res: Response
 ) => {
   try {
@@ -41,7 +41,7 @@ export const handleFetchElectionById = async (req: Request, res: Response) => {
 }
 
 export const handleFetchCompletedElections = async (
-  req: Request,
+  _req: Request,
   res: Response
 ) => {
   try {
