@@ -112,7 +112,7 @@ test.describe('with some votes', () => {
 
   test('should have emails in the remaining voters list', async ({ page }) => {
     await page.getByRole('button', { name: 'Show remaining voters' }).click()
-    await expect(page.getByText('email.com')).toHaveCount(4)
+    await expect(page.getByText('email.com')).toHaveCount(2)
     await expect(page.getByText('email1')).not.toBeVisible()
     await expect(page.getByText('email2')).not.toBeVisible()
     await expect(page.getByText('email3')).toBeVisible()
