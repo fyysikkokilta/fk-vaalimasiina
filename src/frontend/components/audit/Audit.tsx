@@ -13,9 +13,12 @@ export const Audit = () => {
   const [loading, setLoading] = useState(true)
   const { t } = useTranslation('translation', { keyPrefix: 'voter.audit' })
 
+  const isAuditable =
+    election && (election.status === 'FINISHED' || election.status === 'CLOSED')
+
   useEffect(() => {
     ;(async () => {
-      if (!election) {
+      if (!isAuditable) {
         return
       }
       const response = await getVotesForElection(election.electionId)
@@ -27,9 +30,9 @@ export const Audit = () => {
       setBallots(response.data)
       setLoading(false)
     })()
-  }, [election])
+  }, [election, isAuditable])
 
-  if (!election) {
+  if (!isAuditable) {
     return (
       <Container className="mt-5 mb-5">
         <Row className="justify-content-center">

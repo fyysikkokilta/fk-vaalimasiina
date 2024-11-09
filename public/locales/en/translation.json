@@ -11,8 +11,8 @@
       "title": "Auditing",
       "ballot_id": "Ballot ID",
       "ballot": "Ballot",
-      "election_not_ongoing_or_finished": "There is no ongoing or finished election",
-      "election_not_ongoing_or_finished_description": "You can audit only the election that is ongoing or has just finished. If you think this is an error, please contact the chairperson or secretary.",
+      "election_not_ongoing_or_finished": "There is no finished election",
+      "election_not_ongoing_or_finished_description": "You can only audit the election whose results have just been published. If you think this is an error, please contact the chairperson or secretary.",
       "empty_ballot": "Empty ballot"
     },
     "info": {
@@ -34,7 +34,7 @@
       "already_voted": "You have already voted!",
       "back_to_frontpage": "Back to frontpage",
       "ballot_id": "Ballot ID",
-      "audit_info": "Below is the ID of your ballot. You can check that your ballot is correct and taken into account in the audit view. Save the ID, as you cannot get it again later."
+      "audit_info": "Below is the ID of your ballot. You can check that your ballot is correct and taken into account in the auditing view after the voting has closed. Save the ID, as you cannot get it again later."
     }
   },
   "admin": {

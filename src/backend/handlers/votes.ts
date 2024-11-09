@@ -9,7 +9,7 @@ export const handleGetVotesForCompletedElection = async (
 ) => {
   const { electionId } = req.params
   try {
-    const isCompleted = checkIsCompletedElection(electionId)
+    const isCompleted = await checkIsCompletedElection(electionId)
     if (!isCompleted) {
       res.status(400).json({ key: 'election_not_completed' })
       return
