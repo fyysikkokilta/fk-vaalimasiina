@@ -13,18 +13,18 @@ interface WeightedVote {
 
 type VoteMap = Map<CandidateId, WeightedVote[]>
 
-interface PassingCandidateResult {
+interface CandidateResult {
   id: CandidateId
   name: string
   voteCount: number
-  isPreviouslySelected: boolean
+  isSelectedThisRound: boolean
   isSelected: boolean
   isEliminated: boolean
 }
 
 interface VotingRoundResult {
   round: number
-  candidateResults: PassingCandidateResult[]
+  candidateResults: CandidateResult[]
   emptyVotes: number
   tieBreaker?: boolean
 }
@@ -34,7 +34,7 @@ export type VotingResult = {
   nonEmptyVotes: number
   quota: number
   roundResults: VotingRoundResult[]
-  winners: { id: CandidateId; name: string }[]
+  winners: CandidateResult[]
   ballots: Ballot[]
 }
 
@@ -105,8 +105,8 @@ const dropOneCandidate = (
       id: c,
       name: election.candidates.find((c2) => c2.candidateId === c)!.name,
       voteCount: v,
-      isPreviouslySelected: previouslySelectedCandidates.has(c),
-      isSelected: false,
+      isSelected: previouslySelectedCandidates.has(c),
+      isSelectedThisRound: false,
       isEliminated: c === candidateToBeDropped[0]
     }))
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -156,8 +156,9 @@ const transferSurplusVotes = (
       id: c,
       name: election.candidates.find((c2) => c2.candidateId === c)!.name,
       voteCount: v,
-      isPreviouslySelected: previouslySelectedCandidates.has(c),
-      isSelected: electedCandidates.has(c),
+      isSelected:
+        previouslySelectedCandidates.has(c) || electedCandidates.has(c),
+      isSelectedThisRound: electedCandidates.has(c),
       isEliminated: false
     }))
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -247,13 +248,9 @@ export const calculateSTVResult = (
     }
   }
 
-  const winners = roundResults[roundResults.length - 1].candidateResults
-    .filter((result) => result.isSelected || result.isPreviouslySelected)
-    .map(({ id }) => ({
-      id,
-      name: election.candidates.find((c) => c.candidateId === id)!.name
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name))
+  const winners = roundResults
+    .at(-1)!
+    .candidateResults.filter((result) => result.isSelected)
 
   return {
     totalVotes,

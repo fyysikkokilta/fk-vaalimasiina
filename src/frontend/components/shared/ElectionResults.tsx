@@ -72,10 +72,13 @@ export const ElectionResults = ({
         const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${sortedCandidates
           .map(({ name, candidateId }) => {
             const candidate = candidateResults.find((c) => c.id === candidateId)
-            return `${name} ${candidate ? roundToTwoDecimals(candidate.voteCount) : '-'}${candidate?.isSelected || candidate?.isPreviouslySelected ? ' (valittu)' : ''}`
+            return `${name} ${candidate ? roundToTwoDecimals(candidate.voteCount) : '-'}${candidate?.isSelected ? ' (valittu)' : ''}`
           })
           .join('; ')}; tyhjiä ${emptyVotes}.`
-        const winnersThisRound = candidateResults.filter((c) => c.isSelected)
+
+        const winnersThisRound = candidateResults.filter(
+          (c) => c.isSelectedThisRound
+        )
         const winnersNames = winnersThisRound
           .map(({ name }) => name)
           .join(' ja ')
@@ -94,7 +97,7 @@ export const ElectionResults = ({
 
         const winnersExtraParagraph =
           winnersThisRound.length > 0 &&
-          round !== votingResult.roundResults.length
+          round < votingResult.roundResults.length
             ? `${round + 1}. kierroksella jaettiin ${winnersNames} äänikynnyksen ylittäneet ${winnersThisRound.map(({ voteCount }) => voteCount - quota).join(' ja ')} ääntä muille ehdokkaille siirtoäänivaalitavan määräämillä kertoimilla painotettuna.`
             : null
 
@@ -159,17 +162,10 @@ export const ElectionResults = ({
                   </Card.Title>
                   <ListGroup variant="flush">
                     {candidateResults.map(
-                      ({
-                        id,
-                        name,
-                        voteCount,
-                        isPreviouslySelected,
-                        isSelected,
-                        isEliminated
-                      }) => (
+                      ({ id, name, voteCount, isSelected, isEliminated }) => (
                         <ListGroup.Item key={id}>
                           {name} - {roundToTwoDecimals(voteCount)} {t('votes')}
-                          {(isSelected || isPreviouslySelected) && (
+                          {isSelected && (
                             <span className="text-success">
                               {' '}
                               - {t('chosen')}
