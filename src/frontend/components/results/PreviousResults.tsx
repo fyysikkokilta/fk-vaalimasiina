@@ -5,7 +5,7 @@ import { LoadingSpinner } from '../shared/LoadingSpinner'
 import { Election } from '../../../../types/types'
 import { getVotesForElection } from '../../api/votes'
 import { fetchElectionById } from '../../api/elections'
-import { NavLink, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
@@ -56,9 +56,9 @@ export const PreviousResults = () => {
         ) : (
           <>
             <div className="d-flex justify-content-center mb-3">
-              <NavLink to="/elections" className="btn btn-secondary">
+              <Link to="/elections" className="btn btn-secondary">
                 {t('back_to_list')}
-              </NavLink>
+              </Link>
             </div>
             <ElectionResults election={election} votingResult={votingResult} />
           </>
