@@ -8,19 +8,37 @@ import {
   startVoting,
   updateElection
 } from '../../routes/admin/elections'
+import { RequestBody, RequestBodyParams } from '../../../../types/express'
 
-export const handleNewElection = async (req: Request, res: Response) => {
+export type NewElectionRequestBody = {
+  title: string
+  description: string
+  seats: number
+  candidates: { name: string }[]
+}
+export const handleNewElection = async (
+  req: RequestBody<NewElectionRequestBody>,
+  res: Response
+) => {
   const { title, description, seats, candidates } = req.body
   try {
     const election = await createElection(title, description, seats, candidates)
 
     res.status(201).json(election)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
-export const handleModifyElection = async (req: Request, res: Response) => {
+export type ModifyElectionRequestParams = {
+  electionId: string
+}
+export const handleModifyElection = async (
+  req: RequestBodyParams<NewElectionRequestBody, ModifyElectionRequestParams>,
+  res: Response
+) => {
   const { electionId } = req.params
   const { title, description, seats, candidates } = req.body
   try {
@@ -39,11 +57,22 @@ export const handleModifyElection = async (req: Request, res: Response) => {
 
     res.status(200).json(modifiedElection)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
-export const handleStartVoting = async (req: Request, res: Response) => {
+export type StartVotingRequestBody = {
+  emails: string[]
+}
+export type StartVotingRequestParams = {
+  electionId: string
+}
+export const handleStartVoting = async (
+  req: RequestBodyParams<StartVotingRequestBody, StartVotingRequestParams>,
+  res: Response
+) => {
   const { electionId } = req.params
   const { emails } = req.body
   try {
@@ -56,7 +85,9 @@ export const handleStartVoting = async (req: Request, res: Response) => {
 
     res.status(200).json(election)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
@@ -72,7 +103,9 @@ export const handleEndVoting = async (req: Request, res: Response) => {
 
     res.status(200).json(election)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
@@ -88,7 +121,9 @@ export const handleCloseElection = async (req: Request, res: Response) => {
 
     res.status(200).json(election)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
@@ -104,7 +139,9 @@ export const handleAbortVoting = async (req: Request, res: Response) => {
 
     res.status(200).json(election)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
@@ -124,7 +161,7 @@ router.post('/:electionId/end', handleEndVoting)
 router.post('/:electionId/close', handleCloseElection)
 router.post('/:electionId/abort', handleAbortVoting)
 
-router.use('/', (req, res, next) => {
+router.use('/', (req: RequestBody<NewElectionRequestBody>, res, next) => {
   const { title, description, seats, candidates } = req.body
   if (
     !title ||

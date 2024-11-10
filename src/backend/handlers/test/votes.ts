@@ -1,14 +1,26 @@
-import { Request, Response, Router } from 'express'
+import { Response, Router } from 'express'
 import { createTestVotes } from '../../routes/test/votes'
+import { RequestBody } from '../../../../types/express'
 
-export const handleCreateTestVotes = async (req: Request, res: Response) => {
+export type CreateTestVotesRequestBody = {
+  electionId: string
+  voterIdBallotPairs: {
+    voterId: string
+    ballot: { candidateId: string; preferenceNumber: number }[]
+  }[]
+}
+export const handleCreateTestVotes = async (
+  req: RequestBody<CreateTestVotesRequestBody>,
+  res: Response
+) => {
   const { electionId, voterIdBallotPairs } = req.body
   try {
     const votes = await createTestVotes(electionId, voterIdBallotPairs)
     res.status(201).json(votes)
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 

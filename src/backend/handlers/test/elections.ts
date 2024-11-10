@@ -1,10 +1,21 @@
-import { Request, Response, Router } from 'express'
+import { Response, Router } from 'express'
 import {
   changeTestElectionStatus,
   createTestElection
 } from '../../routes/test/elections'
+import { RequestBody, RequestBodyParams } from '../../../../types/express'
 
-export const handleCreateTestElection = async (req: Request, res: Response) => {
+export type CreateTestElectionRequestBody = {
+  title: string
+  description: string
+  seats: number
+  candidates: { name: string }[]
+  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+}
+export const handleCreateTestElection = async (
+  req: RequestBody<CreateTestElectionRequestBody>,
+  res: Response
+) => {
   const { title, description, seats, candidates, status } = req.body
   const election = await createTestElection(
     title,
@@ -17,8 +28,17 @@ export const handleCreateTestElection = async (req: Request, res: Response) => {
   res.status(201).json(election)
 }
 
+export type ChangeTestElectionStatusRequestBody = {
+  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+}
+export type ChangeTestElectionStatusRequestParams = {
+  electionId: string
+}
 export const handleChangeTestElectionStatus = async (
-  req: Request,
+  req: RequestBodyParams<
+    ChangeTestElectionStatusRequestBody,
+    ChangeTestElectionStatusRequestParams
+  >,
   res: Response
 ) => {
   const { electionId } = req.params

@@ -12,7 +12,9 @@ export const handleGetVoter = async (req: Request, res: Response) => {
     }
     res.status(200).json(voter)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 

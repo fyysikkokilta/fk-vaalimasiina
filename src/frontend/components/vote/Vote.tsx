@@ -28,7 +28,7 @@ export const Vote = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
   useEffect(() => {
-    ;(async () => {
+    void (async () => {
       if (!voterId) {
         navigate('/')
         return

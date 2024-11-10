@@ -53,7 +53,7 @@ export const ElectionResults = ({
     a.click()
   }
 
-  const getMinutesParagraphs = () => {
+  const getMinutesParagraphs = async () => {
     const totalVotes = votingResult.totalVotes
     const emptyVotes = votingResult.ballots.filter(
       (ballot) => ballot.length === 0
@@ -140,7 +140,7 @@ export const ElectionResults = ({
 
     const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${votingResult.winners.map((id) => getCandidateName(id)).join(' ja ')} Fyysikkokillan rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
 
-    navigator.clipboard.writeText(
+    await navigator.clipboard.writeText(
       [firstParagraph, secondParagraph, ...roundParagraphs, winnersParagraph]
         .filter((s) => s)
         .join('\n\n')

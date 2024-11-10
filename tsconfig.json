@@ -22,6 +22,21 @@
     "noFallthroughCasesInSwitch": true,
     "useUnknownInCatchVariables": false
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "types/**/*",
+    "tests/**/*.ts",
+    "drizzle.config.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "data",
+    "dist",
+    "node_modules",
+    "playwright-report",
+    "public",
+    "test-results"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

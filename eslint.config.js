@@ -17,12 +17,12 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['**/dist', '**/.eslintrc']
+    ignores: ['**/dist', '**/eslint.config.js']
   },
   ...fixupConfigRules(
     compat.extends(
       'eslint:recommended',
-      'plugin:@typescript-eslint/recommended',
+      'plugin:@typescript-eslint/recommended-type-checked',
       'plugin:react-hooks/recommended',
       'prettier'
     )
@@ -37,7 +37,11 @@ export default [
         ...globals.browser
       },
 
-      parser: tsParser
+      parser: tsParser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: __dirname
+      }
     },
 
     rules: {
@@ -46,7 +50,8 @@ export default [
         {
           allowConstantExport: true
         }
-      ]
+      ],
+      '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }]
     }
   }
 ]

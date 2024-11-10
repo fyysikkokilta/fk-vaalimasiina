@@ -2,14 +2,14 @@ import { t } from 'i18next'
 
 export const getErrorMessage = async (response: Response) => {
   try {
-    const body = await response.json()
+    const body = (await response.json()) as { key?: string; message?: string }
 
     if (body.key) {
       return t(`errors.${body.key}`)
     }
 
     if (body.message) {
-      return body.message as string
+      return body.message
     }
   } catch (e) {
     console.error(e)

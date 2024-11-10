@@ -20,7 +20,7 @@ export const api = async <T>(
   toastError: boolean = true
 ): Promise<ApiResponse<T>> => {
   const cookies = new Cookies()
-  const adminToken = cookies.get('admin-token')
+  const adminToken = cookies.get('admin-token') as string | undefined
 
   const headers = new Headers({
     ...(init?.headers || {}),
@@ -53,6 +53,6 @@ export const api = async <T>(
   return {
     ok: true,
     status: response.status,
-    data: await response.json()
+    data: (await response.json()) as T
   }
 }

@@ -36,14 +36,13 @@ const main = async () => {
     })
     return acc
   }, [])
-  const status = 'CLOSED' as const
 
   const electionData = {
     title,
     description,
     seats,
     candidates,
-    status
+    status: 'CLOSED' as const
   }
 
   const election = await insertElection(electionData)
@@ -75,4 +74,4 @@ const main = async () => {
   console.log('done')
 }
 
-main()
+await main()

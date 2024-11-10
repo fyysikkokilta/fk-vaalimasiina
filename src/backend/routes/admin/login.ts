@@ -1,6 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken'
 
-export const authenticateAdmin = async (username: string, password: string) => {
+export const authenticateAdmin = (username: string, password: string) => {
   const adminUsername = process.env.ADMIN_USERNAME!
   const adminPassword = process.env.ADMIN_PASSWORD!
 

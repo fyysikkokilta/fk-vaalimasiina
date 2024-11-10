@@ -23,7 +23,7 @@ export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
       : electionStepSettingsEnglish
 
   useEffect(() => {
-    ;(async () => {
+    void (async () => {
       if (!cookies['admin-token']) {
         return
       }

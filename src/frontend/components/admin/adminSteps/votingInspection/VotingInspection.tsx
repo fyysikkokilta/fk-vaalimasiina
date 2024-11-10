@@ -30,10 +30,10 @@ export const VotingInspection = () => {
 
   useEffect(() => {
     if (!election) return
-    fetchAndSetRemainingVoters(election.electionId)
+    void fetchAndSetRemainingVoters(election.electionId)
 
     const interval = setInterval(
-      () => fetchAndSetRemainingVoters(election.electionId),
+      () => void fetchAndSetRemainingVoters(election.electionId),
       3000
     )
 
@@ -131,7 +131,10 @@ export const VotingInspection = () => {
                   onChange={(e) => setNewEmail(e.target.value)}
                 />
               </Form.Group>
-              <Button onClick={handleEmailChange} disabled={!validEmailChange}>
+              <Button
+                onClick={() => void handleEmailChange()}
+                disabled={!validEmailChange}
+              >
                 {t('change_email')}
               </Button>
             </Form>

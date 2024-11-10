@@ -8,7 +8,7 @@ export const ElectionProvider = ({ children }: { children: ReactNode }) => {
   const [election, setElection] = useState<Election | null>(null)
 
   useEffect(() => {
-    ;(async () => {
+    void (async () => {
       const response = await fetchCurrentElection()
 
       if (!response.ok) {

@@ -22,7 +22,9 @@ export const handleFetchCurrentElection = async (
     const returnList = election ? [election] : []
     res.status(200).json(returnList)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
@@ -36,7 +38,9 @@ export const handleFetchElectionById = async (req: Request, res: Response) => {
     }
     res.status(200).json(election)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 
@@ -51,7 +55,9 @@ export const handleFetchCompletedElections = async (
     )
     res.status(200).json(completedElections)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
   }
 }
 

@@ -17,7 +17,7 @@ export const Audit = () => {
     election && (election.status === 'FINISHED' || election.status === 'CLOSED')
 
   useEffect(() => {
-    ;(async () => {
+    void (async () => {
       if (!isAuditable) {
         return
       }

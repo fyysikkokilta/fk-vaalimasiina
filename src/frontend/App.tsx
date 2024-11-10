@@ -14,9 +14,15 @@ import { Audit } from './components/audit/Audit'
 import { ElectionStepProvider } from './contexts/electionStep/ElectionStepProvider'
 import { ElectionProvider } from './contexts/election/ElectionProvider'
 
-const APP_TITLE = import.meta.env.VITE_BRANDING_HEADER_TITLE_TEXT
-const APP_HOME_LINK = import.meta.env.VITE_BRANDING_FOOTER_HOME_LINK
-const APP_HOME_TEXT = import.meta.env.VITE_BRANDING_FOOTER_HOME_TEXT
+const APP_TITLE = import.meta.env.VITE_BRANDING_HEADER_TITLE_TEXT as
+  | string
+  | undefined
+const APP_HOME_LINK = import.meta.env.VITE_BRANDING_FOOTER_HOME_LINK as
+  | string
+  | undefined
+const APP_HOME_TEXT = import.meta.env.VITE_BRANDING_FOOTER_HOME_TEXT as
+  | string
+  | undefined
 
 function App() {
   const { i18n, t } = useTranslation('translation', { keyPrefix: 'app' })

@@ -1,10 +1,18 @@
-import { Router, Request, Response } from 'express'
+import { Router, Response } from 'express'
 import { addVote } from '../routes/vote'
 import { getVoter } from '../routes/voter'
 import { validateUuid } from '../validation/validation'
 import { checkIsOnGoingElection, isValidBallot } from '../routes/elections'
+import { RequestBody } from '../../../types/express'
 
-export const handleVote = async (req: Request, res: Response) => {
+type VoteRequestBody = {
+  voterId: string
+  ballot: { candidateId: string; preferenceNumber: number }[]
+}
+export const handleVote = async (
+  req: RequestBody<VoteRequestBody>,
+  res: Response
+) => {
   const { voterId, ballot } = req.body
 
   const validVoter = await getVoter(voterId)
@@ -17,7 +25,7 @@ export const handleVote = async (req: Request, res: Response) => {
   const electionId = validVoter.electionId
 
   // Check if the election is ongoing
-  if (!checkIsOnGoingElection(electionId)) {
+  if (!(await checkIsOnGoingElection(electionId))) {
     res.status(400).json({ key: 'election_not_ongoing' })
     return
   }
@@ -47,7 +55,7 @@ export const handleVote = async (req: Request, res: Response) => {
 
 const router = Router()
 
-router.use('/', (req, res, next) => {
+router.use('/', (req: RequestBody<VoteRequestBody>, res, next) => {
   const { voterId } = req.body
   if (!validateUuid(voterId)) {
     res.status(400).json({ key: 'invalid_voter_id' })
@@ -56,7 +64,7 @@ router.use('/', (req, res, next) => {
   next()
 })
 
-router.use('/', (req, res, next) => {
+router.use('/', (req: RequestBody<VoteRequestBody>, res, next) => {
   const { ballot } = req.body
   if (!Array.isArray(ballot)) {
     res.status(400).json({ key: 'invalid_ballot' })

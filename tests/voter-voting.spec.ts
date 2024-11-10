@@ -87,7 +87,7 @@ test.describe('voting', () => {
     const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     const response = await responsePromise
-    const ballotId = await response.json()
+    const ballotId = (await response.json()) as string
 
     await expect(page.locator(`text=Ballot ID: ${ballotId}`)).toBeVisible()
   })
@@ -114,7 +114,7 @@ test.describe('audit view', () => {
     const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     const response = await responsePromise
-    const ballotId = await response.json()
+    const ballotId = (await response.json()) as string
 
     await expect(page.getByText('You have already voted!')).toBeVisible()
     await page.goto('/audit')
@@ -128,7 +128,7 @@ test.describe('audit view', () => {
     const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     const response = await responsePromise
-    const ballotId = await response.json()
+    const ballotId = (await response.json()) as string
 
     await expect(page.getByText('You have already voted!')).toBeVisible()
     await page.goto('/audit')

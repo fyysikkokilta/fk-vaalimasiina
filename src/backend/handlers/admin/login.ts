@@ -1,9 +1,17 @@
-import { Router, Request, Response } from 'express'
+import { Router, Response } from 'express'
 import { authenticateAdmin } from '../../routes/admin/login'
+import { RequestBody } from '../../../../types/express'
 
-export const authenticate = async (req: Request, res: Response) => {
+export type AuthenticateRequestBody = {
+  username: string
+  password: string
+}
+export const authenticate = (
+  req: RequestBody<AuthenticateRequestBody>,
+  res: Response
+) => {
   const { username, password } = req.body
-  const jwt = await authenticateAdmin(username, password)
+  const jwt = authenticateAdmin(username, password)
 
   if (!jwt) {
     res.status(401).json({ key: 'invalid_credentials' })
@@ -15,7 +23,7 @@ export const authenticate = async (req: Request, res: Response) => {
 
 const router = Router()
 
-router.use('/', (req, res, next) => {
+router.use('/', (req: RequestBody<AuthenticateRequestBody>, res, next) => {
   const { username, password } = req.body
 
   if (!username || !password) {

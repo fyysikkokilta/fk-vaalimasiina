@@ -12,7 +12,7 @@ export const PreviousElectionList = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
 
   useEffect(() => {
-    ;(async () => {
+    void (async () => {
       const electionsData = await fetchCompletedElections()
 
       if (!electionsData.ok) {

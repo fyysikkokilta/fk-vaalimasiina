@@ -15,7 +15,7 @@ export const Results = () => {
   const [votingResult, setVotingResult] = useState<VotingResult | null>(null)
 
   useEffect(() => {
-    ;(async () => {
+    void (async () => {
       if (!election) {
         return
       }
