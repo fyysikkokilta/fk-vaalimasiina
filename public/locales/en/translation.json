@@ -77,7 +77,7 @@
     }
   },
   "results": {
-    "voters": "Voters",
+    "total_votes": "Votes",
     "non_empty_votes": "Non-empty votes",
     "export_csv": "Download ballots as CSV",
     "export_minutes": "Copy results to clipboard",
@@ -86,7 +86,7 @@
     "election_threshold": "Election threshold",
     "votes": "votes",
     "chosen": "Elected",
-    "not_chosen": "Eliminated",
+    "eliminated": "Eliminated",
     "chosen_candidates": "Elected candidates",
     "empty_votes": "Empty",
     "tie_breaker": "Tie breaker (random)"

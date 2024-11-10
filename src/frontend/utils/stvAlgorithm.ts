@@ -13,31 +13,29 @@ interface WeightedVote {
 
 type VoteMap = Map<CandidateId, WeightedVote[]>
 
-interface CandidateResultData {
-  id: CandidateId
-  voteCount: number
-}
-
 interface PassingCandidateResult {
-  data: CandidateResultData
+  id: CandidateId
+  name: string
+  voteCount: number
+  isPreviouslySelected: boolean
   isSelected: boolean
+  isEliminated: boolean
 }
 
 interface VotingRoundResult {
   round: number
   candidateResults: PassingCandidateResult[]
   emptyVotes: number
-  droppedCandidate?: CandidateResultData
   tieBreaker?: boolean
 }
 
 export type VotingResult = {
-  totalVoters: number
   totalVotes: number
+  nonEmptyVotes: number
   quota: number
   roundResults: VotingRoundResult[]
-  winners: CandidateId[]
-  ballots: BallotData[]
+  winners: { id: CandidateId; name: string }[]
+  ballots: Ballot[]
 }
 
 const getCurrentVoteCountsOfCandidates = (
@@ -63,7 +61,7 @@ const dropOneCandidate = (
   totalVotes: number,
   quota: number,
   round: number,
-  electionId: string,
+  election: Election,
   previouslySelectedCandidates: Set<CandidateId>
 ): VotingRoundResult => {
   const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
@@ -86,7 +84,7 @@ const dropOneCandidate = (
    * ensure that the result is random but always the same for the same election.
    */
 
-  seedrandom(electionId, { global: true })
+  seedrandom(election.electionId, { global: true })
   const lodash = _.runInContext()
 
   const candidateToBeDropped = lodash.shuffle(candidatesWithMinVotes)[0]
@@ -102,31 +100,23 @@ const dropOneCandidate = (
   })
 
   const candidateResults = voteCounts
+    .concat(Array.from(previouslySelectedCandidates).map((c) => [c, quota]))
     .map(([c, v]) => ({
-      data: { id: c, voteCount: v },
-      isSelected: false
+      id: c,
+      name: election.candidates.find((c2) => c2.candidateId === c)!.name,
+      voteCount: v,
+      isPreviouslySelected: previouslySelectedCandidates.has(c),
+      isSelected: false,
+      isEliminated: c === candidateToBeDropped[0]
     }))
-    .filter((result) => result.data.id !== candidateToBeDropped[0])
-    .concat(
-      Array.from(previouslySelectedCandidates).map((c) => ({
-        data: { id: c, voteCount: quota },
-        isSelected: true
-      }))
-    )
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   return {
     round,
     candidateResults,
     emptyVotes:
       totalVotes -
-      candidateResults.reduce(
-        (sum, { data }) => sum + data.voteCount,
-        minVotes
-      ),
-    droppedCandidate: {
-      id: candidateToBeDropped[0],
-      voteCount: candidateToBeDropped[1]
-    },
+      candidateResults.reduce((sum, { voteCount }) => sum + voteCount, 0),
     tieBreaker: candidatesWithMinVotes.length > 1
   }
 }
@@ -137,6 +127,7 @@ const transferSurplusVotes = (
   electedCandidates: Set<CandidateId>,
   quota: number,
   round: number,
+  election: Election,
   previouslySelectedCandidates: Set<CandidateId>
 ): VotingRoundResult => {
   const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
@@ -160,25 +151,23 @@ const transferSurplusVotes = (
   })
 
   const candidateResults = voteCounts
+    .concat(Array.from(previouslySelectedCandidates).map((c) => [c, quota]))
     .map(([c, v]) => ({
-      data: { id: c, voteCount: v },
-      isSelected: electedCandidates.has(c)
+      id: c,
+      name: election.candidates.find((c2) => c2.candidateId === c)!.name,
+      voteCount: v,
+      isPreviouslySelected: previouslySelectedCandidates.has(c),
+      isSelected: electedCandidates.has(c),
+      isEliminated: false
     }))
-    .concat(
-      Array.from(previouslySelectedCandidates)
-        .filter((c) => !electedCandidates.has(c))
-        .map((c) => ({
-          data: { id: c, voteCount: quota },
-          isSelected: true
-        }))
-    )
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   return {
     round,
     candidateResults,
     emptyVotes:
       totalVotes -
-      candidateResults.reduce((sum, { data }) => sum + data.voteCount, 0)
+      candidateResults.reduce((sum, { voteCount }) => sum + voteCount, 0)
   }
 }
 
@@ -191,9 +180,10 @@ export const calculateSTVResult = (
   let votingIsFinished = false
   let round = 1
 
+  const totalVotes = ballots.length
   const nonEmptyBallots = ballots.filter((ballot) => ballot.votes.length > 0)
-  const nonEmptyVoteCount = nonEmptyBallots.length
-  const quota = Math.floor(nonEmptyVoteCount / (election.seats + 1)) + 1
+  const nonEmptyVotes = nonEmptyBallots.length
+  const quota = Math.floor(nonEmptyVotes / (election.seats + 1)) + 1
 
   const voteMap: VoteMap = new Map()
   election.candidates.forEach((c) => voteMap.set(c.candidateId, []))
@@ -224,28 +214,29 @@ export const calculateSTVResult = (
         .map(([id]) => id)
     )
 
-    electedCandidates.forEach((c) => previouslySelectedCandidates.add(c))
-
     let roundResult: VotingRoundResult
     if (electedCandidates.size > 0) {
       roundResult = transferSurplusVotes(
         voteMap,
-        nonEmptyVoteCount,
+        totalVotes,
         electedCandidates,
         quota,
         round,
+        election,
         previouslySelectedCandidates
       )
     } else {
       roundResult = dropOneCandidate(
         voteMap,
-        nonEmptyVoteCount,
+        totalVotes,
         quota,
         round,
-        election.electionId,
+        election,
         previouslySelectedCandidates
       )
     }
+
+    electedCandidates.forEach((c) => previouslySelectedCandidates.add(c))
 
     roundResults.push(roundResult)
     winnerCount += electedCandidates.size
@@ -257,15 +248,19 @@ export const calculateSTVResult = (
   }
 
   const winners = roundResults[roundResults.length - 1].candidateResults
-    .filter((result) => result.isSelected)
-    .map((result) => result.data.id)
+    .filter((result) => result.isSelected || result.isPreviouslySelected)
+    .map(({ id }) => ({
+      id,
+      name: election.candidates.find((c) => c.candidateId === id)!.name
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   return {
-    totalVoters: ballots.length,
-    totalVotes: nonEmptyVoteCount,
+    totalVotes,
+    nonEmptyVotes,
     quota,
     roundResults,
     winners,
-    ballots: ballots.map((b) => b.votes.map((v) => v.candidateId))
+    ballots
   }
 }

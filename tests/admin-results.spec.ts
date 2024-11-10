@@ -49,19 +49,14 @@ test('should show correct vote numbers', async ({ page }) => {
   const nonEmptyVotes = ballots.filter(
     (ballot) => ballot.votes.length > 0
   ).length
-  await expect(page.locator(`text=Voters: ${votes}`)).toBeVisible()
+  await expect(page.locator(`text=Votes: ${votes}`)).toBeVisible()
   await expect(
     page.locator(`text=Non-empty votes: ${nonEmptyVotes}`)
   ).toBeVisible()
 })
 
 test('should show correct round results', async ({ page }) => {
-  for (const {
-    candidateResults,
-    droppedCandidate,
-    round,
-    emptyVotes
-  } of result.roundResults) {
+  for (const { candidateResults, round, emptyVotes } of result.roundResults) {
     const roundContainer = page.locator(`#round-${round}`)
     await expect(roundContainer.locator(`text=Round ${round}`)).toBeVisible()
 
@@ -73,15 +68,16 @@ test('should show correct round results', async ({ page }) => {
       roundContainer.locator(`text=Empty: ${emptyVotes}`)
     ).toBeVisible()
 
-    for (const { data, isSelected } of candidateResults) {
-      const expectedText = `${election.candidates.find((c) => c.candidateId === data.id)!.name} - ${data.voteCount} votes ${
+    for (const { name, voteCount, isSelected } of candidateResults) {
+      const expectedText = `${name} - ${voteCount} votes ${
         isSelected ? '- Elected' : ''
       }`
       await expect(roundContainer.locator(`text=${expectedText}`)).toBeVisible()
     }
 
+    const droppedCandidate = candidateResults.find((c) => c.isEliminated)
     if (droppedCandidate) {
-      const expectedText = `${election.candidates.find((c) => c.candidateId === droppedCandidate.id)!.name} - ${droppedCandidate.voteCount} votes - Eliminated`
+      const expectedText = `${droppedCandidate.name} - ${droppedCandidate.voteCount} votes - Eliminated`
 
       await expect(roundContainer.locator(`text=${expectedText}`)).toBeVisible()
     }
@@ -93,12 +89,8 @@ test('should show winners', async ({ page }) => {
   await expect(
     winnersContainer.locator(`text=Elected candidates`)
   ).toBeVisible()
-  for (const winner of result.winners) {
-    await expect(
-      winnersContainer.locator(
-        `text=${election.candidates.find((c) => c.candidateId === winner)!.name}`
-      )
-    ).toBeVisible()
+  for (const { name } of result.winners) {
+    await expect(winnersContainer.locator(`text=${name}`)).toBeVisible()
   }
 })
 

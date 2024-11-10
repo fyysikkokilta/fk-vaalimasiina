@@ -77,7 +77,7 @@
     }
   },
   "results": {
-    "voters": "Äänestäjiä",
+    "total_votes": "Ääniä",
     "non_empty_votes": "Epätyhjiä ääniä",
     "export_csv": "Lataa äänestysliput CSV-tiedostona",
     "export_minutes": "Kopioi tulokset leikepöydälle",
@@ -86,7 +86,7 @@
     "election_threshold": "Äänikynnys",
     "votes": "ääntä",
     "chosen": "Valittu",
-    "not_chosen": "Putosi",
+    "eliminated": "Putosi",
     "chosen_candidates": "Valitut ehdokkaat",
     "empty_votes": "Tyhjiä",
     "tie_breaker": "Tasatilanteen ratkaisu (arvonta)"
