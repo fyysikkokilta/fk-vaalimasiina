@@ -8,7 +8,33 @@ import {
   startVoting,
   updateElection
 } from '../../routes/admin/elections'
+import { getElections } from '../../routes/elections'
 import { RequestBody, RequestBodyParams } from '../../../../types/express'
+
+export const handleFetchCurrentElection = async (
+  _req: Request,
+  res: Response
+) => {
+  try {
+    const elections = await getElections()
+
+    const allNonClosedElections = elections.filter(
+      (election) => election.status !== 'CLOSED'
+    )
+
+    if (allNonClosedElections.length > 1) {
+      res.status(500).json({ key: 'multiple_non_closed_elections' })
+      return
+    }
+
+    const election = elections.find((election) => election.status !== 'CLOSED')
+    res.status(200).json(election || null)
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
+  }
+}
 
 export type NewElectionRequestBody = {
   title: string
@@ -146,6 +172,8 @@ export const handleAbortVoting = async (req: Request, res: Response) => {
 }
 
 const router = Router()
+
+router.get('/current', handleFetchCurrentElection)
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {

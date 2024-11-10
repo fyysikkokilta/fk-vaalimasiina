@@ -3,8 +3,7 @@ import { calculateSTVResult, VotingResult } from '../../utils/stvAlgorithm'
 import { ElectionResults } from '../shared/ElectionResults'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 import { Election } from '../../../../types/types'
-import { getVotesForElection } from '../../api/votes'
-import { fetchElectionById } from '../../api/elections'
+import { fetchCompletedElectionWithVotes } from '../../api/elections'
 import { Link, useParams } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
@@ -18,28 +17,18 @@ export const PreviousResults = () => {
   useEffect(() => {
     void (async () => {
       // Fetch election
-      const electionResponse = await fetchElectionById(electionId!)
+      const electionResponse = await fetchCompletedElectionWithVotes(
+        electionId!
+      )
 
       if (!electionResponse.ok) {
         return
       }
-
-      const election = electionResponse.data
-
-      if (election.status !== 'CLOSED') {
-        return
-      }
+      const election = electionResponse.data.election
+      const ballots = electionResponse.data.ballots
 
       setElection(election)
-
-      // Fetch voting results
-      const response = await getVotesForElection(election.electionId)
-
-      if (!response.ok) {
-        return
-      }
-
-      setVotingResult(calculateSTVResult(election, response.data))
+      setVotingResult(calculateSTVResult(election, ballots))
     })()
   }, [electionId])
 

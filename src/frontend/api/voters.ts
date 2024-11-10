@@ -1,6 +1,8 @@
 import { api } from './api'
-import { Voter } from '../../../types/types'
+import { Election, Voter } from '../../../types/types'
 
-export const getVoter = async (voterId: string) => {
-  return await api<Voter>(`/api/voters/${voterId}`)
+export const getVoterWithElection = async (voterId: string) => {
+  return await api<{ voter: Voter; election: Election }>(
+    `/api/voters/${voterId}`
+  )
 }

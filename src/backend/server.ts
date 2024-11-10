@@ -2,14 +2,12 @@ import express from 'express'
 import cors from 'cors'
 import adminElectionsRouter from './handlers/admin/elections'
 import adminLoginRouter from './handlers/admin/login'
-import adminStatusRouter from './handlers/admin/status'
 import adminVoterRouter from './handlers/admin/voters'
 import adminVotesRouter from './handlers/admin/votes'
 
 import electionsRouter from './handlers/elections'
 import voteRouter from './handlers/vote'
 import votersRouter from './handlers/voters'
-import votesRouter from './handlers/votes'
 
 import testElectionsRouter from './handlers/test/elections'
 import testVoteRouter from './handlers/test/votes'
@@ -65,14 +63,12 @@ app.use('/api/admin', (req, res, next) => {
 })
 
 app.use('/api/admin/elections', adminElectionsRouter)
-app.use('/api/admin/status', adminStatusRouter)
 app.use('/api/admin/voters', adminVoterRouter)
 app.use('/api/admin/votes', adminVotesRouter)
 
 app.use('/api/elections', electionsRouter)
 app.use('/api/vote', voteRouter)
 app.use('/api/voters', votersRouter)
-app.use('/api/votes', votesRouter)
 
 if (process.env.NODE_ENV === 'development') {
   app.use('/api/test/elections', testElectionsRouter)

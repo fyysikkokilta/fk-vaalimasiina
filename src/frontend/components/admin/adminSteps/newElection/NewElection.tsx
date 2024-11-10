@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Row, Col, Form, Button, ListGroup } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
-import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import { ElectionData } from '../../../../../../types/types'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import {
@@ -15,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 
 export const NewElection = () => {
   const { electionStep } = useContext(ElectionStepContext)!
-  const { election, setElection } = useContext(ElectionContext)!
+  const { election, setElection } = useContext(ElectionStepContext)!
   const [newElection, setNewElection] = useState<ElectionData>({
     title: '',
     description: '',

@@ -1,14 +1,18 @@
-import { Election } from '../../../types/types'
+import { Ballot, Election } from '../../../types/types'
 import { api } from './api'
 
-export const fetchCurrentElection = async () => {
+export const fetchCompletedElections = async () => {
   return await api<Election[]>(`/api/elections`)
 }
 
-export const fetchElectionById = async (electionId: string) => {
-  return await api<Election>(`/api/elections/${electionId}`)
+export const fetchCompletedElectionWithVotes = async (electionId: string) => {
+  return await api<{ election: Election; ballots: Ballot[] }>(
+    `/api/elections/${electionId}`
+  )
 }
 
-export const fetchCompletedElections = async () => {
-  return await api<Election[]>(`/api/elections/completed`)
+export const fetchFinishedElectionWithVotes = async () => {
+  return await api<{ election: Election; ballots: Ballot[] }>(
+    `/api/elections/finished`
+  )
 }

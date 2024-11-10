@@ -3,7 +3,6 @@ import {
   electionStepSettingsFinnish,
   electionStepSettingsEnglish
 } from './electionStepSetting'
-import { fetchStatus } from '../../api/admin/status'
 import { useCookies } from 'react-cookie'
 import { useTranslation } from 'react-i18next'
 import {
@@ -11,9 +10,28 @@ import {
   ElectionStepContext,
   StepSettings
 } from './ElectionStepContext'
+import { Election } from '../../../../types/types'
+import { fetchCurrentElection } from '../../api/admin/elections'
+
+const getElectionStep = (election: Election | null): ElectionStep => {
+  if (!election) {
+    return 'NEW'
+  }
+  if (election.status === 'CREATED') {
+    return 'PREVIEW'
+  }
+  if (election.status === 'ONGOING') {
+    return 'VOTING'
+  }
+  if (election.status === 'FINISHED') {
+    return 'RESULTS'
+  }
+  return 'NEW'
+}
 
 export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
   const [cookies] = useCookies(['admin-token'])
+  const [election, setElection] = useState<Election | null>(null)
   const [electionStep, setElectionStep] = useState<ElectionStep | null>(null)
   const { i18n } = useTranslation()
 
@@ -27,11 +45,12 @@ export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
       if (!cookies['admin-token']) {
         return
       }
-      const response = await fetchStatus()
+      const response = await fetchCurrentElection()
       if (!response.ok) {
         return
       }
-      setElectionStep(response.data.status as ElectionStep)
+      setElection(response.data)
+      setElectionStep(getElectionStep(response.data))
     })()
   }, [cookies])
 
@@ -40,7 +59,13 @@ export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
     : null
   return (
     <ElectionStepContext.Provider
-      value={{ stepSettings, electionStep, setElectionStep }}
+      value={{
+        election,
+        setElection,
+        stepSettings,
+        electionStep,
+        setElectionStep
+      }}
     >
       {children}
     </ElectionStepContext.Provider>

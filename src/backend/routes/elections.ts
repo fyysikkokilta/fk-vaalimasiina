@@ -1,5 +1,6 @@
 import { db } from '../db'
 import { Election, VoteData } from '../../../types/types'
+import { or } from 'drizzle-orm'
 
 export const getElections = async () => {
   return db.query.electionsTable.findMany({
@@ -51,10 +52,9 @@ export const isValidBallot = (
   return validBallot && validPreferenceNumbers
 }
 
-export const findCompletedElectionWithVotes = async (electionId: string) => {
+export const findFinishedElectionWithVotes = async () => {
   const election = await db.query.electionsTable.findFirst({
-    where: (electionsTable, { eq }) =>
-      eq(electionsTable.electionId, electionId),
+    where: (electionsTable, { eq }) => eq(electionsTable.status, 'FINISHED'),
     with: {
       candidates: true,
       ballots: {
@@ -65,11 +65,28 @@ export const findCompletedElectionWithVotes = async (electionId: string) => {
     }
   })
 
-  if (!election) {
-    return null
-  }
+  return election || null
+}
 
-  return election.status === 'FINISHED' || election.status === 'CLOSED'
-    ? election
-    : null
+export const getCompletedElectionWithVotes = async (electionId: string) => {
+  const election = await db.query.electionsTable.findFirst({
+    where: (electionsTable, { and, eq }) =>
+      and(
+        eq(electionsTable.electionId, electionId),
+        or(
+          eq(electionsTable.status, 'FINISHED'),
+          eq(electionsTable.status, 'CLOSED')
+        )
+      ),
+    with: {
+      candidates: true,
+      ballots: {
+        with: {
+          votes: true
+        }
+      }
+    }
+  })
+
+  return election || null
 }

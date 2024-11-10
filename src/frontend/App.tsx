@@ -17,7 +17,6 @@ import { PreviousResults } from './components/results/PreviousResults'
 import { Info } from './components/info/Info'
 import { Audit } from './components/audit/Audit'
 import { ElectionStepProvider } from './contexts/electionStep/ElectionStepProvider'
-import { ElectionProvider } from './contexts/election/ElectionProvider'
 
 const APP_TITLE = import.meta.env.VITE_BRANDING_HEADER_TITLE_TEXT as
   | string
@@ -68,26 +67,24 @@ function App() {
         <Container className="mt-4">
           <Card className="box-shadow">
             <Card.Body className="fii-background">
-              <ElectionProvider>
-                <Routes>
-                  <Route
-                    path="/admin/*"
-                    element={
-                      <ElectionStepProvider>
-                        <Admin />
-                      </ElectionStepProvider>
-                    }
-                  />
-                  <Route path="/audit" element={<Audit />} />
-                  <Route
-                    path="/elections/:electionId"
-                    element={<PreviousResults />}
-                  />
-                  <Route path="/elections" element={<PreviousElectionList />} />
-                  <Route path="/vote/:voterId" element={<Vote />} />
-                  <Route path="*" element={<Info />} />
-                </Routes>
-              </ElectionProvider>
+              <Routes>
+                <Route
+                  path="/admin/*"
+                  element={
+                    <ElectionStepProvider>
+                      <Admin />
+                    </ElectionStepProvider>
+                  }
+                />
+                <Route path="/audit" element={<Audit />} />
+                <Route
+                  path="/elections/:electionId"
+                  element={<PreviousResults />}
+                />
+                <Route path="/elections" element={<PreviousElectionList />} />
+                <Route path="/vote/:voterId" element={<Vote />} />
+                <Route path="*" element={<Info />} />
+              </Routes>
             </Card.Body>
           </Card>
         </Container>

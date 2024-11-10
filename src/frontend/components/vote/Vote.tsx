@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Container,
   Card,
@@ -10,19 +10,18 @@ import {
   Col
 } from 'react-bootstrap'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
-import { ElectionContext } from '../../contexts/election/ElectionContext'
 import { vote } from '../../api/vote'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getVoter } from '../../api/voters'
-import { Voter } from '../../../../types/types'
+import { getVoterWithElection } from '../../api/voters'
+import { Election, Voter } from '../../../../types/types'
 
 export const Vote = () => {
-  const { election } = useContext(ElectionContext)!
   const { voterId } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [voter, setVoter] = useState<Voter | null>(null)
+  const [election, setElection] = useState<Election | null>(null)
   const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
@@ -34,12 +33,13 @@ export const Vote = () => {
         return
       }
 
-      const voterResponse = await getVoter(voterId)
+      const voterResponse = await getVoterWithElection(voterId)
       if (!voterResponse.ok) {
         setLoading(false)
         return
       }
-      setVoter(voterResponse.data)
+      setVoter(voterResponse.data.voter)
+      setElection(voterResponse.data.election)
       setLoading(false)
     })()
   }, [navigate, voterId])

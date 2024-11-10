@@ -1,48 +1,10 @@
 import { Router, Request, Response } from 'express'
-import { getElections, getElection } from '../routes/elections'
+import {
+  getElections,
+  getCompletedElectionWithVotes,
+  findFinishedElectionWithVotes
+} from '../routes/elections'
 import { validateUuid } from '../validation/validation'
-
-export const handleFetchCurrentElection = async (
-  _req: Request,
-  res: Response
-) => {
-  try {
-    const elections = await getElections()
-
-    const allNonClosedElections = elections.filter(
-      (election) => election.status !== 'CLOSED'
-    )
-
-    if (allNonClosedElections.length > 1) {
-      res.status(500).json({ key: 'multiple_non_closed_elections' })
-      return
-    }
-
-    const election = elections.find((election) => election.status !== 'CLOSED')
-    const returnList = election ? [election] : []
-    res.status(200).json(returnList)
-  } catch (err) {
-    if (err instanceof Error) {
-      res.status(500).json({ message: err.message })
-    }
-  }
-}
-
-export const handleFetchElection = async (req: Request, res: Response) => {
-  const { electionId } = req.params
-  try {
-    const election = await getElection(electionId)
-    if (!election) {
-      res.status(404).json({ key: 'election_not_found' })
-      return
-    }
-    res.status(200).json(election)
-  } catch (err) {
-    if (err instanceof Error) {
-      res.status(500).json({ message: err.message })
-    }
-  }
-}
 
 export const handleFetchCompletedElections = async (
   _req: Request,
@@ -61,9 +23,49 @@ export const handleFetchCompletedElections = async (
   }
 }
 
+export const handleFindFinishedElectionWithVotes = async (
+  _req: Request,
+  res: Response
+) => {
+  try {
+    const election = await findFinishedElectionWithVotes()
+    if (!election) {
+      res.status(200).json({ election: null, ballots: [] })
+      return
+    }
+    const { ballots, ...electionWithoutVotes } = election
+    res.status(200).json({ election: electionWithoutVotes, ballots })
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
+  }
+}
+
+export const handleFetchCompletedElectionWithVotes = async (
+  req: Request,
+  res: Response
+) => {
+  const { electionId } = req.params
+  try {
+    const election = await getCompletedElectionWithVotes(electionId)
+    if (!election) {
+      res.status(404).json({ key: 'election_not_found' })
+      return
+    }
+    const { ballots, ...electionWithoutVotes } = election
+    res.status(200).json({ election: electionWithoutVotes, ballots })
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message })
+    }
+  }
+}
+
 const router = Router()
-router.get('/', handleFetchCurrentElection)
-router.get('/completed', handleFetchCompletedElections)
+
+router.get('/', handleFetchCompletedElections)
+router.get('/finished', handleFindFinishedElectionWithVotes)
 
 router.use('/:electionId', (req, res, next) => {
   if (!validateUuid(req.params.electionId)) {
@@ -73,6 +75,6 @@ router.use('/:electionId', (req, res, next) => {
   next()
 })
 
-router.get('/:electionId', handleFetchElection)
+router.get('/:electionId', handleFetchCompletedElectionWithVotes)
 
 export default router

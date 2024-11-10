@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
-import { ElectionContext } from '../../../../contexts/election/ElectionContext'
 import {
   calculateSTVResult,
   VotingResult
@@ -9,9 +8,10 @@ import { getVotesForElection } from '../../../../api/admin/votes'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { closeElection } from '../../../../api/admin/elections'
 import { ElectionResults } from '../../../shared/ElectionResults'
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 
 export const Results = () => {
-  const { election, setElection } = useContext(ElectionContext)!
+  const { election, setElection } = useContext(ElectionStepContext)!
   const [votingResult, setVotingResult] = useState<VotingResult | null>(null)
 
   useEffect(() => {

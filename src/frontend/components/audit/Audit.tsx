@@ -1,38 +1,37 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Table, Alert, Card, Row, Col } from 'react-bootstrap'
-import { getVotesForElection } from '../../api/votes'
-import { Ballot } from '../../../../types/types'
-import { ElectionContext } from '../../contexts/election/ElectionContext'
+import { Ballot, Election } from '../../../../types/types'
 import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 import _ from 'lodash'
+import { fetchFinishedElectionWithVotes } from '../../api/elections'
 
 export const Audit = () => {
-  const { election } = useContext(ElectionContext)!
+  const [election, setElection] = useState<Election | null>(null)
   const [ballots, setBallots] = useState<Ballot[]>([])
   const [loading, setLoading] = useState(true)
   const { t } = useTranslation('translation', { keyPrefix: 'voter.audit' })
 
-  const isAuditable =
-    election && (election.status === 'FINISHED' || election.status === 'CLOSED')
-
   useEffect(() => {
     void (async () => {
-      if (!isAuditable) {
-        return
-      }
-      const response = await getVotesForElection(election.electionId)
+      const response = await fetchFinishedElectionWithVotes()
 
       if (!response.ok) {
+        setLoading(false)
         return
       }
 
-      setBallots(response.data)
+      setBallots(response.data.ballots)
+      setElection(response.data.election)
       setLoading(false)
     })()
-  }, [election, isAuditable])
+  }, [])
 
-  if (!isAuditable) {
+  if (loading) {
+    return <LoadingSpinner />
+  }
+
+  if (!election || !ballots) {
     return (
       <Container className="mt-5 mb-5">
         <Row className="justify-content-center">
@@ -55,10 +54,6 @@ export const Audit = () => {
         </Row>
       </Container>
     )
-  }
-
-  if (loading) {
-    return <LoadingSpinner />
   }
 
   const getCandidateName = (candidateId: string) => {

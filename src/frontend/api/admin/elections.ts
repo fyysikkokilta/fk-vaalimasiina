@@ -1,6 +1,10 @@
 import { Election, ElectionData } from '../../../../types/types'
 import { api } from '../api'
 
+export const fetchCurrentElection = async () => {
+  return await api<Election>(`/api/admin/elections/current`)
+}
+
 export const postNewElection = (election: ElectionData) => {
   return api<Election>(`/api/admin/elections`, {
     method: 'POST',

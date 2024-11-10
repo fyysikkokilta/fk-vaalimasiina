@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 
 import { Button, Col, Container, Form, ListGroup, Row } from 'react-bootstrap'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
-import { ElectionContext } from '../../../../contexts/election/ElectionContext'
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { changeVoterEmail, getVoters } from '../../../../api/admin/voters'
 import { abortVoting, endVoting } from '../../../../api/admin/elections'
@@ -12,7 +12,7 @@ import { Voter } from '../../../../../../types/types'
 export const VotingInspection = () => {
   const [voters, setVoters] = useState<Voter[] | null>(null)
   const [showRemainingVoters, setShowRemainingVoters] = useState(false)
-  const { election, setElection } = useContext(ElectionContext)!
+  const { election, setElection } = useContext(ElectionStepContext)!
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.voting_inspection'
   })

@@ -3,13 +3,13 @@ import React, { useState, useContext } from 'react'
 import { Col, Container, Form, ListGroup } from 'react-bootstrap'
 
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
-import { ElectionContext } from '../../../../contexts/election/ElectionContext'
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { startVoting } from '../../../../api/admin/elections'
 import { useTranslation } from 'react-i18next'
 
 export const PreviewElection = () => {
-  const { election, setElection } = useContext(ElectionContext)!
+  const { election, setElection } = useContext(ElectionStepContext)!
   const [emails, setEmails] = useState('')
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.preview_election'
