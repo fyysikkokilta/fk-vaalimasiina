@@ -22,6 +22,17 @@ export const insertElection = async (data: {
   return response.data
 }
 
+export const changeElectionStatus = async (
+  electionId: string,
+  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+) => {
+  const response = await instance.put<Election>(
+    `/api/test/elections/${electionId}`,
+    { status }
+  )
+  return response.data
+}
+
 export const insertVoters = async (data: {
   electionId: string
   emails: string[]

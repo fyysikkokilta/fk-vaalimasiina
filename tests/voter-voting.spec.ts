@@ -1,6 +1,11 @@
 import { expect, test } from '@playwright/test'
 
-import { insertElection, insertVoters, resetDatabase } from './utils/db'
+import {
+  changeElectionStatus,
+  insertElection,
+  insertVoters,
+  resetDatabase
+} from './utils/db'
 import { Election, Voter } from '../types/types'
 
 let election: Election
@@ -17,7 +22,7 @@ test.beforeEach(async () => {
   })
   voters = await insertVoters({
     electionId: election.electionId,
-    emails: Array.from({ length: 4 }, (_, i) => `email${i + 1}@email.com`)
+    emails: Array.from({ length: 1 }, (_, i) => `email${i + 1}@email.com`)
   })
 })
 
@@ -109,7 +114,7 @@ test.describe('audit view', () => {
     await page.goto(`/vote/${voters[0].voterId}`)
   })
 
-  test('should show ballot after voting', async ({ page }) => {
+  test('should show ballot after voting has ended', async ({ page }) => {
     await page.selectOption('select', { label: 'Candidate 1' })
     const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
@@ -117,6 +122,7 @@ test.describe('audit view', () => {
     const ballotId = (await response.json()) as string
 
     await expect(page.getByText('You have already voted!')).toBeVisible()
+    await changeElectionStatus(election.electionId, 'FINISHED')
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
@@ -124,13 +130,14 @@ test.describe('audit view', () => {
     await expect(page.getByText('Candidate 1')).toBeVisible()
   })
 
-  test('should show empty ballot after voting', async ({ page }) => {
+  test('should show empty ballot after voting has ended', async ({ page }) => {
     const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     const response = await responsePromise
     const ballotId = (await response.json()) as string
 
     await expect(page.getByText('You have already voted!')).toBeVisible()
+    await changeElectionStatus(election.electionId, 'FINISHED')
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
