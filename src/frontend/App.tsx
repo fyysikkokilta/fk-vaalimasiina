@@ -39,7 +39,7 @@ function App() {
       <Container>
         <Navbar bg="primary" variant="dark" expand="lg" className="box-shadow">
           <Container>
-            <Navbar.Brand href="/">{APP_TITLE}</Navbar.Brand>
+            <Navbar.Brand>{APP_TITLE}</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
