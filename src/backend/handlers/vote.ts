@@ -1,8 +1,8 @@
 import { Router, Response } from 'express'
 import { addVote } from '../routes/vote'
-import { getVoter } from '../routes/voter'
+import { getVoterWithElection } from '../routes/voter'
 import { validateUuid } from '../validation/validation'
-import { findOngoingElection, isValidBallot } from '../routes/elections'
+import { isValidBallot } from '../routes/elections'
 import { RequestBody } from '../../../types/express'
 
 type VoteRequestBody = {
@@ -15,19 +15,17 @@ export const handleVote = async (
 ) => {
   const { voterId, ballot } = req.body
 
-  const validVoter = await getVoter(voterId)
+  const validVoter = await getVoterWithElection(voterId)
 
   if (!validVoter) {
     res.status(404).json({ key: 'voter_not_found' })
     return
   }
 
-  const electionId = validVoter.electionId
-
-  const election = await findOngoingElection(electionId)
+  const election = validVoter.election
 
   // Check if the election is ongoing
-  if (!election) {
+  if (!election || election.status !== 'ONGOING') {
     res.status(400).json({ key: 'election_not_ongoing' })
     return
   }
@@ -45,7 +43,7 @@ export const handleVote = async (
     return
   }
 
-  const ballotId = await addVote(voterId, electionId, ballot)
+  const ballotId = await addVote(voterId, election.electionId, ballot)
 
   if (!ballotId) {
     res.status(500).json({ key: 'error_saving_ballot' })

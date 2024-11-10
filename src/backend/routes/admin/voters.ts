@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm'
 import { db } from '../../db'
 import { votersTable } from '../../db/schema'
 import EmailService from '../../emails/handler'
-import { getElectionById } from '../elections'
+import { getElection } from '../elections'
 
 export const changeVoterEmail = async (voterId: string, email: string) => {
   const voters = await db
@@ -15,7 +15,7 @@ export const changeVoterEmail = async (voterId: string, email: string) => {
     return null
   }
 
-  const election = await getElectionById(voters[0].electionId)
+  const election = await getElection(voters[0].electionId)
 
   await EmailService.sendVotingMail(email, {
     election: election!,

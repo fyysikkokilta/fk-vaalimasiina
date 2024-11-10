@@ -9,7 +9,7 @@ export const getElections = async () => {
   })
 }
 
-export const getElectionById = async (electionId: string) => {
+export const getElection = async (electionId: string) => {
   const election = await db.query.electionsTable.findFirst({
     with: {
       candidates: true
@@ -51,12 +51,17 @@ export const isValidBallot = (
   return validBallot && validPreferenceNumbers
 }
 
-export const findCompletedElection = async (electionId: string) => {
+export const findCompletedElectionWithVotes = async (electionId: string) => {
   const election = await db.query.electionsTable.findFirst({
     where: (electionsTable, { eq }) =>
       eq(electionsTable.electionId, electionId),
     with: {
-      candidates: true
+      candidates: true,
+      ballots: {
+        with: {
+          votes: true
+        }
+      }
     }
   })
 
@@ -67,20 +72,4 @@ export const findCompletedElection = async (electionId: string) => {
   return election.status === 'FINISHED' || election.status === 'CLOSED'
     ? election
     : null
-}
-
-export const findOngoingElection = async (electionId: string) => {
-  const election = await db.query.electionsTable.findFirst({
-    where: (electionsTable, { eq }) =>
-      eq(electionsTable.electionId, electionId),
-    with: {
-      candidates: true
-    }
-  })
-
-  if (!election) {
-    return null
-  }
-
-  return election.status === 'ONGOING' ? election : null
 }

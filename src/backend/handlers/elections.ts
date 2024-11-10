@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { getElections, getElectionById } from '../routes/elections'
+import { getElections, getElection } from '../routes/elections'
 import { validateUuid } from '../validation/validation'
 
 export const handleFetchCurrentElection = async (
@@ -28,10 +28,10 @@ export const handleFetchCurrentElection = async (
   }
 }
 
-export const handleFetchElectionById = async (req: Request, res: Response) => {
+export const handleFetchElection = async (req: Request, res: Response) => {
   const { electionId } = req.params
   try {
-    const election = await getElectionById(electionId)
+    const election = await getElection(electionId)
     if (!election) {
       res.status(404).json({ key: 'election_not_found' })
       return
@@ -73,6 +73,6 @@ router.use('/:electionId', (req, res, next) => {
   next()
 })
 
-router.get('/:electionId', handleFetchElectionById)
+router.get('/:electionId', handleFetchElection)
 
 export default router
