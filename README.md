@@ -38,12 +38,15 @@ The voting process operates as follows:
 5. **Ballot Confirmation**  
    - After registering their vote, each member receives a unique ballot ID.
 
-6. **Auditing**  
-   - Before the voting session is closed, members can verify that their vote has been correctly registered using the ballot ID in an auditing view.
-
-7. **Closing and Displaying Results**  
-   - Once all members have voted, the voting session can be closed.
-   - Results are displayed after the election is closed.
+6. **Displaying Results**  
+   - Once all members have voted, the voting can be closed and results are shown.
+  
+7. **Auditing**  
+   - Before the election is closed, members can verify that their vote has been correctly registered using the ballot ID in an auditing view.
+  
+8. **Closing**
+   - When the results have been gone through and the auditing has been made, the election can be closed.
+   - After this a new election can be created.
 
 ## Database Schema
 ![Database schema](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/docs/images/database-schema.png?raw=true)
