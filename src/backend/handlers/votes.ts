@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
 import { validateUuid } from '../validation/validation'
 import { getVotes } from '../routes/votes'
-import { checkIsCompletedElection } from '../routes/elections'
+import { findCompletedElection } from '../routes/elections'
 
 export const handleGetVotesForCompletedElection = async (
   req: Request,
@@ -9,8 +9,8 @@ export const handleGetVotesForCompletedElection = async (
 ) => {
   const { electionId } = req.params
   try {
-    const isCompleted = await checkIsCompletedElection(electionId)
-    if (!isCompleted) {
+    const election = await findCompletedElection(electionId)
+    if (!election) {
       res.status(400).json({ key: 'election_not_completed' })
       return
     }

@@ -1,5 +1,5 @@
 import { db } from '../db'
-import { VoteData } from '../../../types/types'
+import { Election, VoteData } from '../../../types/types'
 
 export const getElections = async () => {
   return db.query.electionsTable.findMany({
@@ -28,27 +28,16 @@ export const isNoElectionOngoing = async (electionId: string) => {
   return !election || election.status !== 'ONGOING'
 }
 
-export const isValidBallot = async (
-  electionId: string,
-  ballot: VoteData['ballot']
+export const isValidBallot = (
+  ballot: VoteData['ballot'],
+  election: Election
 ) => {
-  const election = await db.query.electionsTable.findFirst({
-    with: {
-      candidates: true
-    },
-    where: (electionsTable, { eq }) => eq(electionsTable.electionId, electionId)
-  })
-
-  if (!election) {
-    return false
-  }
-
   // Check that every candidate in the ballot is a valid candidate
   const validBallot = ballot.every((ballotItem) =>
     election.candidates.some(
       (candidate) =>
         candidate.candidateId === ballotItem.candidateId &&
-        candidate.electionId === electionId
+        candidate.electionId === election.electionId
     )
   )
 
@@ -62,21 +51,36 @@ export const isValidBallot = async (
   return validBallot && validPreferenceNumbers
 }
 
-export const checkIsCompletedElection = async (electionId: string) => {
+export const findCompletedElection = async (electionId: string) => {
   const election = await db.query.electionsTable.findFirst({
-    where: (electionsTable, { eq }) => eq(electionsTable.electionId, electionId)
+    where: (electionsTable, { eq }) =>
+      eq(electionsTable.electionId, electionId),
+    with: {
+      candidates: true
+    }
   })
 
-  return (
-    !!election &&
-    (election.status === 'FINISHED' || election.status === 'CLOSED')
-  )
+  if (!election) {
+    return null
+  }
+
+  return election.status === 'FINISHED' || election.status === 'CLOSED'
+    ? election
+    : null
 }
 
-export const checkIsOnGoingElection = async (electionId: string) => {
+export const findOngoingElection = async (electionId: string) => {
   const election = await db.query.electionsTable.findFirst({
-    where: (electionsTable, { eq }) => eq(electionsTable.electionId, electionId)
+    where: (electionsTable, { eq }) =>
+      eq(electionsTable.electionId, electionId),
+    with: {
+      candidates: true
+    }
   })
 
-  return !!election && election.status === 'ONGOING'
+  if (!election) {
+    return null
+  }
+
+  return election.status === 'ONGOING' ? election : null
 }

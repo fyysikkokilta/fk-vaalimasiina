@@ -2,7 +2,7 @@ import { Router, Response } from 'express'
 import { addVote } from '../routes/vote'
 import { getVoter } from '../routes/voter'
 import { validateUuid } from '../validation/validation'
-import { checkIsOnGoingElection, isValidBallot } from '../routes/elections'
+import { findOngoingElection, isValidBallot } from '../routes/elections'
 import { RequestBody } from '../../../types/express'
 
 type VoteRequestBody = {
@@ -24,8 +24,10 @@ export const handleVote = async (
 
   const electionId = validVoter.electionId
 
+  const election = await findOngoingElection(electionId)
+
   // Check if the election is ongoing
-  if (!(await checkIsOnGoingElection(electionId))) {
+  if (!election) {
     res.status(400).json({ key: 'election_not_ongoing' })
     return
   }
@@ -36,7 +38,7 @@ export const handleVote = async (
   }
 
   // Validate that every candidate in the ballot is a valid candidate
-  const validBallot = await isValidBallot(electionId, ballot)
+  const validBallot = isValidBallot(ballot, election)
 
   if (!validBallot) {
     res.status(400).json({ key: 'invalid_ballot' })
