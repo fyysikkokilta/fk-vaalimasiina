@@ -23,9 +23,10 @@ export const handleVote = async (
   }
 
   const election = validVoter.election
+  const electionIsOnGoing = election.status === 'ONGOING'
 
   // Check if the election is ongoing
-  if (!election || election.status !== 'ONGOING') {
+  if (!election || !electionIsOnGoing) {
     res.status(400).json({ key: 'election_not_ongoing' })
     return
   }

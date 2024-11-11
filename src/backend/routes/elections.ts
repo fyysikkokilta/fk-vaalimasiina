@@ -21,14 +21,6 @@ export const getElection = async (electionId: string) => {
   return election || null
 }
 
-export const isNoElectionOngoing = async (electionId: string) => {
-  const election = await db.query.electionsTable.findFirst({
-    where: (electionsTable, { eq }) => eq(electionsTable.electionId, electionId)
-  })
-
-  return !election || election.status !== 'ONGOING'
-}
-
 export const isValidBallot = (
   ballot: VoteData['ballot'],
   election: Election

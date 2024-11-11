@@ -1,6 +1,5 @@
 import { db } from '../db'
 import { ballotsTable, votesTable, votersTable } from '../db/schema'
-import { isNoElectionOngoing } from './elections'
 import { VoteData } from '../../../types/types'
 import { eq } from 'drizzle-orm'
 
@@ -9,10 +8,6 @@ export const addVote = async (
   electionId: string,
   ballot: VoteData['ballot']
 ) => {
-  if (await isNoElectionOngoing(electionId)) {
-    return null
-  }
-
   return db.transaction(async (transaction) => {
     const ballots = await transaction
       .insert(ballotsTable)
