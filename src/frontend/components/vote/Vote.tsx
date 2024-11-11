@@ -11,6 +11,7 @@ export const Vote = () => {
   const { voterId } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
+  const [disableVote, setDisableVote] = useState(false)
   const [voter, setVoter] = useState<Voter | null>(null)
   const [election, setElection] = useState<Election | null>(null)
   const [ballotId, setBallotId] = useState('')
@@ -40,9 +41,11 @@ export const Vote = () => {
   }
 
   const handleVote = async () => {
+    setDisableVote(true)
     const response = await vote(voter!.voterId, selectedCandidates)
 
     if (!response.ok) {
+      setDisableVote(false)
       return
     }
 
@@ -161,7 +164,11 @@ export const Vote = () => {
                 )}
               </Row>
             </Form.Group>
-            <Button variant="primary" onClick={handleVote}>
+            <Button
+              variant="primary"
+              onClick={handleVote}
+              disabled={disableVote}
+            >
               {t('vote_button')}
             </Button>
           </Form>
