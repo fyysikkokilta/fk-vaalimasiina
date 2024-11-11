@@ -34,10 +34,8 @@ export const Admin = () => {
   }
 
   return (
-    <Card className="box-shadow m-5">
-      <Card.Header>
-        <h1>{t('admin')}</h1>
-      </Card.Header>
+    <Card>
+      <Card.Header as="h2">{t('admin')}</Card.Header>
       <Card.Body>{renderSwitch()}</Card.Body>
     </Card>
   )

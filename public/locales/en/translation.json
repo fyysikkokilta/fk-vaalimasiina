@@ -89,7 +89,10 @@
     "eliminated": "Eliminated",
     "chosen_candidates": "Elected candidates",
     "empty_votes": "Empty",
-    "tie_breaker": "Tie breaker (random)"
+    "tie_breaker": "Tie breaker (random)",
+    "candidate_name": "Candidate",
+    "vote_count": "Votes",
+    "result": "Result"
   },
   "previous_results": {
     "title": "Previous results",

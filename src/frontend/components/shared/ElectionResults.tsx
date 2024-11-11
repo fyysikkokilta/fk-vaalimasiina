@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
+import { Button, Card, Col, ListGroup, Row, Table } from 'react-bootstrap'
 import { Election } from '../../../../types/types'
 import { VotingResult } from '../../utils/stvAlgorithm'
 
@@ -124,7 +124,7 @@ export const ElectionResults = ({
   }
 
   return (
-    <Container>
+    <>
       <Row className="mb-4">
         <Col className="mb-3 text-center">
           <h3>{election.title}</h3>
@@ -160,33 +160,43 @@ export const ElectionResults = ({
                   <Card.Title>
                     &nbsp; {t('election_threshold')}:&nbsp;{votingResult.quota}
                   </Card.Title>
-                  <ListGroup variant="flush">
-                    {candidateResults.map(
-                      ({ id, name, voteCount, isSelected, isEliminated }) => (
-                        <ListGroup.Item key={id}>
-                          {name} - {roundToTwoDecimals(voteCount)} {t('votes')}
-                          {isSelected && (
-                            <span className="text-success">
-                              {' '}
-                              - {t('chosen')}
-                            </span>
-                          )}
-                          {isEliminated && (
-                            <span className="text-danger">
-                              {' '}
-                              - {t('eliminated')}
-                              {tieBreaker && ` - ${t('tie_breaker')}`}
-                            </span>
-                          )}
-                        </ListGroup.Item>
-                      )
-                    )}
-                    {
-                      <ListGroup.Item>
-                        {t('empty_votes')}: {roundToTwoDecimals(emptyVotes)}
-                      </ListGroup.Item>
-                    }
-                  </ListGroup>
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>{t('candidate_name')}</th>
+                        <th>{t('vote_count')}</th>
+                        <th>{t('result')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {candidateResults.map(
+                        ({ id, name, voteCount, isSelected, isEliminated }) => (
+                          <tr key={id}>
+                            <td>{name}</td>
+                            <td>{roundToTwoDecimals(voteCount)}</td>
+                            <td>
+                              {isSelected && (
+                                <span className="text-success">
+                                  {t('chosen')}
+                                </span>
+                              )}
+                              {isEliminated && (
+                                <span className="text-danger">
+                                  {t('eliminated')}
+                                  {tieBreaker && ` - ${t('tie_breaker')}`}
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      )}
+                      <tr>
+                        <td>{t('empty_votes')}</td>
+                        <td>{roundToTwoDecimals(emptyVotes)}</td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </Table>
                 </Card.Body>
               </Card>
             </ListGroup.Item>
@@ -203,6 +213,6 @@ export const ElectionResults = ({
           </ListGroup>
         </Col>
       </Row>
-    </Container>
+    </>
   )
 }

@@ -20,7 +20,7 @@ export const AdminLogin = () => {
     setCookie('admin-token', response.data)
   }
   return (
-    <Card className="box-shadow m-5">
+    <Card>
       <Card.Header as="h2">{t('title')}</Card.Header>
       <Card.Body>
         <Row className="justify-content-center">

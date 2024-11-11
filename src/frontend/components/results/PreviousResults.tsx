@@ -37,7 +37,7 @@ export const PreviousResults = () => {
   }
 
   return (
-    <Card className="box-shadow m-5">
+    <Card>
       <Card.Header as="h2">{t('title')}</Card.Header>
       <Card.Body>
         {!votingResult || !election ? (

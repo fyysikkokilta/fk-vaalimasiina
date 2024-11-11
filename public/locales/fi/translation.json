@@ -89,7 +89,10 @@
     "eliminated": "Putosi",
     "chosen_candidates": "Valitut ehdokkaat",
     "empty_votes": "Tyhjiä",
-    "tie_breaker": "Tasatilanteen ratkaisu (arvonta)"
+    "tie_breaker": "Tasatilanne (arvonta)",
+    "candidate_name": "Ehdokas",
+    "vote_count": "Ääniä",
+    "result": "Tulos"
   },
   "previous_results": {
     "title": "Edelliset tulokset",

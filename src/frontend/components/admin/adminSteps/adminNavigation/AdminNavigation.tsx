@@ -47,7 +47,7 @@ export const AdminNavigation = ({
       >
         {stepSettings.backButton}
       </Button>
-      <Card.Header as="h2" className="m-auto">
+      <Card.Header as="h3" className="m-auto">
         {stepSettings.title}
       </Card.Header>
       <Button

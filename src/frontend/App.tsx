@@ -35,7 +35,7 @@ function App() {
 
   return (
     <Router>
-      <Container>
+      <Container className="my-4">
         <Navbar bg="primary" variant="dark" expand="lg" className="box-shadow">
           <Container>
             <Navbar.Brand>{APP_TITLE}</Navbar.Brand>
@@ -64,27 +64,29 @@ function App() {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Container className="mt-4">
-          <Card className="box-shadow">
+        <Container className="my-4">
+          <Card>
             <Card.Body className="fii-background">
-              <Routes>
-                <Route
-                  path="/admin/*"
-                  element={
-                    <ElectionStepProvider>
-                      <Admin />
-                    </ElectionStepProvider>
-                  }
-                />
-                <Route path="/audit" element={<Audit />} />
-                <Route
-                  path="/elections/:electionId"
-                  element={<PreviousResults />}
-                />
-                <Route path="/elections" element={<PreviousElectionList />} />
-                <Route path="/vote/:voterId" element={<Vote />} />
-                <Route path="*" element={<Info />} />
-              </Routes>
+              <div id="main-content" className="my-4 mx-auto box-shadow">
+                <Routes>
+                  <Route
+                    path="/admin/*"
+                    element={
+                      <ElectionStepProvider>
+                        <Admin />
+                      </ElectionStepProvider>
+                    }
+                  />
+                  <Route path="/audit" element={<Audit />} />
+                  <Route
+                    path="/elections/:electionId"
+                    element={<PreviousResults />}
+                  />
+                  <Route path="/elections" element={<PreviousElectionList />} />
+                  <Route path="/vote/:voterId" element={<Vote />} />
+                  <Route path="*" element={<Info />} />
+                </Routes>
+              </div>
             </Card.Body>
           </Card>
         </Container>

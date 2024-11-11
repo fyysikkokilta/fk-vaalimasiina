@@ -64,23 +64,32 @@ test('should show correct round results', async ({ page }) => {
       roundContainer.getByText(`Election threshold: ${result.quota}`)
     ).toBeVisible()
 
-    await expect(
-      roundContainer.locator(`text=Empty: ${emptyVotes}`)
-    ).toBeVisible()
+    const table = roundContainer.locator('table')
 
-    for (const { name, voteCount, isSelected } of candidateResults) {
-      const expectedText = `${name} - ${voteCount} votes ${
-        isSelected ? '- Elected' : ''
-      }`
-      await expect(roundContainer.locator(`text=${expectedText}`)).toBeVisible()
+    let i = 1
+    for (const {
+      name,
+      voteCount,
+      isSelected,
+      isEliminated
+    } of candidateResults) {
+      const row = table.locator(`tr:nth-child(${i})`)
+      await expect(row.locator('td:nth-child(1)')).toContainText(name)
+      await expect(row.locator('td:nth-child(2)')).toContainText(`${voteCount}`)
+      if (isSelected) {
+        await expect(row.locator('td:nth-child(3)')).toContainText('Elected')
+      }
+      if (isEliminated) {
+        await expect(row.locator('td:nth-child(3)')).toContainText('Eliminated')
+      }
+      i++
     }
 
-    const droppedCandidate = candidateResults.find((c) => c.isEliminated)
-    if (droppedCandidate) {
-      const expectedText = `${droppedCandidate.name} - ${droppedCandidate.voteCount} votes - Eliminated`
-
-      await expect(roundContainer.locator(`text=${expectedText}`)).toBeVisible()
-    }
+    const lastRow = table.locator(`tr:nth-child(${i})`)
+    await expect(lastRow.locator('td:nth-child(1)')).toContainText('Empty')
+    await expect(lastRow.locator('td:nth-child(2)')).toContainText(
+      `${emptyVotes}`
+    )
   }
 })
 
