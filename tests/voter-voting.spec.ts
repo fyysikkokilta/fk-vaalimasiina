@@ -7,6 +7,7 @@ import {
   resetDatabase
 } from './utils/db'
 import { Election, Voter } from '../types/types'
+import { deselectCandidate, selectCandidate } from './utils/voter-voting'
 
 let election: Election
 let voters: Voter[]
@@ -41,16 +42,13 @@ test.describe('voting page', () => {
     ).toBeVisible()
   })
 
-  test('should show candidate selector', async ({ page }) => {
+  test('should show candidates in available candidates', async ({ page }) => {
     await expect(page.getByText('Candidates', { exact: true })).toBeVisible()
-    await expect(page.locator('select')).toBeVisible()
+    await expect(page.locator('#available-candidates')).toBeVisible()
     for (const candidate of election.candidates) {
       await expect(
-        page.locator(`option[value="${candidate.candidateId}"]`)
-      ).toBeAttached()
-      await expect(
-        page.locator(`option[value="${candidate.candidateId}"]`)
-      ).toHaveText(candidate.name)
+        page.locator('#available-candidates').locator(`text=${candidate.name}`)
+      ).toBeVisible()
     }
   })
 
@@ -65,29 +63,33 @@ test.describe('voting', () => {
   })
 
   test('should allow to select candidates', async ({ page }) => {
-    await page.selectOption('select', { label: 'Candidate 1' })
-    await expect(page.getByText('Candidate 1')).toBeVisible()
+    await selectCandidate(page, 'Candidate 1')
+    await expect(
+      page.locator('#selected-candidates').getByText('Candidate 1')
+    ).toBeVisible()
   })
 
   test('should allow to deselect candidates', async ({ page }) => {
-    await page.selectOption('select', { label: 'Candidate 1' })
-    await expect(page.getByText('Candidate 1')).toBeVisible()
+    await selectCandidate(page, 'Candidate 1')
+    await expect(
+      page.locator('#selected-candidates').getByText('Candidate 1')
+    ).toBeVisible()
 
-    await expect(page.getByRole('button', { name: 'Remove' })).toBeVisible()
-    await page.getByRole('button', { name: 'Remove' }).click()
-
-    await expect(page.getByText('Candidate 1')).not.toBeVisible()
+    await deselectCandidate(page, 'Candidate 1')
+    await expect(
+      page.locator('#available-candidates').getByText('Candidate 1')
+    ).toBeVisible()
   })
 
   test('should submit vote', async ({ page }) => {
-    await page.selectOption('select', { label: 'Candidate 1' })
+    await selectCandidate(page, 'Candidate 1')
     await page.getByRole('button', { name: 'Vote' }).click()
 
     await expect(page.getByText('You have already voted!')).toBeVisible()
   })
 
   test('should show ballot id on voting', async ({ page }) => {
-    await page.selectOption('select', { label: 'Candidate 1' })
+    await selectCandidate(page, 'Candidate 1')
 
     const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
@@ -100,7 +102,7 @@ test.describe('voting', () => {
   test("shoudn't show ballot id after refreshing the page", async ({
     page
   }) => {
-    await page.selectOption('select', { label: 'Candidate 1' })
+    await selectCandidate(page, 'Candidate 1')
     await page.getByRole('button', { name: 'Vote' }).click()
 
     await page.reload()
@@ -115,7 +117,7 @@ test.describe('audit view', () => {
   })
 
   test('should show ballot after voting has ended', async ({ page }) => {
-    await page.selectOption('select', { label: 'Candidate 1' })
+    await selectCandidate(page, 'Candidate 1')
     const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     const response = await responsePromise

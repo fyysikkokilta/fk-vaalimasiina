@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Form, Button, Alert, ListGroup, Row, Col } from 'react-bootstrap'
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult
+} from '@hello-pangea/dnd'
+import { Card, Button, Alert, ListGroup, Row, Col } from 'react-bootstrap'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 import { vote } from '../../api/vote'
 import { useTranslation } from 'react-i18next'
@@ -16,7 +22,66 @@ export const Vote = () => {
   const [election, setElection] = useState<Election | null>(null)
   const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
+  const [availableCandidates, setAvailableCandidates] = useState<string[]>([])
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
+
+  const handleDragEnd = (result: DropResult<string>) => {
+    if (!result.destination) {
+      return
+    }
+    const destinationIndex = result.destination.index
+
+    const candidateId = result.draggableId
+
+    if (
+      result.source.droppableId === 'availableCandidates' &&
+      result.destination.droppableId === 'selectedCandidates'
+    ) {
+      const candidate = availableCandidates.find(
+        (candidate) => candidate === candidateId
+      )
+      if (candidate) {
+        setSelectedCandidates((prev) => {
+          const newCandidates = [...prev]
+          newCandidates.splice(destinationIndex, 0, candidate)
+          return newCandidates
+        })
+        setAvailableCandidates((prev) => prev.filter((c) => c !== candidateId))
+      }
+    }
+
+    if (
+      result.source.droppableId === 'selectedCandidates' &&
+      result.destination.droppableId === 'selectedCandidates'
+    ) {
+      setSelectedCandidates((prev) => {
+        const newCandidates = [...prev]
+        const [removed] = newCandidates.splice(result.source.index, 1)
+        newCandidates.splice(destinationIndex, 0, removed)
+        return newCandidates
+      })
+    }
+
+    if (
+      result.source.droppableId === 'selectedCandidates' &&
+      result.destination.droppableId === 'availableCandidates'
+    ) {
+      setAvailableCandidates((prev) => {
+        const newCandidates = [...prev]
+        newCandidates.splice(destinationIndex, 0, candidateId)
+        return newCandidates
+      })
+      setSelectedCandidates((prev) => prev.filter((c) => c !== candidateId))
+    }
+
+    if (
+      result.source.droppableId === 'availableCandidates' &&
+      result.destination.droppableId === 'availableCandidates'
+    ) {
+      const [removed] = availableCandidates.splice(result.source.index, 1)
+      availableCandidates.splice(destinationIndex, 0, removed)
+    }
+  }
 
   useEffect(() => {
     void (async () => {
@@ -32,6 +97,9 @@ export const Vote = () => {
       }
       setVoter(voterResponse.data.voter)
       setElection(voterResponse.data.election)
+      setAvailableCandidates(
+        voterResponse.data.election.candidates.map((c) => c.candidateId)
+      )
       setLoading(false)
     })()
   }, [navigate, voterId])
@@ -51,11 +119,10 @@ export const Vote = () => {
 
     setBallotId(response.data)
     setVoter((prev) => ({ ...prev!, hasVoted: true }))
-    setSelectedCandidates([])
   }
 
-  const handleRemove = (candidateId: string) => {
-    setSelectedCandidates(selectedCandidates.filter((id) => id !== candidateId))
+  const getCandidateName = (candidateId: string) => {
+    return election?.candidates.find((c) => c.candidateId === candidateId)?.name
   }
 
   if (
@@ -81,15 +148,14 @@ export const Vote = () => {
     )
   }
 
-  const filteredCandidates = election.candidates.filter(
-    (candidate) => !selectedCandidates.includes(candidate.candidateId)
-  )
-
   return (
     <Card>
       <Card.Header as="h2">{t('title')}</Card.Header>
       <Card.Header as="h4">{election.title}</Card.Header>
       <Card.Body>
+        <Button className="mb-3" onClick={() => navigate('/')}>
+          {t('back_to_frontpage')}
+        </Button>
         <Card.Text>{election.description}</Card.Text>
         {voter.hasVoted ? (
           <Alert variant="success">
@@ -104,80 +170,104 @@ export const Vote = () => {
             )}
           </Alert>
         ) : (
-          <Form>
-            <Form.Group>
+          <>
+            <div className="my-3">
+              <b>{t('vote_instruction')}</b>
+            </div>
+            <DragDropContext onDragEnd={handleDragEnd}>
               <Row>
-                <Form.Text>
-                  <b>{t('vote_instruction')}</b>
-                </Form.Text>
-                <Form.Label className="mt-3">
-                  <b>{t('candidates')}</b>
-                </Form.Label>
-                {election.candidates.length > 0 ? (
-                  <>
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => {
-                        if (!e.target.value) {
-                          return
-                        }
-                        setSelectedCandidates((prev) => [
-                          ...prev,
-                          e.target.value
-                        ])
-                      }}
-                    >
-                      <option value="">{t('candidates_instruction')}</option>
-                      {filteredCandidates.map((candidate) => (
-                        <option
-                          key={candidate.candidateId}
-                          value={candidate.candidateId}
-                        >
-                          {candidate.name}
-                        </option>
-                      ))}
-                    </Form.Control>
-                    <ListGroup>
-                      {selectedCandidates.map((candidateId, index) => {
-                        const candidate = election.candidates.find(
-                          (candidate) => candidate.candidateId === candidateId
-                        )!
-                        return (
-                          <ListGroup.Item
-                            key={candidateId}
-                            className="d-flex align-items-center mb-3"
-                          >
-                            {index + 1}. &nbsp; {candidate.name}{' '}
-                            <Button
-                              className="ms-auto"
-                              onClick={() => handleRemove(candidateId)}
+                <Col md={6}>
+                  <h5>{t('selected_candidates')}</h5>
+                  <Droppable droppableId="selectedCandidates">
+                    {(provided) => (
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="mb-3 p-2 border rounded"
+                        id="selected-candidates"
+                        style={{
+                          minHeight: '200px',
+                          backgroundColor: '#f8f9fa'
+                        }}
+                      >
+                        <ListGroup>
+                          {selectedCandidates.map((candidateId, index) => (
+                            <Draggable
+                              key={candidateId}
+                              draggableId={candidateId}
+                              index={index}
                             >
-                              {t('remove_selection')}
-                            </Button>
-                          </ListGroup.Item>
-                        )
-                      })}
-                    </ListGroup>
-                  </>
-                ) : (
-                  <Alert variant="warning">{t('no_candidates')}</Alert>
-                )}
+                              {(provided) => (
+                                <ListGroup.Item
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="d-flex align-items-center mb-2"
+                                >
+                                  {index + 1}. &nbsp;{' '}
+                                  {getCandidateName(candidateId)}
+                                </ListGroup.Item>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </ListGroup>
+                      </div>
+                    )}
+                  </Droppable>
+                </Col>
+                <Col md={6}>
+                  <h5>{t('available_candidates')}</h5>
+                  <Droppable droppableId="availableCandidates">
+                    {(provided) => (
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="mb-3 p-2 border rounded"
+                        id="available-candidates"
+                        style={{
+                          minHeight: '200px',
+                          backgroundColor: '#f8f9fa'
+                        }}
+                      >
+                        <ListGroup>
+                          {availableCandidates.map((candidateId, index) => (
+                            <Draggable
+                              key={candidateId}
+                              draggableId={candidateId}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <ListGroup.Item
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="d-flex align-items-center mb-2"
+                                >
+                                  {getCandidateName(candidateId)}
+                                </ListGroup.Item>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </ListGroup>
+                      </div>
+                    )}
+                  </Droppable>
+                </Col>
               </Row>
-            </Form.Group>
-            <Button
-              variant="primary"
-              onClick={handleVote}
-              disabled={disableVote}
-            >
-              {t('vote_button')}
-            </Button>
-          </Form>
+            </DragDropContext>
+            <div className="d-flex justify-content-center mt-3">
+              <Button
+                variant="primary"
+                onClick={handleVote}
+                disabled={disableVote}
+              >
+                {t('submit_vote')}
+              </Button>
+            </div>
+          </>
         )}
-        <Col className="d-flex justify-content-center">
-          <Button className="mb-3" onClick={() => navigate('/')}>
-            {t('back_to_frontpage')}
-          </Button>
-        </Col>
       </Card.Body>
     </Card>
   )
