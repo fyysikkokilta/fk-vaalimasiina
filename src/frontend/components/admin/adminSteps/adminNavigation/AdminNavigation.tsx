@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
-import { Button, Card } from 'react-bootstrap'
+import { Button, Card, Col, Row } from 'react-bootstrap'
 
 type AdminNavigationProps = {
   disablePrevious?: boolean
@@ -38,26 +38,34 @@ export const AdminNavigation = ({
   }
 
   return (
-    <Card.Header className="d-flex">
-      <Button
-        disabled={disablePrevious}
-        variant="light"
-        hidden={!stepSettings.backButton}
-        onClick={prevStep}
-      >
-        {stepSettings.backButton}
-      </Button>
-      <Card.Header as="h3" className="m-auto">
-        {stepSettings.title}
-      </Card.Header>
-      <Button
-        disabled={disableNext}
-        variant="light"
-        hidden={!stepSettings.nextButton}
-        onClick={nextStep}
-      >
-        {stepSettings.nextButton}
-      </Button>
-    </Card.Header>
+    <>
+      <Row className="d-flex mx-auto mb-3">
+        <Card.Header as="h3">{stepSettings.title}</Card.Header>
+      </Row>
+      <Row className="mx-2">
+        <Col>
+          <Button
+            disabled={disablePrevious}
+            variant="secondary"
+            hidden={!stepSettings.backButton}
+            onClick={prevStep}
+            className="float-start"
+          >
+            {stepSettings.backButton}
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            disabled={disableNext}
+            variant="secondary"
+            hidden={!stepSettings.nextButton}
+            onClick={nextStep}
+            className="float-end"
+          >
+            {stepSettings.nextButton}
+          </Button>
+        </Col>
+      </Row>
+    </>
   )
 }
