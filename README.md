@@ -87,7 +87,7 @@ The steps to calculate the result are as follows:
 5.1. **Multiple candidates with fewest votes**
 - It is possible that multiple candidates have the minimum amount of votes in this case the candidate to be dropped is chosen by a draw.
 - The code for the randomization is [here](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/src/frontend/utils/stvAlgorithm.ts?plain=1#L75-L93).
-- In short the id of the UUID (Universal Unique Identifier) is used to seed a random number generator. Since the UUID is itself random, this ensures the result of the draw is random, but it stays the same everytime the code is run. Using the random number generator the list of candidates with fewest votes is shuffled and the first in that list after shuffling is the candidate to be dropped.
+- In short the election id or UUID (Universal Unique Identifier) is used to seed a random number generator. Since the UUID is itself random, this ensures the result of the draw is random, but stays the same everytime the code is run. Using the random number generator the list of candidates with fewest votes is shuffled and the first in that list after shuffling is the candidate to be dropped.
 
 6. **Repeating the Process**
 - The counting process is repeated:
