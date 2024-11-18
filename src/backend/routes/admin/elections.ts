@@ -1,4 +1,5 @@
-import EmailService from '../../emails/handler'
+import { eq } from 'drizzle-orm'
+
 import { db } from '../../db'
 import {
   ballotsTable,
@@ -6,7 +7,7 @@ import {
   electionsTable,
   votersTable
 } from '../../db/schema'
-import { eq } from 'drizzle-orm'
+import EmailService from '../../emails/handler'
 
 export const getElection = async (electionId: string) => {
   const election = await db.query.electionsTable.findFirst({

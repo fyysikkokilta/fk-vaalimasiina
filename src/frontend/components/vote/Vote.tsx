@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react'
 import {
   DragDropContext,
-  Droppable,
   Draggable,
+  Droppable,
   DropResult
 } from '@hello-pangea/dnd'
-import { Card, Button, Alert, ListGroup, Row, Col } from 'react-bootstrap'
-import { LoadingSpinner } from '../shared/LoadingSpinner'
-import { vote } from '../../api/vote'
+import React, { useEffect, useState } from 'react'
+import { Alert, Button, Card, Col, ListGroup, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { useParams, useNavigate } from 'react-router-dom'
-import { getVoterWithElection } from '../../api/voters'
+import { useNavigate, useParams } from 'react-router-dom'
+
 import { Election, Voter } from '../../../../types/types'
+import { vote } from '../../api/vote'
+import { getVoterWithElection } from '../../api/voters'
+import { LoadingSpinner } from '../shared/LoadingSpinner'
 
 export const Vote = () => {
   const { voterId } = useParams()

@@ -1,5 +1,6 @@
-import { db } from '../db'
 import { or } from 'drizzle-orm'
+
+import { db } from '../db'
 
 export const getElections = async () => {
   return db.query.electionsTable.findMany({

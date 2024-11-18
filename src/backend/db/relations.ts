@@ -1,10 +1,10 @@
 import { relations } from 'drizzle-orm/relations'
 
 import {
+  ballotsTable,
+  candidatesTable,
   electionsTable,
   votersTable,
-  candidatesTable,
-  ballotsTable,
   votesTable
 } from './schema'
 

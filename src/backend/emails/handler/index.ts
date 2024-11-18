@@ -2,8 +2,8 @@ import Email from 'email-templates'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import mailTransporter from './config'
 import { Election } from '../../../../types/types'
+import mailTransporter from './config'
 
 export interface VotingMailParams {
   election: Omit<Election, 'candidates'>

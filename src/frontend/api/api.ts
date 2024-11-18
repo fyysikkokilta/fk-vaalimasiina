@@ -1,6 +1,7 @@
-import Cookies from 'universal-cookie'
-import { getErrorMessage } from '../utils/requestUtils'
 import { toast } from 'react-toastify'
+import Cookies from 'universal-cookie'
+
+import { getErrorMessage } from '../utils/requestUtils'
 
 type ApiResponse<T> =
   | {

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 
+import { Election, Voter } from '../types/types'
 import { loginAdmin } from './utils/admin-login'
 import {
   insertElection,
@@ -7,7 +8,6 @@ import {
   insertVotes,
   resetDatabase
 } from './utils/db'
-import { Election, Voter } from '../types/types'
 
 let election: Election
 let voters: Voter[]

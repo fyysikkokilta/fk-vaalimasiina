@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AdminNavigation } from '../adminNavigation/AdminNavigation'
+
+import { closeElection } from '../../../../api/admin/elections'
+import { getVotesForElection } from '../../../../api/admin/votes'
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import {
   calculateSTVResult,
   VotingResult
 } from '../../../../utils/stvAlgorithm'
-import { getVotesForElection } from '../../../../api/admin/votes'
-import { LoadingSpinner } from '../../../shared/LoadingSpinner'
-import { closeElection } from '../../../../api/admin/elections'
 import { ElectionResults } from '../../../shared/ElectionResults'
-import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
+import { LoadingSpinner } from '../../../shared/LoadingSpinner'
+import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 export const Results = () => {
   const { election, setElection } = useContext(ElectionStepContext)!

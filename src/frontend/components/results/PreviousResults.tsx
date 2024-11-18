@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import { Card } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
+import { Link, useParams } from 'react-router-dom'
+
+import { Election } from '../../../../types/types'
+import { fetchCompletedElectionWithVotes } from '../../api/elections'
 import { calculateSTVResult, VotingResult } from '../../utils/stvAlgorithm'
 import { ElectionResults } from '../shared/ElectionResults'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
-import { Election } from '../../../../types/types'
-import { fetchCompletedElectionWithVotes } from '../../api/elections'
-import { Link, useParams } from 'react-router-dom'
-import { Card } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
 
 export const PreviousResults = () => {
   const { electionId } = useParams<{ electionId: string }>()

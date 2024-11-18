@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Form, Button, Card, Row, Col } from 'react-bootstrap'
-import { login } from '../../../api/admin/login'
+import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { useCookies } from 'react-cookie'
 import { useTranslation } from 'react-i18next'
+
+import { login } from '../../../api/admin/login'
 
 export const AdminLogin = () => {
   const [, setCookie] = useCookies(['admin-token'])

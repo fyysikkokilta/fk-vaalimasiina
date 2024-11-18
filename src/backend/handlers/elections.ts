@@ -1,8 +1,9 @@
-import { Router, Request, Response } from 'express'
+import { Request, Response, Router } from 'express'
+
 import {
-  getElections,
+  findFinishedElectionWithVotes,
   getCompletedElectionWithVotes,
-  findFinishedElectionWithVotes
+  getElections
 } from '../routes/elections'
 import { validateUuid } from '../validation/validation'
 

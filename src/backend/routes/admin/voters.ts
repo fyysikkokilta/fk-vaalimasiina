@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm'
+
 import { db } from '../../db'
 import { votersTable } from '../../db/schema'
 import EmailService from '../../emails/handler'

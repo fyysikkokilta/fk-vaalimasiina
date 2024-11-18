@@ -1,17 +1,18 @@
 import React, { ReactNode, useEffect, useState } from 'react'
-import {
-  electionStepSettingsFinnish,
-  electionStepSettingsEnglish
-} from './electionStepSetting'
 import { useCookies } from 'react-cookie'
 import { useTranslation } from 'react-i18next'
+
+import { Election } from '../../../../types/types'
+import { fetchCurrentElection } from '../../api/admin/elections'
 import {
   ElectionStep,
   ElectionStepContext,
   StepSettings
 } from './ElectionStepContext'
-import { Election } from '../../../../types/types'
-import { fetchCurrentElection } from '../../api/admin/elections'
+import {
+  electionStepSettingsEnglish,
+  electionStepSettingsFinnish
+} from './electionStepSetting'
 
 const getElectionStep = (election: Election | null): ElectionStep => {
   if (!election) {

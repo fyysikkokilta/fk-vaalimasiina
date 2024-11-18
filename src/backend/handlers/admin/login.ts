@@ -1,6 +1,7 @@
-import { Router, Response } from 'express'
-import { authenticateAdmin } from '../../routes/admin/login'
+import { Response, Router } from 'express'
+
 import { RequestBody } from '../../../../types/express'
+import { authenticateAdmin } from '../../routes/admin/login'
 
 export type AuthenticateRequestBody = {
   username: string

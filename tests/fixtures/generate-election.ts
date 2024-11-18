@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto'
+
 import { CandidateData } from '../../types/types'
 import {
   insertElection,

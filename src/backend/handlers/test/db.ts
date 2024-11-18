@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express'
+
 import { resetDatabase } from '../../routes/test/db'
 
 export const handleResetDatabase = async (_req: Request, res: Response) => {

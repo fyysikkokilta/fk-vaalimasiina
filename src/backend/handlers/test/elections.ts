@@ -1,9 +1,10 @@
 import { Response, Router } from 'express'
+
+import { RequestBody, RequestBodyParams } from '../../../../types/express'
 import {
   changeTestElectionStatus,
   createTestElection
 } from '../../routes/test/elections'
-import { RequestBody, RequestBodyParams } from '../../../../types/express'
 
 export type CreateTestElectionRequestBody = {
   title: string

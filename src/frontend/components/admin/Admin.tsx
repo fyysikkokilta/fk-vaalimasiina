@@ -1,13 +1,14 @@
 import React, { useContext } from 'react'
 import { Card } from 'react-bootstrap'
 import { useCookies } from 'react-cookie'
-import { AdminLogin } from './login/AdminLogin'
 import { useTranslation } from 'react-i18next'
+
 import { ElectionStepContext } from '../../contexts/electionStep/ElectionStepContext'
 import { NewElection } from './adminSteps/newElection/NewElection'
 import { PreviewElection } from './adminSteps/previewElection/PreviewElection'
-import { VotingInspection } from './adminSteps/votingInspection/VotingInspection'
 import { Results } from './adminSteps/results/Results'
+import { VotingInspection } from './adminSteps/votingInspection/VotingInspection'
+import { AdminLogin } from './login/AdminLogin'
 
 export const Admin = () => {
   const [cookies] = useCookies(['admin-token'])

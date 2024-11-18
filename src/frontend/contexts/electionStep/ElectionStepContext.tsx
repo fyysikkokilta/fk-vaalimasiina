@@ -1,6 +1,7 @@
 import { createContext, Dispatch, SetStateAction } from 'react'
-import { electionStepSettingsFinnish } from './electionStepSetting'
+
 import { Election } from '../../../../types/types'
+import { electionStepSettingsFinnish } from './electionStepSetting'
 
 export type ElectionStep = keyof typeof electionStepSettingsFinnish
 

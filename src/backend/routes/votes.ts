@@ -1,7 +1,8 @@
-import { db } from '../db'
-import { ballotsTable, votesTable, votersTable } from '../db/schema'
-import { VoteData } from '../../../types/types'
 import { eq } from 'drizzle-orm'
+
+import { VoteData } from '../../../types/types'
+import { db } from '../db'
+import { ballotsTable, votersTable, votesTable } from '../db/schema'
 
 export const addVote = async (
   voterId: string,

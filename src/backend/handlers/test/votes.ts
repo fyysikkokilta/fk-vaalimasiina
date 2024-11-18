@@ -1,6 +1,7 @@
 import { Response, Router } from 'express'
-import { createTestVotes } from '../../routes/test/votes'
+
 import { RequestBody } from '../../../../types/express'
+import { createTestVotes } from '../../routes/test/votes'
 
 export type CreateTestVotesRequestBody = {
   electionId: string

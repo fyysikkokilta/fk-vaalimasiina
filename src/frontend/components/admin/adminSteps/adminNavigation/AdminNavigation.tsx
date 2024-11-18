@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
-import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { Button, Card, Col, Row } from 'react-bootstrap'
+
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 
 type AdminNavigationProps = {
   disablePrevious?: boolean

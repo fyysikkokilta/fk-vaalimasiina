@@ -1,6 +1,7 @@
-import seedrandom from 'seedrandom'
 import _ from 'lodash'
-import { Candidate, Ballot, Election } from '../../../types/types'
+import seedrandom from 'seedrandom'
+
+import { Ballot, Candidate, Election } from '../../../types/types'
 
 type CandidateId = Candidate['candidateId']
 

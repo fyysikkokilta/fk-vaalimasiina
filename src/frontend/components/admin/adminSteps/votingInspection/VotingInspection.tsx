@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react'
-
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Container, Form, ListGroup, Row } from 'react-bootstrap'
-import { AdminNavigation } from '../adminNavigation/AdminNavigation'
+import { useTranslation } from 'react-i18next'
+
+import { Voter } from '../../../../../../types/types'
+import { abortVoting, endVoting } from '../../../../api/admin/elections'
+import { changeVoterEmail, getVoters } from '../../../../api/admin/voters'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
-import { changeVoterEmail, getVoters } from '../../../../api/admin/voters'
-import { abortVoting, endVoting } from '../../../../api/admin/elections'
-import { useTranslation } from 'react-i18next'
-import { Voter } from '../../../../../../types/types'
+import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 export const VotingInspection = () => {
   const [voters, setVoters] = useState<Voter[] | null>(null)

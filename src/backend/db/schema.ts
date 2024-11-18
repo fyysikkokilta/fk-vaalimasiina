@@ -1,14 +1,14 @@
 import { SQL, sql } from 'drizzle-orm'
 import {
+  AnyPgColumn,
   boolean,
   integer,
   pgEnum,
   pgTable,
-  uuid,
-  varchar,
   unique,
-  AnyPgColumn,
-  uniqueIndex
+  uniqueIndex,
+  uuid,
+  varchar
 } from 'drizzle-orm/pg-core'
 
 export const statusEnum = pgEnum('election_status', [

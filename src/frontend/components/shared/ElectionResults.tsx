@@ -1,10 +1,10 @@
 import React from 'react'
 import { Button, Card, Col, ListGroup, Row, Table } from 'react-bootstrap'
-import { Election } from '../../../../types/types'
-import { VotingResult } from '../../utils/stvAlgorithm'
-
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
+
+import { Election } from '../../../../types/types'
+import { VotingResult } from '../../utils/stvAlgorithm'
 
 type ElectionResultsProps = {
   election: Election

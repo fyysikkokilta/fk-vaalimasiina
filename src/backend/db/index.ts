@@ -1,8 +1,10 @@
 import 'dotenv/config'
+
 import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import { resolve } from 'path'
 import postgres from 'postgres'
+
 import * as relations from './relations'
 import * as schema from './schema'
 

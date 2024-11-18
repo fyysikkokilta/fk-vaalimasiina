@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-import { loginAdmin } from './utils/admin-login'
-import { createElectionWithVotersAndBallots, resetDatabase } from './utils/db'
 import {
   calculateSTVResult,
   VotingResult
 } from '../src/frontend/utils/stvAlgorithm'
 import { Ballot, Election } from '../types/types'
+import { loginAdmin } from './utils/admin-login'
+import { createElectionWithVotersAndBallots, resetDatabase } from './utils/db'
 
 let election: Election
 let ballots: Ballot[]

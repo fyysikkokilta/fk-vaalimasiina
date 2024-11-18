@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
+import { Election, Voter } from '../types/types'
 import {
   changeElectionStatus,
   insertElection,
   insertVoters,
   resetDatabase
 } from './utils/db'
-import { Election, Voter } from '../types/types'
 import { deselectCandidate, selectCandidate } from './utils/voter-voting'
 
 let election: Election

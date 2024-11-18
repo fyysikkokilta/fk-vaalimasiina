@@ -1,6 +1,7 @@
-import { Router, Request, Response } from 'express'
-import { validateUuid } from '../validation/validation'
+import { Request, Response, Router } from 'express'
+
 import { getVoterWithElection } from '../routes/voters'
+import { validateUuid } from '../validation/validation'
 
 export const handleGetVoterWithElection = async (
   req: Request,

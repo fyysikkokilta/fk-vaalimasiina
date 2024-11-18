@@ -1,12 +1,11 @@
-import React, { useState, useContext } from 'react'
-
+import React, { useContext, useState } from 'react'
 import { Col, Container, Form, ListGroup } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
-import { AdminNavigation } from '../adminNavigation/AdminNavigation'
+import { startVoting } from '../../../../api/admin/elections'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
-import { startVoting } from '../../../../api/admin/elections'
-import { useTranslation } from 'react-i18next'
+import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 export const PreviewElection = () => {
   const { election, setElection } = useContext(ElectionStepContext)!

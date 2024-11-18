@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Row, Col, Form, Button, ListGroup } from 'react-bootstrap'
-import { AdminNavigation } from '../adminNavigation/AdminNavigation'
+import { Button, Col, Form, ListGroup, Row } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
+
 import { ElectionData } from '../../../../../../types/types'
-import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import {
   modifyElection,
   postNewElection
 } from '../../../../api/admin/elections'
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
-import { useTranslation } from 'react-i18next'
+import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 // Used for both creating a new election and editing an existing one
 

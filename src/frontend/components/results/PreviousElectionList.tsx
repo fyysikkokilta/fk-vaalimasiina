@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Election } from '../../../../types/types'
-import { Link } from 'react-router-dom'
-import { fetchCompletedElections } from '../../api/elections'
 import { Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
+import { Election } from '../../../../types/types'
+import { fetchCompletedElections } from '../../api/elections'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 
 export const PreviousElectionList = () => {

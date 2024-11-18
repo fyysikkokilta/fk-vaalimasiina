@@ -1,23 +1,22 @@
-import express from 'express'
+import 'dotenv/config'
+
 import cors from 'cors'
+import express from 'express'
+import jsonwebtoken from 'jsonwebtoken'
+import ViteExpress from 'vite-express'
+
+import { runMigrations } from './db'
 import adminElectionsRouter from './handlers/admin/elections'
 import adminLoginRouter from './handlers/admin/login'
 import adminVotersRouter from './handlers/admin/voters'
 import adminVotesRouter from './handlers/admin/votes'
-
 import electionsRouter from './handlers/elections'
-import votesRouter from './handlers/votes'
-import votersRouter from './handlers/voters'
-
-import testElectionsRouter from './handlers/test/elections'
-import testVotesRouter from './handlers/test/votes'
-import testVotersRouter from './handlers/test/voters'
 import testDbRouter from './handlers/test/db'
-
-import 'dotenv/config'
-import { runMigrations } from './db'
-import jsonwebtoken from 'jsonwebtoken'
-import ViteExpress from 'vite-express'
+import testElectionsRouter from './handlers/test/elections'
+import testVotersRouter from './handlers/test/voters'
+import testVotesRouter from './handlers/test/votes'
+import votersRouter from './handlers/voters'
+import votesRouter from './handlers/votes'
 
 if (
   !process.env.PORT ||

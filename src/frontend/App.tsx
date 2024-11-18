@@ -1,21 +1,22 @@
+import 'react-toastify/scss/main.scss'
+
 import React from 'react'
+import { Button, Card, Container, Nav, Navbar } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 import {
   BrowserRouter as Router,
+  NavLink,
   Route,
-  Routes,
-  NavLink
+  Routes
 } from 'react-router-dom'
-import { Container, Navbar, Card, Button, Nav } from 'react-bootstrap'
-import { Admin } from './components/admin/Admin'
-import { Vote } from './components/vote/Vote'
 import { Flip, ToastContainer } from 'react-toastify'
 
-import 'react-toastify/scss/main.scss'
-import { useTranslation } from 'react-i18next'
+import { Admin } from './components/admin/Admin'
+import { Audit } from './components/audit/Audit'
+import { Info } from './components/info/Info'
 import { PreviousElectionList } from './components/results/PreviousElectionList'
 import { PreviousResults } from './components/results/PreviousResults'
-import { Info } from './components/info/Info'
-import { Audit } from './components/audit/Audit'
+import { Vote } from './components/vote/Vote'
 import { ElectionStepProvider } from './contexts/electionStep/ElectionStepProvider'
 
 const APP_TITLE = import.meta.env.VITE_BRANDING_HEADER_TITLE_TEXT as

@@ -1,7 +1,8 @@
 import { Request, Response, Router } from 'express'
+
+import { RequestBodyParams } from '../../../../types/express'
 import { changeVoterEmail, getVoters } from '../../routes/admin/voters'
 import { validateUuid } from '../../validation/validation'
-import { RequestBodyParams } from '../../../../types/express'
 
 export type ChangeVoterEmailRequestBody = {
   email: string

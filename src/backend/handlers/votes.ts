@@ -1,9 +1,10 @@
-import { Router, Response } from 'express'
-import { addVote } from '../routes/votes'
-import { getVoterWithElection } from '../routes/voters'
-import { validateUuid } from '../validation/validation'
+import { Response, Router } from 'express'
+
 import { RequestBody } from '../../../types/express'
 import { Election, VoteData } from '../../../types/types'
+import { getVoterWithElection } from '../routes/voters'
+import { addVote } from '../routes/votes'
+import { validateUuid } from '../validation/validation'
 
 export const isValidBallot = (
   ballot: VoteData['ballot'],

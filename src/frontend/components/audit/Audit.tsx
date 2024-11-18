@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { Table, Alert, Card } from 'react-bootstrap'
-import { Ballot, Election } from '../../../../types/types'
-import { useTranslation } from 'react-i18next'
-import { LoadingSpinner } from '../shared/LoadingSpinner'
 import _ from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { Alert, Card, Table } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
+
+import { Ballot, Election } from '../../../../types/types'
 import { fetchFinishedElectionWithVotes } from '../../api/elections'
+import { LoadingSpinner } from '../shared/LoadingSpinner'
 
 export const Audit = () => {
   const [election, setElection] = useState<Election | null>(null)

@@ -1,5 +1,6 @@
-import { Router, Request, Response } from 'express'
-import { validateUuid } from '../../validation/validation'
+import { Request, Response, Router } from 'express'
+
+import { RequestBody, RequestBodyParams } from '../../../../types/express'
 import {
   abortVoting,
   closeElection,
@@ -9,7 +10,7 @@ import {
   updateElection
 } from '../../routes/admin/elections'
 import { getElections } from '../../routes/elections'
-import { RequestBody, RequestBodyParams } from '../../../../types/express'
+import { validateUuid } from '../../validation/validation'
 
 export const handleFetchCurrentElection = async (
   _req: Request,

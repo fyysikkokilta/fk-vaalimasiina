@@ -1,6 +1,6 @@
+import { parse } from 'csv-parse'
 import * as fs from 'fs'
 import * as path from 'path'
-import { parse } from 'csv-parse'
 import { fileURLToPath } from 'url'
 
 const readCSV = async (filePath: string) => {

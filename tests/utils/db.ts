@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { Ballot, Election, Voter } from '../../types/types'
 import { randomInt } from 'crypto'
 import _ from 'lodash'
+
+import { Ballot, Election, Voter } from '../../types/types'
 
 const instance = axios.create({
   baseURL: 'http://localhost:3000'
