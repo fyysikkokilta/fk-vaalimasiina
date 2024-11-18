@@ -47,6 +47,54 @@ The voting process operates as follows:
 8. **Closing**
    - When the results have been gone through and the auditing has been made, the election can be closed.
    - After this a new election can be created.
+  
+### Result Calculation Overview
+
+The Voting Machine uses the STV algorithm combined with the Droop quota. The code for the algorithm is [here](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/src/frontend/utils/stvAlgorithm.ts?plain=1).
+
+The steps to calculate the result are as follows:
+
+### 1. Voting Process
+- **Voters rank candidates** by preference, marking them as `1` (first preference), `2` (second preference), `3` (third preference), etc.
+- A voter can rank as many or as few candidates as they wish.
+
+### 2. Counting the Votes: Setting the Quota
+- A **quota** (the minimum number of votes a candidate needs to be elected) is determined using the **Droop quota formula**:
+
+  $\text{Quota} = \left(\frac{\text{Total Valid Votes}}{\text{Seats + 1}}\right) + 1$
+
+  - **Total Valid Votes**: Total number of valid ballots cast.
+  - **Seats**: Number of seats to be filled.
+  - The result is rounded down to the nearest whole number.
+
+### 3. First Count: Determining Initial Winners
+- Each ballot is counted for the voter's **first preference**.
+- Any candidate who reaches or exceeds the quota is **elected**.
+
+### 4. Transferring Surplus Votes
+- If a candidate receives more votes than the quota, the **surplus** is transferred to the remaining candidates.
+- To ensure fairness, **surplus votes** are transferred at a reduced value (known as the **transfer value**):
+
+  $\text{Transfer Value} = \frac{\text{Surplus Votes}}{\text{Total Votes Received by the Candidate}}$
+
+- This means only a fraction of each vote is passed on to the next preferred candidate.
+
+### 5. Elimination Process
+- If no candidate reaches the quota after all surpluses are transferred, the candidate with the **fewest votes** is eliminated.
+- The eliminated candidate’s votes are redistributed to the next preferred candidate on each ballot.
+- This process of **elimination and redistribution** continues until all seats are filled.
+
+#### 5.1 Multiple candidates with fewest votes
+- It is possible that multiple candidates have the minimum amount of votes in this case the candidate to be dropped is chosen by a draw.
+- The code for the randomization is [here](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/src/frontend/utils/stvAlgorithm.ts?plain=1#L75-L93).
+- In short the id of the UUID (Universal Unique Identifier) is used to seed a random number generator. Since the UUID is itself random, this ensures the result of the draw is random, but it stays the same everytime the code is run. Using the random number generator the list of candidates with fewest votes is shuffled and the first in that list after shuffling is the candidate to be dropped.
+
+### 6. Repeating the Process
+- The counting process is repeated:
+  - Elect candidates when they meet the quota.
+  - Transfer surpluses if there are any.
+  - Eliminate the lowest-ranked candidates if needed.
+- The algorithm stops when all seats are filled.
 
 ## Database Schema
 ![Database schema](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/docs/images/database-schema.png?raw=true)
