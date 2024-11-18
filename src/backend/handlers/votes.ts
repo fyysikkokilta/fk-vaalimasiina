@@ -1,9 +1,32 @@
 import { Router, Response } from 'express'
-import { addVote } from '../routes/vote'
-import { getVoterWithElection } from '../routes/voter'
+import { addVote } from '../routes/votes'
+import { getVoterWithElection } from '../routes/voters'
 import { validateUuid } from '../validation/validation'
-import { isValidBallot } from '../routes/elections'
 import { RequestBody } from '../../../types/express'
+import { Election, VoteData } from '../../../types/types'
+
+export const isValidBallot = (
+  ballot: VoteData['ballot'],
+  election: Election
+) => {
+  // Check that every candidate in the ballot is a valid candidate
+  const validBallot = ballot.every((ballotItem) =>
+    election.candidates.some(
+      (candidate) =>
+        candidate.candidateId === ballotItem.candidateId &&
+        candidate.electionId === election.electionId
+    )
+  )
+
+  // Validate preference numbers
+  const preferenceNumbers = ballot.map((b) => b.preferenceNumber)
+  const validPreferenceNumbers = preferenceNumbers.every(
+    (preferenceNumber) =>
+      preferenceNumber > 0 && preferenceNumber <= election.candidates.length
+  )
+
+  return validBallot && validPreferenceNumbers
+}
 
 type VoteRequestBody = {
   voterId: string

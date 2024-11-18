@@ -2,16 +2,16 @@ import express from 'express'
 import cors from 'cors'
 import adminElectionsRouter from './handlers/admin/elections'
 import adminLoginRouter from './handlers/admin/login'
-import adminVoterRouter from './handlers/admin/voters'
+import adminVotersRouter from './handlers/admin/voters'
 import adminVotesRouter from './handlers/admin/votes'
 
 import electionsRouter from './handlers/elections'
-import voteRouter from './handlers/vote'
+import votesRouter from './handlers/votes'
 import votersRouter from './handlers/voters'
 
 import testElectionsRouter from './handlers/test/elections'
-import testVoteRouter from './handlers/test/votes'
-import testVoterRouter from './handlers/test/voters'
+import testVotesRouter from './handlers/test/votes'
+import testVotersRouter from './handlers/test/voters'
 import testDbRouter from './handlers/test/db'
 
 import 'dotenv/config'
@@ -63,17 +63,17 @@ app.use('/api/admin', (req, res, next) => {
 })
 
 app.use('/api/admin/elections', adminElectionsRouter)
-app.use('/api/admin/voters', adminVoterRouter)
+app.use('/api/admin/voters', adminVotersRouter)
 app.use('/api/admin/votes', adminVotesRouter)
 
 app.use('/api/elections', electionsRouter)
-app.use('/api/vote', voteRouter)
+app.use('/api/vote', votesRouter)
 app.use('/api/voters', votersRouter)
 
 if (process.env.NODE_ENV === 'development') {
   app.use('/api/test/elections', testElectionsRouter)
-  app.use('/api/test/votes', testVoteRouter)
-  app.use('/api/test/voters', testVoterRouter)
+  app.use('/api/test/votes', testVotesRouter)
+  app.use('/api/test/voters', testVotersRouter)
   app.use('/api/test/db', testDbRouter)
 }
 

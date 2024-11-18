@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm'
 import { db } from '../../db'
 import { votersTable } from '../../db/schema'
 import EmailService from '../../emails/handler'
-import { getElection } from '../elections'
+import { getElection } from './elections'
 
 export const changeVoterEmail = async (voterId: string, email: string) => {
   const voters = await db
