@@ -144,65 +144,55 @@ export const ElectionResults = ({
           </Button>
         </Col>
       </Row>
-      <ListGroup>
-        {votingResult.roundResults.map(
-          ({ candidateResults, round, tieBreaker, emptyVotes }) => (
-            <ListGroup.Item
-              id={`round-${round}`}
-              key={round}
-              className="mb-3 text-center"
-            >
-              <Card>
-                <Card.Header as="h5">
-                  {t('round')} {round}
-                </Card.Header>
-                <Card.Body>
-                  <Card.Title>
-                    &nbsp; {t('election_threshold')}:&nbsp;{votingResult.quota}
-                  </Card.Title>
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th>{t('candidate_name')}</th>
-                        <th>{t('vote_count')}</th>
-                        <th>{t('result')}</th>
+      {votingResult.roundResults.map(
+        ({ candidateResults, round, tieBreaker, emptyVotes }) => (
+          <Card id={`round-${round}`} key={round} className="mb-3 text-center">
+            <Card.Header as="h5">
+              {t('round')} {round}
+            </Card.Header>
+            <Card.Body>
+              <Card.Title>
+                &nbsp; {t('election_threshold')}:&nbsp;{votingResult.quota}
+              </Card.Title>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>{t('candidate_name')}</th>
+                    <th>{t('vote_count')}</th>
+                    <th>{t('result')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {candidateResults.map(
+                    ({ id, name, voteCount, isSelected, isEliminated }) => (
+                      <tr key={id}>
+                        <td>{name}</td>
+                        <td>{roundToTwoDecimals(voteCount)}</td>
+                        <td>
+                          {isSelected && (
+                            <span className="text-success">{t('chosen')}</span>
+                          )}
+                          {isEliminated && (
+                            <span className="text-danger">
+                              {t('eliminated')}
+                              {tieBreaker && ` - ${t('tie_breaker')}`}
+                            </span>
+                          )}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {candidateResults.map(
-                        ({ id, name, voteCount, isSelected, isEliminated }) => (
-                          <tr key={id}>
-                            <td>{name}</td>
-                            <td>{roundToTwoDecimals(voteCount)}</td>
-                            <td>
-                              {isSelected && (
-                                <span className="text-success">
-                                  {t('chosen')}
-                                </span>
-                              )}
-                              {isEliminated && (
-                                <span className="text-danger">
-                                  {t('eliminated')}
-                                  {tieBreaker && ` - ${t('tie_breaker')}`}
-                                </span>
-                              )}
-                            </td>
-                          </tr>
-                        )
-                      )}
-                      <tr>
-                        <td>{t('empty_votes')}</td>
-                        <td>{roundToTwoDecimals(emptyVotes)}</td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </ListGroup.Item>
-          )
-        )}
-      </ListGroup>
+                    )
+                  )}
+                  <tr>
+                    <td>{t('empty_votes')}</td>
+                    <td>{roundToTwoDecimals(emptyVotes)}</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+        )
+      )}
       <Row>
         <Col id="winners" className="text-center">
           <h4>{t('chosen_candidates')}</h4>
