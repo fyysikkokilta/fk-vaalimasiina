@@ -20,7 +20,6 @@ export const selectCandidate = async (page: Page, candidateName: string) => {
     }
   )
   await page.mouse.up()
-  await page.waitForTimeout(500)
 }
 
 export const deselectCandidate = async (page: Page, candidateName: string) => {
@@ -43,5 +42,4 @@ export const deselectCandidate = async (page: Page, candidateName: string) => {
     }
   )
   await page.mouse.up()
-  await page.waitForTimeout(500)
 }

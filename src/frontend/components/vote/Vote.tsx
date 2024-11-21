@@ -26,6 +26,10 @@ export const Vote = () => {
   const [availableCandidates, setAvailableCandidates] = useState<string[]>([])
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
+  const handleDragStart = () => {
+    setDisableVote(true)
+  }
+
   const handleDragEnd = (result: DropResult<string>) => {
     if (!result.destination) {
       return
@@ -82,6 +86,7 @@ export const Vote = () => {
       const [removed] = availableCandidates.splice(result.source.index, 1)
       availableCandidates.splice(destinationIndex, 0, removed)
     }
+    setDisableVote(false)
   }
 
   useEffect(() => {
@@ -175,7 +180,10 @@ export const Vote = () => {
             <div className="my-3">
               <b>{t('vote_instruction')}</b>
             </div>
-            <DragDropContext onDragEnd={handleDragEnd}>
+            <DragDropContext
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
               <Row>
                 <Col md={6}>
                   <h5>{t('selected_candidates')}</h5>
