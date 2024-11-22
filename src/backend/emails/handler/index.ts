@@ -6,7 +6,7 @@ import { Election } from '../../../../types/types'
 import mailTransporter from './config'
 
 export interface VotingMailParams {
-  election: Omit<Election, 'candidates'>
+  election: Omit<Election, 'candidates' | 'status'>
   voterId: string
 }
 

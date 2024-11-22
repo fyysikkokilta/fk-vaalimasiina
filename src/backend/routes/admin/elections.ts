@@ -9,17 +9,6 @@ import {
 } from '../../db/schema'
 import EmailService from '../../emails/handler'
 
-export const getElection = async (electionId: string) => {
-  const election = await db.query.electionsTable.findFirst({
-    with: {
-      candidates: true
-    },
-    where: (electionsTable, { eq }) => eq(electionsTable.electionId, electionId)
-  })
-
-  return election || null
-}
-
 export const createElection = async (
   title: string,
   description: string,

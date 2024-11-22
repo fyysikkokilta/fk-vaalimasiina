@@ -1,29 +1,39 @@
 import { eq } from 'drizzle-orm'
 
 import { db } from '../../db'
-import { votersTable } from '../../db/schema'
+import { electionsTable, votersTable } from '../../db/schema'
 import EmailService from '../../emails/handler'
-import { getElection } from './elections'
 
 export const changeVoterEmail = async (voterId: string, email: string) => {
-  const voters = await db
+  const voterElectionPairs = await db
     .update(votersTable)
     .set({ email })
+    .from(electionsTable)
     .where(eq(votersTable.voterId, voterId))
-    .returning()
+    .returning({
+      voter: {
+        voterId: votersTable.voterId,
+        email: votersTable.email,
+        hasVoted: votersTable.hasVoted
+      },
+      election: {
+        electionId: electionsTable.electionId,
+        title: electionsTable.title,
+        description: electionsTable.description,
+        seats: electionsTable.seats
+      }
+    })
 
-  if (!voters[0]) {
+  if (!voterElectionPairs[0]) {
     return null
   }
 
-  const election = await getElection(voters[0].electionId)
-
   await EmailService.sendVotingMail(email, {
-    election: election!,
-    voterId: voters[0].voterId
+    election: voterElectionPairs[0].election,
+    voterId
   })
 
-  return voters[0]
+  return voterElectionPairs[0].voter
 }
 
 export const getVoters = async (electionId: string) => {
