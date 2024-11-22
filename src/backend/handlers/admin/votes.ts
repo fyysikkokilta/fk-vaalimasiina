@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
 
-import { getVotes } from '../../routes/admin/votes'
+import { getCompletedElectionWithVotes } from '../../routes/elections'
 import { validateUuid } from '../../validation/validation'
 
 export const handleFetchVotesForElection = async (
@@ -9,8 +9,17 @@ export const handleFetchVotesForElection = async (
 ) => {
   const { electionId } = req.params
   try {
-    const votes = await getVotes(electionId)
-    res.status(200).json(votes)
+    const election = await getCompletedElectionWithVotes(electionId)
+    if (!election) {
+      res.status(404).json({ key: 'election_not_found' })
+      return
+    }
+
+    if (election.status !== 'FINISHED' && election.status !== 'CLOSED') {
+      res.status(400).json({ key: 'election_not_completed' })
+      return
+    }
+    res.status(200).json(election.ballots)
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ message: err.message })

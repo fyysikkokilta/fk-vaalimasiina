@@ -38,10 +38,8 @@ export const Audit = () => {
         <Card.Header as="h2">{t('title')}</Card.Header>
         <Card.Body>
           <Alert className="d-flex flex-column text-center" variant="info">
-            <Alert.Heading>
-              {t('election_not_ongoing_or_finished')}
-            </Alert.Heading>
-            <p>{t('election_not_ongoing_or_finished_description')}</p>
+            <Alert.Heading>{t('no_finished_election')}</Alert.Heading>
+            <p>{t('no_finished_election_description')}</p>
           </Alert>
         </Card.Body>
       </Card>
