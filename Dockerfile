@@ -58,7 +58,7 @@ COPY src/backend /opt/vaalimasiina/src/backend
 RUN npm set cache .npm
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --production --ignore-scripts
 
 # Copy the built frontend from the builder stage
 COPY --from=builder /opt/vaalimasiina/dist /opt/vaalimasiina/dist
