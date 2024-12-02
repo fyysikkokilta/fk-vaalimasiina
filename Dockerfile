@@ -25,6 +25,9 @@ COPY index.html /opt/vaalimasiina/
 # Copy public directory
 COPY public /opt/vaalimasiina/public
 
+# Copy environment variables for the frontend
+COPY .env /opt/vaalimasiina/
+
 # Set npm cache
 RUN npm set cache .npm
 
