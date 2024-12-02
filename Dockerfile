@@ -22,6 +22,9 @@ COPY src/frontend /opt/vaalimasiina/src/frontend
 # Copy index.html
 COPY index.html /opt/vaalimasiina/
 
+# Copy public directory
+COPY public /opt/vaalimasiina/public
+
 # Set npm cache
 RUN npm set cache .npm
 
