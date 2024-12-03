@@ -28,9 +28,13 @@ export const changeVoterEmail = async (voterId: string, email: string) => {
     return null
   }
 
-  await EmailService.sendVotingMail(email, {
-    election: voterElectionPairs[0].election,
-    voterId
+  const to = voterElectionPairs.map((pair) => ({
+    email: pair.voter.email,
+    voterId: pair.voter.voterId
+  }))
+
+  await EmailService.sendVotingMail(to, {
+    election: voterElectionPairs[0].election
   })
 
   return voterElectionPairs[0].voter

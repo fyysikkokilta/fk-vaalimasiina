@@ -116,14 +116,12 @@ export const startVoting = async (electionId: string, emails: string[]) => {
     return null
   }
 
-  await Promise.all(
-    insertedVoters.map((voter) => {
-      return EmailService.sendVotingMail(voter.email, {
-        election: election,
-        voterId: voter.voterId
-      })
-    })
-  )
+  const to = insertedVoters.map((voter) => ({
+    email: voter.email,
+    voterId: voter.voterId
+  }))
+
+  await EmailService.sendVotingMail(to, { election })
 
   return election
 }

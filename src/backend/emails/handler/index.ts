@@ -7,7 +7,6 @@ import mailTransporter from './config'
 
 export interface VotingMailParams {
   election: Omit<Election, 'candidates' | 'status'>
-  voterId: string
 }
 
 const __filename = fileURLToPath(import.meta.url)
@@ -28,18 +27,34 @@ const TEMPLATE_OPTIONS = {
 }
 
 export default class EmailService {
-  static send(to: string, subject: string, html: string) {
+  static send(
+    to: { email: string; voterId: string }[],
+    subject: string,
+    html: string
+  ) {
     const msg = {
-      to,
+      to: to.map((voter) => voter.email),
       from: process.env.MAIL_FROM,
       subject,
-      html
+      html,
+      'recipient-variables': JSON.stringify(
+        to.reduce(
+          (acc, voter) => {
+            acc[voter.email] = { voterId: voter.voterId }
+            return acc
+          },
+          {} as Record<string, { voterId: string }>
+        )
+      )
     }
 
     return mailTransporter.sendMail(msg)
   }
 
-  static async sendVotingMail(to: string, params: VotingMailParams) {
+  static async sendVotingMail(
+    to: { email: string; voterId: string }[],
+    params: VotingMailParams
+  ) {
     try {
       const email = new Email(TEMPLATE_OPTIONS)
       const brandedParams = {
@@ -48,7 +63,7 @@ export default class EmailService {
           footerText: process.env.BRANDING_MAIL_FOOTER_TEXT,
           footerLink: process.env.BRANDING_MAIL_FOOTER_LINK
         },
-        votingLink: `${process.env.BASE_URL}/vote/${params.voterId}`
+        votingLink: `${process.env.BASE_URL}/vote/%recipient.voterId%` // %recipient.voterId% is populated by Mailgun
       }
       const template = votingMailPath
       const html = await email.render(template, brandedParams)
