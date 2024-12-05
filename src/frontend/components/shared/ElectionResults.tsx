@@ -56,7 +56,7 @@ export const ElectionResults = ({
       a.name.localeCompare(b.name)
     )
 
-    const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes > 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes > 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
+    const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes !== 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes !== 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
     const firstDecimalVotesRound = votingResult.roundResults.find(
       ({ candidateResults }) => {
         return candidateResults.some(({ voteCount }) => voteCount % 1 !== 0)
