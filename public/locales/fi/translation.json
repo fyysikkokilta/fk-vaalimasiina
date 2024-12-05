@@ -33,8 +33,9 @@
       "submit_vote": "Äänestä",
       "already_voted": "Olet jo äänestänyt!",
       "back_to_frontpage": "Takaisin etusivulle",
-      "ballot_id": "Äänestyslipun tunniste",
-      "audit_info": "Alla on äänestyslippusi tunniste. Voit tarkastaa, että äänestyslippusi on oikein ja otettu huomioon tuloksessa tarkastusnäkymässä, kun äänestys on päättynyt. Ota tunniste talteen, sillä et voi saada sitä enää myöhemmin uudelleen."
+      "audit_info": "Painamalla alla olevaa nappia voit kopioida äänestyslippusi tunnisteen. Voit tarkastaa, että äänestyslippusi on oikein ja otettu huomioon tuloksessa tarkastusnäkymässä, kun äänestys on päättynyt. Ota tunniste talteen, sillä et voi saada sitä enää myöhemmin uudelleen.",
+      "audit_button": "Kopioi äänestyslipun tunniste",
+      "audit_copied_to_clipboard": "Äänestyslipun tunniste kopioitu leikepöydälle"
     }
   },
   "admin": {

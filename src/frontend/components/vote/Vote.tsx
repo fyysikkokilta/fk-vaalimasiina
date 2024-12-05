@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Button, Card, Col, ListGroup, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 import { Election, Voter } from '../../../../types/types'
 import { vote } from '../../api/vote'
@@ -92,7 +93,7 @@ export const Vote = () => {
   useEffect(() => {
     void (async () => {
       if (!voterId) {
-        navigate('/')
+        await navigate('/')
         return
       }
 
@@ -131,6 +132,14 @@ export const Vote = () => {
     return election?.candidates.find((c) => c.candidateId === candidateId)?.name
   }
 
+  const getBallotCode = async () => {
+    if (!ballotId) {
+      return
+    }
+    await navigator.clipboard.writeText(ballotId)
+    toast.success(t('audit_copied_to_clipboard'))
+  }
+
   if (
     !election ||
     election.status !== 'ONGOING' ||
@@ -164,14 +173,14 @@ export const Vote = () => {
         </Button>
         <Card.Text>{election.description}</Card.Text>
         {voter.hasVoted ? (
-          <Alert variant="success">
+          <Alert variant="success" className="text-center">
             <Alert.Heading>{t('already_voted')}</Alert.Heading>
             {ballotId && (
               <>
                 <p>{t('audit_info')}</p>
-                <span>
-                  {t('ballot_id')}: <b>{ballotId}</b>
-                </span>
+                <Button variant="primary" onClick={getBallotCode}>
+                  {t('audit_button')}
+                </Button>
               </>
             )}
           </Alert>
