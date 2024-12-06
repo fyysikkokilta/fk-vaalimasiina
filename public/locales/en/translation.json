@@ -31,6 +31,7 @@
       "candidates_instruction": "Select a candidate",
       "remove_selection": "Remove",
       "submit_vote": "Vote",
+      "thanks_for_voting": "Thank you for voting!",
       "already_voted": "You have already voted!",
       "back_to_frontpage": "Back to frontpage",
       "audit_info": "By pressing the button below, you can copy the ID of your ballot. You can check that your ballot is correct and taken into account in the auditing view when the voting has ended. Save the ID, as you cannot get it again later.",

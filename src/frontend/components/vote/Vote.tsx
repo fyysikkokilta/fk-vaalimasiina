@@ -174,7 +174,9 @@ export const Vote = () => {
         <Card.Text>{election.description}</Card.Text>
         {voter.hasVoted ? (
           <Alert variant="success" className="text-center">
-            <Alert.Heading>{t('already_voted')}</Alert.Heading>
+            <Alert.Heading>
+              {ballotId ? t('thanks_for_voting') : t('already_voted')}
+            </Alert.Heading>
             {ballotId && (
               <>
                 <p>{t('audit_info')}</p>
