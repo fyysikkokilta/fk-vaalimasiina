@@ -18,7 +18,8 @@ export const findFinishedElectionWithVotes = async () => {
       ballots: {
         with: {
           votes: true
-        }
+        },
+        orderBy: (_ballotsTable, { sql }) => sql`RANDOM()` // Randomize the order
       }
     }
   })
@@ -41,7 +42,8 @@ export const getCompletedElectionWithVotes = async (electionId: string) => {
       ballots: {
         with: {
           votes: true
-        }
+        },
+        orderBy: (_ballotsTable, { sql }) => sql`RANDOM()` // Randomize the order
       }
     }
   })
