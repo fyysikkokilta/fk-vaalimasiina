@@ -197,7 +197,7 @@ export const Vote = () => {
             >
               <Row>
                 <Col md={6}>
-                  <h5>{t('selected_candidates')}</h5>
+                  <h5>{t('your_ballot')}</h5>
                   <Droppable droppableId="selectedCandidates">
                     {(provided) => (
                       <div
