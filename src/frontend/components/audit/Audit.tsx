@@ -74,6 +74,7 @@ export const Audit = () => {
           <Form.Group controlId="formSearchBallot">
             <Form.Label>{t('search_ballot')}</Form.Label>
             <Form.Control
+              id="searchBallot"
               type="text"
               className="mb-3"
               placeholder={t('ballot_id')}
