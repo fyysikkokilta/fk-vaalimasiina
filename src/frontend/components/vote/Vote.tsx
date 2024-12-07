@@ -5,7 +5,15 @@ import {
   DropResult
 } from '@hello-pangea/dnd'
 import React, { useEffect, useState } from 'react'
-import { Alert, Button, Card, Col, ListGroup, Row } from 'react-bootstrap'
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  ListGroup,
+  Modal,
+  Row
+} from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -20,6 +28,7 @@ export const Vote = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [disableVote, setDisableVote] = useState(false)
+  const [confirmingVote, setConfirmingVote] = useState(false)
   const [voter, setVoter] = useState<Voter | null>(null)
   const [election, setElection] = useState<Election | null>(null)
   const [ballotId, setBallotId] = useState('')
@@ -117,6 +126,7 @@ export const Vote = () => {
 
   const handleVote = async () => {
     setDisableVote(true)
+    setConfirmingVote(false)
     const response = await vote(voter!.voterId, selectedCandidates)
 
     if (!response.ok) {
@@ -126,6 +136,14 @@ export const Vote = () => {
 
     setBallotId(response.data)
     setVoter((prev) => ({ ...prev!, hasVoted: true }))
+  }
+
+  const handleVoteConfirmation = () => {
+    setConfirmingVote(true)
+  }
+
+  const handleVoteCancel = () => {
+    setConfirmingVote(false)
   }
 
   const getCandidateName = (candidateId: string) => {
@@ -164,131 +182,162 @@ export const Vote = () => {
   }
 
   return (
-    <Card>
-      <Card.Header as="h2">{t('title')}</Card.Header>
-      <Card.Header as="h4">{election.title}</Card.Header>
-      <Card.Body>
-        <Button className="mb-3" onClick={() => navigate('/')}>
-          {t('back_to_frontpage')}
-        </Button>
-        <Card.Text>{election.description}</Card.Text>
-        {voter.hasVoted ? (
-          <Alert variant="success" className="text-center">
-            <Alert.Heading>
-              {ballotId ? t('thanks_for_voting') : t('already_voted')}
-            </Alert.Heading>
-            {ballotId && (
-              <>
-                <p>{t('audit_info')}</p>
-                <Button variant="primary" onClick={getBallotCode}>
-                  {t('audit_button')}
-                </Button>
-              </>
-            )}
-          </Alert>
-        ) : (
-          <>
-            <div className="my-3">
-              <b>{t('vote_instruction')}</b>
-            </div>
-            <DragDropContext
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-            >
-              <Row>
-                <Col md={6}>
-                  <h5>{t('your_ballot')}</h5>
-                  <Droppable droppableId="selectedCandidates">
-                    {(provided) => (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className="mb-3 p-2 border rounded"
-                        id="selected-candidates"
-                        style={{
-                          minHeight: '200px',
-                          backgroundColor: '#f8f9fa'
-                        }}
-                      >
-                        <ListGroup>
-                          {selectedCandidates.map((candidateId, index) => (
-                            <Draggable
-                              key={candidateId}
-                              draggableId={candidateId}
-                              index={index}
-                            >
-                              {(provided) => (
-                                <ListGroup.Item
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className="d-flex align-items-center mb-2"
-                                >
-                                  {index + 1}. &nbsp;{' '}
-                                  {getCandidateName(candidateId)}
-                                </ListGroup.Item>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </ListGroup>
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-                <Col md={6}>
-                  <h5>{t('available_candidates')}</h5>
-                  <Droppable droppableId="availableCandidates">
-                    {(provided) => (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className="mb-3 p-2 border rounded"
-                        id="available-candidates"
-                        style={{
-                          minHeight: '200px',
-                          backgroundColor: '#f8f9fa'
-                        }}
-                      >
-                        <ListGroup>
-                          {availableCandidates.map((candidateId, index) => (
-                            <Draggable
-                              key={candidateId}
-                              draggableId={candidateId}
-                              index={index}
-                            >
-                              {(provided) => (
-                                <ListGroup.Item
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className="d-flex align-items-center mb-2"
-                                >
-                                  {getCandidateName(candidateId)}
-                                </ListGroup.Item>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </ListGroup>
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-              </Row>
-            </DragDropContext>
-            <div className="d-flex justify-content-center mt-3">
-              <Button
-                variant="primary"
-                onClick={handleVote}
-                disabled={disableVote}
+    <>
+      <Card>
+        <Card.Header as="h2">{t('title')}</Card.Header>
+        <Card.Header as="h4">{election.title}</Card.Header>
+        <Card.Body>
+          <Button className="mb-3" onClick={() => navigate('/')}>
+            {t('back_to_frontpage')}
+          </Button>
+          <Card.Text>{election.description}</Card.Text>
+          {voter.hasVoted ? (
+            <Alert variant="success" className="text-center">
+              <Alert.Heading>
+                {ballotId ? t('thanks_for_voting') : t('already_voted')}
+              </Alert.Heading>
+              {ballotId && (
+                <>
+                  <p>{t('audit_info')}</p>
+                  <Button variant="primary" onClick={getBallotCode}>
+                    {t('audit_button')}
+                  </Button>
+                </>
+              )}
+            </Alert>
+          ) : (
+            <>
+              <div className="my-3">
+                <b>{t('vote_instruction')}</b>
+              </div>
+              <DragDropContext
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
               >
-                {t('submit_vote')}
-              </Button>
-            </div>
-          </>
-        )}
-      </Card.Body>
-    </Card>
+                <Row>
+                  <Col md={6}>
+                    <h5>{t('your_ballot')}</h5>
+                    <Droppable droppableId="selectedCandidates">
+                      {(provided) => (
+                        <div
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          className="mb-3 p-2 border rounded"
+                          id="selected-candidates"
+                          style={{
+                            minHeight: '200px',
+                            backgroundColor: '#f8f9fa'
+                          }}
+                        >
+                          <ListGroup>
+                            {selectedCandidates.map((candidateId, index) => (
+                              <Draggable
+                                key={candidateId}
+                                draggableId={candidateId}
+                                index={index}
+                              >
+                                {(provided) => (
+                                  <ListGroup.Item
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="d-flex align-items-center mb-2"
+                                  >
+                                    {index + 1}. &nbsp;{' '}
+                                    {getCandidateName(candidateId)}
+                                  </ListGroup.Item>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </ListGroup>
+                        </div>
+                      )}
+                    </Droppable>
+                  </Col>
+                  <Col md={6}>
+                    <h5>{t('available_candidates')}</h5>
+                    <Droppable droppableId="availableCandidates">
+                      {(provided) => (
+                        <div
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          className="mb-3 p-2 border rounded"
+                          id="available-candidates"
+                          style={{
+                            minHeight: '200px',
+                            backgroundColor: '#f8f9fa'
+                          }}
+                        >
+                          <ListGroup>
+                            {availableCandidates.map((candidateId, index) => (
+                              <Draggable
+                                key={candidateId}
+                                draggableId={candidateId}
+                                index={index}
+                              >
+                                {(provided) => (
+                                  <ListGroup.Item
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="d-flex align-items-center mb-2"
+                                  >
+                                    {getCandidateName(candidateId)}
+                                  </ListGroup.Item>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </ListGroup>
+                        </div>
+                      )}
+                    </Droppable>
+                  </Col>
+                </Row>
+              </DragDropContext>
+              <div className="d-flex justify-content-center mt-3">
+                <Button
+                  variant="primary"
+                  onClick={handleVoteConfirmation}
+                  disabled={disableVote}
+                >
+                  {t('submit_vote')}
+                </Button>
+              </div>
+            </>
+          )}
+        </Card.Body>
+      </Card>
+      <Modal show={confirmingVote} onHide={handleVoteCancel}>
+        <Modal.Header closeButton>
+          <Modal.Title>{t('confirm_vote')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <p>{t('confirm_vote_description')}</p>
+          {selectedCandidates.length > 0 ? (
+            <ListGroup>
+              {selectedCandidates.map((candidateId, index) => (
+                <ListGroup.Item key={candidateId}>
+                  {index + 1}. &nbsp; {getCandidateName(candidateId)}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ) : (
+            <Alert variant="danger" className="text-center mx-5">
+              {t('empty_ballot')}
+            </Alert>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleVoteCancel}>
+            {t('cancel')}
+          </Button>
+          <Button variant="primary" onClick={handleVote}>
+            {t('confirm')}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   )
 }

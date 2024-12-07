@@ -36,7 +36,12 @@
       "back_to_frontpage": "Back to frontpage",
       "audit_info": "By pressing the button below, you can copy the ID of your ballot. You can check that your ballot is correct and taken into account in the auditing view when the voting has ended. Save the ID, as you cannot get it again later.",
       "audit_button": "Copy ballot ID",
-      "audit_copied_to_clipboard": "Ballot ID copied to clipboard"
+      "audit_copied_to_clipboard": "Ballot ID copied to clipboard",
+      "confirm_vote": "Vote confirmation",
+      "confirm_vote_description": "Check your ballot and press the confirm vote button to confirm your vote. The vote cannot be changed after confirmation.",
+      "empty_ballot": "Empty ballot",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
     }
   },
   "admin": {

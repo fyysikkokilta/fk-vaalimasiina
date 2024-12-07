@@ -36,7 +36,12 @@
       "back_to_frontpage": "Takaisin etusivulle",
       "audit_info": "Painamalla alla olevaa nappia voit kopioida äänestyslippusi tunnisteen. Voit tarkastaa, että äänestyslippusi on oikein ja otettu huomioon tuloksessa tarkastusnäkymässä, kun äänestys on päättynyt. Ota tunniste talteen, sillä et voi saada sitä enää myöhemmin uudelleen.",
       "audit_button": "Kopioi äänestyslipun tunniste",
-      "audit_copied_to_clipboard": "Äänestyslipun tunniste kopioitu leikepöydälle"
+      "audit_copied_to_clipboard": "Äänestyslipun tunniste kopioitu leikepöydälle",
+      "confirm_vote": "Äänen vahvistus",
+      "confirm_vote_description": "Tarkasta äänestyslippusi ja paina vahvista ääni -nappia vahvistaaksesi äänesi. Ääntä ei voi enää muuttaa vahvistuksen jälkeen.",
+      "empty_ballot": "Tyhjä äänestyslippu",
+      "cancel": "Peruuta",
+      "confirm": "Vahvista"
     }
   },
   "admin": {
