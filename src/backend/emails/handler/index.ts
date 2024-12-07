@@ -55,6 +55,11 @@ export default class EmailService {
     to: { email: string; voterId: string }[],
     params: VotingMailParams
   ) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Sending voting mail to:', to)
+      console.log('Params:', params)
+      return
+    }
     try {
       const email = new Email(TEMPLATE_OPTIONS)
       const brandedParams = {
