@@ -99,6 +99,18 @@ export const Vote = () => {
     setDisableVote(false)
   }
 
+  const handleDoubleClickAdd = (event: React.MouseEvent<HTMLElement>) => {
+    const candidateId = event.currentTarget.id
+    setSelectedCandidates((prev) => [...prev, candidateId])
+    setAvailableCandidates((prev) => prev.filter((c) => c !== candidateId))
+  }
+
+  const handleDoubleClickRemove = (event: React.MouseEvent<HTMLElement>) => {
+    const candidateId = event.currentTarget.id
+    setAvailableCandidates((prev) => [...prev, candidateId])
+    setSelectedCandidates((prev) => prev.filter((c) => c !== candidateId))
+  }
+
   useEffect(() => {
     void (async () => {
       if (!voterId) {
@@ -239,9 +251,11 @@ export const Vote = () => {
                                 {(provided) => (
                                   <ListGroup.Item
                                     ref={provided.innerRef}
+                                    id={candidateId}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     className="d-flex align-items-center mb-2"
+                                    onDoubleClick={handleDoubleClickRemove}
                                   >
                                     {index + 1}. &nbsp;{' '}
                                     {getCandidateName(candidateId)}
@@ -279,9 +293,11 @@ export const Vote = () => {
                                 {(provided) => (
                                   <ListGroup.Item
                                     ref={provided.innerRef}
+                                    id={candidateId}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     className="d-flex align-items-center mb-2"
+                                    onDoubleClick={handleDoubleClickAdd}
                                   >
                                     {getCandidateName(candidateId)}
                                   </ListGroup.Item>
