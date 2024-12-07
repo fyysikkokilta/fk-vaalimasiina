@@ -13,7 +13,8 @@
       "ballot": "Äänestyslippu",
       "no_finished_election": "Ei päättynyttä vaalia",
       "no_finished_election_description": "Voit tarkastella vain juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
-      "empty_ballot": "Tyhjä äänestyslippu"
+      "empty_ballot": "Tyhjä äänestyslippu",
+      "search_ballot": "Hae äänestyslippua"
     },
     "info": {
       "title": "Tervetuloa vaalimasiinaan!",

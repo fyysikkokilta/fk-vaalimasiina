@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { Alert, Card, Table } from 'react-bootstrap'
+import { Alert, Card, Form, Table } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
 import { Ballot, Election } from '../../../../types/types'
@@ -10,6 +10,7 @@ import { LoadingSpinner } from '../shared/LoadingSpinner'
 export const Audit = () => {
   const [election, setElection] = useState<Election | null>(null)
   const [ballots, setBallots] = useState<Ballot[]>([])
+  const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const { t } = useTranslation('translation', { keyPrefix: 'voter.audit' })
 
@@ -54,11 +55,32 @@ export const Audit = () => {
     return candidate?.name || candidateId
   }
 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.toLowerCase().trim()
+    setSearch(value)
+  }
+  const match = ballots.filter(
+    (audit) => audit.ballotId.toLowerCase().trim() === search
+  )
+
+  const allOrOneBallot = match.length === 1 ? match : ballots
+
   return (
     <Card>
       <Card.Header as="h2">{t('title')}</Card.Header>
       <Card.Header as="h4">{election.title}</Card.Header>
       <Card.Body>
+        <Form>
+          <Form.Group controlId="formSearchBallot">
+            <Form.Label>{t('search_ballot')}</Form.Label>
+            <Form.Control
+              type="text"
+              className="mb-3"
+              placeholder={t('ballot_id')}
+              onChange={handleSearch}
+            />
+          </Form.Group>
+        </Form>
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -67,7 +89,7 @@ export const Audit = () => {
             </tr>
           </thead>
           <tbody>
-            {ballots.map((audit, index) => (
+            {allOrOneBallot.map((audit, index) => (
               <tr key={index}>
                 <td>{audit.ballotId}</td>
                 <td>

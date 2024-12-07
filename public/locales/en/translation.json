@@ -13,7 +13,8 @@
       "ballot": "Ballot",
       "no_finished_election": "There is no finished election",
       "no_finished_election_description": "You can only audit the election whose results have just been published. If you think this is an error, please contact the chairperson or secretary.",
-      "empty_ballot": "Empty ballot"
+      "empty_ballot": "Empty ballot",
+      "search_ballot": "Search ballot"
     },
     "info": {
       "title": "Welcome to the Voting Machine!",
