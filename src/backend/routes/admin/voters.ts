@@ -1,15 +1,19 @@
+import { createHash } from 'node:crypto'
+
 import { eq } from 'drizzle-orm'
 
 import { db } from '../../db'
 import { electionsTable, votersTable } from '../../db/schema'
 import EmailService from '../../emails/handler'
 
-export const changeVoterEmail = async (voterId: string, email: string) => {
+export const changeVoterEmail = async (oldEmail: string, newEmail: string) => {
+  const hashedOldEmail = createHash('sha256').update(oldEmail).digest('hex')
+  const hashedNewEmail = createHash('sha256').update(newEmail).digest('hex')
   const voterElectionPairs = await db
     .update(votersTable)
-    .set({ email })
+    .set({ email: hashedNewEmail })
     .from(electionsTable)
-    .where(eq(votersTable.voterId, voterId))
+    .where(eq(votersTable.email, hashedOldEmail))
     .returning({
       voter: {
         voterId: votersTable.voterId,
@@ -28,10 +32,12 @@ export const changeVoterEmail = async (voterId: string, email: string) => {
     return null
   }
 
-  const to = voterElectionPairs.map((pair) => ({
-    email: pair.voter.email,
-    voterId: pair.voter.voterId
-  }))
+  const to = [
+    {
+      email: newEmail,
+      voterId: voterElectionPairs[0].voter.voterId
+    }
+  ]
 
   await EmailService.sendVotingMail(to, {
     election: voterElectionPairs[0].election

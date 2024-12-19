@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto'
+
 import { eq } from 'drizzle-orm'
 
 import { db } from '../../db'
@@ -98,15 +100,23 @@ export const startVoting = async (electionId: string, emails: string[]) => {
         return [null, []]
       }
 
-      const voters = await transaction
+      const insertedVoters = await transaction
         .insert(votersTable)
         .values(
           emails.map((email) => ({
             electionId,
-            email
+            email: createHash('sha256').update(email).digest('hex')
           }))
         )
         .returning()
+
+      const voters = insertedVoters.map((voter) => ({
+        email: emails.find(
+          (email) =>
+            createHash('sha256').update(email).digest('hex') === voter.email
+        )!,
+        voterId: voter.voterId
+      }))
 
       return [elections[0], voters]
     }

@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto'
+
 import { db } from '../../db'
 import { votersTable } from '../../db/schema'
 
@@ -10,7 +12,7 @@ export const createTestVoters = async (
     .values(
       emails.map((email) => ({
         electionId,
-        email
+        email: createHash('sha256').update(email).digest('hex')
       }))
     )
     .returning()

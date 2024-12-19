@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, Col, Container, Form, ListGroup, Row } from 'react-bootstrap'
+import { Button, Container, Form, ListGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 
 import { Voter } from '../../../../../../types/types'
 import { abortVoting, endVoting } from '../../../../api/admin/elections'
@@ -11,7 +12,6 @@ import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 export const VotingInspection = () => {
   const [voters, setVoters] = useState<Voter[] | null>(null)
-  const [showRemainingVoters, setShowRemainingVoters] = useState(false)
   const { election, setElection } = useContext(ElectionStepContext)!
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.voting_inspection'
@@ -62,28 +62,20 @@ export const VotingInspection = () => {
     return true
   }
 
-  const toggleRemainingVoters = () => {
-    setShowRemainingVoters(!showRemainingVoters)
-  }
-
   const handleEmailChange = async () => {
-    const voterId = voters.find((v) => v.email === oldEmail)!.voterId
-    const response = await changeVoterEmail(voterId, newEmail)
+    const response = await changeVoterEmail(oldEmail, newEmail)
     if (!response.ok) {
       return
     }
     setOldEmail('')
     setNewEmail('')
+    toast.success(t('email_changed'))
   }
 
   const remainingVoters = voters.filter((voter) => !voter.hasVoted)
   const votersWhoVoted = voters.filter((voter) => voter.hasVoted)
 
-  const validOldEmail = !!voters.find((v) => v.email === oldEmail)
   const validNewEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
-  const newEmailNotInOtherEmails = voters.every((v) => v.email !== newEmail)
-  const validEmailChange =
-    validOldEmail && validNewEmail && newEmailNotInOtherEmails
 
   return (
     <>
@@ -107,49 +99,30 @@ export const VotingInspection = () => {
             </span>
           </ListGroup.Item>
         </ListGroup>
-        <Button onClick={toggleRemainingVoters} className="mt-3">
-          {showRemainingVoters
-            ? t('hide_remaining_voters')
-            : t('show_remaining_voters')}
-        </Button>
-        {showRemainingVoters && (
-          <>
-            <Form className="mt-3">
-              <Form.Group controlId="oldEmail">
-                <Form.Label>{t('old_email')}</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={oldEmail}
-                  onChange={(e) => setOldEmail(e.target.value)}
-                />
-              </Form.Group>
-              <Form.Group controlId="newEmail">
-                <Form.Label>{t('new_email')}</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                />
-              </Form.Group>
-              <Button
-                onClick={() => void handleEmailChange()}
-                disabled={!validEmailChange}
-              >
-                {t('change_email')}
-              </Button>
-            </Form>
-            <ListGroup className="mt-3 w-100">
-              <h4 className="text-center mb-3">{t('remaining_voters')}</h4>
-              <Row>
-                {remainingVoters.map((voter) => (
-                  <Col key={voter.voterId} sm={3} className="px-0 text-center">
-                    <ListGroup.Item>{voter.email}</ListGroup.Item>
-                  </Col>
-                ))}
-              </Row>
-            </ListGroup>
-          </>
-        )}
+        <Form className="mt-3">
+          <Form.Group controlId="oldEmail">
+            <Form.Label>{t('old_email')}</Form.Label>
+            <Form.Control
+              type="email"
+              value={oldEmail}
+              onChange={(e) => setOldEmail(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="newEmail">
+            <Form.Label>{t('new_email')}</Form.Label>
+            <Form.Control
+              type="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+            />
+          </Form.Group>
+          <Button
+            onClick={() => void handleEmailChange()}
+            disabled={!validNewEmail}
+          >
+            {t('change_email')}
+          </Button>
+        </Form>
       </Container>
     </>
   )

@@ -39,7 +39,10 @@ export const api = async <T>(
       toast.error(await getErrorMessage(response))
     }
 
-    if (url.startsWith('/api/admin')) {
+    if (
+      url.startsWith('/api/admin') &&
+      (response.status === 401 || response.status === 403)
+    ) {
       // Remove admin token if it's invalid or expired
       cookies.remove('admin-token')
     }

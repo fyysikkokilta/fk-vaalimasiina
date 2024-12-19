@@ -75,12 +75,10 @@
       "voting_inspection": {
         "given_votes": "Annettuja ääniä",
         "voters": "Äänestäjiä",
-        "remaining_voters": "Jäljellä olevat äänestäjät",
-        "hide_remaining_voters": "Piilota jäljellä olevat äänestäjät",
-        "show_remaining_voters": "Näytä jäljellä olevat äänestäjät",
         "old_email": "Vaihdettava sähköposti",
         "new_email": "Uusi sähköposti",
-        "change_email": "Vaihda sähköposti"
+        "change_email": "Vaihda sähköposti",
+        "email_changed": "Sähköposti vaihdettu"
       }
     }
   },
@@ -125,6 +123,8 @@
     "invalid_candidate_data": "Virheelliset ehdokastiedot",
     "invalid_credentials": "Virheelliset kirjautumistiedot",
     "missing_username_or_password": "Käyttäjätunnus tai salasana puuttuu",
-    "voter_already_exists": "Äänestäjä on jo olemassa"
+    "voter_already_exists": "Äänestäjä on jo olemassa",
+    "missing_old_email": "Vanha sähköpostiosoite puuttuu",
+    "missing_new_email": "Uusi sähköpostiosoite puuttuu"
   }
 }

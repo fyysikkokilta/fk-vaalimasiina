@@ -75,12 +75,10 @@
       "voting_inspection": {
         "given_votes": "Given votes",
         "voters": "Voters",
-        "remaining_voters": "Remaining voters",
-        "hide_remaining_voters": "Hide remaining voters",
-        "show_remaining_voters": "Show remaining voters",
         "old_email": "Email to change",
         "new_email": "New email",
-        "change_email": "Change email"
+        "change_email": "Change email",
+        "email_changed": "Email changed"
       }
     }
   },
@@ -125,6 +123,8 @@
     "invalid_candidate_data": "Invalid candidate data",
     "invalid_credentials": "Invalid credentials",
     "missing_username_or_password": "Missing username or password",
-    "voter_already_exists": "Voter already exists"
+    "voter_already_exists": "Voter already exists",
+    "missing_old_email": "Old email is missing",
+    "missing_new_email": "New email is missing"
   }
 }

@@ -1,26 +1,24 @@
 import { Request, Response, Router } from 'express'
 
-import { RequestBodyParams } from '../../../../types/express'
+import { RequestBody } from '../../../../types/express'
 import { changeVoterEmail, getVoters } from '../../routes/admin/voters'
 import { validateUuid } from '../../validation/validation'
 
 export type ChangeVoterEmailRequestBody = {
-  email: string
-}
-export type ChangeVoterEmailRequestParams = {
-  voterId: string
+  oldEmail: string
+  newEmail: string
 }
 export const handleChangeVoterEmail = async (
-  req: RequestBodyParams<
-    ChangeVoterEmailRequestBody,
-    ChangeVoterEmailRequestParams
-  >,
+  req: RequestBody<ChangeVoterEmailRequestBody>,
   res: Response
 ) => {
-  const { voterId } = req.params
-  const { email } = req.body
+  const { oldEmail, newEmail } = req.body
   try {
-    const voter = await changeVoterEmail(voterId, email)
+    const voter = await changeVoterEmail(oldEmail, newEmail)
+    if (!voter) {
+      res.status(404).json({ key: 'voter_not_found' })
+      return
+    }
     res.status(200).json(voter)
   } catch (err) {
     if (err instanceof Error) {
@@ -53,28 +51,18 @@ router.use('/:electionId', (req, res, next) => {
 
 router.get('/:electionId', handleGetVoters)
 
-router.use(
-  '/:voterId',
-  (
-    req: RequestBodyParams<
-      ChangeVoterEmailRequestBody,
-      ChangeVoterEmailRequestParams
-    >,
-    res,
-    next
-  ) => {
-    if (!validateUuid(req.params.voterId)) {
-      res.status(400).json({ key: 'invalid_voter_id' })
-      return
-    }
-    if (!req.body.email) {
-      res.status(400).json({ key: 'missing_email' })
-      return
-    }
-    next()
+router.use('/', (req: RequestBody<ChangeVoterEmailRequestBody>, res, next) => {
+  if (!req.body.oldEmail) {
+    res.status(400).json({ key: 'missing_old_email' })
+    return
   }
-)
+  if (!req.body.newEmail) {
+    res.status(400).json({ key: 'missing_new_email' })
+    return
+  }
+  next()
+})
 
-router.put('/:voterId', handleChangeVoterEmail)
+router.put('/', handleChangeVoterEmail)
 
 export default router

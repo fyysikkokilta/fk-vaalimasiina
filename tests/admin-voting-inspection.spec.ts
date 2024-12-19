@@ -8,6 +8,7 @@ import {
   insertVotes,
   resetDatabase
 } from './utils/db'
+import { expectToast } from './utils/toast'
 
 let election: Election
 let voters: Voter[]
@@ -41,12 +42,6 @@ test('should show correct amount of voters', async ({ page }) => {
   await expect(page.locator('text=Voters: 4')).toBeVisible()
 })
 
-test('should show remaining voters list', async ({ page }) => {
-  await expect(
-    page.getByRole('button', { name: 'Show remaining voters' })
-  ).toBeVisible()
-})
-
 test.describe('with no given votes', () => {
   test('should show correct vote numbers', async ({ page }) => {
     await expect(page.locator('text=Given votes: 0')).toBeVisible()
@@ -56,12 +51,6 @@ test.describe('with no given votes', () => {
     await expect(
       page.getByRole('button', { name: 'End voting' })
     ).toBeDisabled()
-  })
-
-  test('should have emails in the remaining voters list', async ({ page }) => {
-    await page.getByRole('button', { name: 'Show remaining voters' }).click()
-    await expect(page.getByText('email.com')).toHaveCount(4)
-    await expect(page.getByText('email1')).toBeVisible()
   })
 })
 
@@ -108,14 +97,6 @@ test.describe('with some votes', () => {
       page.getByRole('heading', { name: 'Election 1' })
     ).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
-  })
-
-  test('should have emails in the remaining voters list', async ({ page }) => {
-    await page.getByRole('button', { name: 'Show remaining voters' }).click()
-    await expect(page.getByText('email.com')).toHaveCount(2)
-    await expect(page.getByText('email1')).not.toBeVisible()
-    await expect(page.getByText('email2')).not.toBeVisible()
-    await expect(page.getByText('email3')).toBeVisible()
   })
 })
 
@@ -173,29 +154,14 @@ test.describe('with all votes', () => {
     await page.getByRole('button', { name: 'End voting' }).click()
     await expect(page.getByRole('heading', { name: 'Results' })).toBeVisible()
   })
-
-  test("should't have amy emails in the remaining voters list", async ({
-    page
-  }) => {
-    await page.getByRole('button', { name: 'Show remaining voters' }).click()
-    await expect(page.getByText('email.com')).toHaveCount(0)
-    await expect(page.getByText('email1')).not.toBeVisible()
-    await expect(page.getByText('email2')).not.toBeVisible()
-    await expect(page.getByText('email3')).not.toBeVisible()
-    await expect(page.getByText('email4')).not.toBeVisible()
-  })
 })
 
 test.describe('change email form', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.getByRole('button', { name: 'Show remaining voters' }).click()
-  })
-
   test('should allow to change email', async ({ page }) => {
     await page.fill('#oldEmail', 'email4@email.com')
     await page.fill('#newEmail', 'email5@email.com')
     await page.getByRole('button', { name: 'Change email' }).click()
-    await expect(page.getByText('email5@email.com')).toBeVisible()
+    await expectToast(page, 'Email changed')
   })
 
   test("shouldn't allow to change email with invalid email", async ({
@@ -213,9 +179,8 @@ test.describe('change email form', () => {
   }) => {
     await page.fill('#oldEmail', 'email5@email.com')
     await page.fill('#newEmail', 'email6@email.com')
-    await expect(
-      page.getByRole('button', { name: 'Change email' })
-    ).toBeDisabled()
+    await page.getByRole('button', { name: 'Change email' }).click()
+    await expectToast(page, 'Voter not found')
   })
 
   test("shouldn't allow to change email to one that exists", async ({
@@ -223,8 +188,7 @@ test.describe('change email form', () => {
   }) => {
     await page.fill('#oldEmail', 'email4@email.com')
     await page.fill('#newEmail', 'email3@email.com')
-    await expect(
-      page.getByRole('button', { name: 'Change email' })
-    ).toBeDisabled()
+    await page.getByRole('button', { name: 'Change email' }).click()
+    await expectToast(page, '', true)
   })
 })

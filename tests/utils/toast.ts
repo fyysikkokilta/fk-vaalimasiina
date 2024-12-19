@@ -1,9 +1,16 @@
 import { expect, Page } from '@playwright/test'
 
-export const expectToast = async (page: Page, message: string) => {
+export const expectToast = async (
+  page: Page,
+  message: string,
+  noAssertText: boolean = false
+) => {
   const toast = page.locator('.Toastify').getByRole('alert')
   await expect(toast).toBeVisible()
-  await expect(toast).toHaveText(message)
+
+  if (!noAssertText) {
+    await expect(toast).toHaveText(message)
+  }
 }
 
 export const expectNoToast = async (page: Page) => {
