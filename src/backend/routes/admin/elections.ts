@@ -100,21 +100,23 @@ export const startVoting = async (electionId: string, emails: string[]) => {
         return [null, []]
       }
 
+      const emailsData = emails.map((email) => ({
+        email,
+        hash: createHash('sha256').update(email).digest('hex')
+      }))
+
       const insertedVoters = await transaction
         .insert(votersTable)
         .values(
-          emails.map((email) => ({
+          emailsData.map((email) => ({
             electionId,
-            email: createHash('sha256').update(email).digest('hex')
+            email: email.hash
           }))
         )
         .returning()
 
       const voters = insertedVoters.map((voter) => ({
-        email: emails.find(
-          (email) =>
-            createHash('sha256').update(email).digest('hex') === voter.email
-        )!,
+        email: emailsData.find((email) => email.hash === voter.email)!.email,
         voterId: voter.voterId
       }))
 
@@ -126,12 +128,7 @@ export const startVoting = async (electionId: string, emails: string[]) => {
     return null
   }
 
-  const to = insertedVoters.map((voter) => ({
-    email: voter.email,
-    voterId: voter.voterId
-  }))
-
-  await EmailService.sendVotingMail(to, { election })
+  await EmailService.sendVotingMail(insertedVoters, { election })
 
   return election
 }
