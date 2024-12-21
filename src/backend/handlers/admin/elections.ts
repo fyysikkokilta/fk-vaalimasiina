@@ -9,8 +9,9 @@ import {
   startVoting,
   updateElection
 } from '../../routes/admin/elections'
+import { checkIfEveryoneVoted } from '../../routes/admin/voters'
 import { getElections } from '../../routes/elections'
-import { validateUuid } from '../../validation/validation'
+import { validateEmail, validateUuid } from '../../validation/validation'
 
 export const handleFetchCurrentElection = async (
   _req: Request,
@@ -121,6 +122,13 @@ export const handleStartVoting = async (
 export const handleEndVoting = async (req: Request, res: Response) => {
   const { electionId } = req.params
   try {
+    const haveEveryoneVoted = await checkIfEveryoneVoted(electionId)
+
+    if (!haveEveryoneVoted) {
+      res.status(400).json({ key: 'not_everyone_voted' })
+      return
+    }
+
     const election = await endVoting(electionId)
 
     if (!election) {
@@ -185,10 +193,31 @@ router.use('/:electionId', (req, res, next) => {
 })
 
 router.put('/:electionId', handleModifyElection)
-router.post('/:electionId/start', handleStartVoting)
 router.post('/:electionId/end', handleEndVoting)
 router.post('/:electionId/close', handleCloseElection)
 router.post('/:electionId/abort', handleAbortVoting)
+
+router.use(
+  '/:electionId/start',
+  (
+    req: RequestBodyParams<StartVotingRequestBody, StartVotingRequestParams>,
+    res,
+    next
+  ) => {
+    const { emails } = req.body
+    if (
+      !Array.isArray(emails) ||
+      emails.length === 0 ||
+      emails.some((email) => !validateEmail(email))
+    ) {
+      res.status(400).json({ key: 'invalid_emails' })
+      return
+    }
+    next()
+  }
+)
+
+router.post('/:electionId/start', handleStartVoting)
 
 router.use('/', (req: RequestBody<NewElectionRequestBody>, res, next) => {
   const { title, description, seats, candidates } = req.body

@@ -98,7 +98,9 @@
     "tie_breaker": "Tasatilanne (arvonta)",
     "candidate_name": "Ehdokas",
     "vote_count": "Ääniä",
-    "result": "Tulos"
+    "voter_count": "Äänestäjiä",
+    "result": "Tulos",
+    "invalid_result": "Ei-vaalikelpoinen tulos. Äänestys uusitaan."
   },
   "previous_results": {
     "title": "Edelliset tulokset",
@@ -125,6 +127,8 @@
     "missing_username_or_password": "Käyttäjätunnus tai salasana puuttuu",
     "voter_already_exists": "Äänestäjä on jo olemassa",
     "missing_old_email": "Vanha sähköpostiosoite puuttuu",
-    "missing_new_email": "Uusi sähköpostiosoite puuttuu"
+    "missing_new_email": "Uusi sähköpostiosoite puuttuu",
+    "invalid_emails": "Virheelliset sähköpostiosoitteet",
+    "not_everyone_voted": "Kaikki eivät ole äänestäneet"
   }
 }

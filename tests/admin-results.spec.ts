@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import {
   calculateSTVResult,
-  VotingResult
+  ValidVotingResult
 } from '../src/frontend/utils/stvAlgorithm'
 import { Ballot, Election } from '../types/types'
 import { loginAdmin } from './utils/admin-login'
@@ -10,7 +10,7 @@ import { createElectionWithVotersAndBallots, resetDatabase } from './utils/db'
 
 let election: Election
 let ballots: Ballot[]
-let result: VotingResult
+let result: ValidVotingResult
 
 test.beforeEach(async ({ page }) => {
   await resetDatabase()
@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
   election = createdElectionWithVotersAndBallots.election
   ballots = createdElectionWithVotersAndBallots.ballots
 
-  result = calculateSTVResult(election, ballots)
+  result = calculateSTVResult(election, ballots, 100) as ValidVotingResult
   await loginAdmin(page)
 })
 

@@ -30,7 +30,8 @@ interface VotingRoundResult {
   tieBreaker?: boolean
 }
 
-export type VotingResult = {
+export type ValidVotingResult = {
+  validResult: true
   totalVotes: number
   nonEmptyVotes: number
   quota: number
@@ -38,6 +39,14 @@ export type VotingResult = {
   winners: CandidateResult[]
   ballots: Ballot[]
 }
+
+export type InvalidVotingResult = {
+  validResult: false
+  totalVotes: number
+  voterCount: number
+}
+
+export type VotingResult = ValidVotingResult | InvalidVotingResult
 
 const getCurrentVoteCountsOfCandidates = (
   voteMap: VoteMap
@@ -175,7 +184,8 @@ const transferSurplusVotes = (
 
 export const calculateSTVResult = (
   election: Election,
-  ballots: Ballot[]
+  ballots: Ballot[],
+  voterCount: number
 ): VotingResult => {
   const roundResults: VotingRoundResult[] = []
   let winnerCount = 0
@@ -183,6 +193,14 @@ export const calculateSTVResult = (
   let round = 1
 
   const totalVotes = ballots.length
+
+  if (totalVotes !== voterCount) {
+    return {
+      validResult: false,
+      totalVotes,
+      voterCount
+    }
+  }
   const nonEmptyBallots = ballots.filter((ballot) => ballot.votes.length > 0)
   const nonEmptyVotes = nonEmptyBallots.length
   const quota = Math.floor(nonEmptyVotes / (election.seats + 1)) + 1
@@ -254,6 +272,7 @@ export const calculateSTVResult = (
     .candidateResults.filter((result) => result.isSelected)
 
   return {
+    validResult: true,
     totalVotes,
     nonEmptyVotes,
     quota,

@@ -54,8 +54,10 @@ export const handleFetchCompletedElectionWithVotes = async (
       res.status(404).json({ key: 'election_not_found' })
       return
     }
-    const { ballots, ...electionWithoutVotes } = election
-    res.status(200).json({ election: electionWithoutVotes, ballots })
+    const { ballots, voterCount, ...electionWithoutVotes } = election
+    res
+      .status(200)
+      .json({ election: electionWithoutVotes, ballots, voterCount })
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ message: err.message })

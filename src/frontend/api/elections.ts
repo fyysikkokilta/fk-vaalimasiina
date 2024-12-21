@@ -6,9 +6,11 @@ export const fetchCompletedElections = async () => {
 }
 
 export const fetchCompletedElectionWithVotes = async (electionId: string) => {
-  return await api<{ election: Election; ballots: Ballot[] }>(
-    `/api/elections/${electionId}`
-  )
+  return await api<{
+    election: Election
+    ballots: Ballot[]
+    voterCount: number
+  }>(`/api/elections/${electionId}`)
 }
 
 export const fetchFinishedElectionWithVotes = async () => {

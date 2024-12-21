@@ -27,9 +27,10 @@ export const PreviousResults = () => {
       }
       const election = electionResponse.data.election
       const ballots = electionResponse.data.ballots
+      const voterCount = electionResponse.data.voterCount
 
       setElection(election)
-      setVotingResult(calculateSTVResult(election, ballots))
+      setVotingResult(calculateSTVResult(election, ballots, voterCount))
     })()
   }, [electionId])
 

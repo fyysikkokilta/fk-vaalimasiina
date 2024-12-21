@@ -56,3 +56,14 @@ export const getVoters = async (electionId: string) => {
     where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)
   })
 }
+
+export const checkIfEveryoneVoted = async (electionId: string) => {
+  const voters = await db.query.votersTable.findMany({
+    columns: {
+      hasVoted: true
+    },
+    where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)
+  })
+
+  return voters.every((voter) => voter.hasVoted)
+}

@@ -1,10 +1,18 @@
 import React from 'react'
-import { Button, Card, Col, ListGroup, Row, Table } from 'react-bootstrap'
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  ListGroup,
+  Row,
+  Table
+} from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
-import { Election } from '../../../../types/types'
-import { VotingResult } from '../../utils/stvAlgorithm'
+import { Ballot, Election } from '../../../../types/types'
+import { ValidVotingResult, VotingResult } from '../../utils/stvAlgorithm'
 
 type ElectionResultsProps = {
   election: Election
@@ -22,13 +30,13 @@ export const ElectionResults = ({
   const roundToTwoDecimals = (num: number) =>
     Math.round((num + Number.EPSILON) * 100) / 100
 
-  const exportBallotsToCSV = () => {
+  const exportBallotsToCSV = (ballots: Ballot[], election: Election) => {
     const headers = Array.from(
       { length: election.candidates.length },
       (_, i) => `Preference ${i + 1}`
     )
 
-    const rows = votingResult.ballots.map((ballot) =>
+    const rows = ballots.map((ballot) =>
       ballot.votes.map(
         ({ candidateId }) =>
           election.candidates.find((c) => c.candidateId === candidateId)!.name
@@ -49,7 +57,7 @@ export const ElectionResults = ({
     a.click()
   }
 
-  const getMinutesParagraphs = async () => {
+  const getMinutesParagraphs = async (votingResult: ValidVotingResult) => {
     const totalVotes = votingResult.totalVotes
     const emptyVotes = votingResult.totalVotes - votingResult.nonEmptyVotes
     const sortedCandidates = election.candidates.sort((a, b) =>
@@ -123,6 +131,29 @@ export const ElectionResults = ({
     toast.success(t('minutes_copied_to_clipboard'))
   }
 
+  if (!votingResult.validResult) {
+    return (
+      <>
+        <Row className="mb-4">
+          <Col className="mb-3 text-center">
+            <h3>{election.title}</h3>
+            <Row>
+              <span className="mt-3">
+                {t('total_votes')}: {votingResult.totalVotes}
+              </span>
+              <span className="mt-3">
+                {t('voter_count')}: {votingResult.voterCount}
+              </span>
+            </Row>
+            <Alert variant="danger" className="mt-3 mx-4">
+              {t('invalid_result')}
+            </Alert>
+          </Col>
+        </Row>
+      </>
+    )
+  }
+
   return (
     <>
       <Row className="mb-4">
@@ -136,10 +167,16 @@ export const ElectionResults = ({
               {t('non_empty_votes')}: {votingResult.nonEmptyVotes}
             </span>
           </Row>
-          <Button onClick={exportBallotsToCSV} className="mt-3 mx-2">
+          <Button
+            onClick={() => exportBallotsToCSV(votingResult.ballots, election)}
+            className="mt-3 mx-2"
+          >
             {t('export_csv')}
           </Button>
-          <Button onClick={getMinutesParagraphs} className="mt-3 mx-2">
+          <Button
+            onClick={() => getMinutesParagraphs(votingResult)}
+            className="mt-3 mx-2"
+          >
             {t('export_minutes')}
           </Button>
         </Col>

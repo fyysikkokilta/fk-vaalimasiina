@@ -98,7 +98,9 @@
     "tie_breaker": "Tie breaker (random)",
     "candidate_name": "Candidate",
     "vote_count": "Votes",
-    "result": "Result"
+    "voter_count": "Voters",
+    "result": "Result",
+    "invalid_result": "Ineligible result. The election will be repeated."
   },
   "previous_results": {
     "title": "Previous results",
@@ -125,6 +127,8 @@
     "missing_username_or_password": "Missing username or password",
     "voter_already_exists": "Voter already exists",
     "missing_old_email": "Old email is missing",
-    "missing_new_email": "New email is missing"
+    "missing_new_email": "New email is missing",
+    "invalid_emails": "Invalid emails",
+    "not_everyone_voted": "Not everyone has voted"
   }
 }

@@ -44,9 +44,23 @@ export const getCompletedElectionWithVotes = async (electionId: string) => {
           votes: true
         },
         orderBy: (_ballotsTable, { sql }) => sql`RANDOM()` // Randomize the order
+      },
+      voters: {
+        columns: {
+          email: true
+        }
       }
     }
   })
 
-  return election || null
+  if (!election) {
+    return null
+  }
+
+  const { voters, ...electionWithoutVoters } = election
+
+  return {
+    ...electionWithoutVoters,
+    voterCount: voters.length
+  }
 }

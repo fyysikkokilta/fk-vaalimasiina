@@ -5,3 +5,9 @@ export const validateUuid = (uuid: string) => {
 
   return matches !== null
 }
+
+export const validateEmail = (email: string) => {
+  const matches = email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+
+  return matches !== null
+}
