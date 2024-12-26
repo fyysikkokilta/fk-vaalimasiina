@@ -34,8 +34,8 @@ const RoundResult = ({
       <Card.Header as="h5">
         {t('round')} {round}
       </Card.Header>
-      <Card.Body>
-        <Table striped bordered hover>
+      <Card.Body className="p-0">
+        <Table striped bordered hover className="mb-0">
           <thead>
             <tr>
               <th>{t('candidate_name')}</th>
@@ -254,8 +254,8 @@ export const ElectionResults = ({
       {currentRound === 0 ? (
         <Card id="initial_votes" className="mb-3 text-center">
           <Card.Header as="h5">{t('initial_votes')}</Card.Header>
-          <Card.Body>
-            <Table striped bordered hover>
+          <Card.Body className="p-0">
+            <Table striped bordered hover className="mb-0">
               <thead>
                 <tr>
                   <th>{t('total_votes')}</th>
@@ -276,8 +276,8 @@ export const ElectionResults = ({
       ) : currentRound === votingResult.roundResults.length + 1 ? (
         <Card id="chosen_candidates" className="mb-3 text-center">
           <Card.Header as="h5">{t('chosen_candidates')}</Card.Header>
-          <Card.Body>
-            <Table striped bordered hover>
+          <Card.Body className="p-0">
+            <Table striped bordered hover className="mb-0">
               <thead>
                 <tr>
                   <th>{t('candidate_name')}</th>
