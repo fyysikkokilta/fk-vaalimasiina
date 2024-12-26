@@ -49,20 +49,25 @@ test('should show correct vote numbers', async ({ page }) => {
   const nonEmptyVotes = ballots.filter(
     (ballot) => ballot.votes.length > 0
   ).length
-  await expect(page.locator(`text=Votes: ${votes}`)).toBeVisible()
-  await expect(
-    page.locator(`text=Non-empty votes: ${nonEmptyVotes}`)
-  ).toBeVisible()
+  const quota = result.quota
+  const tableInitialDataRow = page.locator('table tr:nth-child(1)')
+
+  await expect(tableInitialDataRow.locator('td:nth-child(1)')).toContainText(
+    `${votes}`
+  )
+  await expect(tableInitialDataRow.locator('td:nth-child(2)')).toContainText(
+    `${nonEmptyVotes}`
+  )
+  await expect(tableInitialDataRow.locator('td:nth-child(3)')).toContainText(
+    `${quota}`
+  )
 })
 
 test('should show correct round results', async ({ page }) => {
   for (const { candidateResults, round, emptyVotes } of result.roundResults) {
+    await page.getByRole('button', { name: 'Next', exact: true }).click()
     const roundContainer = page.locator(`#round-${round}`)
     await expect(roundContainer.locator(`text=Round ${round}`)).toBeVisible()
-
-    await expect(
-      roundContainer.getByText(`Election threshold: ${result.quota}`)
-    ).toBeVisible()
 
     const table = roundContainer.locator('table')
 
@@ -94,12 +99,16 @@ test('should show correct round results', async ({ page }) => {
 })
 
 test('should show winners', async ({ page }) => {
-  const winnersContainer = page.locator(`#winners`)
-  await expect(
-    winnersContainer.locator(`text=Elected candidates`)
-  ).toBeVisible()
-  for (const { name } of result.winners) {
-    await expect(winnersContainer.locator(`text=${name}`)).toBeVisible()
+  await page
+    .getByRole('button', { name: 'Next', exact: true })
+    .click({ clickCount: result.roundResults.length + 1 })
+
+  let i = 1
+  for (const winner of result.winners) {
+    await expect(
+      page.locator(`table tr:nth-child(${i}) td:nth-child(1)`)
+    ).toHaveText(winner.name)
+    i++
   }
 })
 

@@ -13,7 +13,26 @@ body {
   padding: 0;
 }
 
-.navbar {
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#root > main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+#main-content {
+  width: 100%;
+  max-width: 1000px;
+}
+
+footer .navbar {
   &.navbar-primary {
     background-color: $primary;
     .navbar-brand,
@@ -45,10 +64,6 @@ body {
     rgba(0, 0, 0, 0.12) 0px 4px 6px,
     rgba(0, 0, 0, 0.17) 0px 12px 13px,
     rgba(0, 0, 0, 0.09) 0px -3px 5px;
-}
-
-#main-content {
-  max-width: 768px;
 }
 
 .card {
@@ -86,7 +101,11 @@ body {
 }
 
 .fii-background {
-  padding: 0;
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 1440px;
   background-image: url('./assets/fii_2.svg');
   background-repeat: repeat;
+  display: flex;
+  align-items: center;
 }

@@ -1,13 +1,5 @@
-import React from 'react'
-import {
-  Alert,
-  Button,
-  Card,
-  Col,
-  ListGroup,
-  Row,
-  Table
-} from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Alert, Button, Card, Col, Row, Table } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
@@ -19,6 +11,70 @@ type ElectionResultsProps = {
   votingResult: VotingResult
 }
 
+const RoundResult = ({
+  round,
+  candidateResults,
+  tieBreaker,
+  emptyVotes
+}: {
+  round: number
+  candidateResults: ValidVotingResult['roundResults'][0]['candidateResults']
+  tieBreaker?: boolean | undefined
+  emptyVotes: number
+}) => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'results'
+  })
+
+  const roundToTwoDecimals = (num: number) =>
+    Math.round((num + Number.EPSILON) * 100) / 100
+
+  return (
+    <Card id={`round-${round}`} key={round} className="mb-3 text-center">
+      <Card.Header as="h5">
+        {t('round')} {round}
+      </Card.Header>
+      <Card.Body>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>{t('candidate_name')}</th>
+              <th>{t('vote_count')}</th>
+              <th>{t('result')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {candidateResults.map(
+              ({ id, name, voteCount, isSelected, isEliminated }) => (
+                <tr key={id}>
+                  <td>{name}</td>
+                  <td>{roundToTwoDecimals(voteCount)}</td>
+                  <td>
+                    {isSelected && (
+                      <span className="text-success">{t('chosen')}</span>
+                    )}
+                    {isEliminated && (
+                      <span className="text-danger">
+                        {t('eliminated')}
+                        {tieBreaker && ` - ${t('tie_breaker')}`}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              )
+            )}
+            <tr>
+              <td>{t('empty_votes')}</td>
+              <td>{roundToTwoDecimals(emptyVotes)}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </Table>
+      </Card.Body>
+    </Card>
+  )
+}
+
 export const ElectionResults = ({
   election,
   votingResult
@@ -26,6 +82,8 @@ export const ElectionResults = ({
   const { t } = useTranslation('translation', {
     keyPrefix: 'results'
   })
+
+  const [currentRound, setCurrentRound] = useState(0)
 
   const roundToTwoDecimals = (num: number) =>
     Math.round((num + Number.EPSILON) * 100) / 100
@@ -159,14 +217,6 @@ export const ElectionResults = ({
       <Row className="mb-4">
         <Col className="mb-3 text-center">
           <h3>{election.title}</h3>
-          <Row>
-            <span className="mt-3">
-              {t('total_votes')}: {votingResult.totalVotes}
-            </span>
-            <span className="mt-3">
-              {t('non_empty_votes')}: {votingResult.nonEmptyVotes}
-            </span>
-          </Row>
           <Button
             onClick={() => exportBallotsToCSV(votingResult.ballots, election)}
             className="mt-3 mx-2"
@@ -181,65 +231,71 @@ export const ElectionResults = ({
           </Button>
         </Col>
       </Row>
-      {votingResult.roundResults.map(
-        ({ candidateResults, round, tieBreaker, emptyVotes }) => (
-          <Card id={`round-${round}`} key={round} className="mb-3 text-center">
-            <Card.Header as="h5">
-              {t('round')} {round}
-            </Card.Header>
-            <Card.Body>
-              <Card.Title>
-                &nbsp; {t('election_threshold')}:&nbsp;{votingResult.quota}
-              </Card.Title>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>{t('candidate_name')}</th>
-                    <th>{t('vote_count')}</th>
-                    <th>{t('result')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {candidateResults.map(
-                    ({ id, name, voteCount, isSelected, isEliminated }) => (
-                      <tr key={id}>
-                        <td>{name}</td>
-                        <td>{roundToTwoDecimals(voteCount)}</td>
-                        <td>
-                          {isSelected && (
-                            <span className="text-success">{t('chosen')}</span>
-                          )}
-                          {isEliminated && (
-                            <span className="text-danger">
-                              {t('eliminated')}
-                              {tieBreaker && ` - ${t('tie_breaker')}`}
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  )}
-                  <tr>
-                    <td>{t('empty_votes')}</td>
-                    <td>{roundToTwoDecimals(emptyVotes)}</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </Table>
-            </Card.Body>
-          </Card>
-        )
-      )}
-      <Row>
-        <Col id="winners" className="text-center">
-          <h4>{t('chosen_candidates')}</h4>
-          <ListGroup>
-            {votingResult.winners.map(({ id, name }) => (
-              <ListGroup.Item key={id}>{name}</ListGroup.Item>
-            ))}
-          </ListGroup>
+      <Row className="mb-2 px-2">
+        <Col className="text-center">
+          <Button
+            onClick={() => setCurrentRound((curr) => curr - 1)}
+            className="float-start"
+            disabled={currentRound === 0}
+            variant="secondary"
+          >
+            {t('previous_round')}
+          </Button>
+          <Button
+            onClick={() => setCurrentRound((curr) => curr + 1)}
+            className="float-end"
+            disabled={currentRound === votingResult.roundResults.length + 1}
+            variant="secondary"
+          >
+            {t('next_round')}
+          </Button>
         </Col>
       </Row>
+      {currentRound === 0 ? (
+        <Card id="initial_votes" className="mb-3 text-center">
+          <Card.Header as="h5">{t('initial_votes')}</Card.Header>
+          <Card.Body>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>{t('total_votes')}</th>
+                  <th>{t('non_empty_votes')}</th>
+                  <th>{t('election_threshold')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{votingResult.totalVotes}</td>
+                  <td>{votingResult.nonEmptyVotes}</td>
+                  <td>{votingResult.quota}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </Card.Body>
+        </Card>
+      ) : currentRound === votingResult.roundResults.length + 1 ? (
+        <Card id="chosen_candidates" className="mb-3 text-center">
+          <Card.Header as="h5">{t('chosen_candidates')}</Card.Header>
+          <Card.Body>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>{t('candidate_name')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {votingResult.winners.map(({ id, name }) => (
+                  <tr key={id}>
+                    <td>{name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card.Body>
+        </Card>
+      ) : (
+        <RoundResult {...votingResult.roundResults[currentRound - 1]} />
+      )}
     </>
   )
 }

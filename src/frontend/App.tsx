@@ -36,7 +36,7 @@ function App() {
 
   return (
     <Router>
-      <Container className="my-4">
+      <header>
         <Navbar bg="primary" variant="dark" expand="lg" className="box-shadow">
           <Container>
             <Navbar.Brand>{APP_TITLE}</Navbar.Brand>
@@ -65,51 +65,51 @@ function App() {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Container className="my-4">
-          <Card>
-            <Card.Body className="fii-background">
-              <div id="main-content" className="my-4 mx-auto box-shadow">
-                <Routes>
-                  <Route
-                    path="/admin/*"
-                    element={
-                      <ElectionStepProvider>
-                        <Admin />
-                      </ElectionStepProvider>
-                    }
-                  />
-                  <Route path="/audit" element={<Audit />} />
-                  <Route
-                    path="/elections/:electionId"
-                    element={<PreviousResults />}
-                  />
-                  <Route path="/elections" element={<PreviousElectionList />} />
-                  <Route path="/vote/:voterId" element={<Vote />} />
-                  <Route path="*" element={<Info />} />
-                </Routes>
-              </div>
-            </Card.Body>
-          </Card>
-        </Container>
-        <Navbar bg="primary" variant="dark" className="box-shadow mt-4">
+      </header>
+      <main>
+        <Card className="fii-background">
+          <div id="main-content" className="my-4 mx-5 box-shadow">
+            <Routes>
+              <Route
+                path="/admin/*"
+                element={
+                  <ElectionStepProvider>
+                    <Admin />
+                  </ElectionStepProvider>
+                }
+              />
+              <Route path="/audit" element={<Audit />} />
+              <Route
+                path="/elections/:electionId"
+                element={<PreviousResults />}
+              />
+              <Route path="/elections" element={<PreviousElectionList />} />
+              <Route path="/vote/:voterId" element={<Vote />} />
+              <Route path="*" element={<Info />} />
+            </Routes>
+          </div>
+        </Card>
+      </main>
+      <footer>
+        <Navbar bg="primary" variant="dark" className="box-shadow">
           <Container className="center">
             <Navbar.Text>
               <a href={APP_HOME_LINK}>{APP_HOME_TEXT}</a>
             </Navbar.Text>
           </Container>
         </Navbar>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          transition={Flip}
-        />
-      </Container>
+      </footer>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        transition={Flip}
+      />
     </Router>
   )
 }
