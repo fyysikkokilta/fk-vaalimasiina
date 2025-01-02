@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 
 import { db } from '../../db'
 import {
@@ -134,15 +134,32 @@ export const startVoting = async (electionId: string, emails: string[]) => {
 }
 
 export const endVoting = async (electionId: string) => {
-  const elections = await db
-    .update(electionsTable)
-    .set({
-      status: 'FINISHED'
-    })
-    .where(eq(electionsTable.electionId, electionId))
-    .returning()
+  const election = await db.transaction(async (transaction) => {
+    const elections = await transaction
+      .update(electionsTable)
+      .set({
+        status: 'FINISHED'
+      })
+      .where(eq(electionsTable.electionId, electionId))
+      .returning()
 
-  return elections[0] || null
+    const election = elections[0]
+
+    if (!election) {
+      return null
+    }
+
+    await transaction
+      .update(votersTable)
+      .set({
+        email: sql`CONCAT(gen_random_uuid(), '@anonymized.com')`
+      })
+      .where(eq(votersTable.electionId, electionId))
+
+    return election
+  })
+
+  return election
 }
 
 export const closeElection = async (electionId: string) => {
