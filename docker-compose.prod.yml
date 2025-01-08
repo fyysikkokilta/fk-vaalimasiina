@@ -6,7 +6,7 @@ services:
       - POSTGRES_USER=$DB_USERNAME
       - POSTGRES_PASSWORD=$DB_PASSWORD
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
       - ./data:/var/lib/postgresql/data
   web-prod:
@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     ports:
-      - '8010:3000'
+      - '127.0.0.1:8010:3000'
     logging:
       driver: "json-file"
       options:
