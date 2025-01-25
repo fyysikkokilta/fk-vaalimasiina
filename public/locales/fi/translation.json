@@ -59,14 +59,14 @@
       "new_election": {
         "election_title": "Otsikko",
         "description": "Kuvaus",
-        "amount_to_choose": "Valittavien määrä",
+        "seats": "Paikkoja",
         "new_candidate": "Uusi ehdokas",
         "add_candidate": "Lisää ehdokas",
         "remove_candidate": "Poista ehdokas",
         "candidates": "Ehdokkaat"
       },
       "preview_election": {
-        "amount_to_choose": "Valitaan",
+        "seats": "Paikkoja",
         "candidates": "Ehdokkaat",
         "voters": "Äänestäjät",
         "email_list_instruction": "Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna",
@@ -93,6 +93,7 @@
     "initial_votes": "Alkuperäiset äänet",
     "round": "Kierros",
     "election_threshold": "Äänikynnys",
+    "seats": "Paikkoja",
     "votes": "ääntä",
     "chosen": "Valittu",
     "eliminated": "Putosi",

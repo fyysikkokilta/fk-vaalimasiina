@@ -51,7 +51,7 @@ export const PreviewElection = () => {
           <h3 className="mb-3">{election.title}</h3>
           <div className="mb-3">{election.description}</div>
           <div className="mb-3">
-            {t('amount_to_choose')}: {election.seats}
+            {t('seats')}: {election.seats}
           </div>
           <h4>{t('candidates')}</h4>
           <Col>

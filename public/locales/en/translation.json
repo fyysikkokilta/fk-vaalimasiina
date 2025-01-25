@@ -59,14 +59,14 @@
       "new_election": {
         "election_title": "Title",
         "description": "Description",
-        "amount_to_choose": "Amount to elect",
+        "seats": "Seats",
         "new_candidate": "New candidate",
         "add_candidate": "Add candidate",
         "remove_candidate": "Remove candidate",
         "candidates": "Candidates"
       },
       "preview_election": {
-        "amount_to_choose": "To be elected",
+        "seats": "Seats",
         "candidates": "Candidates",
         "voters": "Voters",
         "email_list_instruction": "Add the voters' email addresses here separated by line breaks",
@@ -93,6 +93,7 @@
     "initial_votes": "Initial votes",
     "round": "Round",
     "election_threshold": "Election threshold",
+    "seats": "Seats",
     "votes": "votes",
     "chosen": "Elected",
     "eliminated": "Eliminated",

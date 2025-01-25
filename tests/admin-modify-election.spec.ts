@@ -51,7 +51,7 @@ test('should modify election', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
   await expect(page.locator('text=Election 2')).toBeVisible()
   await expect(page.locator('text=Description 2')).toBeVisible()
-  await expect(page.locator('text=To be elected: 2')).toBeVisible()
+  await expect(page.locator('text=Seats: 2')).toBeVisible()
   await expect(page.locator('text=Candidate 1')).toBeVisible()
   await expect(page.locator('text=Candidate 2')).toBeVisible()
 })
@@ -69,6 +69,6 @@ test('should cancel modify election', async ({ page }) => {
 
   await expect(page.getByRole('heading', { name: 'Election 1' })).toBeVisible()
   await expect(page.locator('text=Description 1')).toBeVisible()
-  await expect(page.locator('text=To be elected: 1')).toBeVisible()
+  await expect(page.locator('text=Seats: 1')).toBeVisible()
   await expect(page.locator('text=Candidate 1')).toBeVisible()
 })

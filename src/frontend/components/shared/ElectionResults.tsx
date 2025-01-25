@@ -260,13 +260,24 @@ export const ElectionResults = ({
                 <tr>
                   <th>{t('total_votes')}</th>
                   <th>{t('non_empty_votes')}</th>
-                  <th>{t('election_threshold')}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>{votingResult.totalVotes}</td>
                   <td>{votingResult.nonEmptyVotes}</td>
+                </tr>
+              </tbody>
+              <br />
+              <thead>
+                <tr>
+                  <th>{t('seats')}</th>
+                  <th>{t('election_threshold')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{election.seats}</td>
                   <td>{votingResult.quota}</td>
                 </tr>
               </tbody>

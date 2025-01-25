@@ -49,8 +49,8 @@ test('should show correct vote numbers', async ({ page }) => {
   const nonEmptyVotes = ballots.filter(
     (ballot) => ballot.votes.length > 0
   ).length
-  const quota = result.quota
-  const tableInitialDataRow = page.locator('table tr:nth-child(1)')
+  const tableInitialDataRow = page.locator('table tr:nth-child(1)').nth(1)
+  const tableInitialDataRow2 = page.locator('table tr:nth-child(1)').nth(3)
 
   await expect(tableInitialDataRow.locator('td:nth-child(1)')).toContainText(
     `${votes}`
@@ -58,8 +58,11 @@ test('should show correct vote numbers', async ({ page }) => {
   await expect(tableInitialDataRow.locator('td:nth-child(2)')).toContainText(
     `${nonEmptyVotes}`
   )
-  await expect(tableInitialDataRow.locator('td:nth-child(3)')).toContainText(
-    `${quota}`
+  await expect(tableInitialDataRow2.locator('td:nth-child(1)')).toContainText(
+    `${election.seats}`
+  )
+  await expect(tableInitialDataRow2.locator('td:nth-child(2)')).toContainText(
+    `${result.quota}`
   )
 })
 

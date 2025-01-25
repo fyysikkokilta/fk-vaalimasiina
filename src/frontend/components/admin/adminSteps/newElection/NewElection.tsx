@@ -115,7 +115,7 @@ export const NewElection = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="seats">
-              <Form.Label>{t('amount_to_choose')}</Form.Label>
+              <Form.Label>{t('seats')}</Form.Label>
               <Form.Control
                 type="number"
                 name="seats"

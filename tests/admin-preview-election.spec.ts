@@ -29,7 +29,7 @@ test('should show correct navigation buttons', async ({ page }) => {
 test('should show correct election data', async ({ page }) => {
   await expect(page.locator('text=Election 1')).toBeVisible()
   await expect(page.locator('text=Description 1')).toBeVisible()
-  await expect(page.locator('text=To be elected: 1')).toBeVisible()
+  await expect(page.locator('text=Seats: 1')).toBeVisible()
   await expect(page.locator('text=Candidate 1')).toBeVisible()
 })
 
