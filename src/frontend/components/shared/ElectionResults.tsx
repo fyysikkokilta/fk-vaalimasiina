@@ -63,6 +63,7 @@ const RoundResult = ({
                 </tr>
               )
             )}
+            <br />
             <tr>
               <td>{t('empty_votes')}</td>
               <td>{roundToTwoDecimals(emptyVotes)}</td>
