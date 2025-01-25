@@ -1,7 +1,5 @@
-import { inArray } from 'drizzle-orm'
-
 import { db } from '../../db'
-import { ballotsTable, votersTable, votesTable } from '../../db/schema'
+import { ballotsTable, hasVotedTable, votesTable } from '../../db/schema'
 
 export const createTestVotes = async (
   electionId: string,
@@ -35,15 +33,11 @@ export const createTestVotes = async (
       )
       .returning()
 
-    await transaction
-      .update(votersTable)
-      .set({ hasVoted: true })
-      .where(
-        inArray(
-          votersTable.voterId,
-          voterIdBallotPairs.map((pair) => pair.voterId)
-        )
-      )
+    await transaction.insert(hasVotedTable).values(
+      voterIdBallotPairs.map(({ voterId }) => ({
+        voterId
+      }))
+    )
 
     return ballots.map((ballot) => ({
       ...ballot,

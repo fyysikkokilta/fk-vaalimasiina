@@ -17,8 +17,7 @@ export const changeVoterEmail = async (oldEmail: string, newEmail: string) => {
     .returning({
       voter: {
         voterId: votersTable.voterId,
-        email: votersTable.email,
-        hasVoted: votersTable.hasVoted
+        email: votersTable.email
       },
       election: {
         electionId: electionsTable.electionId,
@@ -50,7 +49,9 @@ export const getVoters = async (electionId: string) => {
   return db.query.votersTable.findMany({
     columns: {
       voterId: true,
-      email: true,
+      email: true
+    },
+    with: {
       hasVoted: true
     },
     where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)
@@ -59,7 +60,7 @@ export const getVoters = async (electionId: string) => {
 
 export const checkIfEveryoneVoted = async (electionId: string) => {
   const voters = await db.query.votersTable.findMany({
-    columns: {
+    with: {
       hasVoted: true
     },
     where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)

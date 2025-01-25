@@ -1,7 +1,6 @@
 import { SQL, sql } from 'drizzle-orm'
 import {
   AnyPgColumn,
-  boolean,
   integer,
   pgEnum,
   pgTable,
@@ -35,8 +34,7 @@ export const votersTable = pgTable(
       .references(() => electionsTable.electionId, {
         onDelete: 'cascade'
       }),
-    email: varchar('email').notNull(),
-    hasVoted: boolean('has_voted').notNull().default(false)
+    email: varchar('email').notNull()
   },
   (table) => [
     uniqueIndex('unique_voters_electionId_email').on(
@@ -44,6 +42,19 @@ export const votersTable = pgTable(
       lower(table.email)
     )
   ]
+)
+
+export const hasVotedTable = pgTable(
+  'has_voted',
+  {
+    hasVotedId: uuid('has_voted_id').primaryKey().notNull().defaultRandom(),
+    voterId: uuid('voter_id')
+      .notNull()
+      .references(() => votersTable.voterId, {
+        onDelete: 'cascade'
+      })
+  },
+  (table) => [unique('unique_voters_voterId').on(table.voterId)]
 )
 
 export function lower(email: AnyPgColumn): SQL {

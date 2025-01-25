@@ -4,6 +4,7 @@ import {
   ballotsTable,
   candidatesTable,
   electionsTable,
+  hasVotedTable,
   votersTable,
   votesTable
 } from './schema'
@@ -18,6 +19,17 @@ export const votersRelations = relations(votersTable, ({ one }) => ({
   election: one(electionsTable, {
     fields: [votersTable.electionId],
     references: [electionsTable.electionId]
+  }),
+  hasVoted: one(hasVotedTable, {
+    fields: [votersTable.voterId],
+    references: [hasVotedTable.voterId]
+  })
+}))
+
+export const hasVotedRelations = relations(hasVotedTable, ({ one }) => ({
+  voter: one(votersTable, {
+    fields: [hasVotedTable.voterId],
+    references: [votersTable.voterId]
   })
 }))
 

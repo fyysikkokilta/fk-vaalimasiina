@@ -1,8 +1,6 @@
-import { eq } from 'drizzle-orm'
-
 import { VoteData } from '../../../types/types'
 import { db } from '../db'
-import { ballotsTable, votersTable, votesTable } from '../db/schema'
+import { ballotsTable, hasVotedTable, votesTable } from '../db/schema'
 
 export const addVote = async (
   voterId: string,
@@ -25,10 +23,10 @@ export const addVote = async (
       )
     }
 
-    await transaction
-      .update(votersTable)
-      .set({ hasVoted: true })
-      .where(eq(votersTable.voterId, voterId))
+    // Don't allow the same voter to vote twice
+    // Duplicate votes are handled by the database schema
+    // If duplicate votes are attempted, the database will throw an error
+    await transaction.insert(hasVotedTable).values({ voterId })
 
     return ballots[0].ballotId
   })

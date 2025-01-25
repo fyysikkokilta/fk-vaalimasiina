@@ -8,7 +8,8 @@ export const getVoterWithElection = async (voterId: string) => {
         with: {
           candidates: true
         }
-      }
+      },
+      hasVoted: true
     }
   })
 

@@ -15,6 +15,13 @@
       "when": 1731191391076,
       "tag": "0001_warm_dark_phoenix",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737826005914,
+      "tag": "0002_productive_wallow",
+      "breakpoints": true
     }
   ]
 }
