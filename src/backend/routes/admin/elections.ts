@@ -152,7 +152,7 @@ export const endVoting = async (electionId: string) => {
     await transaction
       .update(votersTable)
       .set({
-        email: sql`CONCAT(gen_random_uuid(), '@anonymized.com')`
+        email: sql`encode(sha256(concat('', gen_random_uuid())::bytea), 'hex')`
       })
       .where(eq(votersTable.electionId, electionId))
 
