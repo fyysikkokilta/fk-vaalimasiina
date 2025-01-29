@@ -63,8 +63,7 @@ const RoundResult = ({
                 </tr>
               )
             )}
-            <br />
-            <tr>
+            <tr style={{ backgroundColor: '#f8d7da', fontWeight: 'bold' }}>
               <td>{t('empty_votes')}</td>
               <td>{roundToTwoDecimals(emptyVotes)}</td>
               <td></td>
@@ -197,6 +196,7 @@ export const ElectionResults = ({
           <Col className="mb-3 text-center">
             <h3>{election.title}</h3>
             <Row>
+              <div>{election.description}</div>
               <span className="mt-3">
                 {t('total_votes')}: {votingResult.totalVotes}
               </span>
@@ -218,6 +218,7 @@ export const ElectionResults = ({
       <Row className="mb-4">
         <Col className="mb-3 text-center">
           <h3>{election.title}</h3>
+          <div>{election.description}</div>
           <Button
             onClick={() => exportBallotsToCSV(votingResult.ballots, election)}
             className="mt-3 mx-2"
@@ -269,7 +270,6 @@ export const ElectionResults = ({
                   <td>{votingResult.nonEmptyVotes}</td>
                 </tr>
               </tbody>
-              <br />
               <thead>
                 <tr>
                   <th>{t('seats')}</th>
