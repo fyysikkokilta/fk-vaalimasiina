@@ -81,7 +81,8 @@ const dropOneCandidate = (
 
   // Using epsilon to avoid floating point comparison issues
   const candidatesWithMinVotes = voteCounts.filter(
-    ([, votes]) => votes <= minVotes + Number.EPSILON
+    ([, votes]) =>
+      votes <= minVotes + (Number.EPSILON * totalVotes) / voteCounts.length
   )
 
   /**
