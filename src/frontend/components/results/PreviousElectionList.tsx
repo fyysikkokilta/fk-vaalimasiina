@@ -3,24 +3,20 @@ import { Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { Election } from '../../../../types/types'
-import { fetchCompletedElections } from '../../api/elections'
+import { client, RouterOutput } from '../../api/trpc'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 
 export const PreviousElectionList = () => {
-  const [elections, setElections] = useState<Election[]>([])
+  const [elections, setElections] = useState<
+    RouterOutput['elections']['getAllClosed']
+  >([])
   const [loading, setLoading] = useState(true)
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
 
   useEffect(() => {
     void (async () => {
-      const electionsData = await fetchCompletedElections()
+      const elections = await client.elections.getAllClosed.query()
 
-      if (!electionsData.ok) {
-        setLoading(false)
-        return
-      }
-      const elections = electionsData.data
       setElections(elections)
       setLoading(false)
     })()

@@ -3,15 +3,15 @@ import { Button, Container, Form, ListGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
-import { Voter } from '../../../../../../types/types'
-import { abortVoting, endVoting } from '../../../../api/admin/elections'
-import { changeVoterEmail, getVoters } from '../../../../api/admin/voters'
+import { client, RouterOutput } from '../../../../api/trpc'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 export const VotingInspection = () => {
-  const [voters, setVoters] = useState<Voter[] | null>(null)
+  const [voters, setVoters] = useState<
+    RouterOutput['admin']['voters']['getAll'] | null
+  >(null)
   const { election, setElection } = useContext(ElectionStepContext)!
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.voting_inspection'
@@ -21,11 +21,8 @@ export const VotingInspection = () => {
   const [newEmail, setNewEmail] = useState('')
 
   const fetchAndSetRemainingVoters = async (electionId: string) => {
-    const response = await getVoters(electionId)
-    if (!response.ok) {
-      return
-    }
-    setVoters(response.data)
+    const voters = await client.admin.voters.getAll.query({ electionId })
+    setVoters(voters)
   }
 
   useEffect(() => {
@@ -45,28 +42,28 @@ export const VotingInspection = () => {
   }
 
   const handleAbortVoting = async () => {
-    const response = await abortVoting(election.electionId)
-    if (!response.ok) {
-      return false
-    }
-    setElection((election) => ({ ...election!, status: 'CREATED' }))
+    const { status } = await client.admin.elections.abortVoting.mutate({
+      electionId: election.electionId
+    })
+
+    setElection((election) => ({ ...election!, status }))
     return true
   }
 
   const handleEndVoting = async () => {
-    const response = await endVoting(election.electionId)
-    if (!response.ok) {
-      return false
-    }
-    setElection((election) => ({ ...election!, status: 'FINISHED' }))
+    const { status } = await client.admin.elections.endVoting.mutate({
+      electionId: election.electionId
+    })
+
+    setElection((election) => ({ ...election!, status }))
     return true
   }
 
   const handleEmailChange = async () => {
-    const response = await changeVoterEmail(oldEmail, newEmail)
-    if (!response.ok) {
-      return
-    }
+    await client.admin.voters.updateEmail.mutate({
+      oldEmail,
+      newEmail
+    })
     setOldEmail('')
     setNewEmail('')
     toast.success(t('email_changed'))

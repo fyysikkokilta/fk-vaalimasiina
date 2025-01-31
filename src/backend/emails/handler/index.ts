@@ -2,11 +2,14 @@ import Email from 'email-templates'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { Election } from '../../../../types/types'
 import mailTransporter from './config'
 
 export interface VotingMailParams {
-  election: Omit<Election, 'candidates' | 'status'>
+  election: {
+    title: string
+    description: string
+    seats: number
+  }
 }
 
 const __filename = fileURLToPath(import.meta.url)

@@ -18,9 +18,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import { Election, Voter } from '../../../../types/types'
-import { vote } from '../../api/vote'
-import { getVoterWithElection } from '../../api/voters'
+import { client, RouterOutput } from '../../api/trpc'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 
 export const Vote = () => {
@@ -29,8 +27,12 @@ export const Vote = () => {
   const [loading, setLoading] = useState(true)
   const [disableVote, setDisableVote] = useState(false)
   const [confirmingVote, setConfirmingVote] = useState(false)
-  const [voter, setVoter] = useState<Voter | null>(null)
-  const [election, setElection] = useState<Election | null>(null)
+  const [voter, setVoter] = useState<
+    RouterOutput['voters']['getWithId']['voter'] | null
+  >(null)
+  const [election, setElection] = useState<
+    RouterOutput['voters']['getWithId']['election'] | null
+  >(null)
   const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const [availableCandidates, setAvailableCandidates] = useState<string[]>([])
@@ -118,16 +120,13 @@ export const Vote = () => {
         return
       }
 
-      const voterResponse = await getVoterWithElection(voterId)
-      if (!voterResponse.ok) {
-        setLoading(false)
-        return
-      }
-      setVoter(voterResponse.data.voter)
-      setElection(voterResponse.data.election)
-      setAvailableCandidates(
-        voterResponse.data.election.candidates.map((c) => c.candidateId)
-      )
+      const { voter, election } = await client.voters.getWithId.query({
+        voterId
+      })
+      setLoading(false)
+      setVoter(voter)
+      setElection(election)
+      setAvailableCandidates(election.candidates.map((c) => c.candidateId))
       setLoading(false)
     })()
   }, [navigate, voterId])
@@ -137,16 +136,21 @@ export const Vote = () => {
   }
 
   const handleVote = async () => {
-    setDisableVote(true)
-    setConfirmingVote(false)
-    const response = await vote(voter!.voterId, selectedCandidates)
-
-    if (!response.ok) {
-      setDisableVote(false)
+    if (!voterId) {
       return
     }
+    setDisableVote(true)
+    setConfirmingVote(false)
+    const { ballotId } = await client.votes.post.mutate({
+      voterId,
+      ballot: selectedCandidates.map((candidateId, i) => ({
+        candidateId,
+        preferenceNumber: i + 1
+      }))
+    })
 
-    setBallotId(response.data)
+    setDisableVote(false)
+    setBallotId(ballotId)
     setVoter((prev) => ({ ...prev!, hasVoted: true }))
   }
 

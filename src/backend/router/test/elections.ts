@@ -1,0 +1,85 @@
+import { TRPCError } from '@trpc/server'
+import { eq } from 'drizzle-orm'
+import { z } from 'zod'
+
+import { candidatesTable, electionsTable } from '../../db/schema'
+import { publicProcedure } from '../../trpc/procedures/publicProcedure'
+import { router } from '../../trpc/trpc'
+
+export const testElectionsRouter = router({
+  create: publicProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        description: z.string().min(1),
+        seats: z.number().min(1),
+        candidates: z.array(z.object({ name: z.string().min(1) })).min(1),
+        status: z.union([
+          z.literal('CREATED'),
+          z.literal('ONGOING'),
+          z.literal('FINISHED'),
+          z.literal('CLOSED')
+        ])
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { title, description, seats, candidates, status } = input
+      const election = ctx.db.transaction(async (transaction) => {
+        const elections = await transaction
+          .insert(electionsTable)
+          .values([
+            {
+              title,
+              description,
+              seats,
+              status
+            }
+          ])
+          .returning()
+
+        const insertedCandidates = await transaction
+          .insert(candidatesTable)
+          .values(
+            candidates.map((candidate) => ({
+              electionId: elections[0].electionId,
+              name: candidate.name
+            }))
+          )
+          .returning()
+
+        return { ...elections[0], candidates: insertedCandidates }
+      })
+      return election
+    }),
+  changeStatus: publicProcedure
+    .input(
+      z.object({
+        electionId: z.string().uuid(),
+        status: z.union([
+          z.literal('CREATED'),
+          z.literal('ONGOING'),
+          z.literal('FINISHED'),
+          z.literal('CLOSED')
+        ])
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { electionId, status } = input
+      const election = await ctx.db
+        .update(electionsTable)
+        .set({
+          status
+        })
+        .where(eq(electionsTable.electionId, electionId))
+        .returning()
+
+      if (!election[0]) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'election_not_found'
+        })
+      }
+
+      return election[0]
+    })
+})

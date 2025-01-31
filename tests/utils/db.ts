@@ -1,45 +1,52 @@
-import axios from 'axios'
 import { randomInt } from 'crypto'
 import _ from 'lodash'
 
-import { Ballot, Election, Voter } from '../../types/types'
+import { client, TestRouterOutput } from '../../src/frontend/api/trpc'
 
-const instance = axios.create({
-  baseURL: 'http://localhost:3000'
-})
+export type Election = TestRouterOutput['elections']['create']
+export type Candidate = Election['candidates'][number]
+export type Voter = TestRouterOutput['voters']['create'][number]
+export type Ballot = TestRouterOutput['votes']['create'][number]
+export type Vote = Ballot['votes'][number]
 
-export const resetDatabase = async () => {
-  await instance.post('/api/test/db')
+export const resetDatabase = () => {
+  if (!client.test) {
+    throw new Error('test router should only be called in test environment')
+  }
+  return client.test.db.reset.mutate()
 }
 
-export const insertElection = async (data: {
+export const insertElection = (data: {
   title: string
   description: string
   seats: number
   candidates: { name: string }[]
   status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 }) => {
-  const response = await instance.post<Election>('/api/test/elections', data)
-  return response.data
+  if (!client.test) {
+    throw new Error('test router should only be called in test environment')
+  }
+  return client.test.elections.create.mutate(data)
 }
 
-export const changeElectionStatus = async (
+export const changeElectionStatus = (
   electionId: string,
   status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 ) => {
-  const response = await instance.put<Election>(
-    `/api/test/elections/${electionId}`,
-    { status }
-  )
-  return response.data
+  if (!client.test) {
+    throw new Error('test router should only be called in test environment')
+  }
+  return client.test.elections.changeStatus.mutate({ electionId, status })
 }
 
 export const insertVoters = async (data: {
   electionId: string
   emails: string[]
 }) => {
-  const response = await instance.post<Voter[]>('/api/test/voters', data)
-  return response.data
+  if (!client.test) {
+    throw new Error('test router should only be called in test environment')
+  }
+  return client.test.voters.create.mutate(data)
 }
 
 export const insertVotes = async (data: {
@@ -49,8 +56,10 @@ export const insertVotes = async (data: {
     ballot: { candidateId: string; preferenceNumber: number }[]
   }[]
 }) => {
-  const response = await instance.post<Ballot[]>('/api/test/votes', data)
-  return response.data
+  if (!client.test) {
+    throw new Error('test router should only be called in test environment')
+  }
+  return client.test.votes.create.mutate(data)
 }
 
 export const createElectionWithVotersAndBallots = async (

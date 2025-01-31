@@ -2,8 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { useTranslation } from 'react-i18next'
 
-import { Election } from '../../../../types/types'
-import { fetchCurrentElection } from '../../api/admin/elections'
+import { client, RouterOutput } from '../../api/trpc'
 import {
   ElectionStep,
   ElectionStepContext,
@@ -14,7 +13,9 @@ import {
   electionStepSettingsFinnish
 } from './electionStepSetting'
 
-const getElectionStep = (election: Election | null): ElectionStep => {
+const getElectionStep = (
+  election: RouterOutput['admin']['elections']['findCurrent'] | null
+): ElectionStep => {
   if (!election) {
     return 'NEW'
   }
@@ -32,7 +33,9 @@ const getElectionStep = (election: Election | null): ElectionStep => {
 
 export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
   const [cookies] = useCookies(['admin-token'])
-  const [election, setElection] = useState<Election | null>(null)
+  const [election, setElection] = useState<
+    RouterOutput['admin']['elections']['findCurrent'] | null
+  >(null)
   const [electionStep, setElectionStep] = useState<ElectionStep | null>(null)
   const { i18n } = useTranslation()
 
@@ -46,12 +49,9 @@ export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
       if (!cookies['admin-token']) {
         return
       }
-      const response = await fetchCurrentElection()
-      if (!response.ok) {
-        return
-      }
-      setElection(response.data)
-      setElectionStep(getElectionStep(response.data))
+      const election = await client.admin.elections.findCurrent.query()
+      setElection(election)
+      setElectionStep(getElectionStep(election))
     })()
   }, [cookies])
 

@@ -2,11 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, ListGroup, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
-import { ElectionData } from '../../../../../../types/types'
-import {
-  modifyElection,
-  postNewElection
-} from '../../../../api/admin/elections'
+import { client, RouterInput } from '../../../../api/trpc'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
@@ -16,7 +12,9 @@ import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 export const NewElection = () => {
   const { electionStep } = useContext(ElectionStepContext)!
   const { election, setElection } = useContext(ElectionStepContext)!
-  const [newElection, setNewElection] = useState<ElectionData>({
+  const [newElection, setNewElection] = useState<
+    RouterInput['admin']['elections']['create']
+  >({
     title: '',
     description: '',
     seats: 0,
@@ -33,10 +31,15 @@ export const NewElection = () => {
     }
   }, [electionStep, election])
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    isNumber: boolean = false
+  ) => {
     setNewElection((electionState) => ({
       ...electionState,
-      [event.target.name]: event.target.value
+      [event.target.name]: isNumber
+        ? parseInt(event.target.value)
+        : event.target.value
     }))
   }
 
@@ -63,17 +66,17 @@ export const NewElection = () => {
 
   const handleSubmit = async () => {
     if (electionStep === 'NEW') {
-      const response = await postNewElection(newElection)
-      if (!response.ok) {
-        return false
-      }
-      setElection(response.data)
+      const election = await client.admin.elections.create.mutate(newElection)
+      setElection(election)
     } else {
-      const response = await modifyElection(election!.electionId, newElection)
-      if (!response.ok) {
+      if (!election) {
         return false
       }
-      setElection(response.data)
+      const updatedElection = await client.admin.elections.update.mutate({
+        electionId: election.electionId,
+        ...newElection
+      })
+      setElection(updatedElection)
     }
     return true
   }
@@ -120,7 +123,9 @@ export const NewElection = () => {
                 type="number"
                 name="seats"
                 value={newElection.seats}
-                onChange={handleChange}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChange(e, true)
+                }
               />
             </Form.Group>
           </Col>

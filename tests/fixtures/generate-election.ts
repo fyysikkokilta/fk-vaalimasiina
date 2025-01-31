@@ -1,6 +1,5 @@
 import { randomUUID } from 'crypto'
 
-import { CandidateData } from '../../types/types'
 import {
   insertElection,
   insertVoters,
@@ -29,7 +28,7 @@ const main = async () => {
 
   const title = 'Test Election'
   const description = 'Vote for your favorite'
-  const candidates = voteFixture.reduce<CandidateData[]>((acc, votes) => {
+  const candidates = voteFixture.reduce<{ name: string }[]>((acc, votes) => {
     votes.forEach((name) => {
       if (!acc.some((c) => c.name === name)) {
         acc.push({ name })

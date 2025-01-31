@@ -1,4 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
+import dotenv from 'dotenv'
+import path from 'path'
+
+// Read from ".env" file.
+dotenv.config({ path: path.resolve(import.meta.dirname, '.env') })
 
 /**
  * Read environment variables from file.
@@ -35,17 +40,26 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] }
+      }
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] }
+      use: {
+        ...devices['Desktop Firefox'],
+        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] }
+      }
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
+      use: {
+        ...devices['Desktop Safari'],
+        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] }
+      }
     }
 
     /* Test against mobile viewports. */

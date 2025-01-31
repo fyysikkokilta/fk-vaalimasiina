@@ -3,7 +3,7 @@ import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { useCookies } from 'react-cookie'
 import { useTranslation } from 'react-i18next'
 
-import { login } from '../../../api/admin/login'
+import { client } from '../../../api/trpc'
 
 export const AdminLogin = () => {
   const [, setCookie] = useCookies(['admin-token'])
@@ -12,13 +12,11 @@ export const AdminLogin = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'admin.login' })
 
   const handleLogin = async () => {
-    const response = await login(username, password)
-
-    if (!response.ok) {
-      return
-    }
-
-    setCookie('admin-token', response.data)
+    const token = await client.admin.login.authenticate.mutate({
+      username,
+      password
+    })
+    setCookie('admin-token', token)
   }
   return (
     <Card>

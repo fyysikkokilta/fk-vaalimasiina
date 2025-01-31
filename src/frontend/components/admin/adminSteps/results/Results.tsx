@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import { closeElection } from '../../../../api/admin/elections'
-import { getVotesForElection } from '../../../../api/admin/votes'
-import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import {
   calculateSTVResult,
   VotingResult
-} from '../../../../utils/stvAlgorithm'
+} from '../../../../algorithm/stvAlgorithm'
+import { client } from '../../../../api/trpc'
+import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { ElectionResults } from '../../../shared/ElectionResults'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
@@ -21,19 +20,11 @@ export const Results = () => {
         return
       }
       // Fetch voting results
-      const response = await getVotesForElection(election.electionId)
+      const { ballots, voterCount } = await client.admin.votes.getWithId.query({
+        electionId: election.electionId
+      })
 
-      if (!response.ok) {
-        return
-      }
-
-      setVotingResult(
-        calculateSTVResult(
-          election,
-          response.data.ballots,
-          response.data.voterCount
-        )
-      )
+      setVotingResult(calculateSTVResult(election, ballots, voterCount))
     })()
   }, [election])
 
@@ -42,11 +33,10 @@ export const Results = () => {
   }
 
   const handleCloseElection = async () => {
-    const response = await closeElection(election.electionId)
-    if (!response.ok) {
-      return false
-    }
-    setElection((election) => ({ ...election!, status: 'CLOSED' }))
+    const { status } = await client.admin.elections.close.mutate({
+      electionId: election.electionId
+    })
+    setElection((election) => ({ ...election!, status }))
     return true
   }
 

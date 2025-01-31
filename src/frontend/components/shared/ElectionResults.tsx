@@ -3,8 +3,12 @@ import { Alert, Button, Card, Col, Row, Table } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
-import { Ballot, Election } from '../../../../types/types'
-import { ValidVotingResult, VotingResult } from '../../utils/stvAlgorithm'
+import {
+  Ballot,
+  Election,
+  ValidVotingResult,
+  VotingResult
+} from '../../algorithm/stvAlgorithm'
 
 type ElectionResultsProps = {
   election: Election

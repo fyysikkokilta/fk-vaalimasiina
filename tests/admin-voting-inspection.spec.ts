@@ -1,12 +1,13 @@
 import { expect, test } from '@playwright/test'
 
-import { Election, Voter } from '../types/types'
 import { loginAdmin } from './utils/admin-login'
 import {
+  Election,
   insertElection,
   insertVoters,
   insertVotes,
-  resetDatabase
+  resetDatabase,
+  Voter
 } from './utils/db'
 import { expectToast } from './utils/toast'
 

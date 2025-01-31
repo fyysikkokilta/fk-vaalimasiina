@@ -3,28 +3,26 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Card, Form, Table } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
-import { Ballot, Election } from '../../../../types/types'
-import { fetchFinishedElectionWithVotes } from '../../api/elections'
+import { client, RouterOutput } from '../../api/trpc'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 
 export const Audit = () => {
-  const [election, setElection] = useState<Election | null>(null)
-  const [ballots, setBallots] = useState<Ballot[]>([])
+  const [election, setElection] = useState<
+    RouterOutput['elections']['findFinished']['election'] | null
+  >(null)
+  const [ballots, setBallots] = useState<
+    RouterOutput['elections']['findFinished']['ballots']
+  >([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const { t } = useTranslation('translation', { keyPrefix: 'voter.audit' })
 
   useEffect(() => {
     void (async () => {
-      const response = await fetchFinishedElectionWithVotes()
+      const { election, ballots } = await client.elections.findFinished.query()
 
-      if (!response.ok) {
-        setLoading(false)
-        return
-      }
-
-      setBallots(response.data.ballots)
-      setElection(response.data.election)
+      setBallots(ballots)
+      setElection(election)
       setLoading(false)
     })()
   }, [])

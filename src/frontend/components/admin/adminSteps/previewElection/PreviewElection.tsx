@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Col, Container, Form, ListGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
-import { startVoting } from '../../../../api/admin/elections'
+import { client } from '../../../../api/trpc'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
@@ -30,11 +30,11 @@ export const PreviewElection = () => {
   }
 
   const handleSubmit = async () => {
-    const response = await startVoting(election.electionId, emails.split('\n'))
-    if (!response.ok) {
-      return false
-    }
-    setElection((election) => ({ ...election!, status: 'ONGOING' }))
+    const { status } = await client.admin.elections.startVoting.mutate({
+      electionId: election.electionId,
+      emails: emails.split('\n').map((email) => email.trim())
+    })
+    setElection((election) => ({ ...election!, status }))
     return true
   }
 

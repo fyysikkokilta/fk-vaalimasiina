@@ -3,31 +3,28 @@ import { Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 
-import { Election } from '../../../../types/types'
-import { fetchCompletedElectionWithVotes } from '../../api/elections'
-import { calculateSTVResult, VotingResult } from '../../utils/stvAlgorithm'
+import { calculateSTVResult, VotingResult } from '../../algorithm/stvAlgorithm'
+import { client, RouterOutput } from '../../api/trpc'
 import { ElectionResults } from '../shared/ElectionResults'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 
 export const PreviousResults = () => {
   const { electionId } = useParams<{ electionId: string }>()
-  const [election, setElection] = useState<Election | null>(null)
+  const [election, setElection] = useState<
+    RouterOutput['elections']['getCompletedWithId']['election'] | null
+  >(null)
   const [votingResult, setVotingResult] = useState<VotingResult | null>(null)
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
 
   useEffect(() => {
     void (async () => {
-      // Fetch election
-      const electionResponse = await fetchCompletedElectionWithVotes(
-        electionId!
-      )
-
-      if (!electionResponse.ok) {
+      if (!electionId) {
         return
       }
-      const election = electionResponse.data.election
-      const ballots = electionResponse.data.ballots
-      const voterCount = electionResponse.data.voterCount
+      const { election, ballots, voterCount } =
+        await client.elections.getCompletedWithId.query({
+          electionId
+        })
 
       setElection(election)
       setVotingResult(calculateSTVResult(election, ballots, voterCount))

@@ -3,10 +3,14 @@ import { expect, test } from '@playwright/test'
 import {
   calculateSTVResult,
   ValidVotingResult
-} from '../src/frontend/utils/stvAlgorithm'
-import { Ballot, Election } from '../types/types'
+} from '../src/frontend/algorithm/stvAlgorithm'
 import { loginAdmin } from './utils/admin-login'
-import { createElectionWithVotersAndBallots, resetDatabase } from './utils/db'
+import {
+  Ballot,
+  createElectionWithVotersAndBallots,
+  Election,
+  resetDatabase
+} from './utils/db'
 
 let election: Election
 let ballots: Ballot[]

@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-import { Election, Voter } from '../types/types'
 import {
   changeElectionStatus,
+  Election,
   insertElection,
   insertVoters,
-  resetDatabase
+  resetDatabase,
+  Voter
 } from './utils/db'
 import { deselectCandidate, selectCandidate } from './utils/voter-voting'
 
@@ -151,11 +152,10 @@ test.describe('audit view', () => {
 
   test('should show ballot after voting has ended', async ({ page }) => {
     await selectCandidate(page, 'Candidate 1')
-    const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
-    const response = await responsePromise
-    const ballotId = (await response.json()) as string
+    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
+    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED')
@@ -167,11 +167,10 @@ test.describe('audit view', () => {
   })
 
   test('should show empty ballot after voting has ended', async ({ page }) => {
-    const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
-    const response = await responsePromise
-    const ballotId = (await response.json()) as string
+    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
+    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED')
@@ -184,11 +183,10 @@ test.describe('audit view', () => {
 
   test('should allow to search for ballot', async ({ page }) => {
     await selectCandidate(page, 'Candidate 1')
-    const responsePromise = page.waitForResponse('**/api/vote')
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
-    const response = await responsePromise
-    const ballotId = (await response.json()) as string
+    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
+    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED')
