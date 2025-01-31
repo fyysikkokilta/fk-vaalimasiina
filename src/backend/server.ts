@@ -2,7 +2,7 @@ import 'dotenv/config'
 
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import express from 'express'
-import ViteExpress from 'vite-express'
+import path from 'path'
 
 import { runMigrations } from './db'
 import { adminElectionsRouter } from './router/admin/elections'
@@ -62,11 +62,17 @@ export const appRouter = router({
 
 const app = express()
 
+app.use(express.static(path.join(import.meta.dirname, '../../dist')))
+
 app.use('/trpc', createExpressMiddleware({ router: appRouter, createContext }))
 
-ViteExpress.listen(app, Number(process.env.PORT), () =>
-  console.log(`Server listening on port ${process.env.PORT}`)
+app.use((_req, res) =>
+  res.sendFile(path.join(import.meta.dirname, '../../dist', 'index.html'))
 )
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server listening on port ${process.env.PORT}`)
+})
 
 export type AppRouter = typeof appRouter
 export type TestRouter = typeof testRouter
