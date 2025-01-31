@@ -3,19 +3,17 @@ import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { useCookies } from 'react-cookie'
 import { useTranslation } from 'react-i18next'
 
-import { client } from '../../../api/trpc'
+import { trpc } from '../../../trpc/trpc'
 
 export const AdminLogin = () => {
   const [, setCookie] = useCookies(['admin-token'])
+  const login = trpc.admin.login.authenticate.useMutation()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const { t } = useTranslation('translation', { keyPrefix: 'admin.login' })
 
   const handleLogin = async () => {
-    const token = await client.admin.login.authenticate.mutate({
-      username,
-      password
-    })
+    const token = await login.mutateAsync({ username, password })
     setCookie('admin-token', token)
   }
   return (

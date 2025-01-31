@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto'
 import _ from 'lodash'
 
-import { client, TestRouterOutput } from '../../src/frontend/api/trpc'
+import { testClient, TestRouterOutput } from '../../src/frontend/trpc/trpc'
 
 export type Election = TestRouterOutput['elections']['create']
 export type Candidate = Election['candidates'][number]
@@ -10,10 +10,10 @@ export type Ballot = TestRouterOutput['votes']['create'][number]
 export type Vote = Ballot['votes'][number]
 
 export const resetDatabase = () => {
-  if (!client.test) {
+  if (!testClient.test) {
     throw new Error('test router should only be called in test environment')
   }
-  return client.test.db.reset.mutate()
+  return testClient.test.db.reset.mutate()
 }
 
 export const insertElection = (data: {
@@ -23,30 +23,30 @@ export const insertElection = (data: {
   candidates: { name: string }[]
   status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 }) => {
-  if (!client.test) {
+  if (!testClient.test) {
     throw new Error('test router should only be called in test environment')
   }
-  return client.test.elections.create.mutate(data)
+  return testClient.test.elections.create.mutate(data)
 }
 
 export const changeElectionStatus = (
   electionId: string,
   status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 ) => {
-  if (!client.test) {
+  if (!testClient.test) {
     throw new Error('test router should only be called in test environment')
   }
-  return client.test.elections.changeStatus.mutate({ electionId, status })
+  return testClient.test.elections.changeStatus.mutate({ electionId, status })
 }
 
 export const insertVoters = async (data: {
   electionId: string
   emails: string[]
 }) => {
-  if (!client.test) {
+  if (!testClient.test) {
     throw new Error('test router should only be called in test environment')
   }
-  return client.test.voters.create.mutate(data)
+  return testClient.test.voters.create.mutate(data)
 }
 
 export const insertVotes = async (data: {
@@ -56,10 +56,10 @@ export const insertVotes = async (data: {
     ballot: { candidateId: string; preferenceNumber: number }[]
   }[]
 }) => {
-  if (!client.test) {
+  if (!testClient.test) {
     throw new Error('test router should only be called in test environment')
   }
-  return client.test.votes.create.mutate(data)
+  return testClient.test.votes.create.mutate(data)
 }
 
 export const createElectionWithVotersAndBallots = async (

@@ -2,33 +2,33 @@ export const electionStepSettingsFinnish = {
   NEW: {
     title: 'Uusi vaali',
     nextButton: 'Luo vaali',
-    nextStep: 'PREVIEW'
+    nextStep: 'PREVIEW' as const
   },
   EDIT: {
     title: 'Muokkaa vaalia',
     backButton: 'Peruuta',
-    previousStep: 'PREVIEW',
+    previousStep: 'PREVIEW' as const,
     nextButton: 'Esikatselu',
-    nextStep: 'PREVIEW'
+    nextStep: 'PREVIEW' as const
   },
   PREVIEW: {
     title: 'Esikatselu',
     backButton: 'Muokkaa vaalia',
-    previousStep: 'EDIT',
+    previousStep: 'EDIT' as const,
     nextButton: 'Aloita äänestys',
-    nextStep: 'VOTING'
+    nextStep: 'VOTING' as const
   },
   VOTING: {
     title: 'Äänestys',
     backButton: 'Keskeytä äänestys',
-    previousStep: 'PREVIEW',
+    previousStep: 'PREVIEW' as const,
     nextButton: 'Lopeta äänestys',
-    nextStep: 'RESULTS'
+    nextStep: 'RESULTS' as const
   },
   RESULTS: {
     title: 'Tulokset',
     nextButton: 'Seuraava vaali',
-    nextStep: 'NEW'
+    nextStep: 'NEW' as const
   }
 }
 
@@ -36,32 +36,32 @@ export const electionStepSettingsEnglish = {
   NEW: {
     title: 'New election',
     nextButton: 'Create election',
-    nextStep: 'PREVIEW'
+    nextStep: 'PREVIEW' as const
   },
   EDIT: {
     title: 'Edit election',
     backButton: 'Cancel',
-    previousStep: 'PREVIEW',
+    previousStep: 'PREVIEW' as const,
     nextButton: 'Preview',
-    nextStep: 'PREVIEW'
+    nextStep: 'PREVIEW' as const
   },
   PREVIEW: {
     title: 'Preview',
     backButton: 'Edit election',
-    previousStep: 'EDIT',
+    previousStep: 'EDIT' as const,
     nextButton: 'Start voting',
-    nextStep: 'VOTING'
+    nextStep: 'VOTING' as const
   },
   VOTING: {
     title: 'Voting',
     backButton: 'Abort voting',
-    previousStep: 'PREVIEW',
+    previousStep: 'PREVIEW' as const,
     nextButton: 'End voting',
-    nextStep: 'RESULTS'
+    nextStep: 'RESULTS' as const
   },
   RESULTS: {
     title: 'Results',
     nextButton: 'Next election',
-    nextStep: 'NEW'
+    nextStep: 'NEW' as const
   }
 }

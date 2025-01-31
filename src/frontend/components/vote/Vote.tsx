@@ -4,7 +4,7 @@ import {
   Droppable,
   DropResult
 } from '@hello-pangea/dnd'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Alert,
   Button,
@@ -18,24 +18,23 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import { client, RouterOutput } from '../../api/trpc'
-import { LoadingSpinner } from '../shared/LoadingSpinner'
+import { trpc } from '../../trpc/trpc'
 
 export const Vote = () => {
   const { voterId } = useParams()
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
+  const [{ voter, election }] = trpc.voters.getWithId.useSuspenseQuery({
+    voterId: voterId!
+  })
+  const post = trpc.votes.post.useMutation()
   const [disableVote, setDisableVote] = useState(false)
   const [confirmingVote, setConfirmingVote] = useState(false)
-  const [voter, setVoter] = useState<
-    RouterOutput['voters']['getWithId']['voter'] | null
-  >(null)
-  const [election, setElection] = useState<
-    RouterOutput['voters']['getWithId']['election'] | null
-  >(null)
+  const [hasVoted, setHasVoted] = useState(false)
   const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
-  const [availableCandidates, setAvailableCandidates] = useState<string[]>([])
+  const [availableCandidates, setAvailableCandidates] = useState<string[]>(
+    election.candidates.map((c) => c.candidateId)
+  )
   const { t } = useTranslation('translation', { keyPrefix: 'voter.vote' })
 
   const handleDragStart = () => {
@@ -113,35 +112,13 @@ export const Vote = () => {
     setSelectedCandidates((prev) => prev.filter((c) => c !== candidateId))
   }
 
-  useEffect(() => {
-    void (async () => {
-      if (!voterId) {
-        await navigate('/')
-        return
-      }
-
-      const { voter, election } = await client.voters.getWithId.query({
-        voterId
-      })
-      setLoading(false)
-      setVoter(voter)
-      setElection(election)
-      setAvailableCandidates(election.candidates.map((c) => c.candidateId))
-      setLoading(false)
-    })()
-  }, [navigate, voterId])
-
-  if (loading) {
-    return <LoadingSpinner />
-  }
-
   const handleVote = async () => {
     if (!voterId) {
       return
     }
     setDisableVote(true)
     setConfirmingVote(false)
-    const { ballotId } = await client.votes.post.mutate({
+    const { ballotId } = await post.mutateAsync({
       voterId,
       ballot: selectedCandidates.map((candidateId, i) => ({
         candidateId,
@@ -151,7 +128,7 @@ export const Vote = () => {
 
     setDisableVote(false)
     setBallotId(ballotId)
-    setVoter((prev) => ({ ...prev!, hasVoted: true }))
+    setHasVoted(true)
   }
 
   const handleVoteConfirmation = () => {
@@ -207,7 +184,7 @@ export const Vote = () => {
             {t('back_to_frontpage')}
           </Button>
           <Card.Text>{election.description}</Card.Text>
-          {voter.hasVoted ? (
+          {hasVoted || voter.hasVoted ? (
             <Alert variant="success" className="text-center">
               <Alert.Heading>
                 {ballotId ? t('thanks_for_voting') : t('already_voted')}

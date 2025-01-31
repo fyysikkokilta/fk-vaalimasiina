@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from 'react'
 
-import { RouterOutput } from '../../api/trpc'
+import { RouterOutput } from '../../trpc/trpc'
 import { electionStepSettingsFinnish } from './electionStepSetting'
 
 export type ElectionStep = keyof typeof electionStepSettingsFinnish
@@ -13,14 +13,17 @@ export type StepSettings = {
   previousStep?: ElectionStep
 }
 
+export type Election = Exclude<
+  RouterOutput['admin']['elections']['findCurrent'],
+  null
+>
+
 type ElectionStepContextType = {
-  election: RouterOutput['admin']['elections']['findCurrent'] | null
-  setElection: Dispatch<
-    SetStateAction<RouterOutput['admin']['elections']['findCurrent'] | null>
-  >
-  stepSettings: StepSettings | null
-  electionStep: ElectionStep | null
-  setElectionStep: Dispatch<SetStateAction<ElectionStep | null>>
+  election: Election
+  setElection: Dispatch<SetStateAction<Election>>
+  stepSettings: StepSettings
+  electionStep: ElectionStep
+  setElectionStep: Dispatch<SetStateAction<ElectionStep>>
 }
 
 export const ElectionStepContext =

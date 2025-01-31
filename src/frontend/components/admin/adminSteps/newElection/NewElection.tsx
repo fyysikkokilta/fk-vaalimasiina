@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, ListGroup, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
-import { client, RouterInput } from '../../../../api/trpc'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
+import { RouterInput, trpc } from '../../../../trpc/trpc'
 import { LoadingSpinner } from '../../../shared/LoadingSpinner'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
@@ -24,6 +24,8 @@ export const NewElection = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.new_election'
   })
+  const create = trpc.admin.elections.create.useMutation()
+  const update = trpc.admin.elections.update.useMutation()
 
   useEffect(() => {
     if (electionStep === 'EDIT' && election) {
@@ -66,13 +68,13 @@ export const NewElection = () => {
 
   const handleSubmit = async () => {
     if (electionStep === 'NEW') {
-      const election = await client.admin.elections.create.mutate(newElection)
+      const election = await create.mutateAsync(newElection)
       setElection(election)
     } else {
       if (!election) {
         return false
       }
-      const updatedElection = await client.admin.elections.update.mutate({
+      const updatedElection = await update.mutateAsync({
         electionId: election.electionId,
         ...newElection
       })

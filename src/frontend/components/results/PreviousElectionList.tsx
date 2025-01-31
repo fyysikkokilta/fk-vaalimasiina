@@ -1,30 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { client, RouterOutput } from '../../api/trpc'
-import { LoadingSpinner } from '../shared/LoadingSpinner'
+import { trpc } from '../../trpc/trpc'
 
 export const PreviousElectionList = () => {
-  const [elections, setElections] = useState<
-    RouterOutput['elections']['getAllClosed']
-  >([])
-  const [loading, setLoading] = useState(true)
+  const [elections] = trpc.elections.getAllClosed.useSuspenseQuery()
   const { t } = useTranslation('translation', { keyPrefix: 'previous_results' })
-
-  useEffect(() => {
-    void (async () => {
-      const elections = await client.elections.getAllClosed.query()
-
-      setElections(elections)
-      setLoading(false)
-    })()
-  }, [])
-
-  if (loading) {
-    return <LoadingSpinner />
-  }
 
   return (
     <Card>

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import seedrandom from 'seedrandom'
 
-import { RouterOutput } from '../api/trpc'
+import { RouterOutput } from '../trpc/trpc'
 
 export type Election =
   | RouterOutput['elections']['getCompletedWithId']['election']

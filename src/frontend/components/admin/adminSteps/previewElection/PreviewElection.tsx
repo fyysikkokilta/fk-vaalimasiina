@@ -2,9 +2,8 @@ import React, { useContext, useState } from 'react'
 import { Col, Container, Form, ListGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
-import { client } from '../../../../api/trpc'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
-import { LoadingSpinner } from '../../../shared/LoadingSpinner'
+import { trpc } from '../../../../trpc/trpc'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 export const PreviewElection = () => {
@@ -13,10 +12,7 @@ export const PreviewElection = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.preview_election'
   })
-
-  if (!election) {
-    return <LoadingSpinner />
-  }
+  const startVoting = trpc.admin.elections.startVoting.useMutation()
 
   const validateEmails = (emails: string) => {
     const emailArray = emails
@@ -29,12 +25,12 @@ export const PreviewElection = () => {
     return emailsOkay && allEmailsUnique
   }
 
-  const handleSubmit = async () => {
-    const { status } = await client.admin.elections.startVoting.mutate({
-      electionId: election.electionId,
+  const handleSubmit = async (electionId: string) => {
+    const { status } = await startVoting.mutateAsync({
+      electionId,
       emails: emails.split('\n').map((email) => email.trim())
     })
-    setElection((election) => ({ ...election!, status }))
+    setElection((election) => ({ ...election, status }))
     return true
   }
 
@@ -42,41 +38,37 @@ export const PreviewElection = () => {
     <>
       <AdminNavigation
         disableNext={!validateEmails(emails)}
-        onNext={handleSubmit}
+        onNext={() => handleSubmit(election.electionId)}
       />
-      {!election ? (
-        <LoadingSpinner />
-      ) : (
-        <Container className="d-flex flex-column align-items-center">
-          <h3 className="mb-3">{election.title}</h3>
-          <div className="mb-3">{election.description}</div>
-          <div className="mb-3">
-            {t('seats')}: {election.seats}
-          </div>
-          <h4>{t('candidates')}</h4>
-          <Col>
-            <ListGroup numbered>
-              {election.candidates.map((candidate) => (
-                <ListGroup.Item key={candidate.candidateId}>
-                  {candidate.name}
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Col>
-          <h4 className="mt-3">{t('voters')}</h4>
-          <Form.Group controlId="emailList">
-            <Form.Label>{t('email_list_instruction')}</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={5}
-              value={emails}
-              isValid={validateEmails(emails)}
-              onChange={(e) => setEmails(e.target.value)}
-              placeholder={t('email_list_placeholder')}
-            />
-          </Form.Group>
-        </Container>
-      )}
+      <Container className="d-flex flex-column align-items-center">
+        <h3 className="mb-3">{election.title}</h3>
+        <div className="mb-3">{election.description}</div>
+        <div className="mb-3">
+          {t('seats')}: {election.seats}
+        </div>
+        <h4>{t('candidates')}</h4>
+        <Col>
+          <ListGroup numbered>
+            {election.candidates.map((candidate) => (
+              <ListGroup.Item key={candidate.candidateId}>
+                {candidate.name}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Col>
+        <h4 className="mt-3">{t('voters')}</h4>
+        <Form.Group controlId="emailList">
+          <Form.Label>{t('email_list_instruction')}</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={5}
+            value={emails}
+            isValid={validateEmails(emails)}
+            onChange={(e) => setEmails(e.target.value)}
+            placeholder={t('email_list_placeholder')}
+          />
+        </Form.Group>
+      </Container>
     </>
   )
 }

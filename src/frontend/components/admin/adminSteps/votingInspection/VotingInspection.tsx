@@ -3,16 +3,18 @@ import { Button, Container, Form, ListGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
-import { client, RouterOutput } from '../../../../api/trpc'
 import { ElectionStepContext } from '../../../../contexts/electionStep/ElectionStepContext'
-import { LoadingSpinner } from '../../../shared/LoadingSpinner'
+import { trpc } from '../../../../trpc/trpc'
 import { AdminNavigation } from '../adminNavigation/AdminNavigation'
 
 export const VotingInspection = () => {
-  const [voters, setVoters] = useState<
-    RouterOutput['admin']['voters']['getAll'] | null
-  >(null)
   const { election, setElection } = useContext(ElectionStepContext)!
+  const [voters, { refetch }] = trpc.admin.voters.getAll.useSuspenseQuery({
+    electionId: election.electionId
+  })
+  const abort = trpc.admin.elections.abortVoting.useMutation()
+  const end = trpc.admin.elections.endVoting.useMutation()
+  const updateEmail = trpc.admin.voters.updateEmail.useMutation()
   const { t } = useTranslation('translation', {
     keyPrefix: 'admin.admin_main.voting_inspection'
   })
@@ -20,47 +22,35 @@ export const VotingInspection = () => {
   const [oldEmail, setOldEmail] = useState('')
   const [newEmail, setNewEmail] = useState('')
 
-  const fetchAndSetRemainingVoters = async (electionId: string) => {
-    const voters = await client.admin.voters.getAll.query({ electionId })
-    setVoters(voters)
-  }
-
   useEffect(() => {
     if (!election) return
-    void fetchAndSetRemainingVoters(election.electionId)
+    void refetch()
 
-    const interval = setInterval(
-      () => void fetchAndSetRemainingVoters(election.electionId),
-      3000
-    )
+    const interval = setInterval(() => void refetch(), 3000)
 
     return () => clearInterval(interval)
-  }, [election])
+  }, [election, refetch])
 
-  if (!election || !voters) {
-    return <LoadingSpinner />
-  }
-
-  const handleAbortVoting = async () => {
-    const { status } = await client.admin.elections.abortVoting.mutate({
-      electionId: election.electionId
+  const handleAbortVoting = async (electionId: string) => {
+    const { status } = await abort.mutateAsync({
+      electionId
     })
 
-    setElection((election) => ({ ...election!, status }))
+    setElection((election) => ({ ...election, status }))
     return true
   }
 
-  const handleEndVoting = async () => {
-    const { status } = await client.admin.elections.endVoting.mutate({
-      electionId: election.electionId
+  const handleEndVoting = async (electionId: string) => {
+    const { status } = await end.mutateAsync({
+      electionId
     })
 
-    setElection((election) => ({ ...election!, status }))
+    setElection((election) => ({ ...election, status }))
     return true
   }
 
   const handleEmailChange = async () => {
-    await client.admin.voters.updateEmail.mutate({
+    await updateEmail.mutateAsync({
       oldEmail,
       newEmail
     })
@@ -78,8 +68,8 @@ export const VotingInspection = () => {
     <>
       <AdminNavigation
         disableNext={remainingVoters.length > 0}
-        onBack={handleAbortVoting}
-        onNext={handleEndVoting}
+        onBack={() => handleAbortVoting(election.electionId)}
+        onNext={() => handleEndVoting(election.electionId)}
       />
       <Container className="d-flex flex-column align-items-center">
         <h3>{election.title}</h3>

@@ -1,12 +1,12 @@
-import React, { ReactNode, useEffect, useState } from 'react'
-import { useCookies } from 'react-cookie'
+import React, { ReactNode, Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { client, RouterOutput } from '../../api/trpc'
+import { LoadingSpinner } from '../../components/shared/LoadingSpinner'
+import { RouterOutput, trpc } from '../../trpc/trpc'
 import {
+  Election,
   ElectionStep,
-  ElectionStepContext,
-  StepSettings
+  ElectionStepContext
 } from './ElectionStepContext'
 import {
   electionStepSettingsEnglish,
@@ -32,43 +32,41 @@ const getElectionStep = (
 }
 
 export const ElectionStepProvider = ({ children }: { children: ReactNode }) => {
-  const [cookies] = useCookies(['admin-token'])
-  const [election, setElection] = useState<
-    RouterOutput['admin']['elections']['findCurrent'] | null
-  >(null)
-  const [electionStep, setElectionStep] = useState<ElectionStep | null>(null)
   const { i18n } = useTranslation()
+
+  const [initialElection] = trpc.admin.elections.findCurrent.useSuspenseQuery()
+  const [election, setElection] = useState<Election>(
+    initialElection || {
+      electionId: '',
+      title: '',
+      description: '',
+      seats: 0,
+      status: 'CREATED',
+      candidates: []
+    }
+  )
+  const [electionStep, setElectionStep] = useState<ElectionStep>(
+    getElectionStep(initialElection)
+  )
 
   const electionStepSettings =
     i18n.language === 'fi'
       ? electionStepSettingsFinnish
       : electionStepSettingsEnglish
 
-  useEffect(() => {
-    void (async () => {
-      if (!cookies['admin-token']) {
-        return
-      }
-      const election = await client.admin.elections.findCurrent.query()
-      setElection(election)
-      setElectionStep(getElectionStep(election))
-    })()
-  }, [cookies])
-
-  const stepSettings = electionStep
-    ? (electionStepSettings[electionStep] as StepSettings)
-    : null
   return (
-    <ElectionStepContext.Provider
-      value={{
-        election,
-        setElection,
-        stepSettings,
-        electionStep,
-        setElectionStep
-      }}
-    >
-      {children}
-    </ElectionStepContext.Provider>
+    <Suspense fallback={<LoadingSpinner />}>
+      <ElectionStepContext.Provider
+        value={{
+          election,
+          setElection,
+          stepSettings: electionStepSettings[electionStep],
+          electionStep,
+          setElectionStep
+        }}
+      >
+        {children}
+      </ElectionStepContext.Provider>
+    </Suspense>
   )
 }

@@ -1,10 +1,10 @@
 import {
   createTRPCClient,
   httpBatchLink,
-  loggerLink,
   TRPCClientError,
   TRPCLink
 } from '@trpc/client'
+import { createTRPCReact } from '@trpc/react-query'
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import { observable } from '@trpc/server/observable'
 import { exists, t } from 'i18next'
@@ -45,16 +45,11 @@ export const errorLink: TRPCLink<AppRouter> = () => {
   }
 }
 
-export const client = createTRPCClient<AppRouter>({
+export const testClient = createTRPCClient<AppRouter>({
   links: [
     errorLink,
-    loggerLink({
-      enabled: (opts) =>
-        Boolean(process.env.DEV) ||
-        (opts.direction === 'down' && opts.result instanceof Error)
-    }),
     httpBatchLink({
-      url: `${process.env.BASE_URL}/trpc`,
+      url: 'http://localhost:3000/trpc',
       headers() {
         const cookies = new Cookies()
         const adminToken = cookies.get('admin-token') as string | undefined
@@ -66,6 +61,8 @@ export const client = createTRPCClient<AppRouter>({
     })
   ]
 })
+
+export const trpc = createTRPCReact<AppRouter>()
 
 export function isTRPCClientError(
   cause: unknown
