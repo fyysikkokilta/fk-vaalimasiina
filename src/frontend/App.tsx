@@ -39,7 +39,7 @@ function App() {
         errorLink,
         loggerLink({
           enabled: (opts) =>
-            Boolean(process.env.DEV) ||
+            Boolean(import.meta.env.DEV) ||
             (opts.direction === 'down' && opts.result instanceof Error)
         }),
         httpBatchLink({

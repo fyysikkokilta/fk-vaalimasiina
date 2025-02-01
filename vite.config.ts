@@ -19,8 +19,7 @@ export default defineConfig({
       BRANDING_HEADER_TITLE_TEXT: 'Vaalimasiina',
       BRANDING_FOOTER_HOME_LINK: 'https://fyysikkokilta.fi',
       BRANDING_FOOTER_HOME_TEXT: 'fyysikkokilta.fi',
-      BASE_URL: 'http://localhost:3000',
-      DEV: 'true'
+      BASE_URL: 'http://localhost:3000'
     })
   ],
   build: {
