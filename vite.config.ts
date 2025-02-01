@@ -5,6 +5,14 @@ import EnvironmentPlugin from 'vite-plugin-environment'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/trpc': {
+        target: process.env.BASE_URL || 'http://localhost:3000',
+        changeOrigin: true
+      }
+    }
+  },
   plugins: [
     react(),
     EnvironmentPlugin({

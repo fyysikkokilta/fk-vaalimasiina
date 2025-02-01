@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development tsx watch --exclude './vite.config.ts.timestamp-*' ./src/backend/server.ts",
+    "dev:client": "vite",
+    "dev:server": "cross-env NODE_ENV=development tsx watch --exclude './vite.config.ts.timestamp-*' ./src/backend/server.ts",
+    "dev": "concurrently --names client,server -c bgBlue.bold,bgMagenta.bold --kill-others \"npm run dev:client\" \"npm run dev:server\"",
     "start": "cross-env NODE_ENV=production tsx ./src/backend/server.ts",
     "build": "vite build",
     "generate-election": "tsx ./tests/fixtures/generate-election.ts",
@@ -77,6 +79,7 @@
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
     "@vitejs/plugin-react": "^4.3.3",
+    "concurrently": "^9.1.2",
     "drizzle-kit": "^0.28.0",
     "eslint": "^9.14.0",
     "eslint-config-prettier": "^9.1.0",

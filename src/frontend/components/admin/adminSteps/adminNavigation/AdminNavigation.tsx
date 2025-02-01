@@ -23,7 +23,7 @@ export const AdminNavigation = ({
   }
 
   const nextStep = async () => {
-    if (stepSettings.nextButton) {
+    if (stepSettings.nextButton && !disableNext) {
       if (await onNext()) {
         setElectionStep(stepSettings.nextStep)
       }
@@ -31,7 +31,11 @@ export const AdminNavigation = ({
   }
 
   const prevStep = async () => {
-    if (stepSettings.backButton && stepSettings.previousStep) {
+    if (
+      stepSettings.backButton &&
+      stepSettings.previousStep &&
+      !disablePrevious
+    ) {
       if (await onBack()) {
         setElectionStep(stepSettings.previousStep)
       }

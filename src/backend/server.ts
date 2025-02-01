@@ -1,6 +1,7 @@
 import 'dotenv/config'
 
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
+import cors from 'cors'
 import express from 'express'
 import path from 'path'
 
@@ -61,6 +62,8 @@ export const appRouter = router({
 })
 
 const app = express()
+
+app.use(cors())
 
 app.use(express.static(path.join(import.meta.dirname, '../../dist')))
 

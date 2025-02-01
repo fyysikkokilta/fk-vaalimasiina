@@ -70,7 +70,9 @@
         "candidates": "Candidates",
         "voters": "Voters",
         "email_list_instruction": "Add the voters' email addresses here separated by line breaks",
-        "email_list_placeholder": "email@email.com\nemail2@mail.com"
+        "email_list_placeholder": "email@email.com\nemail2@mail.com",
+        "voter_count": "Valid voter emails",
+        "invalid_emails": "Not all emails are valid"
       },
       "voting_inspection": {
         "given_votes": "Given votes",

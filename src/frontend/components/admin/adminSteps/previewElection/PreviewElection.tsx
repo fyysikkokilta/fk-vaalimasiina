@@ -14,24 +14,35 @@ export const PreviewElection = () => {
   })
   const startVoting = trpc.admin.elections.startVoting.useMutation()
 
-  const validateEmails = (emails: string) => {
-    const emailArray = emails
+  const getEmailLinesContainingText = (emails: string) => {
+    return emails
       .split('\n')
-      .map((email) => email.trim().toLowerCase())
+      .map((email) => email.trim())
+      .map((email) => email.toLowerCase())
+      .filter(Boolean)
+  }
+
+  const validateEmails = (emails: string) => {
+    const notEmpty = emails.trim().length > 0
+    const emailArray = getEmailLinesContainingText(emails)
     const emailsOkay = emailArray.every((email) => {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     })
     const allEmailsUnique = emailArray.length === new Set(emailArray).size
-    return emailsOkay && allEmailsUnique
+    return notEmpty && emailsOkay && allEmailsUnique
   }
 
   const handleSubmit = async (electionId: string) => {
     const { status } = await startVoting.mutateAsync({
       electionId,
-      emails: emails.split('\n').map((email) => email.trim())
+      emails: getEmailLinesContainingText(emails)
     })
     setElection((election) => ({ ...election, status }))
     return true
+  }
+
+  const getValidEmailCount = (emailString: string) => {
+    return getEmailLinesContainingText(emailString).length
   }
 
   return (
@@ -68,6 +79,16 @@ export const PreviewElection = () => {
             placeholder={t('email_list_placeholder')}
           />
         </Form.Group>
+        {emails.length > 0 &&
+          (validateEmails(emails) ? (
+            <div className="text-success mt-2 text-center">
+              {t('voter_count')}: {getValidEmailCount(emails)}
+            </div>
+          ) : (
+            <div className="text-danger mt-2 text-center">
+              {t('invalid_emails')}
+            </div>
+          ))}
       </Container>
     </>
   )
