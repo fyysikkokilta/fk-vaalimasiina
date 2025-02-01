@@ -43,7 +43,7 @@ function App() {
             (opts.direction === 'down' && opts.result instanceof Error)
         }),
         httpBatchLink({
-          url: `${process.env.BASE_URL}/trpc`,
+          url: '/trpc',
           headers() {
             const cookies = new Cookies()
             const adminToken = cookies.get('admin-token') as string | undefined
