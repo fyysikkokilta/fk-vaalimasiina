@@ -74,6 +74,8 @@ const findNextPreference = (
   return vote.find((c) => voteMap.has(c))
 }
 
+const EPSILON = 1e-10
+
 const dropOneCandidate = (
   voteMap: VoteMap,
   totalVotes: number,
@@ -89,8 +91,7 @@ const dropOneCandidate = (
 
   // Using epsilon to avoid floating point comparison issues
   const candidatesWithMinVotes = voteCounts.filter(
-    ([, votes]) =>
-      votes <= minVotes + (Number.EPSILON * totalVotes) / voteCounts.length
+    ([, votes]) => votes <= minVotes + EPSILON
   )
 
   /**
