@@ -1,7 +1,5 @@
-import _ from 'lodash'
-import seedrandom from 'seedrandom'
-
 import { RouterOutput } from '../trpc/trpc'
+import { shuffleWithSeed } from './shuffleWithSeed'
 
 export type Election =
   | RouterOutput['elections']['getCompletedWithId']['election']
@@ -106,10 +104,10 @@ const dropOneCandidate = (
    * ensure that the result is random but always the same for the same election.
    */
 
-  seedrandom(election.electionId, { global: true })
-  const lodash = _.runInContext()
-
-  const candidateToBeDropped = lodash.shuffle(candidatesWithMinVotes)[0]
+  const candidateToBeDropped = shuffleWithSeed(
+    candidatesWithMinVotes,
+    election.electionId
+  )[0]
 
   const votesOfDroppedCandidate = voteMap.get(candidateToBeDropped[0])!
   voteMap.delete(candidateToBeDropped[0])
@@ -223,9 +221,9 @@ export const calculateSTVResult = (
   const previouslySelectedCandidates = new Set<CandidateId>()
 
   nonEmptyBallots.forEach(({ votes }) => {
-    const candidateIds = _.orderBy(votes, 'preferenceNumber').map(
-      (v) => v.candidateId
-    )
+    const candidateIds = votes
+      .sort((a, b) => a.preferenceNumber - b.preferenceNumber)
+      .map((v) => v.candidateId)
     const id = candidateIds[0]
     if (id) {
       const weightedVotes = voteMap.get(id)!

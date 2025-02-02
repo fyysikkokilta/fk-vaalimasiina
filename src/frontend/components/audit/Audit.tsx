@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React, { useState } from 'react'
 import { Alert, Card, Form, Table } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
@@ -65,8 +64,12 @@ export const Audit = () => {
                         <td colSpan={2}>
                           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                             {audit.votes.length > 0
-                              ? _.orderBy(audit.votes, 'preferenceNumber').map(
-                                  (vote, index) => (
+                              ? audit.votes
+                                  .sort(
+                                    (a, b) =>
+                                      a.preferenceNumber - b.preferenceNumber
+                                  )
+                                  .map((vote, index) => (
                                     <div
                                       key={index}
                                       style={{ marginRight: '10px' }}
@@ -80,8 +83,7 @@ export const Audit = () => {
                                         )?.name
                                       }
                                     </div>
-                                  )
-                                )
+                                  ))
                               : t('empty_ballot')}
                           </div>
                         </td>

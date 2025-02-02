@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto'
-import _ from 'lodash'
 
+import { shuffleWithSeed } from '../../src/frontend/algorithm/shuffleWithSeed'
 import { testClient, TestRouterOutput } from '../../src/frontend/trpc/trpc'
 
 export type Election = TestRouterOutput['elections']['create']
@@ -90,7 +90,10 @@ export const createElectionWithVotersAndBallots = async (
     electionId: election.electionId,
     voterIdBallotPairs: voters.map((voter) => ({
       voterId: voter.voterId,
-      ballot: _.shuffle(Array.from({ length: candidateCount }, (_, i) => i + 1))
+      ballot: shuffleWithSeed(
+        Array.from({ length: candidateCount }, (_, i) => i + 1),
+        randomInt(0, 1000).toString()
+      )
         .map((preference, i) => ({
           candidateId: election.candidates[i].candidateId,
           preferenceNumber: preference
