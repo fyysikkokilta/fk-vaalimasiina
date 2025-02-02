@@ -1,5 +1,3 @@
-import 'react-toastify/scss/main.scss'
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
 import React, { Suspense, useState } from 'react'
