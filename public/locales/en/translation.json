@@ -135,6 +135,14 @@
     "missing_old_email": "Old email is missing",
     "missing_new_email": "New email is missing",
     "invalid_emails": "Invalid emails",
-    "not_everyone_voted": "Not everyone has voted"
+    "not_everyone_voted": "Not everyone has voted",
+    "generic_fetch_error": "An error occurred while fetching data"
+  },
+  "error_boundary": {
+    "title": "An error occurred",
+    "message": "Reload the page and try again. If the error persists, please contact the chairperson or secretary.",
+    "error_message": "Error message",
+    "back_to_frontpage": "Back to frontpage",
+    "reload": "Reload"
   }
 }

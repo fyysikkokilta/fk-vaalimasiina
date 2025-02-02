@@ -135,6 +135,14 @@
     "missing_old_email": "Vanha sähköpostiosoite puuttuu",
     "missing_new_email": "Uusi sähköpostiosoite puuttuu",
     "invalid_emails": "Virheelliset sähköpostiosoitteet",
-    "not_everyone_voted": "Kaikki eivät ole äänestäneet"
+    "not_everyone_voted": "Kaikki eivät ole äänestäneet",
+    "generic_fetch_error": "Virhe haettaessa tietoja"
+  },
+  "error_boundary": {
+    "title": "Jotain meni pieleen",
+    "message": "Lataa sivu uudelleen ja kokeile uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+    "error_message": "Virheviesti",
+    "back_to_frontpage": "Takaisin etusivulle",
+    "reload": "Lataa uudelleen"
   }
 }

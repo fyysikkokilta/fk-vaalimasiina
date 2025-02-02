@@ -25,7 +25,7 @@ export const errorLink: TRPCLink<AppRouter> = () => {
           if (exists(`errors.${err.message}`)) {
             toast.error(t(`errors.${err.message}`))
           } else {
-            toast.error(err.message)
+            toast.error(t('errors.generic_fetch_error'))
           }
           const isAdmin = err.data?.path?.includes('admin')
           const shouldLogout =

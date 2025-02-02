@@ -3,6 +3,7 @@ import { httpBatchLink, loggerLink } from '@trpc/client'
 import React, { Suspense, useState } from 'react'
 import { Button, Card, Container, Nav, Navbar } from 'react-bootstrap'
 import { Cookies, useCookies } from 'react-cookie'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import {
   BrowserRouter as Router,
@@ -18,6 +19,7 @@ import { Audit } from './components/audit/Audit'
 import { Info } from './components/info/Info'
 import { PreviousElectionList } from './components/results/PreviousElectionList'
 import { PreviousResults } from './components/results/PreviousResults'
+import ErrorFallback from './components/shared/ErrorFallback'
 import { LoadingSpinner } from './components/shared/LoadingSpinner'
 import { Vote } from './components/vote/Vote'
 import { ElectionStepProvider } from './contexts/electionStep/ElectionStepProvider'
@@ -30,7 +32,19 @@ const APP_HOME_TEXT = process.env.BRANDING_FOOTER_HOME_TEXT
 function App() {
   const { i18n, t } = useTranslation('translation', { keyPrefix: 'app' })
   const [cookies] = useCookies(['admin-token'])
-  const [queryClient] = useState(() => new QueryClient())
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false
+          },
+          mutations: {
+            retry: false
+          }
+        }
+      })
+  )
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
@@ -99,62 +113,35 @@ function App() {
           <main>
             <Card className="fii-background">
               <div id="main-content" className="my-4 mx-5 box-shadow">
-                <Routes>
-                  <Route
-                    path="/admin/*"
-                    element={
-                      !cookies['admin-token'] ? (
-                        <AdminLogin />
-                      ) : (
-                        <Suspense fallback={<LoadingSpinner />}>
-                          <ElectionStepProvider>
-                            <Admin />
-                          </ElectionStepProvider>
-                        </Suspense>
-                      )
-                    }
-                  />
-                  <Route
-                    path="/audit"
-                    element={
-                      <Suspense fallback={<LoadingSpinner />}>
-                        <Audit />
-                      </Suspense>
-                    }
-                  />
-                  <Route
-                    path="/elections/:electionId"
-                    element={
-                      <Suspense fallback={<LoadingSpinner />}>
-                        <PreviousResults />
-                      </Suspense>
-                    }
-                  />
-                  <Route
-                    path="/elections"
-                    element={
-                      <Suspense fallback={<LoadingSpinner />}>
-                        <PreviousElectionList />
-                      </Suspense>
-                    }
-                  />
-                  <Route
-                    path="/vote/:voterId"
-                    element={
-                      <Suspense fallback={<LoadingSpinner />}>
-                        <Vote />
-                      </Suspense>
-                    }
-                  />
-                  <Route
-                    path="*"
-                    element={
-                      <Suspense fallback={<LoadingSpinner />}>
-                        <Info />
-                      </Suspense>
-                    }
-                  />
-                </Routes>
+                <ErrorBoundary FallbackComponent={ErrorFallback}>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Routes>
+                      <Route
+                        path="/admin/*"
+                        element={
+                          !cookies['admin-token'] ? (
+                            <AdminLogin />
+                          ) : (
+                            <ElectionStepProvider>
+                              <Admin />
+                            </ElectionStepProvider>
+                          )
+                        }
+                      />
+                      <Route path="/audit" element={<Audit />} />
+                      <Route
+                        path="/elections/:electionId"
+                        element={<PreviousResults />}
+                      />
+                      <Route
+                        path="/elections"
+                        element={<PreviousElectionList />}
+                      />
+                      <Route path="/vote/:voterId" element={<Vote />} />
+                      <Route path="*" element={<Info />} />
+                    </Routes>
+                  </Suspense>
+                </ErrorBoundary>
               </div>
             </Card>
           </main>
