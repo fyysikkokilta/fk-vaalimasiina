@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 import {
   calculateSTVResult,
   ValidVotingResult
-} from '../src/frontend/algorithm/stvAlgorithm'
+} from '../src/algorithm/stvAlgorithm'
 import { loginAdmin } from './utils/admin-login'
 import {
   Ballot,

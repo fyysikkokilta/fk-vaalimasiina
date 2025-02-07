@@ -1,8 +1,10 @@
 import { expect, Page } from '@playwright/test'
 
 export const loginAdmin = async (page: Page) => {
-  await page.goto('/admin')
-  await expect(page.getByRole('heading')).toHaveText('Log in to admin')
+  await page.goto('./login')
+  await expect(
+    page.getByRole('heading', { name: 'Log in to admin' })
+  ).toBeVisible()
   await page.fill('#username', 'admin')
   await page.fill('#password', 'password')
   await page.getByRole('button').getByText('Log in').click()

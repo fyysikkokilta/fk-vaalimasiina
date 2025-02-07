@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+@theme {
+  --color-fk-yellow: #fbdb1d;
+  --color-fk-black: #201e1e;
+  --font-body: 'Roboto', sans-serif;
+}
+
+.fii-background {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 1440px;
+  background-image: url('../../public/fii_2.svg');
+  background-repeat: repeat;
+  display: flex;
+  align-items: center;
+}
+
+.fii-background > div {
+  z-index: 1;
+}

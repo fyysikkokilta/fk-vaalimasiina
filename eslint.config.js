@@ -1,6 +1,6 @@
 import { fixupConfigRules } from '@eslint/compat'
-import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from "eslint-plugin-simple-import-sort"
+import reactCompiler from 'eslint-plugin-react-compiler'
 import globals from 'globals'
 import tsParser from '@typescript-eslint/parser'
 import path from 'node:path'
@@ -25,12 +25,13 @@ export default [
       'eslint:recommended',
       'plugin:@typescript-eslint/recommended-type-checked',
       'plugin:react-hooks/recommended',
+      'plugin:@next/next/recommended',
       'prettier'
     )
   ),
   {
     plugins: {
-      'react-refresh': reactRefresh,
+      'react-compiler': reactCompiler,
       "simple-import-sort": simpleImportSort
     },
 
@@ -47,12 +48,7 @@ export default [
     },
 
     rules: {
-      'react-refresh/only-export-components': [
-        'warn',
-        {
-          allowConstantExport: true
-        }
-      ],
+      'react-compiler/react-compiler': 'error',
       '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',

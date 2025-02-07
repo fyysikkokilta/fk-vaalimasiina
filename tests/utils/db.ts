@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto'
 
-import { shuffleWithSeed } from '../../src/frontend/algorithm/shuffleWithSeed'
-import { testClient, TestRouterOutput } from '../../src/frontend/trpc/trpc'
+import { shuffleWithSeed } from '~/algorithm/shuffleWithSeed'
+import { testClient, TestRouterOutput } from '~/trpc/client'
 
 export type Election = TestRouterOutput['elections']['create']
 export type Candidate = Election['candidates'][number]

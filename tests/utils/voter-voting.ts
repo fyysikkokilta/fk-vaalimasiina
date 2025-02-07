@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test'
 
 export const selectCandidate = async (page: Page, candidateName: string) => {
-  const draggable = page.locator(`text=${candidateName}`)
+  const draggable = page.getByRole('button', { name: candidateName })
   const destination = page.locator('#selected-candidates')
 
   const dragBoundingBox = await draggable.boundingBox()
@@ -23,7 +23,7 @@ export const selectCandidate = async (page: Page, candidateName: string) => {
 }
 
 export const deselectCandidate = async (page: Page, candidateName: string) => {
-  const draggable = page.locator(`text=${candidateName}`)
+  const draggable = page.getByRole('button', { name: candidateName })
   const destination = page.locator('#available-candidates')
 
   const dragBoundingBox = await draggable.boundingBox()

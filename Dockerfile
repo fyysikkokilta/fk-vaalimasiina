@@ -11,19 +11,19 @@ WORKDIR /opt/vaalimasiina
 COPY .eslint* package.json package-lock.json /opt/vaalimasiina/
 
 # Copy tsconfig files
-COPY tsconfig.json tsconfig.node.json /opt/vaalimasiina/
+COPY tsconfig.json /opt/vaalimasiina/
 
-# Copy vite configuration
-COPY vite.config.ts /opt/vaalimasiina/
+# Copy next configuration
+COPY next.config.ts /opt/vaalimasiina/
 
-# Copy frontend source code
-COPY src/frontend /opt/vaalimasiina/src/frontend
-
-# Copy index.html
-COPY index.html /opt/vaalimasiina/
+# Copy source code
+COPY src /opt/vaalimasiina/src
 
 # Copy public directory
 COPY public /opt/vaalimasiina/public
+
+# Copy messages directory
+COPY messages /opt/vaalimasiina/messages
 
 # Copy environment variables for the frontend
 COPY .env /opt/vaalimasiina/
@@ -57,8 +57,8 @@ WORKDIR /opt/vaalimasiina
 # Copy necessary files for npm install
 COPY package.json package-lock.json /opt/vaalimasiina/
 
-# Copy backend source code
-COPY src/backend /opt/vaalimasiina/src/backend
+# Copy source code
+COPY src /opt/vaalimasiina/src
 
 # Set npm cache
 RUN npm set cache .npm
@@ -70,4 +70,4 @@ RUN npm ci --production --ignore-scripts
 COPY --from=builder /opt/vaalimasiina/dist /opt/vaalimasiina/dist
 
 # Command to run the application
-CMD ["npm", "run", "start"]
+ENTRYPOINT ["npm", "start"]

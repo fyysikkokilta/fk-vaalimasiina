@@ -9,7 +9,7 @@ export const expectToast = async (
   await expect(toast).toBeVisible()
 
   if (!noAssertText) {
-    await expect(toast).toHaveText(message)
+    await expect(toast.getByText(message)).toBeVisible()
   }
 }
 

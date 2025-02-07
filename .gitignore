@@ -15,6 +15,9 @@ data
 .env
 stats.html
 
+.next
+next-env.d.ts
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -29,5 +32,3 @@ stats.html
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-
-vite.config.ts.timestamp-*

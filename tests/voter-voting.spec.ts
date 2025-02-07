@@ -30,7 +30,7 @@ test.beforeEach(async () => {
 
 test.describe('voting page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`/vote/${voters[0].voterId}`)
+    await page.goto(`./vote/${voters[0].voterId}`)
   })
 
   test('should show voting view', async ({ page }) => {
@@ -60,7 +60,7 @@ test.describe('voting page', () => {
 
 test.describe('voting', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`/vote/${voters[0].voterId}`)
+    await page.goto(`./vote/${voters[0].voterId}`)
   })
 
   test('should allow to select candidates', async ({ page }) => {
@@ -86,7 +86,7 @@ test.describe('voting', () => {
     await selectCandidate(page, 'Candidate 1')
     await page.getByRole('button', { name: 'Vote' }).click()
     await expect(page.getByText('Vote confirmation')).toBeVisible()
-    const modalLocator = page.locator('.modal-dialog')
+    const modalLocator = page.getByRole('dialog')
     await expect(modalLocator).toBeVisible()
     await expect(
       modalLocator.getByRole('button', { name: 'Confirm' })
@@ -147,7 +147,7 @@ test.describe('voting', () => {
 
 test.describe('audit view', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`/vote/${voters[0].voterId}`)
+    await page.goto(`./vote/${voters[0].voterId}`)
   })
 
   test('should show ballot after voting has ended', async ({ page }) => {
@@ -159,7 +159,7 @@ test.describe('audit view', () => {
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED')
-    await page.goto('/audit')
+    await page.goto('./audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     await expect(page.getByText(ballotId)).toBeVisible()
@@ -174,7 +174,7 @@ test.describe('audit view', () => {
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED')
-    await page.goto('/audit')
+    await page.goto('./audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     await expect(page.getByText(ballotId)).toBeVisible()
@@ -190,7 +190,7 @@ test.describe('audit view', () => {
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED')
-    await page.goto('/audit')
+    await page.goto('./audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     await expect(page.getByText(ballotId)).toBeVisible()

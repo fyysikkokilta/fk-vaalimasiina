@@ -1,0 +1,33 @@
+extends ../layout.pug
+
+block mainContent
+  div.content-block
+    p.bodyText #[i In English below]
+  div.content-block
+    p.bodyText Tervetuloa äänestämään Fyysikkokillan vaaleissa!
+  div.content-block 
+    p.bodyText Äänestyksen tiedot:
+    ul 
+      li #[strong Äänestyksen nimi:] #{election.title}
+      li #[strong Äänestyksen kuvaus:] #{election.description}
+      li #[strong Valittavien määrä:] #{election.seats}
+  div.content-block
+    p.bodyText Voit äänestää vain kerran eikä omaa ääntä voi muuttaa äänestämisen jälkeen. Äänestyslinkki on henkilökohtainen, ethän jaa sitä eteenpäin.
+  div.content-block
+    p.bodyText Äänestämään pääset #[a(href=votingLinkFi) tästä].
+  hr
+  br
+  div.content-block
+    p.bodyText #[i Suomeksi yllä]
+  div.content-block
+    p.bodyText Welcome to vote in the elections of the Guild of Physics!
+  div.content-block
+    p.bodyText Election information:
+    ul 
+      li #[strong Election name:] #{election.title}
+      li #[strong Election description:] #{election.description}
+      li #[strong Amount to elect:] #{election.seats}
+  div.content-block
+    p.bodyText You can only vote once and you cannot change your vote after voting. The voting link is personal, please do not share it.
+  div.content-block
+    p.bodyText You can vote #[a(href=votingLinkEn) here].

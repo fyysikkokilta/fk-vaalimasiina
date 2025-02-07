@@ -22,20 +22,26 @@ services:
       - HOST=0.0.0.
     volumes:
       - type: bind
-        source: ./src/frontend
-        target: /opt/vaalimasiina/src/frontend
+        source: ./src/
+        target: /opt/vaalimasiina/src/
       - type: bind
-        source: ./src/frontend/public
-        target: /opt/vaalimasiina/src/frontend/public
+        source: ./public
+        target: /opt/vaalimasiina/public
       - type: bind
-        source: ./vite.config.ts
-        target: /opt/vaalimasiina/vite.config.ts
+        source: ./messages
+        target: /opt/vaalimasiina/messages
       - type: bind
-        source: ./index.html
-        target: /opt/vaalimasiina/index.html
+        source: ./next.config.ts
+        target: /opt/vaalimasiina/next.config.ts
       - type: bind
-        source: ./src/backend
-        target: /opt/vaalimasiina/src/backend
+        source: ./drizzle.config.ts
+        target: /opt/vaalimasiina/drizzle.config.ts
+      - type: bind
+        source: ./postcss.config.js
+        target: /opt/vaalimasiina/postcss.config.js
+      - type: bind
+        source: ./tsconfig.json
+        target: /opt/vaalimasiina/tsconfig.json
       - type: bind
         source: ./.env
         target: /opt/vaalimasiina/.env
