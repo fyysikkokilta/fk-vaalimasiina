@@ -19,7 +19,7 @@ services:
     environment:
       - DB_HOST=database-dev
       - NODE_ENV=development
-      - HOST=0.0.0.
+      - HOSTNAME=0.0.0.
     volumes:
       - type: bind
         source: ./src/

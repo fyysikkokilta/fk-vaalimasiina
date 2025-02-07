@@ -1,73 +1,28 @@
 # Stage 1: Builder
-FROM node:22-alpine as builder
+FROM node:22-alpine as base
 
-# Install brotli
-RUN apk add --no-cache brotli
-
-# Set working directory
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /opt/vaalimasiina
-
-# Copy necessary files for npm install
-COPY .eslint* package.json package-lock.json /opt/vaalimasiina/
-
-# Copy tsconfig files
-COPY tsconfig.json /opt/vaalimasiina/
-
-# Copy next configuration
-COPY next.config.ts /opt/vaalimasiina/
-
-# Copy source code
-COPY src /opt/vaalimasiina/src
-
-# Copy public directory
-COPY public /opt/vaalimasiina/public
-
-# Copy messages directory
-COPY messages /opt/vaalimasiina/messages
-
-# Copy environment variables for the frontend
-COPY .env /opt/vaalimasiina/
-
-# Set npm cache
+COPY .eslint* package.json package-lock.json ./
 RUN npm set cache .npm
-
-# Install dependencies
 RUN npm ci
 
-# Set environment variable
-ENV NODE_ENV=production
-
-# Build the frontend
+FROM base AS builder
+RUN apk add --no-cache brotli
+WORKDIR /opt/vaalimasiina
+COPY --from=deps /opt/vaalimasiina/node_modules ./node_modules
+COPY . /opt/vaalimasiina/
 RUN npm run build
-
-# Compress files with gzip and brotli
-RUN find dist -type f \
+RUN find .next -type f \
     -regex ".*\.\(js\|json\|html\|map\|css\|svg\|ico\|txt\)" -exec gzip -k "{}" \; -exec brotli "{}" \;
 
-# Stage 2: Final Image
-FROM node:22-alpine
-
-# Set environment variables
+FROM base AS runner
 ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-
-# Set working directory
+ENV HOSTNAME=0.0.0.0
 WORKDIR /opt/vaalimasiina
+COPY --from=builder /opt/vaalimasiina/public ./public
+COPY --from=builder /opt/vaalimasiina/.next/standalone ./
+COPY --from=builder /opt/vaalimasiina/.next/static ./.next/static
 
-# Copy necessary files for npm install
-COPY package.json package-lock.json /opt/vaalimasiina/
-
-# Copy source code
-COPY src /opt/vaalimasiina/src
-
-# Set npm cache
-RUN npm set cache .npm
-
-# Install dependencies
-RUN npm ci --production --ignore-scripts
-
-# Copy the built frontend from the builder stage
-COPY --from=builder /opt/vaalimasiina/dist /opt/vaalimasiina/dist
-
-# Command to run the application
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["node", "server.js"]

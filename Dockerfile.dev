@@ -7,7 +7,7 @@ COPY .eslint* package.json package-lock.json ./
 
 # Set environment variables
 ENV NODE_ENV=development \
-    HOST=0.0.0.0
+    HOSTNAME=0.0.0.0
 
 # Install dependencies
 RUN npm set cache .npm && \
