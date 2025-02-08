@@ -4,10 +4,10 @@ import { z } from 'zod'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
 import { router } from '../../init'
-import { publicProcedure } from '../../procedures/publicProcedure'
+import { testProcedure } from '../../procedures/testProcedure'
 
 export const testElectionsRouter = router({
-  create: publicProcedure
+  create: testProcedure
     .input(
       z.object({
         title: z.string().min(1),
@@ -51,7 +51,7 @@ export const testElectionsRouter = router({
       })
       return election
     }),
-  changeStatus: publicProcedure
+  changeStatus: testProcedure
     .input(
       z.object({
         electionId: z.string().uuid(),

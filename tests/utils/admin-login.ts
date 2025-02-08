@@ -1,12 +1,20 @@
-import { expect, Page } from '@playwright/test'
+import { Page } from '@playwright/test'
+
+import { testClient } from '~/trpc/client'
 
 export const loginAdmin = async (page: Page) => {
-  await page.goto('./login')
-  await expect(
-    page.getByRole('heading', { name: 'Log in to admin' })
-  ).toBeVisible()
-  await page.fill('#username', 'admin')
-  await page.fill('#password', 'password')
-  await page.getByRole('button').getByText('Log in').click()
-  await expect(page.getByRole('heading', { name: 'Admin' })).toBeVisible()
+  const jwt = await testClient.test?.login.authenticate.mutate()
+
+  if (!jwt) {
+    throw new Error('Failed to login')
+  }
+
+  await page.context().addCookies([
+    {
+      name: 'admin-token',
+      value: jwt,
+      url: 'http://localhost:3000'
+    }
+  ])
+  await page.goto('./admin')
 }

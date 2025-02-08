@@ -3,10 +3,10 @@ import { z } from 'zod'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 
 import { router } from '../../init'
-import { publicProcedure } from '../../procedures/publicProcedure'
+import { testProcedure } from '../../procedures/testProcedure'
 
 export const testVotesRouter = router({
-  create: publicProcedure
+  create: testProcedure
     .input(
       z.object({
         electionId: z.string().uuid(),

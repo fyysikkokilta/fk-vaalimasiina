@@ -8,10 +8,10 @@ import {
 } from '~/db/schema'
 
 import { router } from '../../init'
-import { publicProcedure } from '../../procedures/publicProcedure'
+import { testProcedure } from '../../procedures/testProcedure'
 
 export const testDbRouter = router({
-  reset: publicProcedure.mutation(async ({ ctx }) => {
+  reset: testProcedure.mutation(async ({ ctx }) => {
     await ctx.db.transaction(async (transaction) => {
       await transaction.delete(ballotsTable)
       await transaction.delete(candidatesTable)
