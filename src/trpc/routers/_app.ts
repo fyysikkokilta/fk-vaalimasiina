@@ -2,7 +2,6 @@ import { router } from '../init'
 import { adminElectionsRouter } from './admin/elections'
 import { adminLoginRouter } from './admin/login'
 import { adminVotersRouter } from './admin/voters'
-import { adminVotesRouter } from './admin/votes'
 import { electionsRouter } from './elections'
 import { testDbRouter } from './test/db'
 import { testElectionsRouter } from './test/elections'
@@ -16,8 +15,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const adminRouter = router({
   elections: adminElectionsRouter,
   login: adminLoginRouter,
-  voters: adminVotersRouter,
-  votes: adminVotesRouter
+  voters: adminVotersRouter
 })
 
 const testRouter = router({

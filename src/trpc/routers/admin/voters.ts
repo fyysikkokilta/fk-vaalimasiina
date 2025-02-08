@@ -10,26 +10,6 @@ import { router } from '../../init'
 import { adminProcedure } from '../../procedures/adminProcedure'
 
 export const adminVotersRouter = router({
-  getAll: adminProcedure
-    .input(
-      z.object({
-        electionId: z.string().uuid()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const { electionId } = input
-      const voters = await ctx.db.query.votersTable.findMany({
-        columns: {
-          voterId: true,
-          email: true
-        },
-        with: {
-          hasVoted: true
-        },
-        where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)
-      })
-      return voters
-    }),
   updateEmail: adminProcedure
     .input(
       z.object({

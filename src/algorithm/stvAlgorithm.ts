@@ -6,12 +6,10 @@ export type Election =
   | Exclude<RouterOutput['elections']['getCompletedWithId'], null>['election']
   | Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
 
-export type Ballot =
-  | Exclude<
-      RouterOutput['elections']['getCompletedWithId'],
-      null
-    >['ballots'][number]
-  | RouterOutput['admin']['votes']['getWithId']['ballots'][number]
+export type Ballot = Exclude<
+  RouterOutput['elections']['getCompletedWithId'],
+  null
+>['ballots'][number]
 
 type CandidateId = Election['candidates'][number]['candidateId']
 
