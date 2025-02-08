@@ -57,6 +57,9 @@ export default function VotingInspection({ election }: AdminProps) {
         electionId
       },
       {
+        onSuccess() {
+          void utils.admin.elections.findCurrent.invalidate()
+        },
         onError(error) {
           const code = error?.data?.code
           if (code === 'NOT_FOUND') {
@@ -67,14 +70,20 @@ export default function VotingInspection({ election }: AdminProps) {
     )
   }
 
-  const handleEmailChange = async () => {
-    await updateEmail.mutateAsync({
-      oldEmail,
-      newEmail
-    })
-    setOldEmail('')
-    setNewEmail('')
-    toast.success(t('email_changed'))
+  const handleEmailChange = () => {
+    updateEmail.mutate(
+      {
+        oldEmail,
+        newEmail
+      },
+      {
+        onSuccess() {
+          toast.success(t('email_changed'))
+          setOldEmail('')
+          setNewEmail('')
+        }
+      }
+    )
   }
 
   if (!election) {

@@ -1,4 +1,3 @@
-import { sql } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { router } from '../init'
@@ -14,11 +13,7 @@ export const votersRouter = router({
     .query(async ({ ctx, input }) => {
       const { voterId } = input
       const voter = await ctx.db.query.votersTable.findFirst({
-        columns: {
-          electionId: true,
-          voterId: true,
-          email: true
-        },
+        columns: {},
         where: (votersTable, { eq }) => eq(votersTable.voterId, voterId),
         with: {
           election: {
@@ -30,13 +25,12 @@ export const votersRouter = router({
                 }
               }
             }
+          },
+          hasVoted: {
+            columns: {
+              hasVotedId: true
+            }
           }
-        },
-        extras: {
-          hasVoted:
-            sql<boolean>`EXISTS (SELECT 1 FROM has_voted WHERE has_voted.voter_id = ${voterId})`.as(
-              'has_voted'
-            )
         }
       })
       if (!voter) {

@@ -20,9 +20,9 @@ export default function Vote({ voterId }: { voterId: string }) {
     voterId
   })
   const post = trpc.votes.post.useMutation()
+  const utils = trpc.useUtils()
   const [confirmingVote, setConfirmingVote] = useState(false)
   const [disableVote, setDisableVote] = useState(false)
-  const [hasVoted, setHasVoted] = useState(false)
   const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const [availableCandidates, setAvailableCandidates] = useState<string[]>(
@@ -116,9 +116,7 @@ export default function Vote({ voterId }: { voterId: string }) {
     if (!voterId) {
       return
     }
-    setConfirmingVote(false)
     setDisableVote(true)
-    setHasVoted(true)
     post.mutate(
       {
         voterId,
@@ -129,17 +127,16 @@ export default function Vote({ voterId }: { voterId: string }) {
       },
       {
         onSuccess: ({ ballotId }) => {
+          void utils.voters.getWithId.invalidate({ voterId })
+          setConfirmingVote(false)
           setBallotId(ballotId)
         },
         onError: (error) => {
+          void utils.voters.getWithId.invalidate({ voterId })
           setDisableVote(false)
-          setHasVoted(false)
           const code = error.data?.code
           if (code === 'NOT_FOUND') {
             router.replace('/')
-          }
-          if (code === 'FORBIDDEN') {
-            setHasVoted(true)
           }
         }
       }
@@ -166,11 +163,7 @@ export default function Vote({ voterId }: { voterId: string }) {
     toast.success(t('audit_copied_to_clipboard'))
   }
 
-  if (
-    !election ||
-    election.status !== 'ONGOING' ||
-    voter?.electionId !== election.electionId
-  ) {
+  if (!election || election.status !== 'ONGOING') {
     return (
       <TitleWrapper title={t('title')}>
         <div className="bg-fk-yellow text-fk-black mx-5 flex flex-col items-center rounded-lg p-4 text-center">
@@ -208,7 +201,7 @@ export default function Vote({ voterId }: { voterId: string }) {
           </Link>
           <p className="mb-4">{election.description}</p>
 
-          {hasVoted || voter.hasVoted ? (
+          {voter.hasVoted ? (
             <div className="rounded-lg bg-green-50 p-4 text-center text-green-700">
               <h4 className="mb-3 text-lg font-semibold">
                 {ballotId ? t('thanks_for_voting') : t('already_voted')}
@@ -375,12 +368,14 @@ export default function Vote({ voterId }: { voterId: string }) {
               <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                 <button
                   onClick={handleVote}
+                  disabled={disableVote}
                   className="bg-fk-yellow text-fk-black mb-2 w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500 sm:mb-0 sm:ml-2 sm:w-auto"
                 >
                   {t('confirm')}
                 </button>
                 <button
                   onClick={handleVoteCancel}
+                  disabled={disableVote}
                   className="w-full cursor-pointer rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 sm:w-auto"
                 >
                   {t('cancel')}
