@@ -8,6 +8,7 @@ import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
 import { Link } from '~/i18n/routing'
 import { trpc } from '~/trpc/server'
+import isUUID from '~/utils/isUUID'
 
 export const generateStaticParams = async () => {
   const elections = await db.query.electionsTable.findMany({
@@ -27,6 +28,10 @@ export default async function PreviousResults({
 }) {
   const { locale, electionId } = await params
   setRequestLocale(locale)
+
+  if (!isUUID(electionId)) {
+    notFound()
+  }
 
   const electionBallotsVoterCount = await trpc.elections.getCompletedWithId({
     electionId

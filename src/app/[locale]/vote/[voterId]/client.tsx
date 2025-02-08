@@ -32,7 +32,7 @@ export default function Vote({ voterId }: { voterId: string }) {
   const router = useRouter()
 
   if (!voterElection) {
-    return notFound()
+    notFound()
   }
 
   const { election, voter } = voterElection
