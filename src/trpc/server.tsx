@@ -9,7 +9,9 @@ import { makeQueryClient } from './query-client'
 import { appRouter } from './routers/_app'
 
 export const getQueryClient = cache(makeQueryClient)
-const caller = createCallerFactory(appRouter)(createContext)
+const caller = createCallerFactory(appRouter)(() =>
+  createContext({ server: true })
+)
 export const { trpc, HydrateClient } = createHydrationHelpers<typeof appRouter>(
   caller,
   getQueryClient

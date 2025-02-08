@@ -5,14 +5,19 @@ import React from 'react'
 import { calculateSTVResult } from '~/algorithm/stvAlgorithm'
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
+import { db } from '~/db'
 import { Link } from '~/i18n/routing'
 import { trpc } from '~/trpc/server'
 
 export const generateStaticParams = async () => {
-  const elections = await trpc.elections.getAllClosed()
-  return elections.map((election) => ({
-    electionId: election.electionId
-  }))
+  const elections = await db.query.electionsTable.findMany({
+    where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED'),
+    columns: {
+      electionId: true
+    }
+  })
+
+  return elections
 }
 
 export default async function PreviousResults({

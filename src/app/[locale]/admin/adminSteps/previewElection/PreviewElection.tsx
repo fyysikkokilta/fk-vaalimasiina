@@ -1,16 +1,23 @@
 import { useTranslations } from 'next-intl'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 
-import { ElectionStepContext } from '~/contexts/electionStep/ElectionStepContext'
+import { ElectionStep } from '~/app/[locale]/admin/adminSteps/electionStepSetting'
 import { useRouter } from '~/i18n/routing'
 import { trpc } from '~/trpc/client'
 
+import { AdminProps } from '../../client'
 import AdminNavigation from '../adminNavigation/AdminNavigation'
 
-export default function PreviewElection() {
-  const { election, setElection, setElectionStep } =
-    useContext(ElectionStepContext)!
+type PreviewElectionProps = AdminProps & {
+  previousStep: () => void
+}
+
+export default function PreviewElection({
+  election,
+  previousStep
+}: PreviewElectionProps) {
   const startVoting = trpc.admin.elections.startVoting.useMutation()
+  const utils = trpc.useUtils()
   const [emails, setEmails] = useState('')
   const t = useTranslations('admin.admin_main.preview_election')
   const router = useRouter()
@@ -34,7 +41,7 @@ export default function PreviewElection() {
   }
 
   const handleEdit = () => {
-    setElectionStep('EDIT')
+    previousStep()
   }
 
   const handleSubmit = (electionId: string) => {
@@ -45,7 +52,7 @@ export default function PreviewElection() {
       },
       {
         onSuccess() {
-          setElection((election) => ({ ...election!, status: 'ONGOING' }))
+          void utils.admin.elections.findCurrent.invalidate()
         },
         onError(error) {
           const code = error?.data?.code
@@ -68,6 +75,7 @@ export default function PreviewElection() {
   return (
     <>
       <AdminNavigation
+        electionStep={ElectionStep.PREVIEW}
         disableNext={!validateEmails(emails)}
         onBack={handleEdit}
         onNext={() => handleSubmit(election.electionId)}

@@ -26,6 +26,27 @@ export const adminElectionsRouter = router({
             candidateId: true,
             name: true
           }
+        },
+        voters: {
+          columns: {},
+          with: {
+            hasVoted: {
+              columns: {
+                hasVotedId: true
+              }
+            }
+          }
+        },
+        ballots: {
+          columns: {},
+          with: {
+            votes: {
+              columns: {
+                candidateId: true,
+                preferenceNumber: true
+              }
+            }
+          }
         }
       }
     })

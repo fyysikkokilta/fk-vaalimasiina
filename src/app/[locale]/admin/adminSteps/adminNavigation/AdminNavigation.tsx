@@ -1,8 +1,14 @@
-import React, { useContext } from 'react'
+import { useLocale } from 'next-intl'
+import React from 'react'
 
-import { ElectionStepContext } from '~/contexts/electionStep/ElectionStepContext'
+import {
+  ElectionStep,
+  electionStepSettingsEnglish,
+  electionStepSettingsFinnish
+} from '~/app/[locale]/admin/adminSteps/electionStepSetting'
 
 type AdminNavigationProps = {
+  electionStep: ElectionStep
   disablePrevious?: boolean
   disableNext?: boolean
   onBack?: () => void
@@ -10,12 +16,17 @@ type AdminNavigationProps = {
 }
 
 export default function AdminNavigation({
+  electionStep,
   disablePrevious = false,
   disableNext = false,
   onBack = () => {},
   onNext
 }: AdminNavigationProps) {
-  const { stepSettings } = useContext(ElectionStepContext)!
+  const locale = useLocale()
+  const stepSettings =
+    locale === 'fi'
+      ? electionStepSettingsFinnish[electionStep]
+      : electionStepSettingsEnglish[electionStep]
 
   if (!stepSettings) {
     return null

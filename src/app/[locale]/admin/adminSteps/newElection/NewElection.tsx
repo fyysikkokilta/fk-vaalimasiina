@@ -1,37 +1,39 @@
 import { useTranslations } from 'next-intl'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import { ElectionStepContext } from '~/contexts/electionStep/ElectionStepContext'
+import { ElectionStep } from '~/app/[locale]/admin/adminSteps/electionStepSetting'
 import { useRouter } from '~/i18n/routing'
 import { RouterInput, trpc } from '~/trpc/client'
 
+import { AdminProps } from '../../client'
 import AdminNavigation from '../adminNavigation/AdminNavigation'
 
 // Used for both creating a new election and editing an existing one
 
-export default function NewElection() {
-  const { electionStep } = useContext(ElectionStepContext)!
-  const { election, setElection, setElectionStep } =
-    useContext(ElectionStepContext)!
+type NewElectionProps = AdminProps & {
+  previousStep: () => void
+}
+
+export default function NewElection({
+  election,
+  previousStep
+}: NewElectionProps) {
   const create = trpc.admin.elections.create.useMutation()
   const update = trpc.admin.elections.update.useMutation()
+  const utils = trpc.useUtils()
   const [newCandidate, setNewCandidate] = useState('')
   const [newElection, setNewElection] = useState<
     RouterInput['admin']['elections']['create']
-  >({
-    title: '',
-    description: '',
-    seats: 0,
-    candidates: []
-  })
+  >(
+    election ?? {
+      title: '',
+      description: '',
+      seats: 0,
+      candidates: []
+    }
+  )
   const t = useTranslations('admin.admin_main.new_election')
   const router = useRouter()
-
-  useEffect(() => {
-    if (electionStep === 'EDIT' && election) {
-      setNewElection(election)
-    }
-  }, [electionStep, election])
 
   const handleChange = (
     event:
@@ -69,27 +71,31 @@ export default function NewElection() {
   }
 
   const handleCancelEdit = () => {
-    if (electionStep === 'EDIT') {
-      setElectionStep('PREVIEW')
-    }
+    previousStep()
   }
 
   const handleSubmit = () => {
-    if (electionStep === 'NEW') {
+    if (!election) {
       create.mutate(newElection, {
-        onSuccess: (data) => {
-          setElection(data)
+        onSuccess() {
+          void utils.admin.elections.findCurrent.invalidate()
+        },
+        onError(error) {
+          const code = error?.data?.code
+          if (code === 'NOT_FOUND') {
+            router.refresh()
+          }
         }
       })
     } else {
       update.mutate(
         {
-          electionId: election!.electionId,
+          electionId: election.electionId,
           ...newElection
         },
         {
-          onSuccess: (data) => {
-            setElection(data)
+          onSuccess() {
+            void utils.admin.elections.findCurrent.invalidate()
           },
           onError(error) {
             const code = error?.data?.code
@@ -113,6 +119,7 @@ export default function NewElection() {
   return (
     <>
       <AdminNavigation
+        electionStep={election ? ElectionStep.EDIT : ElectionStep.NEW}
         disableNext={disabled}
         onBack={handleCancelEdit}
         onNext={handleSubmit}

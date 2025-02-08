@@ -6,13 +6,16 @@ import {
   createTRPCClient,
   httpBatchLink,
   loggerLink,
-  TRPCClientError
+  TRPCClientError,
+  TRPCLink
 } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query'
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
+import { observable } from '@trpc/server/observable'
+import { deleteCookie, getCookie } from 'cookies-next/client'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
-import Cookies from 'universal-cookie'
+import { toast } from 'react-toastify'
 
 import { makeQueryClient } from './query-client'
 import type { AppRouter, TestRouter } from './routers/_app'
@@ -21,13 +24,13 @@ export const trpc = createTRPCReact<AppRouter>()
 
 let clientQueryClientSingleton: QueryClient
 
-function getQueryClient(t: (key: string) => string) {
+function getQueryClient() {
   if (typeof window === 'undefined') {
     // Server: always make a new query client
     return makeQueryClient()
   }
   // Browser: use singleton pattern to keep the same query client
-  return (clientQueryClientSingleton ??= makeQueryClient(t))
+  return (clientQueryClientSingleton ??= makeQueryClient())
 }
 
 function getUrl() {
@@ -37,6 +40,38 @@ function getUrl() {
   })()
   return `${base}/api/trpc`
 }
+
+export const errorLink: (t: (key: string) => string) => TRPCLink<AppRouter> =
+  (t: (key: string) => string) => () => {
+    return ({ next, op }) => {
+      return observable((observer) => {
+        const unsubscribe = next(op).subscribe({
+          next(value) {
+            observer.next(value)
+          },
+          error(err) {
+            observer.error(err)
+            if (t(err.message) !== err.message) {
+              toast.error(t(err.message))
+            } else {
+              toast.error(t('eneric_error'))
+            }
+            const isAdmin = err.data?.path?.includes('admin')
+            const shouldLogout =
+              err.data?.code === 'UNAUTHORIZED' ||
+              err.data?.code === 'FORBIDDEN'
+            if (isAdmin && shouldLogout) {
+              deleteCookie('admin-token')
+            }
+          },
+          complete() {
+            observer.complete()
+          }
+        })
+        return unsubscribe
+      })
+    }
+  }
 
 export function TRPCProvider(
   props: Readonly<{
@@ -48,10 +83,11 @@ export function TRPCProvider(
   //       suspend because React will throw away the client on the initial
   //       render if it suspends and there is no boundary
   const errorT = useTranslations('errors')
-  const queryClient = getQueryClient(errorT)
+  const queryClient = getQueryClient()
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
+        errorLink(errorT),
         loggerLink({
           enabled: (opts) =>
             process.env.NODE_ENV !== 'production' ||
@@ -60,8 +96,7 @@ export function TRPCProvider(
         httpBatchLink({
           url: getUrl(),
           headers() {
-            const cookies = new Cookies()
-            const adminToken = cookies.get('admin-token') as string | undefined
+            const adminToken = getCookie('admin-token')
 
             return {
               authorization: adminToken ? `Bearer ${adminToken}` : ''
@@ -85,8 +120,7 @@ export const testClient = createTRPCClient<AppRouter>({
     httpBatchLink({
       url: 'http://localhost:3000/api/trpc',
       headers() {
-        const cookies = new Cookies()
-        const adminToken = cookies.get('admin-token') as string | undefined
+        const adminToken = getCookie('admin-token')
 
         return {
           authorization: adminToken ? `Bearer ${adminToken}` : ''

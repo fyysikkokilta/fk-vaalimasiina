@@ -71,9 +71,7 @@ export const electionsRouter = router({
             }
           },
           ballots: {
-            columns: {
-              ballotId: true
-            },
+            columns: {},
             with: {
               votes: {
                 columns: {

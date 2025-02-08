@@ -135,7 +135,7 @@
     "election_not_completed": "Election is not completed",
     "not_everyone_voted": "Not everyone has voted",
     "wrong_username_or_password": "Wrong username or password",
-    "generic_fetch_error": "An error occurred while fetching data"
+    "generic_error": "An error occurred"
   },
   "error_boundary": {
     "title": "An error occurred",

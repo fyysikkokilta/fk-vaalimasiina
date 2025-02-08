@@ -1,21 +1,19 @@
 import { useTranslations } from 'next-intl'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { ElectionStepContext } from '~/contexts/electionStep/ElectionStepContext'
+import { ElectionStep } from '~/app/[locale]/admin/adminSteps/electionStepSetting'
 import { useRouter } from '~/i18n/routing'
 import { trpc } from '~/trpc/client'
 
+import { AdminProps } from '../../client'
 import AdminNavigation from '../adminNavigation/AdminNavigation'
 
-export default function VotingInspection() {
-  const { election, setElection } = useContext(ElectionStepContext)!
-  const [voters, { refetch }] = trpc.admin.voters.getAll.useSuspenseQuery({
-    electionId: election!.electionId
-  })
+export default function VotingInspection({ election }: AdminProps) {
   const abort = trpc.admin.elections.abortVoting.useMutation()
   const end = trpc.admin.elections.endVoting.useMutation()
   const updateEmail = trpc.admin.voters.updateEmail.useMutation()
+  const utils = trpc.useUtils()
   const t = useTranslations('admin.admin_main.voting_inspection')
   const router = useRouter()
 
@@ -24,12 +22,15 @@ export default function VotingInspection() {
 
   useEffect(() => {
     if (!election) return
-    void refetch()
+    void utils.admin.elections.findCurrent.invalidate()
 
-    const interval = setInterval(() => void refetch(), 3000)
+    const interval = setInterval(
+      () => void utils.admin.elections.findCurrent.invalidate(),
+      3000
+    )
 
     return () => clearInterval(interval)
-  }, [election, refetch])
+  }, [election, utils.admin.elections.findCurrent])
 
   const handleAbortVoting = (electionId: string) => {
     abort.mutate(
@@ -38,7 +39,7 @@ export default function VotingInspection() {
       },
       {
         onSuccess() {
-          setElection((election) => ({ ...election!, status: 'CREATED' }))
+          void utils.admin.elections.findCurrent.invalidate()
         },
         onError(error) {
           const code = error?.data?.code
@@ -56,9 +57,6 @@ export default function VotingInspection() {
         electionId
       },
       {
-        onSuccess() {
-          setElection((election) => ({ ...election!, status: 'FINISHED' }))
-        },
         onError(error) {
           const code = error?.data?.code
           if (code === 'NOT_FOUND') {
@@ -79,18 +77,21 @@ export default function VotingInspection() {
     toast.success(t('email_changed'))
   }
 
+  if (!election) {
+    return null // Should never happen
+  }
+
+  const { voters } = election
+
   const remainingVoters = voters.filter((voter) => !voter.hasVoted)
   const votersWhoVoted = voters.filter((voter) => voter.hasVoted)
 
   const validNewEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
 
-  if (!election) {
-    return null // Should never happen
-  }
-
   return (
     <>
       <AdminNavigation
+        electionStep={ElectionStep.VOTING}
         disableNext={remainingVoters.length > 0}
         onBack={() => handleAbortVoting(election.electionId)}
         onNext={() => handleEndVoting(election.electionId)}

@@ -1,13 +1,13 @@
-import { hasCookie } from 'cookies-next/server'
+import { hasCookie } from 'cookies-next'
 import { cookies } from 'next/headers'
 import { setRequestLocale } from 'next-intl/server'
 
 import { redirect } from '~/i18n/routing'
 import { HydrateClient, trpc } from '~/trpc/server'
 
-import Admin from './client'
+import AdminRouter from './client'
 
-export default async function AuditPage({
+export default async function AdminPage({
   params
 }: {
   params: Promise<{ locale: string }>
@@ -27,7 +27,7 @@ export default async function AuditPage({
 
   return (
     <HydrateClient>
-      <Admin />
+      <AdminRouter />
     </HydrateClient>
   )
 }
