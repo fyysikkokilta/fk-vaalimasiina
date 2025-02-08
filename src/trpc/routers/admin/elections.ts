@@ -239,7 +239,7 @@ export const adminElectionsRouter = router({
 
       if (!everyoneVoted) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
+          code: 'FORBIDDEN',
           message: 'not_everyone_voted'
         })
       }

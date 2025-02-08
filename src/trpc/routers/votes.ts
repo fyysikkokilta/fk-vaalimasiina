@@ -47,7 +47,7 @@ export const votesRouter = router({
       // Check if the election is ongoing
       if (!election || !electionIsOnGoing) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
+          code: 'FORBIDDEN',
           message: 'voting_not_ongoing'
         })
       }
