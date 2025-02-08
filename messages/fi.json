@@ -4,7 +4,12 @@
     "audit": "Auditointi",
     "previous_results": "Edelliset tulokset",
     "admin": "Hallinta",
-    "loading": "Ladataan..."
+    "loading": "Ladataan...",
+    "not_found": {
+      "title": "Etsimääsi sivua ei löytynyt",
+      "description": "Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+      "back_to_frontpage": "Takaisin etusivulle"
+    }
   },
   "voter": {
     "audit": {

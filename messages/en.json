@@ -4,7 +4,12 @@
     "audit": "Auditing",
     "previous_results": "Previous results",
     "admin": "Admin",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "not_found": {
+      "title": "The page you are looking for was not found",
+      "description": "Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
+      "back_to_frontpage": "Back to frontpage"
+    }
   },
   "voter": {
     "audit": {
