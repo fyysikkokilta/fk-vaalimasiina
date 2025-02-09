@@ -1,11 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
 @import 'tailwindcss';
 
 @theme {
   --color-fk-yellow: #fbdb1d;
   --color-fk-black: #201e1e;
-  --font-body: 'Roboto', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
 }
 
 .fii-background {

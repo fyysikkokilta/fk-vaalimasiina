@@ -1,6 +1,7 @@
 import '../globals.css'
 
 import { Metadata } from 'next'
+import { Roboto } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
@@ -20,6 +21,13 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
+const roboto = Roboto({
+  weight: ['400', '700'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-roboto'
+})
+
 export default async function RootLayout({
   children,
   params
@@ -37,12 +45,12 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className={`${roboto.variable} ${roboto.className}`}>
       {/*<script
         async
         src="https://unpkg.com/react-scan/dist/auto.global.js"
       ></script>*/}
-      <body className="bg-fk-yellow font-body text-fk-black flex h-dvh flex-col">
+      <body className="bg-fk-yellow text-fk-black flex h-dvh flex-col">
         <NextIntlClientProvider messages={messages}>
           <TRPCProvider>
             <Header />
