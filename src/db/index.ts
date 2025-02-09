@@ -36,6 +36,6 @@ export const runMigrations = async () => {
     max: 1
   })
   await migrate(drizzle(migrationClient), {
-    migrationsFolder: resolve('./src/backend/drizzle')
+    migrationsFolder: resolve('./src/drizzle')
   })
 }
