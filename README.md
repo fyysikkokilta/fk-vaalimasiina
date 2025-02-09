@@ -6,7 +6,8 @@
 1. Clone the repository
 2. Install dependencies with `npm install`
 3. Setup a Postgres database and add the environment variables to .env
-4. Start the project with `npm run dev`
+4. Setup the database by running migrations using `npm run db:migrate`
+5. Start the project with `npm run dev`
 
 ## Docker
 
