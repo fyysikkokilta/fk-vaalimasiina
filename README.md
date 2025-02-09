@@ -16,6 +16,14 @@ Development docker setup can be setupped with `docker-compose -f .\docker-compos
 
 Production docker setup can be setupped with `docker-compose -f .\docker-compose.prod.yml up`.
 
+## Migrations
+
+Migrations can be run with command `npm run db:migrate`. Database environment variables need to be set.
+
+A new migration can be create using `npm run db:generate-migration`.
+
+Other Drizzle features can be accessed using `npx drizzle-kit [command]`.
+
 ## Voting System Overview
 
 The voting process operates as follows:
