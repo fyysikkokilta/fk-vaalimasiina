@@ -46,10 +46,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${roboto.variable} ${roboto.className}`}>
-      {/*<script
-        async
-        src="https://unpkg.com/react-scan/dist/auto.global.js"
-      ></script>*/}
+      {/*<Script src="https://unpkg.com/react-scan/dist/auto.global.js" />*/}
       <body className="bg-fk-yellow text-fk-black flex h-dvh flex-col">
         <NextIntlClientProvider messages={messages}>
           <TRPCProvider>
