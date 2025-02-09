@@ -1,7 +1,7 @@
-import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
+import { Link } from '~/i18n/routing'
 
 export default async function VoterNotFound() {
   const t = await getTranslations('voter.vote.not_found')

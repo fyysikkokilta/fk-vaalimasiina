@@ -69,7 +69,8 @@ export default function Audit() {
                       .sort((a, b) => a.preferenceNumber - b.preferenceNumber)
                       .map((vote, index) => (
                         <span key={index} className="text-gray-900">
-                          {vote.preferenceNumber}.{' '}
+                          {vote.preferenceNumber}
+                          {'. '}
                           {
                             election.candidates.find(
                               (candidate) =>

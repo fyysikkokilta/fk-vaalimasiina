@@ -1,9 +1,9 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import React, { useEffect, useRef } from 'react'
 
+import { usePathname } from '~/i18n/routing'
 import { useRouter } from '~/i18n/routing'
 import { isTRPCClientError } from '~/trpc/client'
 
@@ -34,7 +34,8 @@ export default function ErrorFallback({
       <p>{t('error_boundary.message')}</p>
       {isTRPCClientError(error) && (
         <p>
-          {t('error_boundary.error_message')}:{' '}
+          {t('error_boundary.error_message')}
+          {': '}
           {t(`errors.${error.message}`) !== `errors.${error.message}`
             ? t(`errors.${error.message}`)
             : error.message}

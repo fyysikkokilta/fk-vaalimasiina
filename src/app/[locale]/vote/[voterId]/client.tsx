@@ -252,7 +252,8 @@ export default function Vote({ voterId }: { voterId: string }) {
                                     className="flex items-center rounded-lg bg-white p-2 shadow-sm"
                                     onDoubleClick={handleDoubleClickRemove}
                                   >
-                                    {index + 1}. &nbsp;{' '}
+                                    {index + 1}
+                                    {'. '}
                                     {getCandidateName(candidateId)}
                                   </div>
                                 )}
@@ -354,7 +355,9 @@ export default function Vote({ voterId }: { voterId: string }) {
                           key={candidateId}
                           className="rounded-lg border p-2"
                         >
-                          {index + 1}. &nbsp; {getCandidateName(candidateId)}
+                          {index + 1}
+                          {'. '}
+                          {getCandidateName(candidateId)}
                         </div>
                       ))}
                     </div>

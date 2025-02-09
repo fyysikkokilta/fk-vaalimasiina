@@ -190,10 +190,14 @@ export default function ElectionResults({
           <div className="mb-4">{election.description}</div>
           <div className="flex flex-col space-y-2">
             <span>
-              {t('total_votes')}: {votingResult.totalVotes}
+              {t('total_votes')}
+              {': '}
+              {votingResult.totalVotes}
             </span>
             <span>
-              {t('voter_count')}: {votingResult.voterCount}
+              {t('voter_count')}
+              {': '}
+              {votingResult.voterCount}
             </span>
           </div>
           <div className="mt-4 rounded-lg bg-red-100 p-4 text-red-700">

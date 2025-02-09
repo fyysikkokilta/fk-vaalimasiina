@@ -113,12 +113,16 @@ export default function VotingInspection({ election }: AdminProps) {
           <div className="w-full space-y-2 rounded-lg border border-gray-200 p-4">
             <div className="rounded-lg border border-gray-200 p-3">
               <span>
-                {t('given_votes')}: {votersWhoVoted.length}
+                {t('given_votes')}
+                {': '}
+                {votersWhoVoted.length}
               </span>
             </div>
             <div className="rounded-lg border border-gray-200 p-3">
               <span>
-                {t('voters')}: {voters.length}
+                {t('voters')}
+                {': '}
+                {voters.length}
               </span>
             </div>
           </div>

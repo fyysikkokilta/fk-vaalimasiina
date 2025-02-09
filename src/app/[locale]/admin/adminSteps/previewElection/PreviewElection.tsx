@@ -85,7 +85,9 @@ export default function PreviewElection({
           <h3 className="mb-3 text-xl font-semibold">{election.title}</h3>
           <p className="mb-3 text-center">{election.description}</p>
           <div className="mb-3">
-            {t('seats')}: {election.seats}
+            {t('seats')}
+            {':'}
+            {election.seats}
           </div>
 
           <h4 className="font-medium">{t('candidates')}</h4>
@@ -95,7 +97,9 @@ export default function PreviewElection({
                 key={candidate.candidateId}
                 className="rounded-lg border border-gray-200 p-3"
               >
-                {index + 1}. {candidate.name}
+                {index + 1}
+                {'. '}
+                {candidate.name}
               </li>
             ))}
           </ul>
