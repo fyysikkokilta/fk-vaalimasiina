@@ -25,16 +25,6 @@ export default function ErrorFallback({
     }
   }, [pathName, reset])
 
-  const handleBackToFrontpage = () => {
-    reset()
-    router.push('/')
-  }
-
-  const handleReload = () => {
-    reset()
-    router.refresh()
-  }
-
   return (
     <div
       className="relative m-0 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
@@ -53,13 +43,13 @@ export default function ErrorFallback({
       <div className="mt-2 space-x-2">
         <button
           className="cursor-pointer rounded-md bg-gray-500 px-4 py-2 text-white"
-          onClick={handleReload}
+          onClick={() => reset()}
         >
           {t('error_boundary.reload')}
         </button>
         <button
-          className="bg-fk-yellow text-fk-black cursor-pointer rounded-md px-4 py-2 transition-colors hover:bg-amber-500"
-          onClick={handleBackToFrontpage}
+          className="bg-fk-yellow text-fk-black mt-2 cursor-pointer rounded-md px-4 py-2 transition-colors hover:bg-amber-500"
+          onClick={() => router.push('/')}
         >
           {t('error_boundary.back_to_frontpage')}
         </button>
