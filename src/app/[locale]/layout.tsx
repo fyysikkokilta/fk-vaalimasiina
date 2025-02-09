@@ -24,6 +24,7 @@ export function generateStaticParams() {
 const roboto = Roboto({
   weight: ['400', '700'],
   display: 'swap',
+  subsets: ['latin-ext', 'latin'],
   preload: true,
   variable: '--font-roboto'
 })
