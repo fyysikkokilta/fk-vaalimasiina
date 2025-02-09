@@ -25,6 +25,6 @@ services:
     ports:
       - '127.0.0.1:8010:3000'
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "50m"
+        max-size: '50m'
