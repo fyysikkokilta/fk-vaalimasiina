@@ -41,37 +41,38 @@ function getUrl() {
   return `${base}/api/trpc`
 }
 
-export const errorLink: (t: (key: string) => string) => TRPCLink<AppRouter> =
-  (t: (key: string) => string) => () => {
-    return ({ next, op }) => {
-      return observable((observer) => {
-        const unsubscribe = next(op).subscribe({
-          next(value) {
-            observer.next(value)
-          },
-          error(err) {
-            observer.error(err)
-            if (t(err.message) !== err.message) {
-              toast.error(t(err.message))
-            } else {
-              toast.error(t('eneric_error'))
-            }
-            const isAdmin = err.data?.path?.includes('admin')
-            const shouldLogout =
-              err.data?.code === 'UNAUTHORIZED' ||
-              err.data?.code === 'FORBIDDEN'
-            if (isAdmin && shouldLogout) {
-              deleteCookie('admin-token')
-            }
-          },
-          complete() {
-            observer.complete()
+export const errorLink: (
+  t: ReturnType<typeof useTranslations>
+) => TRPCLink<AppRouter> = (t: ReturnType<typeof useTranslations>) => () => {
+  return ({ next, op }) => {
+    return observable((observer) => {
+      const unsubscribe = next(op).subscribe({
+        next(value) {
+          observer.next(value)
+        },
+        error(err) {
+          observer.error(err)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if (t.has(err.message as any)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            toast.error(t(err.message as any))
+          } else {
+            toast.error(t('generic_error'))
           }
-        })
-        return unsubscribe
+          const isAdmin = err.data?.path?.includes('admin')
+          const shouldLogout = err.data?.code === 'UNAUTHORIZED'
+          if (isAdmin && shouldLogout) {
+            deleteCookie('admin-token')
+          }
+        },
+        complete() {
+          observer.complete()
+        }
       })
-    }
+      return unsubscribe
+    })
   }
+}
 
 export function TRPCProvider(
   props: Readonly<{

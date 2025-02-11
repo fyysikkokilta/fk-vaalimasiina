@@ -140,6 +140,8 @@
     "election_not_completed": "Vaalit eivät ole vielä päättyneet",
     "not_everyone_voted": "Kaikki eivät ole äänestäneet",
     "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana",
+    "email_already_exists": "Sähköposti on jo käytössä",
+    "error_updating_email": "Virhe päivitettäessä sähköpostia",
     "generic_error": "Jotain meni pieleen"
   },
   "error_boundary": {

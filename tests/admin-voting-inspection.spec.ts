@@ -190,6 +190,6 @@ test.describe('change email form', () => {
     await page.fill('#oldEmail', 'email4@email.com')
     await page.fill('#newEmail', 'email3@email.com')
     await page.getByRole('button', { name: 'Change email' }).click()
-    await expectToast(page, '', true)
+    await expectToast(page, 'Email already exists')
   })
 })

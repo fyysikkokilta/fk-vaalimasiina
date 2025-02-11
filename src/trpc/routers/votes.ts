@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
+import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
 
 import { router } from '../init'
 import { publicProcedure } from '../procedures/publicProcedure'
@@ -52,13 +53,6 @@ export const votesRouter = router({
         })
       }
 
-      if (validVoter.hasVoted) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'voter_already_voted'
-        })
-      }
-
       // Check that every candidate in the ballot is a valid candidate
       const validCandidates = ballot.every((ballotItem) =>
         election.candidates.some(
@@ -85,37 +79,42 @@ export const votesRouter = router({
         })
       }
 
-      const ballotId = await ctx.db.transaction(async (transaction) => {
-        const ballots = await transaction
-          .insert(ballotsTable)
-          .values({ electionId: election.electionId })
-          .returning({ ballotId: ballotsTable.ballotId })
+      try {
+        const ballotId = await ctx.db.transaction(async (transaction) => {
+          const ballots = await transaction
+            .insert(ballotsTable)
+            .values({ electionId: election.electionId })
+            .returning({ ballotId: ballotsTable.ballotId })
 
-        if (ballot.length > 0) {
-          await transaction.insert(votesTable).values(
-            ballot.map((vote) => ({
-              ballotId: ballots[0].ballotId,
-              candidateId: vote.candidateId,
-              preferenceNumber: vote.preferenceNumber
-            }))
-          )
+          if (ballot.length > 0) {
+            await transaction.insert(votesTable).values(
+              ballot.map((vote) => ({
+                ballotId: ballots[0].ballotId,
+                candidateId: vote.candidateId,
+                preferenceNumber: vote.preferenceNumber
+              }))
+            )
+          }
+
+          // Don't allow the same voter to vote twice
+          // Duplicate votes are handled by the database schema
+          // If duplicate votes are attempted, the database will throw an error
+          await transaction.insert(hasVotedTable).values({ voterId })
+
+          return ballots[0].ballotId
+        })
+        return { ballotId }
+      } catch (error) {
+        if (isUniqueConstraintError(error)) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'voter_already_voted'
+          })
         }
-
-        // Don't allow the same voter to vote twice
-        // Duplicate votes are handled by the database schema
-        // If duplicate votes are attempted, the database will throw an error
-        await transaction.insert(hasVotedTable).values({ voterId })
-
-        return ballots[0].ballotId
-      })
-
-      if (!ballotId) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'error_saving_ballot'
         })
       }
-
-      return { ballotId }
     })
 })

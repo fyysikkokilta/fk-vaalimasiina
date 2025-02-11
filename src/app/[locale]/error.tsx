@@ -36,8 +36,10 @@ export default function ErrorFallback({
         <p>
           {t('error_boundary.error_message')}
           {': '}
-          {t(`errors.${error.message}`) !== `errors.${error.message}`
-            ? t(`errors.${error.message}`)
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {t.has(error.message as any)
+            ? /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+              t(error.message as any)
             : error.message}
         </p>
       )}
