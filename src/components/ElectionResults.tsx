@@ -84,7 +84,7 @@ function RoundResult({
   return (
     <div
       id={`round-${round}`}
-      className="mb-3 overflow-hidden rounded-lg border border-gray-200 bg-white shadow"
+      className="mb-3 overflow-hidden rounded-lg border border-gray-200"
     >
       <h5 className="bg-gray-50 p-4 text-center font-medium">
         {t('round')} {round}
