@@ -44,7 +44,7 @@ export default function NewElection({
     setNewElection((electionState) => ({
       ...electionState,
       [event.target.name]: isNumber
-        ? parseInt(event.target.value)
+        ? parseInt(event.target.value, 10) || ''
         : event.target.value
     }))
   }
@@ -111,9 +111,8 @@ export default function NewElection({
   const disabled = !(
     newElection.title &&
     newElection.description &&
-    newElection.seats &&
     newElection.seats > 0 &&
-    newElection.candidates.length
+    newElection.candidates.length >= newElection.seats
   )
 
   return (
@@ -124,9 +123,8 @@ export default function NewElection({
         onBack={handleCancelEdit}
         onNext={handleSubmit}
       />
-      <form className="mx-auto mt-3 max-w-6xl px-4">
+      <form>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {/* Left Column */}
           <div>
             <div className="mb-4">
               <label
@@ -144,7 +142,6 @@ export default function NewElection({
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
-
             <div className="mb-4">
               <label
                 htmlFor="description"
@@ -161,7 +158,6 @@ export default function NewElection({
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
-
             <div className="mb-4">
               <label
                 htmlFor="seats"
@@ -179,8 +175,6 @@ export default function NewElection({
               />
             </div>
           </div>
-
-          {/* Right Column */}
           <div>
             <div className="mb-4">
               <label
@@ -211,7 +205,6 @@ export default function NewElection({
                 </button>
               </div>
             </div>
-
             <div className="mb-4">
               <label className="mb-2 block text-sm font-medium text-gray-700">
                 {t('candidates')}

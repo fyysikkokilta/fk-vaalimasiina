@@ -33,7 +33,7 @@ export default function Login() {
   }
   return (
     <TitleWrapper title={t('title')}>
-      <div className="flex justify-center px-4">
+      <div className="flex justify-center">
         <div className="w-full max-w-md">
           <form className="space-y-4">
             <div>
@@ -51,7 +51,6 @@ export default function Login() {
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
-
             <div>
               <label
                 htmlFor="password"
@@ -67,7 +66,6 @@ export default function Login() {
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
-
             <button
               type="button"
               onClick={handleLogin}

@@ -16,7 +16,7 @@ function HeaderLink({
     <Link
       href={href}
       replace
-      className="rounded-lg p-2 text-white transition-colors hover:bg-white/10 hover:text-white/90"
+      className="rounded-lg px-4 py-3 text-white transition-colors hover:bg-white/10 hover:text-white/90"
     >
       {children}
     </Link>
@@ -31,24 +31,20 @@ export default async function Header() {
   const t = await getTranslations('app')
   return (
     <header className="bg-fk-black shadow-md">
-      <div className="container mx-auto flex items-center justify-between p-2">
-        <h1 className="ml-3 hidden text-xl text-white md:flex">{APP_TITLE}</h1>
-        <h1 className="ml-3 text-xl text-white md:hidden">{APP_TITLE_SHORT}</h1>
-
-        {/* Desktop Navigation */}
-        <nav className="ml-6 hidden flex-1 items-center justify-between md:flex">
-          <div className="flex space-x-4">
+      <div className="container m-auto flex items-center justify-between px-5 py-2">
+        <h1 className="hidden text-xl text-white md:flex">{APP_TITLE}</h1>
+        <h1 className="text-xl text-white md:hidden">{APP_TITLE_SHORT}</h1>
+        <nav className="ml-3 hidden flex-1 items-center justify-between md:flex">
+          <div className="flex">
             <HeaderLink href="/">{t('main')}</HeaderLink>
             <HeaderLink href="/audit">{t('audit')}</HeaderLink>
             <HeaderLink href="/elections">{t('previous_results')}</HeaderLink>
             <HeaderLink href="/admin">{t('admin')}</HeaderLink>
           </div>
-          <div className="ml-4">
+          <div>
             <LanguageSwitcher />
           </div>
         </nav>
-
-        {/* Mobile Navigation */}
         <div className="relative mr-2 md:hidden">
           <input type="checkbox" id="nav-toggle" className="peer hidden" />
           <label

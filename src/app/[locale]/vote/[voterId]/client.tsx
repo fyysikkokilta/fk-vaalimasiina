@@ -166,7 +166,7 @@ export default function Vote({ voterId }: { voterId: string }) {
   if (!election || election.status !== 'ONGOING') {
     return (
       <TitleWrapper title={t('title')}>
-        <div className="bg-fk-yellow text-fk-black mx-5 flex flex-col items-center rounded-lg p-4 text-center">
+        <div className="bg-fk-yellow text-fk-black flex flex-col items-center rounded-lg text-center">
           <h2 className="mb-3 text-xl font-semibold">
             {t('election_not_ongoing')}
           </h2>
@@ -177,7 +177,7 @@ export default function Vote({ voterId }: { voterId: string }) {
         <div className="mt-4 flex justify-center">
           <Link
             href="/"
-            className="bg-fk-yellow text-fk-black mb-3 rounded-lg px-4 py-2 transition-colors hover:bg-amber-500"
+            className="bg-fk-yellow text-fk-black mb-3 rounded-lg px-4 py-3 transition-colors hover:bg-amber-500"
           >
             {t('back_to_frontpage')}
           </Link>
@@ -195,12 +195,11 @@ export default function Vote({ voterId }: { voterId: string }) {
         <div className="p-4">
           <Link
             href="/"
-            className="bg-fk-yellow text-fk-black mb-3 inline-block rounded-lg px-4 py-2 transition-colors hover:bg-amber-500"
+            className="bg-fk-yellow text-fk-black mb-3 inline-block rounded-lg px-4 py-3 transition-colors hover:bg-amber-500"
           >
             {t('back_to_frontpage')}
           </Link>
           <p className="mb-4">{election.description}</p>
-
           {voter.hasVoted ? (
             <div className="rounded-lg bg-green-50 p-4 text-center text-green-700">
               <h4 className="mb-3 text-lg font-semibold">
@@ -265,7 +264,6 @@ export default function Vote({ voterId }: { voterId: string }) {
                       )}
                     </Droppable>
                   </div>
-
                   <div className="flex-1">
                     <h5 className="mb-2 font-medium">
                       {t('available_candidates')}
@@ -307,7 +305,6 @@ export default function Vote({ voterId }: { voterId: string }) {
                   </div>
                 </div>
               </DragDropContext>
-
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={handleVoteConfirmation}
@@ -325,7 +322,6 @@ export default function Vote({ voterId }: { voterId: string }) {
           )}
         </div>
       </div>
-
       {confirmingVote && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto backdrop-blur-sm"

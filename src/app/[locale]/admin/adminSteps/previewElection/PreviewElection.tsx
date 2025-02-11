@@ -80,17 +80,16 @@ export default function PreviewElection({
         onBack={handleEdit}
         onNext={() => handleSubmit(election.electionId)}
       />
-      <div className="mx-auto max-w-2xl px-4">
+      <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
           <h3 className="mb-3 text-xl font-semibold">{election.title}</h3>
           <p className="mb-3 text-center">{election.description}</p>
           <div className="mb-3">
             {t('seats')}
-            {':'}
+            {': '}
             {election.seats}
           </div>
-
-          <h4 className="font-medium">{t('candidates')}</h4>
+          <h4 className="mb-2 font-medium">{t('candidates')}</h4>
           <ul className="w-full space-y-2">
             {election.candidates.map((candidate, index) => (
               <li
@@ -103,7 +102,6 @@ export default function PreviewElection({
               </li>
             ))}
           </ul>
-
           <h4 className="mt-6 font-medium">{t('voters')}</h4>
           <div className="w-full">
             <label
@@ -127,7 +125,6 @@ export default function PreviewElection({
               }`}
             />
           </div>
-
           {emails.length > 0 && (
             <div
               className={`mt-2 text-center ${

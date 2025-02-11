@@ -105,11 +105,10 @@ export default function VotingInspection({ election }: AdminProps) {
         onBack={() => handleAbortVoting(election.electionId)}
         onNext={() => handleEndVoting(election.electionId)}
       />
-      <div className="mx-auto max-w-2xl px-4">
+      <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
           <h3 className="mb-2 text-xl font-semibold">{election.title}</h3>
           <p className="mb-4 text-center">{election.description}</p>
-
           <div className="w-full space-y-2 rounded-lg border border-gray-200 p-4">
             <div className="rounded-lg border border-gray-200 p-3">
               <span>
@@ -126,7 +125,6 @@ export default function VotingInspection({ election }: AdminProps) {
               </span>
             </div>
           </div>
-
           <form className="mt-6 w-full space-y-4">
             <div>
               <label
@@ -140,10 +138,9 @@ export default function VotingInspection({ election }: AdminProps) {
                 type="email"
                 value={oldEmail}
                 onChange={(e) => setOldEmail(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
-
             <div>
               <label
                 htmlFor="newEmail"
@@ -156,10 +153,9 @@ export default function VotingInspection({ election }: AdminProps) {
                 type="email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
-
             <button
               type="button"
               onClick={() => void handleEmailChange()}

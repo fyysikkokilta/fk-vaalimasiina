@@ -19,28 +19,26 @@ export default async function PreviousElectionList({
   return (
     <TitleWrapper title={t('title')}>
       {elections.length > 0 ? (
-        <div>
-          <ul className="space-y-2">
-            {elections.map((election) => (
-              <li
-                key={election.electionId}
-                className="rounded-lg border transition-colors hover:bg-gray-50"
+        <ul className="grid list-none grid-cols-1 place-items-center gap-4 p-0 md:grid-cols-3">
+          {elections.map((election) => (
+            <li
+              key={election.electionId}
+              className="w-full max-w-md rounded-lg border transition-colors hover:bg-gray-50"
+            >
+              <Link
+                href={`/elections/${election.electionId}`}
+                className="block px-4 py-3 text-center text-gray-900 hover:text-gray-700"
               >
-                <Link
-                  href={`/elections/${election.electionId}`}
-                  className="block p-4 text-center text-gray-900 hover:text-gray-700"
-                >
-                  {election.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+                {election.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
       ) : (
-        <div>
+        <>
           <span>{t('no_previous_results')}</span>
           <p>{t('no_previous_results_description')}</p>
-        </div>
+        </>
       )}
     </TitleWrapper>
   )

@@ -2,7 +2,7 @@
   "app": {
     "main": "Main",
     "audit": "Auditing",
-    "previous_results": "Previous results",
+    "previous_results": "Results",
     "admin": "Admin",
     "loading": "Loading...",
     "not_found": {
@@ -118,7 +118,7 @@
     "invalid_result": "Ineligible result. The election will be repeated."
   },
   "previous_results": {
-    "title": "Previous results",
+    "title": "Results",
     "back_to_list": "Back to list",
     "no_previous_results": "No previous results",
     "no_previous_results_description": "There have been no elections held yet or their results have not been published.",

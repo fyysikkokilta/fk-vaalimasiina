@@ -2,7 +2,7 @@
   "app": {
     "main": "Etusivu",
     "audit": "Auditointi",
-    "previous_results": "Edelliset tulokset",
+    "previous_results": "Tulokset",
     "admin": "Hallinta",
     "loading": "Ladataan...",
     "not_found": {
@@ -118,7 +118,7 @@
     "invalid_result": "Ei-vaalikelpoinen tulos. Äänestys uusitaan."
   },
   "previous_results": {
-    "title": "Edelliset tulokset",
+    "title": "Tulokset",
     "back_to_list": "Takaisin listaukseen",
     "no_previous_results": "Ei aiempia tuloksia",
     "no_previous_results_description": "Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu.",

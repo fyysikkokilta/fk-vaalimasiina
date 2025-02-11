@@ -184,7 +184,7 @@ export default function ElectionResults({
 
   if (!votingResult.validResult) {
     return (
-      <div className="container mx-auto mb-4 px-4">
+      <div className="container mx-auto mb-4">
         <div className="text-center">
           <h3 className="mb-4 text-2xl font-semibold">{election.title}</h3>
           <div className="mb-4">{election.description}</div>
@@ -209,14 +209,13 @@ export default function ElectionResults({
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container">
       <div className="mb-4 text-center">
         <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
         <div className="mb-3">{election.description}</div>
         <ElectionActions election={election} votingResult={votingResult} />
       </div>
-
-      <div className="mb-4 flex justify-between px-2">
+      <div className="mb-4 flex justify-between">
         <button
           onClick={() => setCurrentRound((curr) => curr - 1)}
           disabled={currentRound === 0}
@@ -228,7 +227,6 @@ export default function ElectionResults({
         >
           {t('previous_round')}
         </button>
-
         <button
           onClick={() => setCurrentRound((curr) => curr + 1)}
           disabled={currentRound === votingResult.roundResults.length + 1}
@@ -241,7 +239,6 @@ export default function ElectionResults({
           {t('next_round')}
         </button>
       </div>
-
       {currentRound === 0 ? (
         <InitialVotes election={election} votingResult={votingResult} />
       ) : currentRound === votingResult.roundResults.length + 1 ? (
