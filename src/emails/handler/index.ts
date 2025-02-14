@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import path from 'path'
@@ -85,6 +86,10 @@ export const sendVotingMail = async (
 
     await client.messages.create(process.env.MAILGUN_DOMAIN, emailParams)
   } catch (error) {
-    console.error(error)
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'mail_sending_failed',
+      cause: error
+    })
   }
 }

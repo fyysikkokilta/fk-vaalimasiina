@@ -1,0 +1,1 @@
+ALTER TYPE "public"."election_status" ADD VALUE 'UPDATING' BEFORE 'ONGOING';

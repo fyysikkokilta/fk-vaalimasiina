@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 
 import { TRPCError } from '@trpc/server'
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import { z } from 'zod'
 
 import {
@@ -103,6 +103,58 @@ export const adminElectionsRouter = router({
         return { ...elections[0], candidates: insertedCandidates }
       })
     }),
+  startEditing: adminProcedure
+    .input(z.object({ electionId: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { electionId } = input
+      const statuses = await ctx.db
+        .update(electionsTable)
+        .set({
+          status: 'UPDATING'
+        })
+        .where(
+          and(
+            eq(electionsTable.electionId, electionId),
+            eq(electionsTable.status, 'CREATED')
+          )
+        )
+        .returning({ status: electionsTable.status })
+
+      if (!statuses[0]) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'election_not_found'
+        })
+      }
+
+      return statuses[0]
+    }),
+  cancelEditing: adminProcedure
+    .input(z.object({ electionId: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { electionId } = input
+      const statuses = await ctx.db
+        .update(electionsTable)
+        .set({
+          status: 'CREATED'
+        })
+        .where(
+          and(
+            eq(electionsTable.electionId, electionId),
+            eq(electionsTable.status, 'UPDATING')
+          )
+        )
+        .returning({ status: electionsTable.status })
+
+      if (!statuses[0]) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'election_not_found'
+        })
+      }
+
+      return statuses[0]
+    }),
   update: adminProcedure
     .input(
       z.object({
@@ -121,9 +173,15 @@ export const adminElectionsRouter = router({
           .set({
             title,
             description,
-            seats
+            seats,
+            status: 'CREATED'
           })
-          .where(eq(electionsTable.electionId, electionId))
+          .where(
+            and(
+              eq(electionsTable.electionId, electionId),
+              eq(electionsTable.status, 'UPDATING')
+            )
+          )
           .returning()
 
         if (!elections[0]) {
@@ -175,7 +233,12 @@ export const adminElectionsRouter = router({
             .set({
               status: 'ONGOING'
             })
-            .where(eq(electionsTable.electionId, electionId))
+            .where(
+              and(
+                eq(electionsTable.electionId, electionId),
+                eq(electionsTable.status, 'CREATED')
+              )
+            )
             .returning({
               title: electionsTable.title,
               description: electionsTable.description,
@@ -250,7 +313,12 @@ export const adminElectionsRouter = router({
           .set({
             status: 'FINISHED'
           })
-          .where(eq(electionsTable.electionId, electionId))
+          .where(
+            and(
+              eq(electionsTable.electionId, electionId),
+              eq(electionsTable.status, 'ONGOING')
+            )
+          )
           .returning({
             status: electionsTable.status
           })
@@ -289,7 +357,12 @@ export const adminElectionsRouter = router({
         .set({
           status: 'CLOSED'
         })
-        .where(eq(electionsTable.electionId, electionId))
+        .where(
+          and(
+            eq(electionsTable.electionId, electionId),
+            eq(electionsTable.status, 'FINISHED')
+          )
+        )
         .returning({
           status: electionsTable.status
         })
@@ -321,7 +394,12 @@ export const adminElectionsRouter = router({
           .set({
             status: 'CREATED'
           })
-          .where(eq(electionsTable.electionId, electionId))
+          .where(
+            and(
+              eq(electionsTable.electionId, electionId),
+              eq(electionsTable.status, 'ONGOING')
+            )
+          )
           .returning({
             status: electionsTable.status
           })

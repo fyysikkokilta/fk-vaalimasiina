@@ -4,7 +4,7 @@ import { trpcMiddleware } from '../init'
 
 export const isAuthorizedMiddleware = trpcMiddleware(async (opts) => {
   const { ctx, next } = opts
-  const isAuthorized = ctx.isAuthorized
+  const isAuthorized = ctx.authorized
 
   if (!isAuthorized) {
     throw new TRPCError({

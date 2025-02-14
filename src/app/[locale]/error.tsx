@@ -33,15 +33,18 @@ export default function ErrorFallback({
       <h2 className="text-lg font-semibold">{t('error_boundary.title')}</h2>
       <p>{t('error_boundary.message')}</p>
       {isTRPCClientError(error) && (
-        <p>
-          {t('error_boundary.error_message')}
-          {': '}
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {t.has(error.message as any)
-            ? /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-              t(error.message as any)
-            : error.message}
-        </p>
+        <>
+          <p>
+            {t('error_boundary.error_message')}
+            {': '}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {t.has(error.message as any)
+              ? /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                t(error.message as any)
+              : error.message}
+          </p>
+          <p>{error.cause?.message}</p>
+        </>
       )}
       <div className="mt-2 space-x-2">
         <button

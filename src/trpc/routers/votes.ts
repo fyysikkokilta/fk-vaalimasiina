@@ -113,7 +113,8 @@ export const votesRouter = router({
         }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'error_saving_ballot'
+          message: 'error_saving_ballot',
+          cause: error
         })
       }
     })

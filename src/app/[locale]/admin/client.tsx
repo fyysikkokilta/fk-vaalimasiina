@@ -1,84 +1,27 @@
 'use client'
 
-import { useLocale, useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
+import { trpc } from '~/trpc/client'
 
-import {
-  ElectionStep,
-  electionStepSettingsEnglish,
-  electionStepSettingsFinnish
-} from '~/app/[locale]/admin/adminSteps/electionStepSetting'
-import TitleWrapper from '~/components/TitleWrapper'
-import { RouterOutput, trpc } from '~/trpc/client'
+import EditElection from './_adminSteps/EditElection'
+import NewElection from './_adminSteps/NewElection'
+import PreviewElection from './_adminSteps/PreviewElection'
+import Results from './_adminSteps/Results'
+import VotingInspection from './_adminSteps/VotingInspection'
 
-import NewElection from './adminSteps/newElection/NewElection'
-import PreviewElection from './adminSteps/previewElection/PreviewElection'
-import Results from './adminSteps/results/Results'
-import VotingInspection from './adminSteps/votingInspection/VotingInspection'
-
-export type AdminProps = {
-  election: RouterOutput['admin']['elections']['findCurrent']
-}
-
-const getElectionStep = (
-  election: RouterOutput['admin']['elections']['findCurrent'] | null
-) => {
-  if (!election) {
-    return ElectionStep.NEW
-  }
-  if (election.status === 'CREATED') {
-    return ElectionStep.PREVIEW
-  }
-  if (election.status === 'ONGOING') {
-    return ElectionStep.VOTING
-  }
-  if (election.status === 'FINISHED') {
-    return ElectionStep.RESULTS
-  }
-  return ElectionStep.NEW
-}
-
-export default function AdminRouter() {
+export default function Admin() {
   const [election] = trpc.admin.elections.findCurrent.useSuspenseQuery()
-
-  const [electionStep, setElectionStep] = useState<ElectionStep>(
-    getElectionStep(election)
-  )
-  const locale = useLocale()
-
-  useEffect(() => {
-    setElectionStep(getElectionStep(election))
-  }, [election])
-
-  const electionStepSettings =
-    locale === 'fi' ? electionStepSettingsFinnish : electionStepSettingsEnglish
-
-  const previousStep = () => {
-    if (!electionStepSettings[electionStep].previousStep) return
-    setElectionStep(electionStepSettings[electionStep].previousStep)
+  if (!election) {
+    return <NewElection />
   }
 
-  const t = useTranslations('admin')
-
-  const renderSwitch = (step: ElectionStep) => {
-    switch (step) {
-      case ElectionStep.NEW:
-      case ElectionStep.EDIT:
-        return <NewElection election={election} previousStep={previousStep} />
-      case ElectionStep.PREVIEW:
-        return (
-          <PreviewElection election={election} previousStep={previousStep} />
-        )
-      case ElectionStep.VOTING:
-        return <VotingInspection election={election} />
-      case ElectionStep.RESULTS:
-        return <Results election={election} />
-      default:
-        return <NewElection election={election} previousStep={previousStep} />
-    }
+  switch (election.status) {
+    case 'UPDATING':
+      return <EditElection election={election} />
+    case 'CREATED':
+      return <PreviewElection election={election} />
+    case 'ONGOING':
+      return <VotingInspection election={election} />
+    case 'FINISHED':
+      return <Results election={election} />
   }
-
-  return (
-    <TitleWrapper title={t('title')}>{renderSwitch(electionStep)}</TitleWrapper>
-  )
 }

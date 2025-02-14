@@ -12,6 +12,7 @@ import {
 
 export const statusEnum = pgEnum('election_status', [
   'CREATED',
+  'UPDATING',
   'ONGOING',
   'FINISHED',
   'CLOSED'

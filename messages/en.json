@@ -142,6 +142,7 @@
     "wrong_username_or_password": "Wrong username or password",
     "email_already_exists": "Email already exists",
     "error_updating_email": "Error updating email",
+    "mail_sending_failed": "Sending emails failed",
     "generic_error": "An error occurred"
   },
   "error_boundary": {

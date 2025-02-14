@@ -1,26 +1,21 @@
+'use client'
+
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
-import { ElectionStep } from '~/app/[locale]/admin/adminSteps/electionStepSetting'
-import { useRouter } from '~/i18n/routing'
-import { trpc } from '~/trpc/client'
-
-import { AdminProps } from '../../client'
-import AdminNavigation from '../adminNavigation/AdminNavigation'
-
-type PreviewElectionProps = AdminProps & {
-  previousStep: () => void
-}
+import AdminNavigation from '~/components/AdminNavigation'
+import { ElectionStep } from '~/settings/electionStepSettings'
+import { RouterOutput, trpc } from '~/trpc/client'
 
 export default function PreviewElection({
-  election,
-  previousStep
-}: PreviewElectionProps) {
+  election
+}: {
+  election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
+}) {
   const startVoting = trpc.admin.elections.startVoting.useMutation()
-  const utils = trpc.useUtils()
+  const startEditing = trpc.admin.elections.startEditing.useMutation()
   const [emails, setEmails] = useState('')
   const t = useTranslations('admin.admin_main.preview_election')
-  const router = useRouter()
 
   const getEmailLinesContainingText = (emails: string) => {
     return emails
@@ -40,46 +35,28 @@ export default function PreviewElection({
     return notEmpty && emailsOkay && allEmailsUnique
   }
 
-  const handleEdit = () => {
-    previousStep()
+  const handleStartEditing = async () => {
+    await startEditing.mutateAsync({ electionId: election.electionId })
   }
 
-  const handleSubmit = (electionId: string) => {
-    startVoting.mutate(
-      {
-        electionId,
-        emails: getEmailLinesContainingText(emails)
-      },
-      {
-        onSuccess() {
-          void utils.admin.elections.findCurrent.invalidate()
-        },
-        onError(error) {
-          const code = error?.data?.code
-          if (code === 'NOT_FOUND') {
-            router.refresh()
-          }
-        }
-      }
-    )
+  const handleSubmit = async () => {
+    await startVoting.mutateAsync({
+      electionId: election.electionId,
+      emails: getEmailLinesContainingText(emails)
+    })
   }
 
   const getValidEmailCount = (emailString: string) => {
     return getEmailLinesContainingText(emailString).length
   }
 
-  if (!election) {
-    return null // Should never happen
-  }
-
   return (
-    <>
-      <AdminNavigation
-        electionStep={ElectionStep.PREVIEW}
-        disableNext={!validateEmails(emails)}
-        onBack={handleEdit}
-        onNext={() => handleSubmit(election.electionId)}
-      />
+    <AdminNavigation
+      electionStep={ElectionStep.PREVIEW}
+      disableNext={!validateEmails(emails)}
+      onBack={handleStartEditing}
+      onNext={handleSubmit}
+    >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
           <h3 className="mb-3 text-xl font-semibold">{election.title}</h3>
@@ -138,6 +115,6 @@ export default function PreviewElection({
           )}
         </div>
       </div>
-    </>
+    </AdminNavigation>
   )
 }

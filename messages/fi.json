@@ -142,6 +142,7 @@
     "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana",
     "email_already_exists": "Sähköposti on jo käytössä",
     "error_updating_email": "Virhe päivitettäessä sähköpostia",
+    "mail_sending_failed": "Sähköpostien lähettäminen epäonnistui",
     "generic_error": "Jotain meni pieleen"
   },
   "error_boundary": {

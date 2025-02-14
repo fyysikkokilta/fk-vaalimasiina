@@ -59,6 +59,9 @@ export const adminVotersRouter = router({
           election: voterElectionPairs[0].election
         })
       } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error
+        }
         if (isUniqueConstraintError(error)) {
           throw new TRPCError({
             code: 'FORBIDDEN',
@@ -67,7 +70,8 @@ export const adminVotersRouter = router({
         }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'error_updating_email'
+          message: 'error_updating_email',
+          cause: error
         })
       }
     })

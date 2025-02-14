@@ -1,27 +1,28 @@
+'use client'
+
 import { useTranslations } from 'next-intl'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { ElectionStep } from '~/app/[locale]/admin/adminSteps/electionStepSetting'
-import { useRouter } from '~/i18n/routing'
-import { trpc } from '~/trpc/client'
+import AdminNavigation from '~/components/AdminNavigation'
+import { ElectionStep } from '~/settings/electionStepSettings'
+import { RouterOutput, trpc } from '~/trpc/client'
 
-import { AdminProps } from '../../client'
-import AdminNavigation from '../adminNavigation/AdminNavigation'
-
-export default function VotingInspection({ election }: AdminProps) {
+export default function VotingInspection({
+  election
+}: {
+  election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
+}) {
   const abort = trpc.admin.elections.abortVoting.useMutation()
   const end = trpc.admin.elections.endVoting.useMutation()
   const updateEmail = trpc.admin.voters.updateEmail.useMutation()
   const utils = trpc.useUtils()
   const t = useTranslations('admin.admin_main.voting_inspection')
-  const router = useRouter()
 
   const [oldEmail, setOldEmail] = useState('')
   const [newEmail, setNewEmail] = useState('')
 
   useEffect(() => {
-    if (!election) return
     void utils.admin.elections.findCurrent.invalidate()
 
     const interval = setInterval(
@@ -32,42 +33,16 @@ export default function VotingInspection({ election }: AdminProps) {
     return () => clearInterval(interval)
   }, [election, utils.admin.elections.findCurrent])
 
-  const handleAbortVoting = (electionId: string) => {
-    abort.mutate(
-      {
-        electionId
-      },
-      {
-        onSuccess() {
-          void utils.admin.elections.findCurrent.invalidate()
-        },
-        onError(error) {
-          const code = error?.data?.code
-          if (code === 'NOT_FOUND') {
-            router.refresh()
-          }
-        }
-      }
-    )
+  const handleAbortVoting = async () => {
+    await abort.mutateAsync({
+      electionId: election.electionId
+    })
   }
 
-  const handleEndVoting = (electionId: string) => {
-    end.mutate(
-      {
-        electionId
-      },
-      {
-        onSuccess() {
-          void utils.admin.elections.findCurrent.invalidate()
-        },
-        onError(error) {
-          const code = error?.data?.code
-          if (code === 'NOT_FOUND') {
-            router.refresh()
-          }
-        }
-      }
-    )
+  const handleEndVoting = async () => {
+    await end.mutateAsync({
+      electionId: election.electionId
+    })
   }
 
   const handleEmailChange = () => {
@@ -86,10 +61,6 @@ export default function VotingInspection({ election }: AdminProps) {
     )
   }
 
-  if (!election) {
-    return null // Should never happen
-  }
-
   const { voters } = election
 
   const remainingVoters = voters.filter((voter) => !voter.hasVoted)
@@ -98,13 +69,12 @@ export default function VotingInspection({ election }: AdminProps) {
   const validNewEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
 
   return (
-    <>
-      <AdminNavigation
-        electionStep={ElectionStep.VOTING}
-        disableNext={remainingVoters.length > 0}
-        onBack={() => handleAbortVoting(election.electionId)}
-        onNext={() => handleEndVoting(election.electionId)}
-      />
+    <AdminNavigation
+      electionStep={ElectionStep.VOTING}
+      disableNext={remainingVoters.length > 0}
+      onBack={handleAbortVoting}
+      onNext={handleEndVoting}
+    >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
           <h3 className="mb-2 text-xl font-semibold">{election.title}</h3>
@@ -171,6 +141,6 @@ export default function VotingInspection({ election }: AdminProps) {
           </form>
         </div>
       </div>
-    </>
+    </AdminNavigation>
   )
 }
