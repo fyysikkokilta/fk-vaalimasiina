@@ -9,13 +9,11 @@ RUN npm set cache .npm
 RUN npm ci
 
 FROM base AS builder
-RUN apk add --no-cache brotli
 WORKDIR /opt/vaalimasiina
 COPY --from=deps /opt/vaalimasiina/node_modules ./node_modules
 COPY . /opt/vaalimasiina/
 RUN npm run build
-RUN find .next -type f \
-    -regex ".*\.\(js\|json\|html\|map\|css\|svg\|ico\|txt\)" -exec gzip -k "{}" \; -exec brotli "{}" \;
+RUN npm run db:migrate
 
 FROM base AS runner
 ENV NODE_ENV=production
