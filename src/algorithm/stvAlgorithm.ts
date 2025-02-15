@@ -28,6 +28,7 @@ interface CandidateResult {
   voteCount: number
   isSelectedThisRound: boolean
   isSelected: boolean
+  isEliminatedThisRound: boolean
   isEliminated: boolean
 }
 
@@ -76,124 +77,6 @@ const findNextPreference = (
 
 const EPSILON = 1e-10
 
-const dropOneCandidate = (
-  voteMap: VoteMap,
-  totalVotes: number,
-  quota: number,
-  round: number,
-  election: Election,
-  previouslySelectedCandidates: Set<CandidateId>
-): VotingRoundResult => {
-  const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
-  voteCounts.sort((a, b) => a[1] - b[1])
-
-  const minVotes = voteCounts[0][1]
-
-  // Using epsilon to avoid floating point comparison issues
-  const candidatesWithMinVotes = voteCounts.filter(
-    ([, votes]) => votes <= minVotes + EPSILON
-  )
-
-  /**
-   * If there is a tie, we need to randomly select one of the candidates
-   * to be dropped. However, we need to make sure that the result is the same
-   * every time the function is called with the same election ballots. To
-   * achieve this, we seed the random number generator with the election ID.
-   * This way, the random number generator will always produce the same
-   * sequence of random numbers for the same election.
-   *
-   * Since the election ID is pretty much random, this should is enough to
-   * ensure that the result is random but always the same for the same election.
-   */
-
-  const candidateToBeDropped = shuffleWithSeed(
-    candidatesWithMinVotes,
-    election.electionId
-  )[0]
-
-  const votesOfDroppedCandidate = voteMap.get(candidateToBeDropped[0])!
-  voteMap.delete(candidateToBeDropped[0])
-
-  votesOfDroppedCandidate.forEach((vote) => {
-    const secondaryPreference = findNextPreference(voteMap, vote.vote)
-    if (secondaryPreference) {
-      voteMap.get(secondaryPreference)!.push(vote)
-    }
-  })
-
-  const candidateResults = voteCounts
-    .concat(Array.from(previouslySelectedCandidates).map((c) => [c, quota]))
-    .map(([c, v]) => ({
-      id: c,
-      name: election.candidates.find((c2) => c2.candidateId === c)!.name,
-      voteCount: v,
-      isSelected: previouslySelectedCandidates.has(c),
-      isSelectedThisRound: false,
-      isEliminated: c === candidateToBeDropped[0]
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name))
-
-  return {
-    round,
-    candidateResults,
-    emptyVotes:
-      totalVotes -
-      candidateResults.reduce((sum, { voteCount }) => sum + voteCount, 0),
-    tieBreaker: candidatesWithMinVotes.length > 1
-  }
-}
-
-const transferSurplusVotes = (
-  voteMap: VoteMap,
-  totalVotes: number,
-  electedCandidates: Set<CandidateId>,
-  quota: number,
-  round: number,
-  election: Election,
-  previouslySelectedCandidates: Set<CandidateId>
-): VotingRoundResult => {
-  const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
-
-  electedCandidates.forEach((candidate) => {
-    const votesOfWinner = voteMap.get(candidate)!
-    const totalVotes = votesOfWinner.reduce((sum, v) => sum + v.weight, 0)
-    const surplus = totalVotes - quota
-
-    voteMap.delete(candidate)
-
-    if (surplus > 0) {
-      votesOfWinner.forEach((vote) => {
-        vote.weight = (vote.weight / totalVotes) * surplus
-        const secondaryPreference = findNextPreference(voteMap, vote.vote)
-        if (secondaryPreference) {
-          voteMap.get(secondaryPreference)!.push(vote)
-        }
-      })
-    }
-  })
-
-  const candidateResults = voteCounts
-    .concat(Array.from(previouslySelectedCandidates).map((c) => [c, quota]))
-    .map(([c, v]) => ({
-      id: c,
-      name: election.candidates.find((c2) => c2.candidateId === c)!.name,
-      voteCount: v,
-      isSelected:
-        previouslySelectedCandidates.has(c) || electedCandidates.has(c),
-      isSelectedThisRound: electedCandidates.has(c),
-      isEliminated: false
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name))
-
-  return {
-    round,
-    candidateResults,
-    emptyVotes:
-      totalVotes -
-      candidateResults.reduce((sum, { voteCount }) => sum + voteCount, 0)
-  }
-}
-
 export const calculateSTVResult = (
   election: Election,
   ballots: Ballot[],
@@ -221,6 +104,7 @@ export const calculateSTVResult = (
   election.candidates.forEach((c) => voteMap.set(c.candidateId, []))
 
   const previouslySelectedCandidates = new Set<CandidateId>()
+  const previouslyEliminatedCandidates = new Set<CandidateId>()
 
   nonEmptyBallots.forEach(({ votes }) => {
     const candidateIds = votes
@@ -240,37 +124,103 @@ export const calculateSTVResult = (
 
     const acceptAllCandidates = voteMap.size + winnerCount <= election.seats
 
+    const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
     const electedCandidates = new Set(
-      getCurrentVoteCountsOfCandidates(voteMap)
+      voteCounts
         .filter(([, votes]) => votes >= quota || acceptAllCandidates)
         .map(([id]) => id)
     )
+    const minVotes = Math.min(...voteCounts.map(([, votes]) => votes))
 
-    let roundResult: VotingRoundResult
+    // Using epsilon to avoid floating point comparison issues
+    const candidatesWithMinVotes = voteCounts.filter(
+      ([, votes]) => votes <= minVotes + EPSILON
+    )
+
+    /**
+     * If there is a tie, we need to randomly select one of the candidates
+     * to be dropped. However, we need to make sure that the result is the same
+     * every time the function is called with the same election ballots. To
+     * achieve this, we seed the random number generator with the election ID.
+     * This way, the random number generator will always produce the same
+     * sequence of random numbers for the same election.
+     *
+     * Since the election ID is pretty much random, this should is enough to
+     * ensure that the result is random but always the same for the same election.
+     */
+
+    const candidateToBeDropped =
+      electedCandidates.size === 0
+        ? shuffleWithSeed(candidatesWithMinVotes, election.electionId)[0]
+        : null
+
     if (electedCandidates.size > 0) {
-      roundResult = transferSurplusVotes(
-        voteMap,
-        totalVotes,
-        electedCandidates,
-        quota,
-        round,
-        election,
-        previouslySelectedCandidates
-      )
+      // There are winners this round
+      // Distribute surplus votes
+      electedCandidates.forEach((candidate) => {
+        const votesOfWinner = voteMap.get(candidate)!
+        const totalVotes = votesOfWinner.reduce((sum, v) => sum + v.weight, 0)
+        const surplus = totalVotes - quota
+
+        voteMap.delete(candidate)
+
+        if (surplus > 0) {
+          votesOfWinner.forEach((vote) => {
+            vote.weight = (vote.weight / totalVotes) * surplus
+            const secondaryPreference = findNextPreference(voteMap, vote.vote)
+            if (secondaryPreference) {
+              voteMap.get(secondaryPreference)!.push(vote)
+            }
+          })
+        }
+      })
     } else {
-      roundResult = dropOneCandidate(
-        voteMap,
-        totalVotes,
-        quota,
-        round,
-        election,
-        previouslySelectedCandidates
-      )
+      // There are no winners this round
+      // Eliminate the candidate with the least votes
+      // and distribute their votes
+      const votesOfDroppedCandidate = voteMap.get(candidateToBeDropped![0])!
+      voteMap.delete(candidateToBeDropped![0])
+
+      votesOfDroppedCandidate.forEach((vote) => {
+        const secondaryPreference = findNextPreference(voteMap, vote.vote)
+        if (secondaryPreference) {
+          voteMap.get(secondaryPreference)!.push(vote)
+        }
+      })
     }
 
-    electedCandidates.forEach((c) => previouslySelectedCandidates.add(c))
+    const candidateResults: CandidateResult[] = voteCounts
+      .concat(Array.from(previouslySelectedCandidates).map((c) => [c, quota]))
+      .concat(Array.from(previouslyEliminatedCandidates).map((c) => [c, 0]))
+      .map(([c, v]) => ({
+        id: c,
+        name: election.candidates.find((c2) => c2.candidateId === c)!.name,
+        voteCount: v,
+        isSelected:
+          previouslySelectedCandidates.has(c) || electedCandidates.has(c),
+        isSelectedThisRound: electedCandidates.has(c),
+        isEliminated:
+          previouslyEliminatedCandidates.has(c) ||
+          c === candidateToBeDropped?.[0],
+        isEliminatedThisRound: c === candidateToBeDropped?.[0]
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name))
 
-    roundResults.push(roundResult)
+    electedCandidates.forEach((c) => previouslySelectedCandidates.add(c))
+    if (candidateToBeDropped) {
+      previouslyEliminatedCandidates.add(candidateToBeDropped[0])
+    }
+
+    roundResults.push({
+      round,
+      candidateResults,
+      emptyVotes:
+        totalVotes -
+        candidateResults.reduce((sum, { voteCount }) => sum + voteCount, 0),
+      tieBreaker:
+        candidatesWithMinVotes.length > 1 && electedCandidates.size === 0
+    })
+
     winnerCount += electedCandidates.size
     round += 1
 

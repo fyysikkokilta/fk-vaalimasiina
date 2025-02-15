@@ -51,9 +51,6 @@ export default function ElectionActions({
   const getMinutesParagraphs = async (votingResult: ValidVotingResult) => {
     const totalVotes = votingResult.totalVotes
     const emptyVotes = votingResult.totalVotes - votingResult.nonEmptyVotes
-    const sortedCandidates = election.candidates.sort((a, b) =>
-      a.name.localeCompare(b.name)
-    )
 
     const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes !== 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes !== 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
     const firstDecimalVotesRound = votingResult.roundResults.find(
@@ -68,11 +65,17 @@ export default function ElectionActions({
     const roundParagraphs = votingResult.roundResults.map(
       ({ round, candidateResults, tieBreaker, emptyVotes }) => {
         const quota = votingResult.quota
-        const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${sortedCandidates
-          .map(({ name, candidateId }) => {
-            const candidate = candidateResults.find((c) => c.id === candidateId)
-            return `${name} ${candidate ? roundToTwoDecimals(candidate.voteCount) : '-'}${candidate?.isSelected ? ' (valittu)' : ''}`
-          })
+        const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${candidateResults
+          .map(
+            ({
+              name,
+              voteCount,
+              isSelected,
+              isEliminated,
+              isEliminatedThisRound
+            }) =>
+              `${name} ${!isEliminated || isEliminatedThisRound ? roundToTwoDecimals(voteCount) : '-'}${isSelected ? ' (valittu)' : ''}`
+          )
           .join('; ')}; tyhjiä ${roundToTwoDecimals(emptyVotes)}.`
 
         const winnersThisRound = candidateResults.filter(
@@ -87,11 +90,11 @@ export default function ElectionActions({
             ? `${winnersNames} ${winnersThisRound.length > 1 ? 'ylittivät' : 'ylitti'} äänikynnyksen ja merkittiin täten äänestyksessä ${winnersThisRound.length > 1 ? 'valituiksi' : 'valituksi'}.`
             : null
 
-        const droppedCandidate = candidateResults.find(
-          ({ isEliminated }) => isEliminated
+        const eliminatedThisRound = candidateResults.find(
+          ({ isEliminatedThisRound }) => isEliminatedThisRound
         )
-        const droppedCandidateString = droppedCandidate
-          ? `Kukaan ei ylittänyt äänikynnystä ${round}. kierroksella, joten pudotettiin vähiten ääniä saanut ehdokas ${droppedCandidate.name} pois. ${tieBreaker ? 'Pudotuksen ratkaisi arpa.' : ''}`
+        const droppedCandidateString = eliminatedThisRound
+          ? `Kukaan ei ylittänyt äänikynnystä ${round}. kierroksella, joten pudotettiin vähiten ääniä saanut ehdokas ${eliminatedThisRound.name} pois. ${tieBreaker ? 'Pudotuksen ratkaisi arpa.' : ''}`
           : null
 
         const winnersExtraParagraph =

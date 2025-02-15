@@ -83,16 +83,22 @@ test('should show correct round results', async ({ page }) => {
       name,
       voteCount,
       isSelected,
-      isEliminated
+      isSelectedThisRound,
+      isEliminated,
+      isEliminatedThisRound
     } of candidateResults) {
       const row = table.locator(`tr:nth-child(${i})`)
       await expect(row.locator('td:nth-child(1)')).toContainText(name)
-      await expect(row.locator('td:nth-child(2)')).toContainText(`${voteCount}`)
+      const votes =
+        isEliminated && !isEliminatedThisRound ? '-' : `${voteCount}`
+      await expect(row.locator('td:nth-child(2)')).toContainText(votes)
       if (isSelected) {
-        await expect(row.locator('td:nth-child(3)')).toContainText('Elected')
+        const text = isSelectedThisRound ? 'Will be elected' : 'Elected'
+        await expect(row.locator('td:nth-child(3)')).toContainText(text)
       }
       if (isEliminated) {
-        await expect(row.locator('td:nth-child(3)')).toContainText('Eliminated')
+        const text = isEliminatedThisRound ? 'Will be eliminated' : 'Eliminated'
+        await expect(row.locator('td:nth-child(3)')).toContainText(text)
       }
       i++
     }

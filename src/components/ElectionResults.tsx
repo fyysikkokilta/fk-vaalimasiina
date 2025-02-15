@@ -106,19 +106,35 @@ function RoundResult({
           </thead>
           <tbody className="divide-y divide-gray-200">
             {candidateResults.map(
-              ({ id, name, voteCount, isSelected, isEliminated }) => (
+              ({
+                id,
+                name,
+                voteCount,
+                isSelected,
+                isSelectedThisRound,
+                isEliminated,
+                isEliminatedThisRound
+              }) => (
                 <tr key={id} className="even:bg-gray-50">
                   <td className="px-4 py-4 text-sm text-gray-900">{name}</td>
                   <td className="px-4 py-4 text-sm text-gray-900">
-                    {roundToTwoDecimals(voteCount)}
+                    {isEliminated && !isEliminatedThisRound
+                      ? '-'
+                      : roundToTwoDecimals(voteCount)}
                   </td>
                   <td className="px-4 py-4 text-sm">
                     {isSelected && (
-                      <span className="text-green-600">{t('chosen')}</span>
+                      <span className="text-green-600">
+                        {t(isSelectedThisRound ? 'chosen' : 'chosen_before')}
+                      </span>
                     )}
                     {isEliminated && (
                       <span className="text-red-600">
-                        {t('eliminated')}
+                        {t(
+                          isEliminatedThisRound
+                            ? 'eliminated'
+                            : 'eliminated_before'
+                        )}
                         {tieBreaker && ` - ${t('tie_breaker')}`}
                       </span>
                     )}
