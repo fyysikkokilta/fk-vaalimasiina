@@ -56,12 +56,7 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '0',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Alice',
-          voteCount: 0
+          name: 'Alice'
         }
       ]
     })
@@ -109,12 +104,7 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '0',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Alice',
-          voteCount: 1
+          name: 'Alice'
         }
       ]
     })
@@ -171,12 +161,7 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '1',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Bob',
-          voteCount: 1
+          name: 'Bob'
         }
       ]
     })
@@ -237,21 +222,11 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '0',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Alice',
-          voteCount: 0
+          name: 'Alice'
         },
         {
           id: '1',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Bob',
-          voteCount: 1
+          name: 'Bob'
         }
       ]
     })
@@ -326,21 +301,11 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '0',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Alice',
-          voteCount: 1
+          name: 'Alice'
         },
         {
           id: '1',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Bob',
-          voteCount: 1
+          name: 'Bob'
         }
       ]
     })
@@ -424,21 +389,11 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '0',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Alice',
-          voteCount: 1
+          name: 'Alice'
         },
         {
           id: '1',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Bob',
-          voteCount: 1
+          name: 'Bob'
         }
       ]
     })
@@ -643,21 +598,11 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '0',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Alice',
-          voteCount: 3
+          name: 'Alice'
         },
         {
           id: '1',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Bob',
-          voteCount: 3
+          name: 'Bob'
         }
       ]
     })
@@ -1010,21 +955,11 @@ describe('STV Algorithm', () => {
       winners: [
         {
           id: '0',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: true,
-          name: 'Alice',
-          voteCount: 7
+          name: 'Alice'
         },
         {
           id: '2',
-          isEliminated: false,
-          isEliminatedThisRound: false,
-          isSelected: true,
-          isSelectedThisRound: false,
-          name: 'Charlie',
-          voteCount: 5
+          name: 'Charlie'
         }
       ]
     })

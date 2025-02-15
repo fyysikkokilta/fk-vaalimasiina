@@ -39,13 +39,18 @@ interface VotingRoundResult {
   tieBreaker?: boolean
 }
 
+interface Winner {
+  id: CandidateId
+  name: string
+}
+
 export type ValidVotingResult = {
   validResult: true
   totalVotes: number
   nonEmptyVotes: number
   quota: number
   roundResults: VotingRoundResult[]
-  winners: CandidateResult[]
+  winners: Winner[]
   ballots: Ballot[]
 }
 
@@ -83,7 +88,6 @@ export const calculateSTVResult = (
   voterCount: number
 ): VotingResult => {
   const roundResults: VotingRoundResult[] = []
-  let winnerCount = 0
   let votingIsFinished = false
   let round = 1
 
@@ -103,8 +107,8 @@ export const calculateSTVResult = (
   const voteMap: VoteMap = new Map()
   election.candidates.forEach((c) => voteMap.set(c.candidateId, []))
 
-  const previouslySelectedCandidates = new Set<CandidateId>()
-  const previouslyEliminatedCandidates = new Set<CandidateId>()
+  const winnerSet = new Set<CandidateId>()
+  const loserSet = new Set<CandidateId>()
 
   nonEmptyBallots.forEach(({ votes }) => {
     const candidateIds = votes
@@ -122,7 +126,7 @@ export const calculateSTVResult = (
       throw new Error('Too many voting rounds!')
     }
 
-    const acceptAllCandidates = voteMap.size + winnerCount <= election.seats
+    const acceptAllCandidates = voteMap.size + winnerSet.size <= election.seats
 
     const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
     const electedCandidates = new Set(
@@ -190,25 +194,22 @@ export const calculateSTVResult = (
     }
 
     const candidateResults: CandidateResult[] = voteCounts
-      .concat(Array.from(previouslySelectedCandidates).map((c) => [c, quota]))
-      .concat(Array.from(previouslyEliminatedCandidates).map((c) => [c, 0]))
+      .concat(Array.from(winnerSet).map((c) => [c, quota]))
+      .concat(Array.from(loserSet).map((c) => [c, 0]))
       .map(([c, v]) => ({
         id: c,
         name: election.candidates.find((c2) => c2.candidateId === c)!.name,
         voteCount: v,
-        isSelected:
-          previouslySelectedCandidates.has(c) || electedCandidates.has(c),
+        isSelected: winnerSet.has(c) || electedCandidates.has(c),
         isSelectedThisRound: electedCandidates.has(c),
-        isEliminated:
-          previouslyEliminatedCandidates.has(c) ||
-          c === candidateToBeDropped?.[0],
+        isEliminated: loserSet.has(c) || c === candidateToBeDropped?.[0],
         isEliminatedThisRound: c === candidateToBeDropped?.[0]
       }))
       .sort((a, b) => a.name.localeCompare(b.name))
 
-    electedCandidates.forEach((c) => previouslySelectedCandidates.add(c))
+    electedCandidates.forEach((c) => winnerSet.add(c))
     if (candidateToBeDropped) {
-      previouslyEliminatedCandidates.add(candidateToBeDropped[0])
+      loserSet.add(candidateToBeDropped[0])
     }
 
     roundResults.push({
@@ -221,17 +222,19 @@ export const calculateSTVResult = (
         candidatesWithMinVotes.length > 1 && electedCandidates.size === 0
     })
 
-    winnerCount += electedCandidates.size
     round += 1
 
-    if (winnerCount === election.seats || voteMap.size === 0) {
+    if (winnerSet.size === election.seats || voteMap.size === 0) {
       votingIsFinished = true
     }
   }
 
-  const winners = roundResults
-    .at(-1)!
-    .candidateResults.filter((result) => result.isSelected)
+  const winners = Array.from(winnerSet)
+    .map((c) => ({
+      id: c,
+      name: election.candidates.find((c2) => c2.candidateId === c)!.name
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   return {
     validResult: true,
