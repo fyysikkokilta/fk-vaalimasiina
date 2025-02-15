@@ -59,7 +59,7 @@ export default function Audit() {
         <tbody className="divide-y divide-gray-200 bg-white">
           {allOrOneBallot.map((audit, index) => (
             <tr key={index} className="hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+              <td className="px-6 py-4 text-sm text-gray-500">
                 {audit.ballotId}
               </td>
               <td className="px-6 py-4 text-sm text-gray-900">
