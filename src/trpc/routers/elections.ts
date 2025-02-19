@@ -31,7 +31,7 @@ export const electionsRouter = router({
             votes: {
               columns: {
                 candidateId: true,
-                preferenceNumber: true
+                rank: true
               }
             }
           },
@@ -76,7 +76,7 @@ export const electionsRouter = router({
               votes: {
                 columns: {
                   candidateId: true,
-                  preferenceNumber: true
+                  rank: true
                 }
               }
             },

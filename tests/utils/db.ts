@@ -53,7 +53,7 @@ export const insertVotes = async (data: {
   electionId: string
   voterIdBallotPairs: {
     voterId: string
-    ballot: { candidateId: string; preferenceNumber: number }[]
+    ballot: { candidateId: string; rank: number }[]
   }[]
 }) => {
   if (!testClient.test) {
@@ -96,9 +96,9 @@ export const createElectionWithVotersAndBallots = async (
       )
         .map((preference, i) => ({
           candidateId: election.candidates[i].candidateId,
-          preferenceNumber: preference
+          rank: preference
         }))
-        .sort((a, b) => a.preferenceNumber - b.preferenceNumber)
+        .sort((a, b) => a.rank - b.rank)
         .slice(0, randomInt(0, candidateCount))
     }))
   })

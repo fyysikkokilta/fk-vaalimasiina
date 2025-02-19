@@ -112,7 +112,7 @@ export const calculateSTVResult = (
 
   nonEmptyBallots.forEach(({ votes }) => {
     const candidateIds = votes
-      .sort((a, b) => a.preferenceNumber - b.preferenceNumber)
+      .sort((a, b) => a.rank - b.rank)
       .map((v) => v.candidateId)
     const id = candidateIds[0]
     if (id) {

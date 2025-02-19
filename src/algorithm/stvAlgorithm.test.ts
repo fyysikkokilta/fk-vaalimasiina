@@ -20,7 +20,7 @@ const createBallot = (votes: string[]) => ({
   electionId: 'test-election',
   votes: votes.map((candidateId, i) => ({
     candidateId,
-    preferenceNumber: i + 1
+    rank: i + 1
   }))
 })
 
@@ -74,7 +74,7 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         }
@@ -122,7 +122,7 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '1',
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         }
@@ -179,11 +179,11 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '1',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             }
           ]
         }
@@ -244,11 +244,11 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '1',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             }
           ]
         },
@@ -258,11 +258,11 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             }
           ]
         }
@@ -323,11 +323,11 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '1',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             }
           ]
         },
@@ -337,11 +337,11 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             }
           ]
         }
@@ -418,15 +418,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '1',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '2',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -436,15 +436,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '2',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -454,15 +454,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '0',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -472,15 +472,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '1',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '2',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '0',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -490,15 +490,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '2',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '1',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -508,15 +508,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '1',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         }
@@ -633,15 +633,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '0',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -651,15 +651,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '2',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -669,15 +669,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '0',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -687,15 +687,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '1',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '2',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '0',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -705,15 +705,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '2',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '1',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -723,15 +723,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '1',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -741,15 +741,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '1',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -759,15 +759,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '0',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '2',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -777,15 +777,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '0',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -795,15 +795,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '1',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '0',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -813,15 +813,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '1',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         },
@@ -831,15 +831,15 @@ describe('STV Algorithm', () => {
           votes: [
             {
               candidateId: '2',
-              preferenceNumber: 1
+              rank: 1
             },
             {
               candidateId: '0',
-              preferenceNumber: 2
+              rank: 2
             },
             {
               candidateId: '1',
-              preferenceNumber: 3
+              rank: 3
             }
           ]
         }

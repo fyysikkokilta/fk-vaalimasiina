@@ -15,7 +15,7 @@ export const votesRouter = router({
         ballot: z.array(
           z.object({
             candidateId: z.string().uuid(),
-            preferenceNumber: z.number().min(1)
+            rank: z.number().min(1)
           })
         )
       })
@@ -63,14 +63,12 @@ export const votesRouter = router({
       )
 
       // Check that preference numbers are unique and start from 1 and increment by 1
-      const preferenceNumbers = ballot.map((vote) => vote.preferenceNumber)
-      const validPreferenceNumbers =
-        preferenceNumbers.length === new Set(preferenceNumbers).size &&
-        preferenceNumbers.every(
-          (preferenceNumber, index) => preferenceNumber === index + 1
-        )
+      const ranks = ballot.map((vote) => vote.rank)
+      const validRanks =
+        ranks.length === new Set(ranks).size &&
+        ranks.every((rank, index) => rank === index + 1)
 
-      const validBallot = validCandidates && validPreferenceNumbers
+      const validBallot = validCandidates && validRanks
 
       if (!validBallot) {
         throw new TRPCError({
@@ -91,7 +89,7 @@ export const votesRouter = router({
               ballot.map((vote) => ({
                 ballotId: ballots[0].ballotId,
                 candidateId: vote.candidateId,
-                preferenceNumber: vote.preferenceNumber
+                rank: vote.rank
               }))
             )
           }

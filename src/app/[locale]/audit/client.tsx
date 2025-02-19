@@ -66,10 +66,10 @@ export default function Audit() {
                 <div className="flex flex-wrap gap-2">
                   {audit.votes.length > 0 ? (
                     audit.votes
-                      .sort((a, b) => a.preferenceNumber - b.preferenceNumber)
+                      .sort((a, b) => a.rank - b.rank)
                       .map((vote, index) => (
                         <span key={index} className="text-gray-900">
-                          {vote.preferenceNumber}
+                          {vote.rank}
                           {'. '}
                           {
                             election.candidates.find(

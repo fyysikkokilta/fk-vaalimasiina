@@ -16,7 +16,7 @@ export const testVotesRouter = router({
             ballot: z.array(
               z.object({
                 candidateId: z.string().uuid(),
-                preferenceNumber: z.number().min(1)
+                rank: z.number().min(1)
               })
             )
           })
@@ -43,7 +43,7 @@ export const testVotesRouter = router({
                 voterIdBallotPairs[index].ballot.map((vote) => ({
                   ballotId: ballot.ballotId,
                   candidateId: vote.candidateId,
-                  preferenceNumber: vote.preferenceNumber
+                  rank: vote.rank
                 }))
               )
               .flat()

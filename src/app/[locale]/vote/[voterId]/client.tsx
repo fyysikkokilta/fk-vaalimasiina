@@ -122,7 +122,7 @@ export default function Vote({ voterId }: { voterId: string }) {
         voterId,
         ballot: selectedCandidates.map((candidateId, i) => ({
           candidateId,
-          preferenceNumber: i + 1
+          rank: i + 1
         }))
       },
       {

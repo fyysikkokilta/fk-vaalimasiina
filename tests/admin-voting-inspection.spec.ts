@@ -65,7 +65,7 @@ test.describe('with some votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         },
@@ -74,7 +74,7 @@ test.describe('with some votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         }
@@ -111,7 +111,7 @@ test.describe('with all votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         },
@@ -120,7 +120,7 @@ test.describe('with all votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         },
@@ -129,7 +129,7 @@ test.describe('with all votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         },
@@ -138,7 +138,7 @@ test.describe('with all votes', () => {
           ballot: [
             {
               candidateId: election.candidates[0].candidateId,
-              preferenceNumber: 1
+              rank: 1
             }
           ]
         }

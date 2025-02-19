@@ -58,10 +58,10 @@ const main = async () => {
 
   const voterIdBallotPairs = voteFixture.map((votes, index) => {
     const voterId = voters[index].voterId
-    const ballot = votes.map((name, preferenceNumber) => ({
+    const ballot = votes.map((name, rank) => ({
       candidateId: election.candidates.find((c) => c.name === name)!
         .candidateId,
-      preferenceNumber: preferenceNumber + 1
+      rank: rank + 1
     }))
     return { voterId, ballot }
   })

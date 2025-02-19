@@ -1,6 +1,6 @@
-import { SQL, sql } from 'drizzle-orm'
+import { sql } from 'drizzle-orm'
 import {
-  AnyPgColumn,
+  check,
   integer,
   pgEnum,
   pgTable,
@@ -18,13 +18,17 @@ export const statusEnum = pgEnum('election_status', [
   'CLOSED'
 ])
 
-export const electionsTable = pgTable('elections', {
-  electionId: uuid('election_id').primaryKey().notNull().defaultRandom(),
-  title: varchar('title').notNull(),
-  description: varchar('description').notNull(),
-  seats: integer('seats').notNull(),
-  status: statusEnum('status').notNull().default('CREATED')
-})
+export const electionsTable = pgTable(
+  'elections',
+  {
+    electionId: uuid('election_id').primaryKey().notNull().defaultRandom(),
+    title: varchar('title').notNull(),
+    description: varchar('description').notNull(),
+    seats: integer('seats').notNull(),
+    status: statusEnum('status').notNull().default('CREATED')
+  },
+  (table) => [check('check_elections_seats', sql`${table.seats} > 0`)]
+)
 
 export const votersTable = pgTable(
   'voters',
@@ -40,7 +44,7 @@ export const votersTable = pgTable(
   (table) => [
     uniqueIndex('unique_voters_electionId_email').on(
       table.electionId,
-      lower(table.email)
+      sql`lower(${table.email})`
     )
   ]
 )
@@ -57,10 +61,6 @@ export const hasVotedTable = pgTable(
   },
   (table) => [unique('unique_voters_voterId').on(table.voterId)]
 )
-
-export function lower(email: AnyPgColumn): SQL {
-  return sql`lower(${email})`
-}
 
 export const candidatesTable = pgTable('candidates', {
   candidateId: uuid('candidate_id').primaryKey().notNull().defaultRandom(),
@@ -95,16 +95,14 @@ export const votesTable = pgTable(
       .references(() => candidatesTable.candidateId, {
         onDelete: 'cascade'
       }),
-    preferenceNumber: integer('preference_number').notNull()
+    rank: integer('rank').notNull()
   },
   (table) => [
-    unique('unique_votes_ballotId_preferenceNumber').on(
-      table.ballotId,
-      table.preferenceNumber
-    ),
+    unique('unique_votes_ballotId_rank').on(table.ballotId, table.rank),
     unique('unique_votes_ballotId_candidateId').on(
       table.ballotId,
       table.candidateId
-    )
+    ),
+    check('check_votes_rank', sql`${table.rank} > 0`)
   ]
 )

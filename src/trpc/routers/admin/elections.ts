@@ -43,7 +43,7 @@ export const adminElectionsRouter = router({
             votes: {
               columns: {
                 candidateId: true,
-                preferenceNumber: true
+                rank: true
               }
             }
           }
