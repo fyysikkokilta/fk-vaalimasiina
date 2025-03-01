@@ -6,6 +6,11 @@ import {
   Droppable,
   DropResult
 } from '@hello-pangea/dnd'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery
+} from '@tanstack/react-query'
 import { notFound } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
@@ -13,14 +18,17 @@ import { toast } from 'react-toastify'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { Link, useRouter } from '~/i18n/routing'
-import { trpc } from '~/trpc/client'
+import { useTRPC } from '~/trpc/client'
 
 export default function Vote({ voterId }: { voterId: string }) {
-  const [voterElection] = trpc.voters.getWithId.useSuspenseQuery({
-    voterId
-  })
-  const post = trpc.votes.post.useMutation()
-  const utils = trpc.useUtils()
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const { data: voterElection } = useSuspenseQuery(
+    trpc.voters.getWithId.queryOptions({
+      voterId
+    })
+  )
+  const post = useMutation(trpc.votes.post.mutationOptions())
   const [confirmingVote, setConfirmingVote] = useState(false)
   const [disableVote, setDisableVote] = useState(false)
   const [ballotId, setBallotId] = useState('')
@@ -126,13 +134,17 @@ export default function Vote({ voterId }: { voterId: string }) {
         }))
       },
       {
-        onSuccess: ({ ballotId }) => {
-          void utils.voters.getWithId.invalidate({ voterId })
+        onSuccess: async ({ ballotId }) => {
+          await queryClient.invalidateQueries(
+            trpc.voters.getWithId.queryFilter({ voterId })
+          )
           setConfirmingVote(false)
           setBallotId(ballotId)
         },
-        onError: (error) => {
-          void utils.voters.getWithId.invalidate({ voterId })
+        onError: async (error) => {
+          await queryClient.invalidateQueries(
+            trpc.voters.getWithId.queryFilter({ voterId })
+          )
           setDisableVote(false)
           const code = error.data?.code
           if (code === 'NOT_FOUND') {

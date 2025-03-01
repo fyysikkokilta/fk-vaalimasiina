@@ -1,37 +1,46 @@
 'use client'
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import AdminNavigation from '~/components/AdminNavigation'
 import { ElectionStep } from '~/settings/electionStepSettings'
-import { RouterOutput, trpc } from '~/trpc/client'
+import { RouterOutput, useTRPC } from '~/trpc/client'
 
 export default function VotingInspection({
   election
 }: {
   election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
 }) {
-  const abort = trpc.admin.elections.abortVoting.useMutation()
-  const end = trpc.admin.elections.endVoting.useMutation()
-  const updateEmail = trpc.admin.voters.updateEmail.useMutation()
-  const utils = trpc.useUtils()
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const abort = useMutation(trpc.admin.elections.abortVoting.mutationOptions())
+  const end = useMutation(trpc.admin.elections.endVoting.mutationOptions())
+  const updateEmail = useMutation(
+    trpc.admin.voters.updateEmail.mutationOptions()
+  )
   const t = useTranslations('admin.admin_main.voting_inspection')
 
   const [oldEmail, setOldEmail] = useState('')
   const [newEmail, setNewEmail] = useState('')
 
   useEffect(() => {
-    void utils.admin.elections.findCurrent.invalidate()
+    void queryClient.invalidateQueries(
+      trpc.admin.elections.findCurrent.queryFilter()
+    )
 
     const interval = setInterval(
-      () => void utils.admin.elections.findCurrent.invalidate(),
+      () =>
+        void queryClient.invalidateQueries(
+          trpc.admin.elections.findCurrent.queryFilter()
+        ),
       3000
     )
 
     return () => clearInterval(interval)
-  }, [election, utils.admin.elections.findCurrent])
+  }, [election, queryClient, trpc.admin.elections.findCurrent])
 
   const handleAbortVoting = async () => {
     await abort.mutateAsync({

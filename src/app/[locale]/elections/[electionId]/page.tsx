@@ -7,7 +7,7 @@ import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
 import { Link } from '~/i18n/routing'
-import { trpc } from '~/trpc/server'
+import { caller } from '~/trpc/server'
 import isUUID from '~/utils/isUUID'
 
 export const generateStaticParams = async () => {
@@ -33,7 +33,7 @@ export default async function PreviousResults({
     notFound()
   }
 
-  const electionBallotsVoterCount = await trpc.elections.getCompletedWithId({
+  const electionBallotsVoterCount = await caller.elections.getCompletedWithId({
     electionId
   })
   const t = await getTranslations('previous_results')

@@ -1,14 +1,16 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
 
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
 import { ElectionStep } from '~/settings/electionStepSettings'
-import { RouterInput, trpc } from '~/trpc/client'
+import { RouterInput, useTRPC } from '~/trpc/client'
 
 export default function NewElection() {
-  const create = trpc.admin.elections.create.useMutation()
+  const trpc = useTRPC()
+  const create = useMutation(trpc.admin.elections.create.mutationOptions())
   const [newCandidate, setNewCandidate] = useState('')
   const [newElection, setNewElection] = useState<
     RouterInput['admin']['elections']['create']

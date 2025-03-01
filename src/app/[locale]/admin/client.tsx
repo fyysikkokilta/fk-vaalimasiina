@@ -1,6 +1,8 @@
 'use client'
 
-import { trpc } from '~/trpc/client'
+import { useSuspenseQuery } from '@tanstack/react-query'
+
+import { useTRPC } from '~/trpc/client'
 
 import EditElection from './_adminSteps/EditElection'
 import NewElection from './_adminSteps/NewElection'
@@ -9,7 +11,10 @@ import Results from './_adminSteps/Results'
 import VotingInspection from './_adminSteps/VotingInspection'
 
 export default function Admin() {
-  const [election] = trpc.admin.elections.findCurrent.useSuspenseQuery()
+  const trpc = useTRPC()
+  const { data: election } = useSuspenseQuery(
+    trpc.admin.elections.findCurrent.queryOptions()
+  )
   if (!election) {
     return <NewElection />
   }

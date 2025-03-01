@@ -1,6 +1,7 @@
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { setRequestLocale } from 'next-intl/server'
 
-import { HydrateClient, trpc } from '~/trpc/server'
+import { getQueryClient, trpc } from '~/trpc/server'
 
 import Audit from './client'
 
@@ -12,11 +13,12 @@ export default async function AuditPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  void trpc.elections.findFinished.prefetch()
+  const queryClient = getQueryClient()
+  void queryClient.prefetchQuery(trpc.elections.findFinished.queryOptions())
 
   return (
-    <HydrateClient>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <Audit />
-    </HydrateClient>
+    </HydrationBoundary>
   )
 }

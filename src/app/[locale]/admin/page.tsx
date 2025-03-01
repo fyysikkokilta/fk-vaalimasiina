@@ -1,10 +1,11 @@
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { getCookie } from 'cookies-next'
 import { cookies } from 'next/headers'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { redirect } from '~/i18n/routing'
-import { HydrateClient, trpc } from '~/trpc/server'
+import { getQueryClient, trpc } from '~/trpc/server'
 import isAuthorized from '~/utils/isAuthorized'
 
 import Admin from './client'
@@ -28,13 +29,16 @@ export default async function AdminPage({
     })
   }
 
-  void trpc.admin.elections.findCurrent.prefetch()
+  const queryClient = getQueryClient()
+  void queryClient.prefetchQuery(
+    trpc.admin.elections.findCurrent.queryOptions()
+  )
 
   return (
     <TitleWrapper title={t('title')}>
-      <HydrateClient>
+      <HydrationBoundary state={dehydrate(queryClient)}>
         <Admin />
-      </HydrateClient>
+      </HydrationBoundary>
     </TitleWrapper>
   )
 }

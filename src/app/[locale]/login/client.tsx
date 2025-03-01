@@ -1,5 +1,6 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query'
 import { useSetCookie } from 'cookies-next'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
@@ -7,10 +8,11 @@ import { toast } from 'react-toastify'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { useRouter } from '~/i18n/routing'
-import { trpc } from '~/trpc/client'
+import { useTRPC } from '~/trpc/client'
 
 export default function Login() {
-  const login = trpc.admin.login.authenticate.useMutation()
+  const trpc = useTRPC()
+  const login = useMutation(trpc.admin.login.authenticate.mutationOptions())
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const t = useTranslations('admin.login')

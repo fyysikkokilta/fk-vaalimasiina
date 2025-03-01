@@ -1,19 +1,23 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
 
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
 import { ElectionStep } from '~/settings/electionStepSettings'
-import { RouterInput, RouterOutput, trpc } from '~/trpc/client'
+import { RouterInput, RouterOutput, useTRPC } from '~/trpc/client'
 
 export default function EditElection({
   election
 }: {
   election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
 }) {
-  const update = trpc.admin.elections.update.useMutation()
-  const cancelEditing = trpc.admin.elections.cancelEditing.useMutation()
+  const trpc = useTRPC()
+  const update = useMutation(trpc.admin.elections.update.mutationOptions())
+  const cancelEditing = useMutation(
+    trpc.admin.elections.cancelEditing.mutationOptions()
+  )
   const [newCandidate, setNewCandidate] = useState('')
   const [updatedElection, setUpdatedElection] =
     useState<RouterInput['admin']['elections']['update']>(election)

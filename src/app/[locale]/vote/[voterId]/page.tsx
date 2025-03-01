@@ -1,7 +1,8 @@
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
-import { HydrateClient, trpc } from '~/trpc/server'
+import { getQueryClient, trpc } from '~/trpc/server'
 import isUUID from '~/utils/isUUID'
 
 import Vote from './client'
@@ -18,11 +19,14 @@ export default async function VotePage({
     notFound()
   }
 
-  void trpc.voters.getWithId.prefetch({ voterId })
+  const queryClient = getQueryClient()
+  void queryClient.prefetchQuery(
+    trpc.voters.getWithId.queryOptions({ voterId })
+  )
 
   return (
-    <HydrateClient>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <Vote voterId={voterId} />
-    </HydrateClient>
+    </HydrationBoundary>
   )
 }

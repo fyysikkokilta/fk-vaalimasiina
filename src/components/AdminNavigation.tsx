@@ -1,5 +1,6 @@
 'use client'
 
+import { useQueryClient } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import React from 'react'
 
@@ -8,7 +9,7 @@ import {
   electionStepSettingsEnglish,
   electionStepSettingsFinnish
 } from '~/settings/electionStepSettings'
-import { trpc } from '~/trpc/client'
+import { useTRPC } from '~/trpc/client'
 
 type AdminNavigationProps = {
   electionStep: ElectionStep
@@ -27,7 +28,8 @@ export default function AdminNavigation({
   onNext,
   children
 }: AdminNavigationProps) {
-  const utils = trpc.useUtils()
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
   const locale = useLocale()
   const stepSettings =
     locale === 'fi'
@@ -41,7 +43,9 @@ export default function AdminNavigation({
   const nextStep = async () => {
     if (stepSettings.nextButton && !disableNext) {
       await onNext()
-      await utils.admin.elections.findCurrent.invalidate()
+      await queryClient.invalidateQueries(
+        trpc.admin.elections.findCurrent.queryFilter()
+      )
     }
   }
 
@@ -52,7 +56,9 @@ export default function AdminNavigation({
       !disablePrevious
     ) {
       await onBack()
-      await utils.admin.elections.findCurrent.invalidate()
+      await queryClient.invalidateQueries(
+        trpc.admin.elections.findCurrent.queryFilter()
+      )
     }
   }
 

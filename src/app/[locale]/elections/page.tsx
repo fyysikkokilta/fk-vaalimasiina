@@ -3,7 +3,7 @@ import React from 'react'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { Link } from '~/i18n/routing'
-import { trpc } from '~/trpc/server'
+import { caller } from '~/trpc/server'
 
 export default async function PreviousElectionList({
   params
@@ -13,7 +13,7 @@ export default async function PreviousElectionList({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const elections = await trpc.elections.getAllClosed()
+  const elections = await caller.elections.getAllClosed()
   const t = await getTranslations('previous_results')
 
   return (

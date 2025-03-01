@@ -1,19 +1,25 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
 import AdminNavigation from '~/components/AdminNavigation'
 import { ElectionStep } from '~/settings/electionStepSettings'
-import { RouterOutput, trpc } from '~/trpc/client'
+import { RouterOutput, useTRPC } from '~/trpc/client'
 
 export default function PreviewElection({
   election
 }: {
   election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
 }) {
-  const startVoting = trpc.admin.elections.startVoting.useMutation()
-  const startEditing = trpc.admin.elections.startEditing.useMutation()
+  const trpc = useTRPC()
+  const startVoting = useMutation(
+    trpc.admin.elections.startVoting.mutationOptions()
+  )
+  const startEditing = useMutation(
+    trpc.admin.elections.startEditing.mutationOptions()
+  )
   const [emails, setEmails] = useState('')
   const t = useTranslations('admin.admin_main.preview_election')
 

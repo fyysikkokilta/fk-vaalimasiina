@@ -10,7 +10,7 @@ import { Flip, ToastContainer } from 'react-toastify'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import { Locale, routing } from '~/i18n/routing'
-import { TRPCProvider } from '~/trpc/client'
+import { TRPCReactProvider } from '~/trpc/client'
 
 export const metadata: Metadata = {
   title: 'Vaalimasiina',
@@ -50,7 +50,7 @@ export default async function RootLayout({
       {/*<Script src="https://unpkg.com/react-scan/dist/auto.global.js" />*/}
       <body className="bg-fk-yellow text-fk-black flex h-dvh flex-col">
         <NextIntlClientProvider messages={messages}>
-          <TRPCProvider>
+          <TRPCReactProvider>
             <Header />
             <main className="m-5 flex flex-1 flex-shrink-0 flex-col items-center">
               <div className="fii-background flex max-w-5xl justify-center rounded-lg bg-white py-4 shadow-md">
@@ -69,7 +69,7 @@ export default async function RootLayout({
               pauseOnHover
               transition={Flip}
             />
-          </TRPCProvider>
+          </TRPCReactProvider>
         </NextIntlClientProvider>
       </body>
     </html>
