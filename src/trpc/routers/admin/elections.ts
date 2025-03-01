@@ -126,8 +126,6 @@ export const adminElectionsRouter = router({
           message: 'election_not_found'
         })
       }
-
-      return statuses[0]
     }),
   cancelEditing: adminProcedure
     .input(z.object({ electionId: z.string().uuid() }))
@@ -152,8 +150,6 @@ export const adminElectionsRouter = router({
           message: 'election_not_found'
         })
       }
-
-      return statuses[0]
     }),
   update: adminProcedure
     .input(
@@ -226,88 +222,75 @@ export const adminElectionsRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { electionId, emails } = input
-      const [election, insertedVoters] = await ctx.db.transaction(
-        async (transaction) => {
-          const elections = await transaction
-            .update(electionsTable)
-            .set({
-              status: 'ONGOING'
-            })
-            .where(
-              and(
-                eq(electionsTable.electionId, electionId),
-                eq(electionsTable.status, 'CREATED')
-              )
+      await ctx.db.transaction(async (transaction) => {
+        const elections = await transaction
+          .update(electionsTable)
+          .set({
+            status: 'ONGOING'
+          })
+          .where(
+            and(
+              eq(electionsTable.electionId, electionId),
+              eq(electionsTable.status, 'CREATED')
             )
-            .returning({
-              title: electionsTable.title,
-              description: electionsTable.description,
-              seats: electionsTable.seats,
-              status: electionsTable.status
-            })
+          )
+          .returning({
+            title: electionsTable.title,
+            description: electionsTable.description,
+            seats: electionsTable.seats,
+            status: electionsTable.status
+          })
 
-          if (!elections[0]) {
-            return [null, []]
-          }
-
-          const emailsData = emails.map((email) => ({
-            email,
-            hash: createHash('sha256').update(email).digest('hex')
-          }))
-
-          const insertedVoters = await transaction
-            .insert(votersTable)
-            .values(
-              emailsData.map((email) => ({
-                electionId,
-                email: email.hash
-              }))
-            )
-            .returning()
-
-          const voters = insertedVoters.map((voter) => ({
-            email: emailsData.find((email) => email.hash === voter.email)!
-              .email,
-            voterId: voter.voterId
-          }))
-
-          return [elections[0], voters]
+        if (!elections[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'election_not_found'
+          })
         }
-      )
 
-      if (!election) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'election_not_found'
-        })
-      }
+        const emailsData = emails.map((email) => ({
+          email,
+          hash: createHash('sha256').update(email).digest('hex')
+        }))
 
-      await sendVotingMail(insertedVoters, { election })
+        const insertedVoters = await transaction
+          .insert(votersTable)
+          .values(
+            emailsData.map((email) => ({
+              electionId,
+              email: email.hash
+            }))
+          )
+          .returning()
 
-      return { status: election.status }
+        const voters = insertedVoters.map((voter) => ({
+          email: emailsData.find((email) => email.hash === voter.email)!.email,
+          voterId: voter.voterId
+        }))
+
+        await sendVotingMail(voters, { election: elections[0] })
+      })
     }),
   endVoting: adminProcedure
     .input(z.object({ electionId: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
       const { electionId } = input
-
-      const voters = await ctx.db.query.votersTable.findMany({
-        with: {
-          hasVoted: true
-        },
-        where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)
-      })
-
-      const everyoneVoted = voters.every((voter) => voter.hasVoted)
-
-      if (!everyoneVoted) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'not_everyone_voted'
+      await ctx.db.transaction(async (transaction) => {
+        const voters = await transaction.query.votersTable.findMany({
+          with: {
+            hasVoted: true
+          },
+          where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)
         })
-      }
 
-      const status = await ctx.db.transaction(async (transaction) => {
+        const everyoneVoted = voters.every((voter) => voter.hasVoted)
+
+        if (!everyoneVoted) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'not_everyone_voted'
+          })
+        }
         const statuses = await transaction
           .update(electionsTable)
           .set({
@@ -323,10 +306,11 @@ export const adminElectionsRouter = router({
             status: electionsTable.status
           })
 
-        const status = statuses[0]
-
-        if (!status) {
-          return null
+        if (!statuses[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'election_not_found'
+          })
         }
 
         await transaction
@@ -335,18 +319,7 @@ export const adminElectionsRouter = router({
             email: sql`encode(sha256(concat('', gen_random_uuid())::bytea), 'hex')`
           })
           .where(eq(votersTable.electionId, electionId))
-
-        return status
       })
-
-      if (!status) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'election_not_found'
-        })
-      }
-
-      return status
     }),
   close: adminProcedure
     .input(z.object({ electionId: z.string().uuid() }))
@@ -373,8 +346,6 @@ export const adminElectionsRouter = router({
           message: 'election_not_found'
         })
       }
-
-      return statuses[0]
     }),
   abortVoting: adminProcedure
     .input(z.object({ electionId: z.string().uuid() }))
@@ -411,7 +382,5 @@ export const adminElectionsRouter = router({
           message: 'election_not_found'
         })
       }
-
-      return statuses[0]
     })
 })
