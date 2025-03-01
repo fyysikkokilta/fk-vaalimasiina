@@ -335,7 +335,7 @@ export default function Vote({ voterId }: { voterId: string }) {
           />
           <div className="flex min-h-screen items-center justify-center p-4">
             <div
-              className="animate-in fade-in relative w-full max-w-lg transform rounded-lg border-2 border-white/10 bg-white ring-1 shadow-[0_0_40px_rgba(0,0,0,0.2)] ring-black/5 transition-all duration-200"
+              className="animate-in fade-in relative w-full max-w-lg transform rounded-lg border-2 border-white/10 bg-white shadow-[0_0_40px_rgba(0,0,0,0.2)] ring-1 ring-black/5 transition-all duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
