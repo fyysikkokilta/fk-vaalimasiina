@@ -34,7 +34,9 @@ export default function Vote({ voterId }: { voterId: string }) {
   const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const [availableCandidates, setAvailableCandidates] = useState<string[]>(
-    voterElection?.election?.candidates.map((c) => c.candidateId) || []
+    voterElection
+      ? voterElection.election.candidates.map((c) => c.candidateId)
+      : []
   )
   const t = useTranslations('voter.vote')
   const router = useRouter()
