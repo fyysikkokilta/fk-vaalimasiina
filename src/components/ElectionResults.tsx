@@ -118,9 +118,18 @@ function RoundResult({
                 <tr key={id} className="even:bg-gray-50">
                   <td className="px-4 py-4 text-sm text-gray-900">{name}</td>
                   <td className="px-4 py-4 text-sm text-gray-900">
-                    {isEliminated && !isEliminatedThisRound
-                      ? '-'
-                      : roundToTwoDecimals(voteCount)}
+                    {isEliminated && !isEliminatedThisRound ? (
+                      '-'
+                    ) : (
+                      <div className="group relative">
+                        <span>{roundToTwoDecimals(voteCount)}</span>
+                        {voteCount !== roundToTwoDecimals(voteCount) && (
+                          <div className="invisible absolute top-full left-1/2 -translate-x-1/2 rounded px-2 text-xs text-gray-500 group-hover:visible">
+                            {voteCount}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-4 text-sm">
                     {isSelected && (
