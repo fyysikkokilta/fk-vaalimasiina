@@ -1,9 +1,9 @@
+import { render } from '@react-email/components'
 import { TRPCError } from '@trpc/server'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
-import path from 'path'
-import { compileFile } from 'pug'
-import { fileURLToPath } from 'url'
+
+import EmailTemplate from './Email'
 
 export interface VotingMailParams {
   election: {
@@ -12,13 +12,6 @@ export interface VotingMailParams {
     seats: number
   }
 }
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const CSS_DIR = path.join(__dirname, '..', 'css')
-
-const votingMailPath = path.join(__dirname, '..', 'mail', 'email.pug')
 
 const getMailgunClient = () => {
   const mailgun = new Mailgun(FormData)
@@ -53,11 +46,7 @@ export const sendVotingMail = async (
       votingLinkEn: `${process.env.BASE_URL}/en/vote/%recipient.voterId%`
     }
 
-    const template = votingMailPath
-    const html = compileFile(template, {
-      basedir: CSS_DIR,
-      pretty: true
-    })(brandedParams)
+    const html = await render(<EmailTemplate {...brandedParams} />)
     const subjectPrefix =
       process.env.BRANDING_EMAIL_SUBJECT_PREFIX || 'Vaalimasiina'
     const subject = `${subjectPrefix} - ${params.election.title}`

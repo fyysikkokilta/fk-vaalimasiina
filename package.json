@@ -27,6 +27,7 @@
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@next/bundle-analyzer": "^15.2.0",
+    "@react-email/components": "^0.0.33",
     "@tailwindcss/postcss": "^4.0.9",
     "@tanstack/react-query": "^5.66.11",
     "@trpc/client": "^11.0.0-rc.819",
@@ -45,7 +46,6 @@
     "next-intl": "^3.26.5",
     "postcss": "^8.5.3",
     "postgres": "^3.4.5",
-    "pug": "^3.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-toastify": "^11.0.5",
