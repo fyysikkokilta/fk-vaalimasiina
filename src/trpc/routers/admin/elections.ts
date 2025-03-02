@@ -46,7 +46,9 @@ export const adminElectionsRouter = router({
                 rank: true
               }
             }
-          }
+          },
+          // BallotId is random, so this makes the order not the same as order of creation
+          orderBy: (ballotsTable) => ballotsTable.ballotId
         }
       }
     })

@@ -35,7 +35,8 @@ export const electionsRouter = router({
               }
             }
           },
-          orderBy: (_ballotsTable, { sql }) => sql`RANDOM()` // Randomize the order
+          // BallotId is random, so this makes the order not the same as order of creation
+          orderBy: (ballotsTable) => ballotsTable.ballotId
         }
       }
     })
@@ -80,7 +81,8 @@ export const electionsRouter = router({
                 }
               }
             },
-            orderBy: (_ballotsTable, { sql }) => sql`RANDOM()` // Randomize the order
+            // BallotId is random, so this makes the order not the same as order of creation
+            orderBy: (ballotsTable) => ballotsTable.ballotId
           },
           voters: {
             columns: {
