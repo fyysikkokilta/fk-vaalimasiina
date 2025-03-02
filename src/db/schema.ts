@@ -27,7 +27,12 @@ export const electionsTable = pgTable(
     seats: integer('seats').notNull(),
     status: statusEnum('status').notNull().default('CREATED')
   },
-  (table) => [check('check_elections_seats', sql`${table.seats} > 0`)]
+  (table) => [
+    uniqueIndex('unique_active_election')
+      .on(sql`(TRUE)`)
+      .where(sql`${table.status} <> 'CLOSED'`),
+    check('check_elections_seats', sql`${table.seats} > 0`)
+  ]
 )
 
 export const votersTable = pgTable(

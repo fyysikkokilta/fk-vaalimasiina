@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "unique_active_election" ON "elections" USING btree ((TRUE)) WHERE "elections"."status" <> 'CLOSED';
