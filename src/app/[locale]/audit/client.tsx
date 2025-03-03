@@ -1,17 +1,13 @@
 'use client'
 
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
 import TitleWrapper from '~/components/TitleWrapper'
-import { useTRPC } from '~/trpc/client'
 
-export default function Audit() {
-  const trpc = useTRPC()
-  const {
-    data: { election, ballots }
-  } = useSuspenseQuery(trpc.elections.findFinished.queryOptions())
+import type { AuditPageProps } from './page'
+
+export default function Audit({ election, ballots }: AuditPageProps) {
   const [search, setSearch] = useState('')
   const t = useTranslations('voter.audit')
 

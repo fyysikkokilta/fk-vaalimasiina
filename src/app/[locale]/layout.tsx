@@ -3,13 +3,13 @@ import '../globals.css'
 import { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import { NextIntlClientProvider } from 'next-intl'
+import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { Flip, ToastContainer } from 'react-toastify'
 
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
-import { Locale, routing } from '~/i18n/routing'
+import { routing } from '~/i18n/routing'
 import { TRPCReactProvider } from '~/trpc/client'
 
 export const metadata: Metadata = {
@@ -37,7 +37,7 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  if (!routing.locales.includes(locale as Locale)) {
+  if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
 

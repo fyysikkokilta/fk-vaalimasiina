@@ -3,10 +3,11 @@
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
-import type {
-  Election,
-  ValidVotingResult,
-  VotingResult
+import {
+  type Ballot,
+  calculateSTVResult,
+  type Election,
+  type ValidVotingResult
 } from '~/algorithm/stvAlgorithm'
 
 import ElectionActions from './ElectionActions'
@@ -199,13 +200,17 @@ function Winners({ winners }: { winners: ValidVotingResult['winners'] }) {
 
 export default function ElectionResults({
   election,
-  votingResult
+  ballots,
+  voterCount
 }: {
   election: Election
-  votingResult: VotingResult
+  ballots: Ballot[]
+  voterCount: number
 }) {
   const [currentRound, setCurrentRound] = useState(0)
   const t = useTranslations('results')
+
+  const votingResult = calculateSTVResult(election, ballots, voterCount)
 
   if (!votingResult.validResult) {
     return (

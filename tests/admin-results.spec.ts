@@ -16,6 +16,9 @@ let election: Election
 let ballots: Ballot[]
 let result: ValidVotingResult
 
+const roundToTwoDecimals = (num: number) =>
+  Math.round((num + Number.EPSILON) * 100) / 100
+
 test.beforeEach(async ({ page }) => {
   await resetDatabase()
   const createdElectionWithVotersAndBallots =
@@ -90,7 +93,9 @@ test('should show correct round results', async ({ page }) => {
       const row = table.locator(`tr:nth-child(${i})`)
       await expect(row.locator('td:nth-child(1)')).toContainText(name)
       const votes =
-        isEliminated && !isEliminatedThisRound ? '-' : `${voteCount}`
+        isEliminated && !isEliminatedThisRound
+          ? '-'
+          : `${roundToTwoDecimals(voteCount)}`
       await expect(row.locator('td:nth-child(2)')).toContainText(votes)
       if (isSelected) {
         const text = isSelectedThisRound ? 'Will be elected' : 'Elected'
@@ -106,7 +111,7 @@ test('should show correct round results', async ({ page }) => {
     const lastRow = table.locator(`tr:nth-child(${i})`)
     await expect(lastRow.locator('td:nth-child(1)')).toContainText('Empty')
     await expect(lastRow.locator('td:nth-child(2)')).toContainText(
-      `${emptyVotes}`
+      `${roundToTwoDecimals(emptyVotes)}`
     )
   }
 })

@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm'
+import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 import { candidatesTable, electionsTable } from '~/db/schema'
@@ -16,6 +17,7 @@ export const testElectionsRouter = router({
         candidates: z.array(z.object({ name: z.string().min(1) })).min(1),
         status: z.union([
           z.literal('CREATED'),
+          z.literal('UPDATING'),
           z.literal('ONGOING'),
           z.literal('FINISHED'),
           z.literal('CLOSED')
@@ -57,6 +59,7 @@ export const testElectionsRouter = router({
         electionId: z.string().uuid(),
         status: z.union([
           z.literal('CREATED'),
+          z.literal('UPDATING'),
           z.literal('ONGOING'),
           z.literal('FINISHED'),
           z.literal('CLOSED')
@@ -73,6 +76,8 @@ export const testElectionsRouter = router({
         .where(eq(electionsTable.electionId, electionId))
         .returning()
 
+      revalidateTag('auditable-election')
+      revalidateTag('elections')
       return election[0]
     })
 })

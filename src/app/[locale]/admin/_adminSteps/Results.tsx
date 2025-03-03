@@ -3,7 +3,6 @@
 import { useMutation } from '@tanstack/react-query'
 import React from 'react'
 
-import { calculateSTVResult } from '~/algorithm/stvAlgorithm'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionResults from '~/components/ElectionResults'
 import { ElectionStep } from '~/settings/electionStepSettings'
@@ -12,7 +11,7 @@ import { RouterOutput, useTRPC } from '~/trpc/client'
 export default function Results({
   election
 }: {
-  election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
+  election: NonNullable<RouterOutput['admin']['elections']['findCurrent']>
 }) {
   const trpc = useTRPC()
   const close = useMutation(trpc.admin.elections.close.mutationOptions())
@@ -33,7 +32,8 @@ export default function Results({
     >
       <ElectionResults
         election={election}
-        votingResult={calculateSTVResult(election, ballots, voterCount)}
+        ballots={ballots}
+        voterCount={voterCount}
       />
     </AdminNavigation>
   )

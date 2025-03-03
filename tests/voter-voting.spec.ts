@@ -128,7 +128,7 @@ test.describe('voting', () => {
     ).toBeVisible()
   })
 
-  test("shoudn't show copy ballot id button after refreshing page", async ({
+  test("shouldn't show copy ballot id button after refreshing page", async ({
     page
   }) => {
     await selectCandidate(page, 'Candidate 1')

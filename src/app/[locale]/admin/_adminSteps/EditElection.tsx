@@ -11,7 +11,7 @@ import { RouterInput, RouterOutput, useTRPC } from '~/trpc/client'
 export default function EditElection({
   election
 }: {
-  election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
+  election: NonNullable<RouterOutput['admin']['elections']['findCurrent']>
 }) {
   const trpc = useTRPC()
   const update = useMutation(trpc.admin.elections.update.mutationOptions())

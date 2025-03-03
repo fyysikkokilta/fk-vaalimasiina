@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server'
+import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
@@ -101,6 +102,7 @@ export const votesRouter = router({
 
           return ballots[0].ballotId
         })
+        revalidateTag(`voter-${voterId}`)
         return { ballotId }
       } catch (error) {
         if (isUniqueConstraintError(error)) {

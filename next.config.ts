@@ -11,7 +11,8 @@ const withNextIntl = createNextIntlPlugin()
 const nextConfig: NextConfig = {
   output: 'standalone',
   experimental: {
-    reactCompiler: true
+    reactCompiler: true,
+    useCache: true
   }
 }
 

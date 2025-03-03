@@ -1,11 +1,20 @@
+import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import React from 'react'
 
 import TitleWrapper from '~/components/TitleWrapper'
+import { db } from '~/db'
 import { Link } from '~/i18n/routing'
-import { caller } from '~/trpc/server'
 
-export default async function PreviousElectionList({
+const getElections = async () => {
+  'use cache'
+  cacheTag('elections')
+  return db.query.electionsTable.findMany({
+    where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED')
+  })
+}
+
+export default async function ElectionListPage({
   params
 }: {
   params: Promise<{ locale: string }>
@@ -13,7 +22,7 @@ export default async function PreviousElectionList({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const elections = await caller.elections.getAllClosed()
+  const elections = await getElections()
   const t = await getTranslations('previous_results')
 
   return (

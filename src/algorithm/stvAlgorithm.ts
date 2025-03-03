@@ -1,15 +1,14 @@
-import { RouterOutput } from '~/trpc/client'
+import type { ElectionPageProps } from '~/app/[locale]/elections/[electionId]/page'
+import type { RouterOutput, TestRouterOutput } from '~/trpc/client'
 
 import { shuffleWithSeed } from './shuffleWithSeed'
 
 export type Election =
-  | Exclude<RouterOutput['elections']['getCompletedWithId'], null>['election']
-  | Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
+  | ElectionPageProps['election']
+  | NonNullable<RouterOutput['admin']['elections']['findCurrent']>
+  | TestRouterOutput['elections']['create']
 
-export type Ballot = Exclude<
-  RouterOutput['elections']['getCompletedWithId'],
-  null
->['ballots'][number]
+export type Ballot = ElectionPageProps['ballots'][number]
 
 type CandidateId = Election['candidates'][number]['candidateId']
 

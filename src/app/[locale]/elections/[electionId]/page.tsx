@@ -1,16 +1,15 @@
+import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import React from 'react'
 
-import { calculateSTVResult } from '~/algorithm/stvAlgorithm'
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
 import { Link } from '~/i18n/routing'
-import { caller } from '~/trpc/server'
 import isUUID from '~/utils/isUUID'
 
-export const generateStaticParams = async () => {
+/*export const generateStaticParams = async () => {
   const elections = await db.query.electionsTable.findMany({
     where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED'),
     columns: {
@@ -19,9 +18,62 @@ export const generateStaticParams = async () => {
   })
 
   return elections
+}*/
+
+const getElection = async (electionId: string) => {
+  'use cache'
+  cacheTag(`election-${electionId}`)
+  const election = await db.query.electionsTable.findFirst({
+    columns: {
+      status: false
+    },
+    where: (electionsTable, { and, eq }) =>
+      and(
+        eq(electionsTable.electionId, electionId),
+        eq(electionsTable.status, 'CLOSED')
+      ),
+    with: {
+      candidates: {
+        columns: {
+          candidateId: true,
+          name: true
+        }
+      },
+      ballots: {
+        columns: {},
+        with: {
+          votes: {
+            columns: {
+              candidateId: true,
+              rank: true
+            }
+          }
+        },
+        // BallotId is random, so this makes the order not the same as order of creation
+        orderBy: (ballotsTable) => ballotsTable.ballotId
+      },
+      voters: {
+        columns: {
+          voterId: true
+        }
+      }
+    }
+  })
+
+  if (!election) {
+    return null
+  }
+
+  const { ballots, ...electionWithoutVotes } = election
+  const voterCount = election.voters.length
+  const electionWithoutVoters = {
+    ...electionWithoutVotes,
+    voters: undefined
+  }
+  return { election: electionWithoutVoters, ballots, voterCount }
 }
 
-export default async function PreviousResults({
+export default async function ElectionPage({
   params
 }: {
   params: Promise<{ locale: string; electionId: string }>
@@ -33,16 +85,12 @@ export default async function PreviousResults({
     notFound()
   }
 
-  const electionBallotsVoterCount = await caller.elections.getCompletedWithId({
-    electionId
-  })
+  const electionBallotsVoterCount = await getElection(electionId)
   const t = await getTranslations('previous_results')
 
   if (!electionBallotsVoterCount) {
     notFound()
   }
-
-  const { election, ballots, voterCount } = electionBallotsVoterCount
 
   return (
     <TitleWrapper title={t('title')}>
@@ -54,10 +102,11 @@ export default async function PreviousResults({
           {t('back_to_list')}
         </Link>
       </div>
-      <ElectionResults
-        election={election}
-        votingResult={calculateSTVResult(election, ballots, voterCount)}
-      />
+      <ElectionResults {...electionBallotsVoterCount} />
     </TitleWrapper>
   )
 }
+
+export type ElectionPageProps = NonNullable<
+  Awaited<ReturnType<typeof getElection>>
+>

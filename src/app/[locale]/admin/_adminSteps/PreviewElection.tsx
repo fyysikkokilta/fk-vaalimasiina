@@ -11,7 +11,7 @@ import { RouterOutput, useTRPC } from '~/trpc/client'
 export default function PreviewElection({
   election
 }: {
-  election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
+  election: NonNullable<RouterOutput['admin']['elections']['findCurrent']>
 }) {
   const trpc = useTRPC()
   const startVoting = useMutation(

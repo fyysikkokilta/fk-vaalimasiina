@@ -12,7 +12,7 @@ import { RouterOutput, useTRPC } from '~/trpc/client'
 export default function VotingInspection({
   election
 }: {
-  election: Exclude<RouterOutput['admin']['elections']['findCurrent'], null>
+  election: NonNullable<RouterOutput['admin']['elections']['findCurrent']>
 }) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()

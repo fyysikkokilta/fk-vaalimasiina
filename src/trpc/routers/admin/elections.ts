@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 
 import { TRPCError } from '@trpc/server'
 import { and, eq, sql } from 'drizzle-orm'
+import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 import {
@@ -321,6 +322,8 @@ export const adminElectionsRouter = router({
             email: sql`encode(sha256(concat('', gen_random_uuid())::bytea), 'hex')`
           })
           .where(eq(votersTable.electionId, electionId))
+
+        revalidateTag('auditable-election')
       })
     }),
   close: adminProcedure
@@ -348,6 +351,8 @@ export const adminElectionsRouter = router({
           message: 'election_not_found'
         })
       }
+      revalidateTag('elections')
+      revalidateTag('auditable-election')
     }),
   abortVoting: adminProcedure
     .input(z.object({ electionId: z.string().uuid() }))

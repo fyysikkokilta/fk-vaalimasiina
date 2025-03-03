@@ -21,7 +21,7 @@ export const insertElection = (data: {
   description: string
   seats: number
   candidates: { name: string }[]
-  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+  status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 }) => {
   if (!testClient.test) {
     throw new Error('test router should only be called in test environment')
@@ -31,7 +31,7 @@ export const insertElection = (data: {
 
 export const changeElectionStatus = (
   electionId: string,
-  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+  status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 ) => {
   if (!testClient.test) {
     throw new Error('test router should only be called in test environment')
@@ -66,7 +66,7 @@ export const createElectionWithVotersAndBallots = async (
   title: string,
   description: string,
   seats: number,
-  status: 'CREATED' | 'ONGOING' | 'FINISHED' | 'CLOSED',
+  status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED',
   candidateCount: number,
   voteCount: number
 ) => {

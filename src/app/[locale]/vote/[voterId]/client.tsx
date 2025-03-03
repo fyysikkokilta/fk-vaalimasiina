@@ -6,12 +6,7 @@ import {
   Droppable,
   DropResult
 } from '@hello-pangea/dnd'
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery
-} from '@tanstack/react-query'
-import { notFound } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -20,32 +15,20 @@ import TitleWrapper from '~/components/TitleWrapper'
 import { Link, useRouter } from '~/i18n/routing'
 import { useTRPC } from '~/trpc/client'
 
-export default function Vote({ voterId }: { voterId: string }) {
+import type { VotePageProps } from './page'
+
+export default function Vote({ election, voter }: VotePageProps) {
   const trpc = useTRPC()
-  const queryClient = useQueryClient()
-  const { data: voterElection } = useSuspenseQuery(
-    trpc.voters.getWithId.queryOptions({
-      voterId
-    })
-  )
   const post = useMutation(trpc.votes.post.mutationOptions())
   const [confirmingVote, setConfirmingVote] = useState(false)
   const [disableVote, setDisableVote] = useState(false)
   const [ballotId, setBallotId] = useState('')
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const [availableCandidates, setAvailableCandidates] = useState<string[]>(
-    voterElection
-      ? voterElection.election.candidates.map((c) => c.candidateId)
-      : []
+    election.candidates.map((c) => c.candidateId)
   )
   const t = useTranslations('voter.vote')
   const router = useRouter()
-
-  if (!voterElection) {
-    notFound()
-  }
-
-  const { election, voter } = voterElection
 
   const handleDragStart = () => {
     setDisableVote(true)
@@ -123,30 +106,21 @@ export default function Vote({ voterId }: { voterId: string }) {
   }
 
   const handleVote = () => {
-    if (!voterId) {
-      return
-    }
     setDisableVote(true)
     post.mutate(
       {
-        voterId,
+        voterId: voter.voterId,
         ballot: selectedCandidates.map((candidateId, i) => ({
           candidateId,
           rank: i + 1
         }))
       },
       {
-        onSuccess: async ({ ballotId }) => {
-          await queryClient.invalidateQueries(
-            trpc.voters.getWithId.queryFilter({ voterId })
-          )
+        onSuccess: ({ ballotId }) => {
           setConfirmingVote(false)
           setBallotId(ballotId)
         },
-        onError: async (error) => {
-          await queryClient.invalidateQueries(
-            trpc.voters.getWithId.queryFilter({ voterId })
-          )
+        onError: (error) => {
           setDisableVote(false)
           const code = error.data?.code
           if (code === 'NOT_FOUND') {
@@ -214,7 +188,7 @@ export default function Vote({ voterId }: { voterId: string }) {
             {t('back_to_frontpage')}
           </Link>
           <p className="mb-4">{election.description}</p>
-          {voter.hasVoted ? (
+          {voter.hasVoted || ballotId ? (
             <div className="rounded-lg bg-green-50 p-4 text-center text-green-700">
               <h4 className="mb-3 text-lg font-semibold">
                 {ballotId ? t('thanks_for_voting') : t('already_voted')}
