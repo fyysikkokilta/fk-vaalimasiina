@@ -1,43 +1,29 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
-import { useSetCookie } from 'cookies-next'
 import { useTranslations } from 'next-intl'
-import React, { useState } from 'react'
-import { toast } from 'react-toastify'
+import React from 'react'
 
+import authenticate from '~/actions/admin/authenticate'
 import TitleWrapper from '~/components/TitleWrapper'
-import { useRouter } from '~/i18n/routing'
-import { useTRPC } from '~/trpc/client'
+import { useToastedActionState } from '~/hooks/useToastedActionState'
 
 export default function Login() {
-  const trpc = useTRPC()
-  const login = useMutation(trpc.admin.login.authenticate.mutationOptions())
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const t = useTranslations('admin.login')
-  const setCookie = useSetCookie()
-  const router = useRouter()
 
-  const handleLogin = () => {
-    login.mutate(
-      { username, password },
-      {
-        onSuccess(token) {
-          toast.success(t('login_successful'))
-          setCookie('admin-token', token, {
-            maxAge: 60 * 60 * 8
-          })
-          router.replace('/admin')
-        }
-      }
-    )
-  }
+  const [, formAction, pending] = useToastedActionState(
+    authenticate,
+    {
+      success: false,
+      message: ''
+    },
+    'admin.login'
+  )
+
   return (
     <TitleWrapper title={t('title')}>
       <div className="flex justify-center">
         <div className="w-full max-w-md">
-          <form className="space-y-4">
+          <form action={formAction} className="space-y-4">
             <div>
               <label
                 htmlFor="username"
@@ -47,9 +33,10 @@ export default function Login() {
               </label>
               <input
                 id="username"
+                name="username"
                 type="text"
+                required
                 placeholder={t('username')}
-                onChange={(e) => setUsername(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
@@ -62,21 +49,19 @@ export default function Login() {
               </label>
               <input
                 id="password"
+                name="password"
                 type="password"
+                required
                 placeholder={t('password')}
-                onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
             <button
-              type="button"
-              onClick={handleLogin}
-              disabled={!username || !password}
-              className={`bg-fk-yellow text-fk-black w-full rounded-lg px-4 py-2 transition-colors ${
-                !username || !password
-                  ? 'cursor-not-allowed opacity-50'
-                  : 'cursor-pointer hover:bg-amber-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'
-              }`}
+              type="submit"
+              disabled={pending}
+              className={
+                'bg-fk-yellow text-fk-black w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'
+              }
             >
               {t('login_button')}
             </button>

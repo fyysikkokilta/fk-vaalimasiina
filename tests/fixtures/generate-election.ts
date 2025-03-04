@@ -1,11 +1,9 @@
 import { randomUUID } from 'crypto'
 
-import {
-  insertElection,
-  insertVoters,
-  insertVotes,
-  resetDatabase
-} from '../utils/db'
+import { clearTables } from '../utils/routes/db'
+import { createElection } from '../utils/routes/elections'
+import { createVoters } from '../utils/routes/voters'
+import { createVotes } from '../utils/routes/votes'
 import { readFixture } from './read-fixture'
 
 const main = async () => {
@@ -24,7 +22,7 @@ const main = async () => {
   }
   const voteFixture = await readFixture(voteFileName)
 
-  await resetDatabase()
+  await clearTables()
 
   const title = 'Test Election'
   const description = 'Vote for your favorite'
@@ -45,16 +43,13 @@ const main = async () => {
     status: 'CLOSED' as const
   }
 
-  const election = await insertElection(electionData)
+  const election = await createElection(electionData)
 
   const votersData = voteFixture.map(() => {
     return `${randomUUID()}@mail.com`
   })
 
-  const voters = await insertVoters({
-    electionId: election.electionId,
-    emails: votersData
-  })
+  const voters = await createVoters(election.electionId, votersData)
 
   const voterIdBallotPairs = voteFixture.map((votes, index) => {
     const voterId = voters[index].voterId
@@ -66,10 +61,7 @@ const main = async () => {
     return { voterId, ballot }
   })
 
-  await insertVotes({
-    electionId: election.electionId,
-    voterIdBallotPairs
-  })
+  await createVotes(election.electionId, voterIdBallotPairs)
 
   console.log('done')
 }

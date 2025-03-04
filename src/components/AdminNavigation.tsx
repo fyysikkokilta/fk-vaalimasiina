@@ -1,36 +1,56 @@
 'use client'
 
-import { useQueryClient } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import React from 'react'
 
+import { useToastedActionState } from '~/hooks/useToastedActionState'
 import {
   ElectionStep,
   electionStepSettingsEnglish,
   electionStepSettingsFinnish
 } from '~/settings/electionStepSettings'
-import { useTRPC } from '~/trpc/client'
 
 type AdminNavigationProps = {
   electionStep: ElectionStep
+  tKey: string
   disablePrevious?: boolean
   disableNext?: boolean
-  onBack?: () => Promise<void>
-  onNext: () => Promise<void>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onBack?: (...args: any[]) => Promise<{ success: boolean; message: string }>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onNext: (...args: any[]) => Promise<{ success: boolean; message: string }>
   children: React.ReactNode
 }
 
 export default function AdminNavigation({
   electionStep,
+  tKey,
   disablePrevious = false,
   disableNext = false,
-  onBack = async () => {},
+  onBack = async () => Promise.resolve({ success: false, message: '' }),
   onNext,
   children
 }: AdminNavigationProps) {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
   const locale = useLocale()
+
+  const [, backFormAction, backPending] = useToastedActionState(
+    onBack,
+    {
+      success: false,
+      message: ''
+    },
+    tKey
+  )
+
+  const [, nextFormAction, nextPending] = useToastedActionState(
+    onNext,
+    {
+      success: false,
+      message: ''
+    },
+    tKey
+  )
+
   const stepSettings =
     locale === 'fi'
       ? electionStepSettingsFinnish[electionStep]
@@ -40,30 +60,8 @@ export default function AdminNavigation({
     return null
   }
 
-  const nextStep = async () => {
-    if (stepSettings.nextButton && !disableNext) {
-      await onNext()
-      await queryClient.invalidateQueries(
-        trpc.admin.elections.findCurrent.queryFilter()
-      )
-    }
-  }
-
-  const prevStep = async () => {
-    if (
-      stepSettings.backButton &&
-      stepSettings.previousStep &&
-      !disablePrevious
-    ) {
-      await onBack()
-      await queryClient.invalidateQueries(
-        trpc.admin.elections.findCurrent.queryFilter()
-      )
-    }
-  }
-
   return (
-    <>
+    <form>
       <div className="mb-3">
         <div className="mb-6 flex justify-center">
           <h3 className="text-2xl font-semibold">{stepSettings.title}</h3>
@@ -72,8 +70,9 @@ export default function AdminNavigation({
           <div>
             {stepSettings.backButton && (
               <button
-                disabled={disablePrevious}
-                onClick={prevStep}
+                formAction={backFormAction}
+                type="submit"
+                disabled={disablePrevious || backPending}
                 className={`text-fk-black rounded-lg px-4 py-2 ${
                   disablePrevious
                     ? 'cursor-not-allowed bg-gray-300'
@@ -87,8 +86,9 @@ export default function AdminNavigation({
           <div>
             {stepSettings.nextButton && (
               <button
-                disabled={disableNext}
-                onClick={nextStep}
+                formAction={nextFormAction}
+                type="submit"
+                disabled={disableNext || nextPending}
                 className={`text-fk-black rounded-lg px-4 py-2 ${
                   disableNext
                     ? 'cursor-not-allowed bg-gray-300'
@@ -102,6 +102,6 @@ export default function AdminNavigation({
         </div>
       </div>
       {children}
-    </>
+    </form>
   )
 }

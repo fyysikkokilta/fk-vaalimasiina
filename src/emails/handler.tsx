@@ -1,5 +1,4 @@
 import { render } from '@react-email/components'
-import { TRPCError } from '@trpc/server'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 
@@ -32,7 +31,7 @@ export const sendVotingMail = async (
   if (process.env.NODE_ENV === 'development') {
     console.log('Sending voting mail to:', to)
     console.log('Params:', params)
-    return
+    return true
   }
   try {
     const brandedParams = {
@@ -74,11 +73,9 @@ export const sendVotingMail = async (
     }
 
     await client.messages.create(process.env.MAILGUN_DOMAIN, emailParams)
+    return true
   } catch (error) {
-    throw new TRPCError({
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'mail_sending_failed',
-      cause: error
-    })
+    console.error('Error sending voting mail:', error)
+    return false
   }
 }

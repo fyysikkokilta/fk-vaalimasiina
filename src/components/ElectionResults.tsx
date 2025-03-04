@@ -247,6 +247,7 @@ export default function ElectionResults({
       </div>
       <div className="mb-4 flex justify-between">
         <button
+          type="button"
           onClick={() => setCurrentRound((curr) => curr - 1)}
           disabled={currentRound === 0}
           className={`rounded-lg px-4 py-2 ${
@@ -258,6 +259,7 @@ export default function ElectionResults({
           {t('previous_round')}
         </button>
         <button
+          type="button"
           onClick={() => setCurrentRound((curr) => curr + 1)}
           disabled={currentRound === votingResult.roundResults.length + 1}
           className={`rounded-lg px-4 py-2 ${

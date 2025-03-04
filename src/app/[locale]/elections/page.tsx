@@ -4,7 +4,7 @@ import React from 'react'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
-import { Link } from '~/i18n/routing'
+import { Link } from '~/i18n/navigation'
 
 const getElections = async () => {
   'use cache'

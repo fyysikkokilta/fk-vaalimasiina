@@ -1,94 +1,33 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
-import React, { useState } from 'react'
+import React from 'react'
 
+import { protectedCancelEditing } from '~/actions/admin/election/cancelEditing'
+import { protectedEditElection } from '~/actions/admin/election/editElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
 import { ElectionStep } from '~/settings/electionStepSettings'
-import { RouterInput, RouterOutput, useTRPC } from '~/trpc/client'
 
-export default function EditElection({
-  election
-}: {
-  election: NonNullable<RouterOutput['admin']['elections']['findCurrent']>
-}) {
-  const trpc = useTRPC()
-  const update = useMutation(trpc.admin.elections.update.mutationOptions())
-  const cancelEditing = useMutation(
-    trpc.admin.elections.cancelEditing.mutationOptions()
+import { ElectionStepProps } from '../page'
+
+export default function EditElection({ election }: ElectionStepProps) {
+  const cancelEditingAction = protectedCancelEditing.bind(
+    null,
+    election.electionId
   )
-  const [newCandidate, setNewCandidate] = useState('')
-  const [updatedElection, setUpdatedElection] =
-    useState<RouterInput['admin']['elections']['update']>(election)
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    isNumber: boolean = false
-  ) => {
-    setUpdatedElection((electionState) => ({
-      ...electionState,
-      [event.target.name]: isNumber
-        ? parseInt(event.target.value, 10) || ''
-        : event.target.value
-    }))
-  }
-
-  const addCandidate = (candidateName: string) => {
-    setUpdatedElection((electionState) => ({
-      ...electionState,
-      candidates: [...electionState.candidates, { name: candidateName }]
-    }))
-    setNewCandidate('')
-  }
-
-  const removeCandidate = (index: number) => {
-    setUpdatedElection((electionState) => {
-      const updatedCandidates = electionState.candidates.filter(
-        (_, i) => i !== index
-      )
-
-      return {
-        ...electionState,
-        candidates: updatedCandidates
-      }
-    })
-  }
-
-  const handleCancelEditing = async () => {
-    await cancelEditing.mutateAsync({
-      electionId: election.electionId
-    })
-  }
-
-  const handleSubmit = async () => {
-    await update.mutateAsync({
-      ...updatedElection
-    })
-  }
-
-  const disabled = !(
-    updatedElection.title &&
-    updatedElection.description &&
-    updatedElection.seats > 0 &&
-    updatedElection.candidates.length >= updatedElection.seats
+  const editElectionAction = protectedEditElection.bind(
+    null,
+    election.electionId
   )
 
   return (
     <AdminNavigation
       electionStep={ElectionStep.EDIT}
-      disableNext={disabled}
-      onBack={handleCancelEditing}
-      onNext={handleSubmit}
+      tKey="admin.admin_main.new_election"
+      onBack={cancelEditingAction}
+      onNext={editElectionAction}
     >
-      <ElectionForm
-        election={updatedElection}
-        newCandidate={newCandidate}
-        setNewCandidate={setNewCandidate}
-        handleChange={handleChange}
-        addCandidate={addCandidate}
-        removeCandidate={removeCandidate}
-      />
+      <ElectionForm election={election} />
     </AdminNavigation>
   )
 }

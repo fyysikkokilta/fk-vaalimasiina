@@ -6,10 +6,10 @@ import React from 'react'
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
-import { Link } from '~/i18n/routing'
+import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
-/*export const generateStaticParams = async () => {
+export const generateStaticParams = async () => {
   const elections = await db.query.electionsTable.findMany({
     where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED'),
     columns: {
@@ -18,7 +18,7 @@ import isUUID from '~/utils/isUUID'
   })
 
   return elections
-}*/
+}
 
 const getElection = async (electionId: string) => {
   'use cache'

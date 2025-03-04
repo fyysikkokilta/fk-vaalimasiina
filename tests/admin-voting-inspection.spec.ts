@@ -9,20 +9,23 @@ import {
   resetDatabase,
   Voter
 } from './utils/db'
-import { expectToast } from './utils/toast'
+import { expectNoToast, expectToast } from './utils/toast'
 
 let election: Election
 let voters: Voter[]
 
-test.beforeEach(async ({ page }) => {
-  await resetDatabase()
-  election = await insertElection({
-    title: 'Election 1',
-    description: 'Description 1',
-    seats: 1,
-    candidates: [{ name: 'Candidate 1' }],
-    status: 'ONGOING'
-  })
+test.beforeEach(async ({ page, request }) => {
+  await resetDatabase(request)
+  election = await insertElection(
+    {
+      title: 'Election 1',
+      description: 'Description 1',
+      seats: 1,
+      candidates: [{ name: 'Candidate 1' }],
+      status: 'ONGOING'
+    },
+    request
+  )
   voters = await insertVoters({
     electionId: election.electionId,
     emails: Array.from({ length: 4 }, (_, i) => `email${i + 1}@email.com`)
@@ -170,9 +173,7 @@ test.describe('change email form', () => {
   }) => {
     await page.fill('#oldEmail', 'email4@email.com')
     await page.fill('#newEmail', 'email5')
-    await expect(
-      page.getByRole('button', { name: 'Change email' })
-    ).toBeDisabled()
+    await expectNoToast(page)
   })
 
   test("shouldn't allow to change an old email that doesn't exist", async ({

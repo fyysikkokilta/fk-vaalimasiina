@@ -48,6 +48,12 @@
       "empty_ballot": "Tyhjä äänestyslippu",
       "cancel": "Peruuta",
       "confirm": "Vahvista",
+      "ballot_saved": "Äänesi on tallennettu",
+      "voter_not_found": "Äänestäjää ei löytynyt",
+      "voting_not_ongoing": "Äänestys ei ole käynnissä",
+      "invalid_ballot": "Virheellinen äänestyslippu",
+      "voter_already_voted": "Äänestäjä on jo äänestänyt",
+      "error_saving_ballot": "Virhe tallennettaessa äänestyslippua",
       "not_found": {
         "title": "Äänestyslinkkiä ei löytynyt",
         "description": "Äänestyslinkkiä ei löytynyt. Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
@@ -62,7 +68,8 @@
       "username": "Käyttäjätunnus",
       "password": "Salasana",
       "login_button": "Kirjaudu",
-      "login_successful": "Kirjautuminen onnistui"
+      "login_successful": "Kirjautuminen onnistui",
+      "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana"
     },
     "admin_main": {
       "new_election": {
@@ -72,7 +79,13 @@
         "new_candidate": "Uusi ehdokas",
         "add_candidate": "Lisää ehdokas",
         "remove_candidate": "Poista ehdokas",
-        "candidates": "Ehdokkaat"
+        "candidates": "Ehdokkaat",
+        "cancelled_editing": "Muokkaus peruttu",
+        "election_created": "Vaali luotu",
+        "election_edited": "Vaali muokattu",
+        "election_not_found": "Vaalia ei löytynyt",
+        "invalid_election_data": "Virheelliset vaalitiedot",
+        "invalid_election_identifier": "Virheellinen vaalitunniste"
       },
       "preview_election": {
         "seats": "Paikkoja",
@@ -81,7 +94,13 @@
         "email_list_instruction": "Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna",
         "email_list_placeholder": "sähköposti@mail.com\nsähköposti2@mail.com\n",
         "voter_count": "Kelvollisia äänestäjien sähköposteja",
-        "invalid_emails": "Kaikki sähköpostit eivät ole kelvollisia"
+        "editing_started": "Muokkaus aloitettu",
+        "voting_started": "Äänestys aloitettu",
+        "invalid_emails": "Kaikki sähköpostit eivät ole kelvollisia",
+        "mail_sending_failed": "Sähköpostin lähettäminen epäonnistui",
+        "election_not_found": "Vaalia ei löytynyt",
+        "invalid_election_identifier": "Virheellinen vaalitunniste",
+        "invalid_voter_data": "Virheelliset äänestäjätiedot"
       },
       "voting_inspection": {
         "given_votes": "Annettuja ääniä",
@@ -89,7 +108,17 @@
         "old_email": "Vaihdettava sähköposti",
         "new_email": "Uusi sähköposti",
         "change_email": "Vaihda sähköposti",
-        "email_changed": "Sähköposti vaihdettu"
+        "email_changed": "Sähköposti vaihdettu",
+        "voting_aborted": "Äänestys keskeytetty",
+        "voting_finished": "Äänestys päätetty",
+        "votes_polled": "Äänet haettu",
+        "email_already_exists": "Sähköposti on jo käytössä",
+        "error_updating_email": "Virhe päivitettäessä sähköpostia",
+        "mail_sending_failed": "Sähköpostin lähettäminen epäonnistui",
+        "election_not_found": "Vaalia ei löytynyt",
+        "not_everyone_voted": "Kaikki eivät ole äänestäneet",
+        "voter_not_found": "Äänestäjää ei löytynyt",
+        "invalid_election_identifier": "Virheellinen vaalitunniste"
       }
     }
   },
@@ -117,7 +146,9 @@
     "vote_count": "Ääniä",
     "voter_count": "Äänestäjiä",
     "result": "Tulos",
-    "invalid_result": "Ei-vaalikelpoinen tulos. Äänestys uusitaan."
+    "invalid_result": "Ei-vaalikelpoinen tulos. Äänestys uusitaan.",
+    "election_not_found": "Vaalia ei löytynyt",
+    "invalid_close_election_data": "Virheelliset vaalitiedot"
   },
   "previous_results": {
     "title": "Tulokset",
@@ -129,23 +160,6 @@
       "description": "Vaalia ei löytynyt. Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
       "back_to_frontpage": "Takaisin etusivulle"
     }
-  },
-  "errors": {
-    "unauthorized": "Ei oikeuksia",
-    "multiple_non_closed_elections": "Useita kesken olevia vaaleja",
-    "election_not_found": "Vaalia ei löytynyt",
-    "voter_not_found": "Äänestäjää ei löytynyt",
-    "voter_already_voted": "Äänestäjä on jo äänestänyt",
-    "voting_not_ongoing": "Äänestys ei ole käynnissä",
-    "invalid_ballot": "Virheellinen äänestyslippu",
-    "error_saving_ballot": "Virhe tallennettaessa äänestyslippua",
-    "election_not_completed": "Vaalit eivät ole vielä päättyneet",
-    "not_everyone_voted": "Kaikki eivät ole äänestäneet",
-    "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana",
-    "email_already_exists": "Sähköposti on jo käytössä",
-    "error_updating_email": "Virhe päivitettäessä sähköpostia",
-    "mail_sending_failed": "Sähköpostien lähettäminen epäonnistui",
-    "generic_error": "Jotain meni pieleen"
   },
   "error_boundary": {
     "title": "Jotain meni pieleen",

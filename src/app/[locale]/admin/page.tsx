@@ -1,14 +1,65 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { getCookie } from 'cookies-next'
+import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { cookies } from 'next/headers'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
-import { redirect } from '~/i18n/routing'
-import { getQueryClient, trpc } from '~/trpc/server'
+import { db } from '~/db'
+import { redirect } from '~/i18n/navigation'
 import isAuthorized from '~/utils/isAuthorized'
 
 import Admin from './client'
+
+const getAdminElection = async () => {
+  'use cache'
+  cacheTag('admin-election')
+  const elections = await db.query.electionsTable.findMany({
+    where: (electionsTable, { eq, not }) =>
+      not(eq(electionsTable.status, 'CLOSED')),
+    with: {
+      candidates: {
+        columns: {
+          candidateId: true,
+          name: true
+        }
+      },
+      voters: {
+        columns: {},
+        with: {
+          hasVoted: {
+            columns: {
+              hasVotedId: true
+            }
+          }
+        }
+      },
+      ballots: {
+        columns: {},
+        with: {
+          votes: {
+            columns: {
+              candidateId: true,
+              rank: true
+            }
+          }
+        },
+        // BallotId is random, so this makes the order not the same as order of creation
+        orderBy: (ballotsTable) => ballotsTable.ballotId
+      }
+    }
+  })
+
+  if (elections.length === 0) {
+    return null
+  }
+
+  const { voters, ballots, ...election } = elections[0]
+
+  return {
+    election,
+    voters,
+    ballots
+  }
+}
 
 export default async function AdminPage({
   params
@@ -20,7 +71,8 @@ export default async function AdminPage({
 
   const t = await getTranslations('admin')
 
-  const value = await getCookie('admin-token', { cookies })
+  const cookieStore = await cookies()
+  const value = cookieStore.get('admin-token')?.value
   const authorized = isAuthorized(value)
   if (!authorized) {
     redirect({
@@ -29,16 +81,15 @@ export default async function AdminPage({
     })
   }
 
-  const queryClient = getQueryClient()
-  void queryClient.prefetchQuery(
-    trpc.admin.elections.findCurrent.queryOptions()
-  )
+  const adminElection = await getAdminElection()
 
   return (
     <TitleWrapper title={t('title')}>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <Admin />
-      </HydrationBoundary>
+      <Admin adminElection={adminElection} />
     </TitleWrapper>
   )
 }
+
+export type AdminPageProps = Awaited<ReturnType<typeof getAdminElection>>
+
+export type ElectionStepProps = NonNullable<AdminPageProps>

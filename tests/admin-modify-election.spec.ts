@@ -3,15 +3,18 @@ import { expect, test } from '@playwright/test'
 import { loginAdmin } from './utils/admin-login'
 import { insertElection, resetDatabase } from './utils/db'
 
-test.beforeEach(async ({ page }) => {
-  await resetDatabase()
-  await insertElection({
-    title: 'Election 1',
-    description: 'Description 1',
-    seats: 1,
-    candidates: [{ name: 'Candidate 1' }],
-    status: 'CREATED'
-  })
+test.beforeEach(async ({ page, request }) => {
+  await resetDatabase(request)
+  await insertElection(
+    {
+      title: 'Election 1',
+      description: 'Description 1',
+      seats: 1,
+      candidates: [{ name: 'Candidate 1' }],
+      status: 'CREATED'
+    },
+    request
+  )
   await loginAdmin(page)
   await page.getByRole('button', { name: 'Edit election' }).click()
 })

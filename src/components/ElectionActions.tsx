@@ -128,12 +128,14 @@ export default function ElectionActions({
   return (
     <div className="flex flex-col justify-center gap-4 md:flex-row">
       <button
+        type="button"
         onClick={() => exportBallotsToCSV(votingResult.ballots, election)}
         className="bg-fk-black cursor-pointer rounded-lg px-4 py-2 text-white transition-colors duration-200 hover:bg-gray-900"
       >
         {t('export_csv')}
       </button>
       <button
+        type="button"
         onClick={() => getMinutesParagraphs(votingResult)}
         className="bg-fk-black cursor-pointer rounded-lg px-4 py-2 text-white transition-colors duration-200 hover:bg-gray-900"
       >

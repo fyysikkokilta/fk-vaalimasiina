@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
-import { Link } from '~/i18n/routing'
+import { Link } from '~/i18n/navigation'
 
 export default async function ElectionNotFound() {
   const t = await getTranslations('previous_results.not_found')

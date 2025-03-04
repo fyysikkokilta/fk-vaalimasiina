@@ -48,6 +48,12 @@
       "empty_ballot": "Empty ballot",
       "cancel": "Cancel",
       "confirm": "Confirm",
+      "ballot_saved": "Your vote has been saved",
+      "voter_not_found": "Voter not found",
+      "voting_not_ongoing": "Voting is not ongoing",
+      "invalid_ballot": "Invalid ballot",
+      "voter_already_voted": "Voter has already voted",
+      "error_saving_ballot": "Error saving ballot",
       "not_found": {
         "title": "Voting link not found",
         "description": "Voting link not found. Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
@@ -62,7 +68,8 @@
       "username": "Username",
       "password": "Password",
       "login_button": "Log in",
-      "login_successful": "Login successful"
+      "login_successful": "Login successful",
+      "wrong_username_or_password": "Wrong username or password"
     },
     "admin_main": {
       "new_election": {
@@ -72,7 +79,13 @@
         "new_candidate": "New candidate",
         "add_candidate": "Add candidate",
         "remove_candidate": "Remove candidate",
-        "candidates": "Candidates"
+        "candidates": "Candidates",
+        "cancelled_editing": "Editing cancelled",
+        "election_created": "Election created",
+        "election_edited": "Election edited",
+        "election_not_found": "Election not found",
+        "invalid_election_data": "Invalid election data",
+        "invalid_election_identifier": "Invalid election identifier"
       },
       "preview_election": {
         "seats": "Seats",
@@ -81,7 +94,13 @@
         "email_list_instruction": "Add the voters' email addresses here separated by line breaks",
         "email_list_placeholder": "email@email.com\nemail2@mail.com",
         "voter_count": "Valid voter emails",
-        "invalid_emails": "Not all emails are valid"
+        "editing_started": "Editing started",
+        "voting_started": "Voting started",
+        "invalid_emails": "Not all emails are valid",
+        "mail_sending_failed": "Mail sending failed",
+        "election_not_found": "Election not found",
+        "invalid_election_identifier": "Invalid election identifier",
+        "invalid_voter_data": "Invalid voter data"
       },
       "voting_inspection": {
         "given_votes": "Given votes",
@@ -89,7 +108,17 @@
         "old_email": "Email to change",
         "new_email": "New email",
         "change_email": "Change email",
-        "email_changed": "Email changed"
+        "email_changed": "Email changed",
+        "voting_aborted": "Voting aborted",
+        "voting_finished": "Voting finished",
+        "votes_polled": "Votes polled",
+        "email_already_exists": "Email already exists",
+        "error_updating_email": "Error updating email",
+        "mail_sending_failed": "Mail sending failed",
+        "election_not_found": "Election not found",
+        "not_everyone_voted": "Not everyone has voted",
+        "voter_not_found": "Voter not found",
+        "invalid_election_identifier": "Invalid election identifier"
       }
     }
   },
@@ -117,7 +146,9 @@
     "vote_count": "Votes",
     "voter_count": "Voters",
     "result": "Result",
-    "invalid_result": "Ineligible result. The election will be repeated."
+    "invalid_result": "Ineligible result. The election will be repeated.",
+    "election_not_found": "Election not found",
+    "invalid_close_election_data": "Invalid election data"
   },
   "previous_results": {
     "title": "Results",
@@ -129,23 +160,6 @@
       "description": "Election not found. Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
       "back_to_frontpage": "Back to frontpage"
     }
-  },
-  "errors": {
-    "unauthorized": "Unauthorized",
-    "multiple_non_closed_elections": "Multiple non-closed elections",
-    "election_not_found": "Election not found",
-    "voter_not_found": "Voter not found",
-    "voter_already_voted": "Voter has already voted",
-    "voting_not_ongoing": "Voting is not ongoing",
-    "invalid_ballot": "Invalid ballot",
-    "error_saving_ballot": "Error saving ballot",
-    "election_not_completed": "Election is not completed",
-    "not_everyone_voted": "Not everyone has voted",
-    "wrong_username_or_password": "Wrong username or password",
-    "email_already_exists": "Email already exists",
-    "error_updating_email": "Error updating email",
-    "mail_sending_failed": "Sending emails failed",
-    "generic_error": "An error occurred"
   },
   "error_boundary": {
     "title": "An error occurred",

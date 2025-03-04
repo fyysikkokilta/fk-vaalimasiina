@@ -1,52 +1,58 @@
+import { APIRequestContext } from '@playwright/test'
 import { randomInt } from 'crypto'
 
 import { shuffleWithSeed } from '~/algorithm/shuffleWithSeed'
-import { testClient, TestRouterOutput } from '~/trpc/client'
 
-export type Election = TestRouterOutput['elections']['create']
+import { clearTables } from './routes/db'
+import { changeStatus, createElection } from './routes/elections'
+import { createVoters } from './routes/voters'
+import { createVotes } from './routes/votes'
+
+export type Election = Awaited<ReturnType<typeof createElection>>
 export type Candidate = Election['candidates'][number]
-export type Voter = TestRouterOutput['voters']['create'][number]
-export type Ballot = TestRouterOutput['votes']['create'][number]
+export type Voter = Awaited<ReturnType<typeof createVoters>>[number]
+export type Ballot = Awaited<ReturnType<typeof createVotes>>[number]
 export type Vote = Ballot['votes'][number]
 
-export const resetDatabase = () => {
-  if (!testClient.test) {
-    throw new Error('test router should only be called in test environment')
-  }
-  return testClient.test.db.reset.mutate()
+export const resetDatabase = async (request: APIRequestContext) => {
+  await request.post('/api/revalidate', {
+    data: { tags: ['admin-election', 'auditable-election', 'elections'] }
+  })
+  return clearTables()
 }
 
-export const insertElection = (data: {
-  title: string
-  description: string
-  seats: number
-  candidates: { name: string }[]
-  status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
-}) => {
-  if (!testClient.test) {
-    throw new Error('test router should only be called in test environment')
-  }
-  return testClient.test.elections.create.mutate(data)
-}
-
-export const changeElectionStatus = (
-  electionId: string,
-  status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+export const insertElection = async (
+  data: {
+    title: string
+    description: string
+    seats: number
+    candidates: { name: string }[]
+    status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+  },
+  request: APIRequestContext
 ) => {
-  if (!testClient.test) {
-    throw new Error('test router should only be called in test environment')
-  }
-  return testClient.test.elections.changeStatus.mutate({ electionId, status })
+  await request.post('/api/revalidate', {
+    data: { tags: ['admin-election', 'auditable-election', 'elections'] }
+  })
+  return createElection(data)
+}
+
+export const changeElectionStatus = async (
+  electionId: string,
+  status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED',
+  request: APIRequestContext
+) => {
+  await request.post('/api/revalidate', {
+    data: { tags: ['admin-election', 'auditable-election', 'elections'] }
+  })
+  return changeStatus(electionId, status)
 }
 
 export const insertVoters = async (data: {
   electionId: string
   emails: string[]
 }) => {
-  if (!testClient.test) {
-    throw new Error('test router should only be called in test environment')
-  }
-  return testClient.test.voters.create.mutate(data)
+  return createVoters(data.electionId, data.emails)
 }
 
 export const insertVotes = async (data: {
@@ -56,10 +62,7 @@ export const insertVotes = async (data: {
     ballot: { candidateId: string; rank: number }[]
   }[]
 }) => {
-  if (!testClient.test) {
-    throw new Error('test router should only be called in test environment')
-  }
-  return testClient.test.votes.create.mutate(data)
+  return createVotes(data.electionId, data.voterIdBallotPairs)
 }
 
 export const createElectionWithVotersAndBallots = async (
@@ -68,17 +71,21 @@ export const createElectionWithVotersAndBallots = async (
   seats: number,
   status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED',
   candidateCount: number,
-  voteCount: number
+  voteCount: number,
+  request: APIRequestContext
 ) => {
-  const election = await insertElection({
-    title,
-    description,
-    seats,
-    candidates: Array.from({ length: candidateCount }, (_, i) => ({
-      name: `Candidate ${i + 1}`
-    })),
-    status
-  })
+  const election = await insertElection(
+    {
+      title,
+      description,
+      seats,
+      candidates: Array.from({ length: candidateCount }, (_, i) => ({
+        name: `Candidate ${i + 1}`
+      })),
+      status
+    },
+    request
+  )
   const voters = await insertVoters({
     electionId: election.electionId,
     emails: Array.from(

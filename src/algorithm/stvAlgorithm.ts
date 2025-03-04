@@ -1,12 +1,11 @@
+import type { ElectionStepProps } from '~/app/[locale]/admin/page'
 import type { ElectionPageProps } from '~/app/[locale]/elections/[electionId]/page'
-import type { RouterOutput, TestRouterOutput } from '~/trpc/client'
 
 import { shuffleWithSeed } from './shuffleWithSeed'
 
 export type Election =
   | ElectionPageProps['election']
-  | NonNullable<RouterOutput['admin']['elections']['findCurrent']>
-  | TestRouterOutput['elections']['create']
+  | ElectionStepProps['election']
 
 export type Ballot = ElectionPageProps['ballots'][number]
 

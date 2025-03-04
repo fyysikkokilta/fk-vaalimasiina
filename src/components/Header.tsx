@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import React from 'react'
 
-import { Link } from '~/i18n/routing'
+import { Link } from '~/i18n/navigation'
 
 import LanguageSwitcher from './LanguageSwitcher'
 
@@ -15,7 +15,6 @@ function HeaderLink({
   return (
     <Link
       href={href}
-      replace
       className="rounded-lg px-4 py-3 text-white transition-colors hover:bg-white/10 hover:text-white/90"
     >
       {children}

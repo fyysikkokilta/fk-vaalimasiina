@@ -19,8 +19,8 @@ let result: ValidVotingResult
 const roundToTwoDecimals = (num: number) =>
   Math.round((num + Number.EPSILON) * 100) / 100
 
-test.beforeEach(async ({ page }) => {
-  await resetDatabase()
+test.beforeEach(async ({ page, request }) => {
+  await resetDatabase(request)
   const createdElectionWithVotersAndBallots =
     await createElectionWithVotersAndBallots(
       'Election 1',
@@ -28,7 +28,8 @@ test.beforeEach(async ({ page }) => {
       2,
       'FINISHED',
       7,
-      100
+      100,
+      request
     )
   election = createdElectionWithVotersAndBallots.election
   ballots = createdElectionWithVotersAndBallots.ballots

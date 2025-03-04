@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import React, { useTransition } from 'react'
 
-import { usePathname, useRouter } from '~/i18n/routing'
+import { usePathname, useRouter } from '~/i18n/navigation'
 
 export default function LanguageSwitcher() {
   const locale = useLocale()
@@ -28,6 +28,7 @@ export default function LanguageSwitcher() {
     <button
       className="cursor-pointer rounded-lg border-1 border-amber-50 px-4 py-2 text-white transition-colors hover:bg-white/10 hover:text-white/90"
       disabled={isPending}
+      type="button"
       onClick={toggleLanguage}
     >
       {isEnglish ? 'Suomeksi' : 'In English'}

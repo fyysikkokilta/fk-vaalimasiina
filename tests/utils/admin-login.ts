@@ -1,9 +1,9 @@
 import { Page } from '@playwright/test'
 
-import { testClient } from '~/trpc/client'
+import { authenticate } from './routes/login'
 
 export const loginAdmin = async (page: Page) => {
-  const jwt = await testClient.test?.login.authenticate.mutate()
+  const jwt = authenticate()
 
   if (!jwt) {
     throw new Error('Failed to login')

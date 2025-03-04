@@ -1,93 +1,59 @@
 'use client'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import React, { useEffect } from 'react'
 
+import { protectedChangeEmail } from '~/actions/admin/changeEmail'
+import { protectedAbortVoting } from '~/actions/admin/election/abortVoting'
+import { protectedEndVoting } from '~/actions/admin/election/endVoting'
+import { protectedPollVotes } from '~/actions/admin/election/pollVotes'
 import AdminNavigation from '~/components/AdminNavigation'
+import { useToastedActionState } from '~/hooks/useToastedActionState'
 import { ElectionStep } from '~/settings/electionStepSettings'
-import { RouterOutput, useTRPC } from '~/trpc/client'
+
+import { ElectionStepProps } from '../page'
 
 export default function VotingInspection({
-  election
-}: {
-  election: NonNullable<RouterOutput['admin']['elections']['findCurrent']>
-}) {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
-  const abort = useMutation(trpc.admin.elections.abortVoting.mutationOptions())
-  const end = useMutation(trpc.admin.elections.endVoting.mutationOptions())
-  const updateEmail = useMutation(
-    trpc.admin.voters.updateEmail.mutationOptions()
-  )
+  election: { electionId, title, description },
+  voters
+}: ElectionStepProps) {
   const t = useTranslations('admin.admin_main.voting_inspection')
 
-  const [oldEmail, setOldEmail] = useState('')
-  const [newEmail, setNewEmail] = useState('')
+  const [, formAction, pending] = useToastedActionState(
+    protectedChangeEmail,
+    {
+      success: false,
+      message: ''
+    },
+    'admin.admin_main.voting_inspection'
+  )
 
   useEffect(() => {
-    void queryClient.invalidateQueries(
-      trpc.admin.elections.findCurrent.queryFilter()
-    )
-
-    const interval = setInterval(
-      () =>
-        void queryClient.invalidateQueries(
-          trpc.admin.elections.findCurrent.queryFilter()
-        ),
-      3000
-    )
+    const interval = setInterval(() => {
+      void protectedPollVotes()
+    }, 3000)
 
     return () => clearInterval(interval)
-  }, [election, queryClient, trpc.admin.elections.findCurrent])
-
-  const handleAbortVoting = async () => {
-    await abort.mutateAsync({
-      electionId: election.electionId
-    })
-  }
-
-  const handleEndVoting = async () => {
-    await end.mutateAsync({
-      electionId: election.electionId
-    })
-  }
-
-  const handleEmailChange = () => {
-    updateEmail.mutate(
-      {
-        oldEmail,
-        newEmail
-      },
-      {
-        onSuccess() {
-          toast.success(t('email_changed'))
-          setOldEmail('')
-          setNewEmail('')
-        }
-      }
-    )
-  }
-
-  const { voters } = election
+  }, [])
 
   const remainingVoters = voters.filter((voter) => !voter.hasVoted)
   const votersWhoVoted = voters.filter((voter) => voter.hasVoted)
 
-  const validNewEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)
+  const abortVotingAction = protectedAbortVoting.bind(null, electionId)
+  const endVotingAction = protectedEndVoting.bind(null, electionId)
 
   return (
     <AdminNavigation
       electionStep={ElectionStep.VOTING}
+      tKey="admin.admin_main.voting_inspection"
       disableNext={remainingVoters.length > 0}
-      onBack={handleAbortVoting}
-      onNext={handleEndVoting}
+      onBack={abortVotingAction}
+      onNext={endVotingAction}
     >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
-          <h3 className="mb-2 text-xl font-semibold">{election.title}</h3>
-          <p className="mb-4 text-center">{election.description}</p>
+          <h3 className="mb-2 text-xl font-semibold">{title}</h3>
+          <p className="mb-4 text-center">{description}</p>
           <div className="w-full space-y-2 rounded-lg border border-gray-200 p-4">
             <div className="rounded-lg border border-gray-200 p-3">
               <span>
@@ -104,7 +70,7 @@ export default function VotingInspection({
               </span>
             </div>
           </div>
-          <form className="mt-6 w-full space-y-4">
+          <div className="mt-6 w-full space-y-4">
             <div>
               <label
                 htmlFor="oldEmail"
@@ -114,9 +80,8 @@ export default function VotingInspection({
               </label>
               <input
                 id="oldEmail"
+                name="oldEmail"
                 type="email"
-                value={oldEmail}
-                onChange={(e) => setOldEmail(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
@@ -129,25 +94,22 @@ export default function VotingInspection({
               </label>
               <input
                 id="newEmail"
+                name="newEmail"
                 type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
             <button
-              type="button"
-              onClick={() => void handleEmailChange()}
-              disabled={!validNewEmail}
-              className={`w-full rounded-lg px-4 py-2 ${
-                !validNewEmail
-                  ? 'cursor-not-allowed bg-gray-300'
-                  : 'bg-fk-yellow text-fk-black cursor-pointer transition-colors hover:bg-amber-500'
-              }`}
+              formAction={formAction}
+              type="submit"
+              disabled={pending}
+              className={
+                'bg-fk-yellow text-fk-black w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500'
+              }
             >
               {t('change_email')}
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </AdminNavigation>

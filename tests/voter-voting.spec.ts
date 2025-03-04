@@ -13,15 +13,18 @@ import { deselectCandidate, selectCandidate } from './utils/voter-voting'
 let election: Election
 let voters: Voter[]
 
-test.beforeEach(async () => {
-  await resetDatabase()
-  election = await insertElection({
-    title: 'Election 1',
-    description: 'Description 1',
-    seats: 1,
-    candidates: [{ name: 'Candidate 1' }, { name: 'Candidate 2' }],
-    status: 'ONGOING'
-  })
+test.beforeEach(async ({ request }) => {
+  await resetDatabase(request)
+  election = await insertElection(
+    {
+      title: 'Election 1',
+      description: 'Description 1',
+      seats: 1,
+      candidates: [{ name: 'Candidate 1' }, { name: 'Candidate 2' }],
+      status: 'ONGOING'
+    },
+    request
+  )
   voters = await insertVoters({
     electionId: election.electionId,
     emails: Array.from({ length: 1 }, (_, i) => `email${i + 1}@email.com`)
@@ -136,6 +139,7 @@ test.describe('voting', () => {
     await page.getByRole('button', { name: 'Vote' }).click()
     await expect(page.getByText('Confirm vote')).toBeVisible()
     await page.getByRole('button', { name: 'Confirm' }).click()
+    await expect(page.getByText('Thank you for voting!')).toBeVisible()
 
     await page.reload()
     await expect(page.getByText('You have already voted!')).toBeVisible()
@@ -150,7 +154,10 @@ test.describe('audit view', () => {
     await page.goto(`./vote/${voters[0].voterId}`)
   })
 
-  test('should show ballot after voting has ended', async ({ page }) => {
+  test('should show ballot after voting has ended', async ({
+    page,
+    request
+  }) => {
     await selectCandidate(page, 'Candidate 1')
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
@@ -158,7 +165,7 @@ test.describe('audit view', () => {
     const ballotId = await page.evaluate(() => navigator.clipboard.readText())
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
-    await changeElectionStatus(election.electionId, 'FINISHED')
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
     await page.goto('./audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
@@ -166,14 +173,17 @@ test.describe('audit view', () => {
     await expect(page.getByText('Candidate 1')).toBeVisible()
   })
 
-  test('should show empty ballot after voting has ended', async ({ page }) => {
+  test('should show empty ballot after voting has ended', async ({
+    page,
+    request
+  }) => {
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
     await page.getByRole('button', { name: 'Copy ballot ID' }).click()
     const ballotId = await page.evaluate(() => navigator.clipboard.readText())
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
-    await changeElectionStatus(election.electionId, 'FINISHED')
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
     await page.goto('./audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
@@ -181,7 +191,7 @@ test.describe('audit view', () => {
     await expect(page.getByText('Empty ballot')).toBeVisible()
   })
 
-  test('should allow to search for ballot', async ({ page }) => {
+  test('should allow to search for ballot', async ({ page, request }) => {
     await selectCandidate(page, 'Candidate 1')
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
@@ -189,7 +199,7 @@ test.describe('audit view', () => {
     const ballotId = await page.evaluate(() => navigator.clipboard.readText())
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
-    await changeElectionStatus(election.electionId, 'FINISHED')
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
     await page.goto('./audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 

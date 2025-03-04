@@ -1,25 +1,18 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
+import { protectedStartEditing } from '~/actions/admin/election/startEditing'
+import { protectedStartVoting } from '~/actions/admin/election/startVoting'
 import AdminNavigation from '~/components/AdminNavigation'
 import { ElectionStep } from '~/settings/electionStepSettings'
-import { RouterOutput, useTRPC } from '~/trpc/client'
+
+import { ElectionStepProps } from '../page'
 
 export default function PreviewElection({
-  election
-}: {
-  election: NonNullable<RouterOutput['admin']['elections']['findCurrent']>
-}) {
-  const trpc = useTRPC()
-  const startVoting = useMutation(
-    trpc.admin.elections.startVoting.mutationOptions()
-  )
-  const startEditing = useMutation(
-    trpc.admin.elections.startEditing.mutationOptions()
-  )
+  election: { electionId, title, description, seats, candidates }
+}: ElectionStepProps) {
   const [emails, setEmails] = useState('')
   const t = useTranslations('admin.admin_main.preview_election')
 
@@ -41,40 +34,33 @@ export default function PreviewElection({
     return notEmpty && emailsOkay && allEmailsUnique
   }
 
-  const handleStartEditing = async () => {
-    await startEditing.mutateAsync({ electionId: election.electionId })
-  }
-
-  const handleSubmit = async () => {
-    await startVoting.mutateAsync({
-      electionId: election.electionId,
-      emails: getEmailLinesContainingText(emails)
-    })
-  }
-
   const getValidEmailCount = (emailString: string) => {
     return getEmailLinesContainingText(emailString).length
   }
 
+  const startEditingAction = protectedStartEditing.bind(null, electionId)
+  const startVotingAction = protectedStartVoting.bind(null, electionId)
+
   return (
     <AdminNavigation
       electionStep={ElectionStep.PREVIEW}
+      tKey="admin.admin_main.preview_election"
       disableNext={!validateEmails(emails)}
-      onBack={handleStartEditing}
-      onNext={handleSubmit}
+      onBack={startEditingAction}
+      onNext={startVotingAction}
     >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
-          <h3 className="mb-3 text-xl font-semibold">{election.title}</h3>
-          <p className="mb-3 text-center">{election.description}</p>
+          <h3 className="mb-3 text-xl font-semibold">{title}</h3>
+          <p className="mb-3 text-center">{description}</p>
           <div className="mb-3">
             {t('seats')}
             {': '}
-            {election.seats}
+            {seats}
           </div>
           <h4 className="mb-2 font-medium">{t('candidates')}</h4>
           <ul className="w-full space-y-2">
-            {election.candidates.map((candidate, index) => (
+            {candidates.map((candidate, index) => (
               <li
                 key={candidate.candidateId}
                 className="rounded-lg border border-gray-200 p-3"
@@ -119,6 +105,9 @@ export default function PreviewElection({
                 : t('invalid_emails')}
             </div>
           )}
+          {getEmailLinesContainingText(emails).map((email, index) => (
+            <input key={index} type="hidden" name="emails" value={email} />
+          ))}
         </div>
       </div>
     </AdminNavigation>

@@ -3,9 +3,7 @@
 import { useTranslations } from 'next-intl'
 import React, { useEffect, useRef } from 'react'
 
-import { usePathname } from '~/i18n/routing'
-import { useRouter } from '~/i18n/routing'
-import { isTRPCClientError } from '~/trpc/client'
+import { usePathname, useRouter } from '~/i18n/navigation'
 
 export default function ErrorFallback({
   error,
@@ -32,18 +30,13 @@ export default function ErrorFallback({
     >
       <h2 className="text-lg font-semibold">{t('error_boundary.title')}</h2>
       <p>{t('error_boundary.message')}</p>
-      {isTRPCClientError(error) && (
+      {!!error.message && (
         <>
           <p>
             {t('error_boundary.error_message')}
             {': '}
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {t.has(error.message as any)
-              ? /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                t(error.message as any)
-              : error.message}
+            {t.has(error.message) ? t(error.message) : error.message}
           </p>
-          <p>{error.cause?.message}</p>
         </>
       )}
       <div className="mt-2 space-x-2">
