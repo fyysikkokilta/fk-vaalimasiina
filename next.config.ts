@@ -12,7 +12,17 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   experimental: {
     reactCompiler: true,
-    useCache: true
+    useCache: true,
+    serverActions: {
+      allowedOrigins: [
+        'localhost:8010',
+        'localhost:3000',
+        (process.env.BASE_URL || 'vaalit.fyysikkokilta.fi').replace(
+          /^https?:\/\//,
+          ''
+        )
+      ]
+    }
   }
 }
 
