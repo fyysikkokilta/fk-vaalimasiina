@@ -1,11 +1,12 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { protectedStartEditing } from '~/actions/admin/election/startEditing'
 import { protectedStartVoting } from '~/actions/admin/election/startVoting'
 import AdminNavigation from '~/components/AdminNavigation'
+import { useToastedActionState } from '~/hooks/useToastedActionState'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
 import { ElectionStepProps } from '../page'
@@ -13,41 +14,38 @@ import { ElectionStepProps } from '../page'
 export default function PreviewElection({
   election: { electionId, title, description, seats, candidates }
 }: ElectionStepProps) {
-  const [emails, setEmails] = useState('')
   const t = useTranslations('admin.admin_main.preview_election')
-
-  const getEmailLinesContainingText = (emails: string) => {
-    return emails
-      .split('\n')
-      .map((email) => email.trim())
-      .map((email) => email.toLowerCase())
-      .filter(Boolean)
-  }
-
-  const validateEmails = (emails: string) => {
-    const notEmpty = emails.trim().length > 0
-    const emailArray = getEmailLinesContainingText(emails)
-    const emailsOkay = emailArray.every((email) => {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    })
-    const allEmailsUnique = emailArray.length === new Set(emailArray).size
-    return notEmpty && emailsOkay && allEmailsUnique
-  }
-
-  const getValidEmailCount = (emailString: string) => {
-    return getEmailLinesContainingText(emailString).length
-  }
 
   const startEditingAction = protectedStartEditing.bind(null, electionId)
   const startVotingAction = protectedStartVoting.bind(null, electionId)
 
+  const [, startEditing, startEditingPending] = useToastedActionState(
+    startEditingAction,
+    {
+      success: false,
+      message: ''
+    },
+    'admin.admin_main.preview_election'
+  )
+
+  const [submitState, startVoting, startVotingPending] = useToastedActionState(
+    startVotingAction,
+    {
+      success: false,
+      message: '',
+      errors: { formErrors: [], fieldErrors: {} },
+      formData: new FormData()
+    },
+    'admin.admin_main.preview_election'
+  )
+
   return (
     <AdminNavigation
       electionStep={ElectionStep.PREVIEW}
-      tKey="admin.admin_main.preview_election"
-      disableNext={!validateEmails(emails)}
-      onBack={startEditingAction}
-      onNext={startVotingAction}
+      disablePrevious={startEditingPending}
+      disableNext={startVotingPending}
+      onBack={startEditing}
+      onNext={startVoting}
     >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
@@ -74,42 +72,46 @@ export default function PreviewElection({
           <h4 className="mt-6 font-medium">{t('voters')}</h4>
           <div className="w-full">
             <label
-              htmlFor="emailList"
+              htmlFor="emails"
               className="mb-2 block text-sm font-medium text-gray-700"
             >
               {t('email_list_instruction')}
             </label>
             <textarea
-              id="emailList"
+              id="emails"
+              name="emails"
               rows={5}
-              value={emails}
-              onChange={(e) => setEmails(e.target.value)}
+              defaultValue={
+                ('formData' in submitState &&
+                  (submitState.formData?.get('emails') as string)) ||
+                ''
+              }
               placeholder={t('email_list_placeholder')}
-              className={`w-full rounded-lg border px-3 py-2 shadow-sm focus:ring-2 focus:outline-none ${
-                emails.length > 0
-                  ? validateEmails(emails)
-                    ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
-                    : 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-              }`}
+              className={
+                'w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'
+              }
             />
+            {'errors' in submitState &&
+              submitState.errors.fieldErrors.emails?.map((error) => (
+                <div key={error} className="text-red-500">
+                  {t(error)}
+                </div>
+              ))}
           </div>
-          {emails.length > 0 && (
-            <div
-              className={`mt-2 text-center ${
-                validateEmails(emails) ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {validateEmails(emails)
-                ? `${t('voter_count')}: ${getValidEmailCount(emails)}`
-                : t('invalid_emails')}
-            </div>
-          )}
-          {getEmailLinesContainingText(emails).map((email, index) => (
-            <input key={index} type="hidden" name="emails" value={email} />
-          ))}
         </div>
+        {'errors' in submitState &&
+          submitState.errors.fieldErrors.electionId?.map((error) => (
+            <div key={error} className="text-red-500">
+              {t(error)}
+            </div>
+          ))}
       </div>
+      {'errors' in submitState &&
+        submitState.errors.formErrors.map((error) => (
+          <div key={error} className="text-red-500">
+            {t(error)}
+          </div>
+        ))}
     </AdminNavigation>
   )
 }

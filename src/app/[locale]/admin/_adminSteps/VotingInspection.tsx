@@ -19,6 +19,27 @@ export default function VotingInspection({
 }: ElectionStepProps) {
   const t = useTranslations('admin.admin_main.voting_inspection')
 
+  const abortVotingAction = protectedAbortVoting.bind(null, electionId)
+  const endVotingAction = protectedEndVoting.bind(null, electionId)
+
+  const [, abortVoting, abortVotingPending] = useToastedActionState(
+    abortVotingAction,
+    {
+      success: false,
+      message: ''
+    },
+    'admin.admin_main.voting_inspection'
+  )
+
+  const [, endVoting, endVotingPending] = useToastedActionState(
+    endVotingAction,
+    {
+      success: false,
+      message: ''
+    },
+    'admin.admin_main.voting_inspection'
+  )
+
   const [, formAction, pending] = useToastedActionState(
     protectedChangeEmail,
     {
@@ -39,16 +60,13 @@ export default function VotingInspection({
   const remainingVoters = voters.filter((voter) => !voter.hasVoted)
   const votersWhoVoted = voters.filter((voter) => voter.hasVoted)
 
-  const abortVotingAction = protectedAbortVoting.bind(null, electionId)
-  const endVotingAction = protectedEndVoting.bind(null, electionId)
-
   return (
     <AdminNavigation
       electionStep={ElectionStep.VOTING}
-      tKey="admin.admin_main.voting_inspection"
-      disableNext={remainingVoters.length > 0}
-      onBack={abortVotingAction}
-      onNext={endVotingAction}
+      disablePrevious={abortVotingPending}
+      disableNext={remainingVoters.length > 0 || endVotingPending}
+      onBack={abortVoting}
+      onNext={endVoting}
     >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
@@ -81,7 +99,6 @@ export default function VotingInspection({
               <input
                 id="oldEmail"
                 name="oldEmail"
-                type="email"
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
@@ -95,7 +112,6 @@ export default function VotingInspection({
               <input
                 id="newEmail"
                 name="newEmail"
-                type="email"
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>

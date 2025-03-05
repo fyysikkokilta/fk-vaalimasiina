@@ -11,8 +11,27 @@ import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 
 const startVotingSchame = z.object({
-  electionId: z.string().uuid(),
-  emails: z.array(z.string().min(1).email()).min(1)
+  electionId: z
+    .string({
+      message: 'validation.electionId_string'
+    })
+    .uuid({ message: 'validation.electionId_uuid' }),
+  emails: z
+    .array(
+      z
+        .string({
+          message: 'validation.email_string'
+        })
+        .nonempty({ message: 'validation.email_nonempty' })
+        .email({ message: 'validation.email_email' }),
+      {
+        message: 'validation.emails_array'
+      }
+    )
+    .nonempty({ message: 'validation.emails_nonempty' })
+    .refine((items) => new Set(items).size === items.length, {
+      message: 'validation.emails_unique'
+    })
 })
 
 async function startVoting(
@@ -22,14 +41,21 @@ async function startVoting(
 ) {
   const startVotingData = {
     electionId,
-    emails: formData.getAll('emails')
+    emails: (formData.get('emails') as string)
+      .split('\n')
+      .map((email) => email.trim())
+      .map((email) => email.toLowerCase())
+      .filter(Boolean)
   }
+
   const validatedStartVotingData = startVotingSchame.safeParse(startVotingData)
 
   if (!validatedStartVotingData.success) {
     return {
       success: false,
-      message: 'invalid_voter_data'
+      message: 'invalid_voter_data',
+      errors: validatedStartVotingData.error.formErrors,
+      formData
     }
   }
 
@@ -56,7 +82,8 @@ async function startVoting(
     if (!elections[0]) {
       return {
         success: false,
-        message: 'election_not_found'
+        message: 'election_not_found',
+        formData
       }
     }
 
@@ -84,7 +111,8 @@ async function startVoting(
     if (!success) {
       return {
         success: false,
-        message: 'mail_sending_failed'
+        message: 'mail_sending_failed',
+        formData
       }
     }
 

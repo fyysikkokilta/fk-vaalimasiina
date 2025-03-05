@@ -5,8 +5,18 @@ import { cookies } from 'next/headers'
 import { z } from 'zod'
 
 const authenticateSchema = z.object({
-  username: z.string(),
-  password: z.string()
+  username: z
+    .string({
+      message: 'validation.username_string'
+    })
+    .nonempty({
+      message: 'validation.username_nonempty'
+    }),
+  password: z
+    .string({
+      message: 'validation.password_string'
+    })
+    .nonempty({ message: 'validation.password_nonempty' })
 })
 
 export default async function authenticate(
@@ -20,7 +30,8 @@ export default async function authenticate(
   if (!validatedAuthenticateData.success) {
     return {
       success: false,
-      message: 'wrong_username_or_password'
+      message: 'wrong_username_or_password',
+      formData
     }
   }
 
@@ -47,7 +58,8 @@ export default async function authenticate(
   if (adminUsername !== username || adminPassword !== password) {
     return {
       success: false,
-      message: 'wrong_username_or_password'
+      message: 'wrong_username_or_password',
+      formData
     }
   }
 

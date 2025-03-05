@@ -9,7 +9,11 @@ import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
 
 const startEditingSchema = z.object({
-  electionId: z.string().uuid()
+  electionId: z
+    .string({
+      message: 'validation.electionId_string'
+    })
+    .uuid({ message: 'validation.electionId_uuid' })
 })
 
 async function startEditing(electionId: string) {

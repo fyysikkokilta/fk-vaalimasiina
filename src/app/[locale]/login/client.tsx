@@ -35,7 +35,6 @@ export default function Login() {
                 id="username"
                 name="username"
                 type="text"
-                required
                 placeholder={t('username')}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
@@ -51,7 +50,6 @@ export default function Login() {
                 id="password"
                 name="password"
                 type="password"
-                required
                 placeholder={t('password')}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />

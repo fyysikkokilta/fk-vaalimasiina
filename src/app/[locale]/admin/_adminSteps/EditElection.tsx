@@ -6,6 +6,7 @@ import { protectedCancelEditing } from '~/actions/admin/election/cancelEditing'
 import { protectedEditElection } from '~/actions/admin/election/editElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
+import { useToastedActionState } from '~/hooks/useToastedActionState'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
 import { ElectionStepProps } from '../page'
@@ -20,14 +21,36 @@ export default function EditElection({ election }: ElectionStepProps) {
     election.electionId
   )
 
+  const [, cancelEditing, cancelEditingPending] = useToastedActionState(
+    cancelEditingAction,
+    {
+      success: false,
+      message: ''
+    },
+    'admin.admin_main.new_election'
+  )
+
+  const [editElectionState, editElection, editElectionPending] =
+    useToastedActionState(
+      editElectionAction,
+      {
+        success: false,
+        message: '',
+        errors: { formErrors: [], fieldErrors: {} },
+        formData: new FormData()
+      },
+      'admin.admin_main.new_election'
+    )
+
   return (
     <AdminNavigation
       electionStep={ElectionStep.EDIT}
-      tKey="admin.admin_main.new_election"
-      onBack={cancelEditingAction}
-      onNext={editElectionAction}
+      disablePrevious={cancelEditingPending}
+      disableNext={editElectionPending}
+      onBack={cancelEditing}
+      onNext={editElection}
     >
-      <ElectionForm election={election} />
+      <ElectionForm election={election} state={editElectionState} />
     </AdminNavigation>
   )
 }

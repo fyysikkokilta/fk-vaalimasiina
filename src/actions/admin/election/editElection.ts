@@ -8,13 +8,34 @@ import { protectedAction } from '~/actions/utils/isAuthorized'
 import { db } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
-const editElectionSchema = z.object({
-  electionId: z.string().uuid(),
-  title: z.string().min(1),
-  description: z.string().min(1),
-  seats: z.number().min(1),
-  candidates: z.array(z.string().min(1)).min(1)
-})
+const editElectionSchema = z
+  .object({
+    electionId: z
+      .string({
+        message: 'validation.electionId_string'
+      })
+      .uuid({ message: 'validation.electionId_uuid' }),
+    title: z
+      .string({ message: 'validation.title_string' })
+      .nonempty({ message: 'validation.title_nonempty' }),
+    description: z
+      .string({ message: 'validation.description_string' })
+      .nonempty({ message: 'validation.description_nonempty' }),
+    seats: z
+      .number({ message: 'validation.seats_number' })
+      .min(1, { message: 'validation.seats_min' }),
+    candidates: z
+      .array(
+        z.string({ message: 'validation.candidate_string' }).nonempty({
+          message: 'validation.candidate_nonempty'
+        }),
+        { message: 'validation.candidates_array' }
+      )
+      .nonempty({ message: 'validation.candidates_nonempty' })
+  })
+  .refine((data) => data.candidates.length >= data.seats, {
+    message: 'validation.candidates_geq_seats'
+  })
 
 async function editElection(
   electionId: string,
@@ -34,7 +55,9 @@ async function editElection(
   if (!validatedEditElectionFormData.success) {
     return {
       success: false,
-      message: 'invalid_election_data'
+      message: 'invalid_election_data',
+      errors: validatedEditElectionFormData.error.formErrors,
+      formData
     }
   }
 
@@ -62,7 +85,8 @@ async function editElection(
     if (!elections[0]) {
       return {
         success: false,
-        message: 'election_not_found'
+        message: 'election_not_found',
+        formData
       }
     }
 

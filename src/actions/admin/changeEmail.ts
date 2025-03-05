@@ -12,8 +12,24 @@ import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
 import { protectedAction } from '../utils/isAuthorized'
 
 const changeEmailSchema = z.object({
-  oldEmail: z.string().min(1).email(),
-  newEmail: z.string().min(1).email()
+  oldEmail: z
+    .string({
+      message: 'validation.oldEmail_string'
+    })
+    .nonempty({ message: 'validation.oldEmail_nonempty' })
+    .email({
+      message: 'validation.oldEmail_email'
+    }),
+  newEmail: z
+    .string({
+      message: 'validation.newEmail_string'
+    })
+    .nonempty({
+      message: 'validation.newEmail_nonempty'
+    })
+    .email({
+      message: 'validation.newEmail_email'
+    })
 })
 
 async function changeEmail(_prevState: unknown, formData: FormData) {
@@ -23,7 +39,9 @@ async function changeEmail(_prevState: unknown, formData: FormData) {
   if (!validatedChangeEmailData.success) {
     return {
       success: false,
-      message: 'invalid_emails'
+      message: 'invalid_emails',
+      errors: validatedChangeEmailData.error.formErrors.fieldErrors,
+      formData
     }
   }
 
@@ -52,7 +70,8 @@ async function changeEmail(_prevState: unknown, formData: FormData) {
     if (!voterElectionPairs[0]) {
       return {
         success: false,
-        message: 'voter_not_found'
+        message: 'voter_not_found',
+        formData
       }
     }
 
@@ -69,7 +88,8 @@ async function changeEmail(_prevState: unknown, formData: FormData) {
     if (!success) {
       return {
         success: false,
-        message: 'mail_sending_failed'
+        message: 'mail_sending_failed',
+        formData
       }
     }
     return {
@@ -80,13 +100,15 @@ async function changeEmail(_prevState: unknown, formData: FormData) {
     if (isUniqueConstraintError(error)) {
       return {
         success: false,
-        message: 'email_already_exists'
+        message: 'email_already_exists',
+        formData
       }
     }
     console.error('Error updating email:', error)
     return {
       success: false,
-      message: 'error_updating_email'
+      message: 'error_updating_email',
+      formData
     }
   }
 }

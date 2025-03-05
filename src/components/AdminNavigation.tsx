@@ -3,7 +3,6 @@
 import { useLocale } from 'next-intl'
 import React from 'react'
 
-import { useToastedActionState } from '~/hooks/useToastedActionState'
 import {
   ElectionStep,
   electionStepSettingsEnglish,
@@ -12,53 +11,27 @@ import {
 
 type AdminNavigationProps = {
   electionStep: ElectionStep
-  tKey: string
   disablePrevious?: boolean
   disableNext?: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onBack?: (...args: any[]) => Promise<{ success: boolean; message: string }>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onNext: (...args: any[]) => Promise<{ success: boolean; message: string }>
+  onBack?: string | ((formData: FormData) => void | Promise<void>) | undefined
+  onNext: string | ((formData: FormData) => void | Promise<void>) | undefined
   children: React.ReactNode
 }
 
 export default function AdminNavigation({
   electionStep,
-  tKey,
   disablePrevious = false,
   disableNext = false,
-  onBack = async () => Promise.resolve({ success: false, message: '' }),
+  onBack = async () => {},
   onNext,
   children
 }: AdminNavigationProps) {
   const locale = useLocale()
 
-  const [, backFormAction, backPending] = useToastedActionState(
-    onBack,
-    {
-      success: false,
-      message: ''
-    },
-    tKey
-  )
-
-  const [, nextFormAction, nextPending] = useToastedActionState(
-    onNext,
-    {
-      success: false,
-      message: ''
-    },
-    tKey
-  )
-
   const stepSettings =
     locale === 'fi'
       ? electionStepSettingsFinnish[electionStep]
       : electionStepSettingsEnglish[electionStep]
-
-  if (!stepSettings) {
-    return null
-  }
 
   return (
     <form>
@@ -70,9 +43,9 @@ export default function AdminNavigation({
           <div>
             {stepSettings.backButton && (
               <button
-                formAction={backFormAction}
+                formAction={onBack}
                 type="submit"
-                disabled={disablePrevious || backPending}
+                disabled={disablePrevious}
                 className={`text-fk-black rounded-lg px-4 py-2 ${
                   disablePrevious
                     ? 'cursor-not-allowed bg-gray-300'
@@ -86,9 +59,9 @@ export default function AdminNavigation({
           <div>
             {stepSettings.nextButton && (
               <button
-                formAction={nextFormAction}
+                formAction={onNext}
                 type="submit"
-                disabled={disableNext || nextPending}
+                disabled={disableNext}
                 className={`text-fk-black rounded-lg px-4 py-2 ${
                   disableNext
                     ? 'cursor-not-allowed bg-gray-300'

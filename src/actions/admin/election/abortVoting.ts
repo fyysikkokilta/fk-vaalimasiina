@@ -9,7 +9,11 @@ import { db } from '~/db'
 import { ballotsTable, electionsTable, votersTable } from '~/db/schema'
 
 const abortVotingSchema = z.object({
-  electionId: z.string().uuid()
+  electionId: z
+    .string({
+      message: 'validation.electionId_string'
+    })
+    .uuid({ message: 'validation.electionId_uuid' })
 })
 
 async function abortVoting(electionId: string) {

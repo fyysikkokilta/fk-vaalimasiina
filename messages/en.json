@@ -52,8 +52,20 @@
       "voter_not_found": "Voter not found",
       "voting_not_ongoing": "Voting is not ongoing",
       "invalid_ballot": "Invalid ballot",
+      "invalid_choices": "Invalid choices",
       "voter_already_voted": "Voter has already voted",
       "error_saving_ballot": "Error saving ballot",
+      "validation": {
+        "voterId_string": "Voter identifier must be a string",
+        "voterId_uuid": "Voter identifier must be a valid UUID",
+        "candidateId_string": "Candidate identifier must be a string",
+        "candidateId_uuid": "Candidate identifier must be a valid UUID",
+        "rank_number": "Rank must be a number",
+        "rank_min": "Rank must be at least 1",
+        "preference_object": "Preference must be an object",
+        "ballot_array": "Ballot must be an array",
+        "ranks_unique": "Ranks must be unique"
+      },
       "not_found": {
         "title": "Voting link not found",
         "description": "Voting link not found. Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
@@ -69,7 +81,13 @@
       "password": "Password",
       "login_button": "Log in",
       "login_successful": "Login successful",
-      "wrong_username_or_password": "Wrong username or password"
+      "wrong_username_or_password": "Wrong username or password",
+      "validation": {
+        "username_string": "Username must be a string",
+        "username_nonempty": "Username must not be empty",
+        "password_string": "Password must be a string",
+        "password_nonempty": "Password must not be empty"
+      }
     },
     "admin_main": {
       "new_election": {
@@ -85,7 +103,22 @@
         "election_edited": "Election edited",
         "election_not_found": "Election not found",
         "invalid_election_data": "Invalid election data",
-        "invalid_election_identifier": "Invalid election identifier"
+        "invalid_election_identifier": "Invalid election identifier",
+        "validation": {
+          "electionId_string": "Election identifier must be a string",
+          "electionId_uuid": "Election identifier must be a valid UUID",
+          "title_string": "Title must be a string",
+          "title_nonempty": "Title must not be empty",
+          "description_string": "Description must be a string",
+          "description_nonempty": "Description must not be empty",
+          "seats_number": "Seats must be a number",
+          "seats_min": "Seats must be at least 1",
+          "candidate_string": "Candidate must be a string",
+          "candidate_nonempty": "Candidate must not be empty",
+          "candidates_array": "Candidates must be an array",
+          "candidates_nonempty": "There must be at least one candidate",
+          "candidates_geq_seats": "There must be at least as many candidates as there are seats"
+        }
       },
       "preview_election": {
         "seats": "Seats",
@@ -100,7 +133,17 @@
         "mail_sending_failed": "Mail sending failed",
         "election_not_found": "Election not found",
         "invalid_election_identifier": "Invalid election identifier",
-        "invalid_voter_data": "Invalid voter data"
+        "invalid_voter_data": "Invalid voter data",
+        "validation": {
+          "electionId_string": "Election identifier must be a string",
+          "electionId_uuid": "Election identifier must be a valid UUID",
+          "email_string": "Email must be a string",
+          "email_nonempty": "Email must not be empty",
+          "email_email": "Email must be a valid email",
+          "emails_array": "Emails must be an array",
+          "emails_nonempty": "There must be at least one email",
+          "emails_unique": "Emails must be unique"
+        }
       },
       "voting_inspection": {
         "given_votes": "Given votes",
@@ -118,7 +161,17 @@
         "election_not_found": "Election not found",
         "not_everyone_voted": "Not everyone has voted",
         "voter_not_found": "Voter not found",
-        "invalid_election_identifier": "Invalid election identifier"
+        "invalid_election_identifier": "Invalid election identifier",
+        "validation": {
+          "electionId_string": "Election identifier must be a string",
+          "electionId_uuid": "Election identifier must be a valid UUID",
+          "oldEmail_string": "Old email must be a string",
+          "oldEmail_nonempty": "Old email must not be empty",
+          "oldEmail_email": "Old email must be a valid email",
+          "newEmail_string": "New email must be a string",
+          "newEmail_nonempty": "New email must not be empty",
+          "newEmail_email": "New email must be a valid email"
+        }
       }
     }
   },
@@ -148,7 +201,11 @@
     "result": "Result",
     "invalid_result": "Ineligible result. The election will be repeated.",
     "election_not_found": "Election not found",
-    "invalid_close_election_data": "Invalid election data"
+    "invalid_close_election_data": "Invalid election data",
+    "validation": {
+      "electionId_string": "Election identifier must be a string",
+      "electionId_uuid": "Election identifier must be a valid UUID"
+    }
   },
   "previous_results": {
     "title": "Results",

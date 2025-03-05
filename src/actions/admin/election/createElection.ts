@@ -7,12 +7,29 @@ import { protectedAction } from '~/actions/utils/isAuthorized'
 import { db } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
-const createElectionSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  seats: z.number(),
-  candidates: z.array(z.string().min(1)).min(1)
-})
+const createElectionSchema = z
+  .object({
+    title: z
+      .string({ message: 'validation.title_string' })
+      .nonempty({ message: 'validation.title_nonempty' }),
+    description: z
+      .string({ message: 'validation.description_string' })
+      .nonempty({ message: 'validation.description_nonempty' }),
+    seats: z
+      .number({ message: 'validation.seats_number' })
+      .min(1, { message: 'validation.seats_min' }),
+    candidates: z
+      .array(
+        z.string({ message: 'validation.candidate_string' }).nonempty({
+          message: 'validation.candidate_nonempty'
+        }),
+        { message: 'validation.candidates_array' }
+      )
+      .nonempty({ message: 'validation.candidates_nonempty' })
+  })
+  .refine((data) => data.candidates.length >= data.seats, {
+    message: 'validation.candidates_geq_seats'
+  })
 
 async function createElection(_prevState: unknown, formData: FormData) {
   const createElectionFormData = {
@@ -28,7 +45,9 @@ async function createElection(_prevState: unknown, formData: FormData) {
   if (!validatedCreateElectionFormData.success) {
     return {
       success: false,
-      message: 'invalid_election_data'
+      message: 'invalid_election_data',
+      errors: validatedCreateElectionFormData.error.formErrors,
+      formData
     }
   }
 

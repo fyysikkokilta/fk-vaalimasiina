@@ -8,12 +8,44 @@ import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
 
 const voteSchema = z.object({
-  ballot: z.array(
-    z.object({
-      candidateId: z.string().uuid(),
-      rank: z.number().min(1)
+  voterId: z
+    .string({
+      message: 'validation.voterId_string'
     })
-  )
+    .uuid({
+      message: 'validation.voterId_uuid'
+    }),
+  ballot: z
+    .array(
+      z.object(
+        {
+          candidateId: z
+            .string({
+              message: 'validation.candidateId_string'
+            })
+            .uuid({
+              message: 'validation.candidateId_uuid'
+            }),
+          rank: z
+            .number({
+              message: 'validation.rank_number'
+            })
+            .min(1, { message: 'validation.rank_min' })
+        },
+        { message: 'validation.preference_object' }
+      ),
+      { message: 'validation.ballot_array' }
+    )
+    .refine(
+      (ballot) => {
+        const ranks = ballot.map((vote) => vote.rank)
+        return (
+          ranks.length === new Set(ranks).size &&
+          ranks.every((rank, index) => rank === index + 1)
+        )
+      },
+      { message: 'validation.ranks_unique' }
+    )
 })
 
 export async function vote(
@@ -22,6 +54,7 @@ export async function vote(
   formData: FormData
 ) {
   const voteData = {
+    voterId,
     ballot: formData.getAll('ballot').map((ballotItem) => {
       const [candidateId, rank] = (ballotItem as string).split(',')
       return { candidateId, rank: Number(rank) }
@@ -76,18 +109,10 @@ export async function vote(
     )
   )
 
-  // Check that preference numbers are unique and start from 1 and increment by 1
-  const ranks = ballot.map((vote) => vote.rank)
-  const validRanks =
-    ranks.length === new Set(ranks).size &&
-    ranks.every((rank, index) => rank === index + 1)
-
-  const validBallot = validCandidates && validRanks
-
-  if (!validBallot) {
+  if (!validCandidates) {
     return {
       success: false,
-      message: 'invalid_ballot'
+      message: 'invalid_choices'
     }
   }
 

@@ -6,9 +6,25 @@ import { useState } from 'react'
 import type { ElectionStepProps } from '~/app/[locale]/admin/page'
 
 export default function ElectionForm({
-  election
+  election,
+  state
 }: {
   election?: ElectionStepProps['election']
+  state: {
+    success: boolean
+    message: string
+    errors?: {
+      fieldErrors: {
+        electionId?: string[] | undefined
+        title?: string[] | undefined
+        description?: string[] | undefined
+        seats?: string[] | undefined
+        candidates?: string[] | undefined
+      }
+      formErrors: string[]
+    }
+    formData?: FormData
+  }
 }) {
   const t = useTranslations('admin.admin_main.new_election')
 
@@ -39,10 +55,16 @@ export default function ElectionForm({
             type="text"
             id="title"
             name="title"
-            required
-            defaultValue={election?.title || ''}
+            defaultValue={
+              election?.title || (state.formData?.get('title') as string) || ''
+            }
             className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
+          {state.errors?.fieldErrors.title?.map((error) => (
+            <div key={error} className="text-red-500">
+              {t(error)}
+            </div>
+          ))}
         </div>
         <div className="mb-4">
           <label
@@ -54,11 +76,19 @@ export default function ElectionForm({
           <textarea
             id="description"
             name="description"
-            required
-            defaultValue={election?.description || ''}
+            defaultValue={
+              election?.description ||
+              (state.formData?.get('description') as string) ||
+              ''
+            }
             rows={4}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
+          {state.errors?.fieldErrors.description?.map((error) => (
+            <div key={error} className="text-red-500">
+              {t(error)}
+            </div>
+          ))}
         </div>
         <div className="mb-4">
           <label
@@ -71,10 +101,16 @@ export default function ElectionForm({
             type="number"
             id="seats"
             name="seats"
-            required
-            defaultValue={election?.seats || ''}
+            defaultValue={
+              election?.seats || Number(state.formData?.get('seats')) || ''
+            }
             className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
+          {state.errors?.fieldErrors.seats?.map((error) => (
+            <div key={error} className="text-red-500">
+              {t(error)}
+            </div>
+          ))}
         </div>
       </div>
       <div>
@@ -106,6 +142,11 @@ export default function ElectionForm({
               {t('add_candidate')}
             </button>
           </div>
+          {state.errors?.fieldErrors.candidates?.map((error) => (
+            <div key={error} className="text-red-500">
+              {t(error)}
+            </div>
+          ))}
         </div>
         <div className="mb-4">
           <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -133,6 +174,11 @@ export default function ElectionForm({
           <input key={i} type="hidden" name="candidates" value={candidate} />
         ))}
       </div>
+      {state.errors?.formErrors.map((error) => (
+        <div key={error} className="text-red-500">
+          {t(error)}
+        </div>
+      ))}
     </div>
   )
 }
