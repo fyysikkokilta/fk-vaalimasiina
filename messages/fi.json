@@ -126,7 +126,7 @@
         "voters": "Äänestäjät",
         "email_list_instruction": "Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna",
         "email_list_placeholder": "sähköposti@mail.com\nsähköposti2@mail.com\n",
-        "voter_count": "Kelvollisia äänestäjien sähköposteja",
+        "voter_count": "Äänestäjien määrä",
         "editing_started": "Muokkaus aloitettu",
         "voting_started": "Äänestys aloitettu",
         "invalid_emails": "Kaikki sähköpostit eivät ole kelvollisia",

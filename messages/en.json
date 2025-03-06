@@ -126,7 +126,7 @@
         "voters": "Voters",
         "email_list_instruction": "Add the voters' email addresses here separated by line breaks",
         "email_list_placeholder": "email@email.com\nemail2@mail.com",
-        "voter_count": "Valid voter emails",
+        "voter_count": "Voter count",
         "editing_started": "Editing started",
         "voting_started": "Voting started",
         "invalid_emails": "Not all emails are valid",
