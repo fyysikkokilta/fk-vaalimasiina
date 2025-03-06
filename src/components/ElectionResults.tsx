@@ -31,34 +31,34 @@ function InitialVotes({
       <table className="w-full">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
               {t('total_votes')}
             </th>
-            <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
               {t('non_empty_votes')}
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
           <tr className="even:bg-gray-50">
-            <td className="px-4 py-4">{votingResult.totalVotes}</td>
-            <td className="px-4 py-4">{votingResult.nonEmptyVotes}</td>
+            <td className="p-3">{votingResult.totalVotes}</td>
+            <td className="p-3">{votingResult.nonEmptyVotes}</td>
           </tr>
         </tbody>
         <thead className="border-t border-gray-200 bg-gray-50">
           <tr>
-            <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
               {t('seats')}
             </th>
-            <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
               {t('election_threshold')}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr className="even:bg-gray-50">
-            <td className="px-4 py-4">{election.seats}</td>
-            <td className="px-4 py-4">{votingResult.quota}</td>
+            <td className="p-3">{election.seats}</td>
+            <td className="p-3">{votingResult.quota}</td>
           </tr>
         </tbody>
       </table>
@@ -94,13 +94,13 @@ function RoundResult({
         <table className="w-full border-collapse">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
+              <th className="p-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
                 {t('candidate_name')}
               </th>
-              <th className="px-4 py-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
+              <th className="p-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
                 {t('vote_count')}
               </th>
-              <th className="px-4 py-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
+              <th className="px-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
                 {t('result')}
               </th>
             </tr>
@@ -117,8 +117,8 @@ function RoundResult({
                 isEliminatedThisRound
               }) => (
                 <tr key={id} className="even:bg-gray-50">
-                  <td className="px-4 py-4 text-sm text-gray-900">{name}</td>
-                  <td className="px-4 py-4 text-sm text-gray-900">
+                  <td className="p-3 text-sm text-gray-900">{name}</td>
+                  <td className="p-3 text-sm text-gray-900">
                     {isEliminated && !isEliminatedThisRound ? (
                       '-'
                     ) : (
@@ -132,14 +132,14 @@ function RoundResult({
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-4 text-sm">
+                  <td className="p-3 text-sm">
                     {isSelected && (
-                      <span className="text-green-600">
+                      <span className="text-nowrap text-green-600">
                         {t(isSelectedThisRound ? 'chosen' : 'chosen_before')}
                       </span>
                     )}
                     {isEliminated && (
-                      <span className="text-red-600">
+                      <span className="text-nowrap text-red-600">
                         {t(
                           isEliminatedThisRound
                             ? 'eliminated'
@@ -153,13 +153,11 @@ function RoundResult({
               )
             )}
             <tr className="bg-red-50 font-semibold">
-              <td className="px-4 py-4 text-sm text-gray-900">
-                {t('empty_votes')}
-              </td>
-              <td className="px-4 py-4 text-sm text-gray-900">
+              <td className="p-3 text-sm text-gray-900">{t('empty_votes')}</td>
+              <td className="p-3 text-sm text-gray-900">
                 {roundToTwoDecimals(emptyVotes)}
               </td>
-              <td className="px-4 py-4"></td>
+              <td className="p-3"></td>
             </tr>
           </tbody>
         </table>
@@ -181,7 +179,7 @@ function Winners({ winners }: { winners: ValidVotingResult['winners'] }) {
       <table className="w-full">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">
+            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
               {t('candidate_name')}
             </th>
           </tr>
@@ -189,7 +187,7 @@ function Winners({ winners }: { winners: ValidVotingResult['winners'] }) {
         <tbody className="divide-y divide-gray-200">
           {winners.map(({ id, name }) => (
             <tr key={id} className="even:bg-gray-50">
-              <td className="px-4 py-4">{name}</td>
+              <td className="p-3">{name}</td>
             </tr>
           ))}
         </tbody>
