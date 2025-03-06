@@ -1,46 +1,48 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { InferSafeActionFnInput } from 'next-safe-action'
 
-import type { ElectionStepProps } from '~/app/[locale]/admin/page'
+import type { createElection } from '~/actions/admin/election/createElection'
+import type { editElection } from '~/actions/admin/election/editElection'
 
 export default function ElectionForm({
+  result,
   election,
-  state
+  newCandidate,
+  setNewCandidate,
+  handleChange,
+  addCandidate,
+  removeCandidate
 }: {
-  election?: ElectionStepProps['election']
-  state: {
-    success: boolean
-    message: string
-    errors?: {
-      fieldErrors: {
-        electionId?: string[] | undefined
-        title?: string[] | undefined
-        description?: string[] | undefined
-        seats?: string[] | undefined
-        candidates?: string[] | undefined
-      }
-      formErrors: string[]
-    }
-    formData?: FormData
+  result: {
+    serverError?: string | undefined
+    validationErrors?:
+      | {
+          formErrors: string[]
+          fieldErrors: {
+            title?: string[] | undefined
+            description?: string[] | undefined
+            seats?: string[] | undefined
+            candidates?: string[] | undefined
+          }
+        }
+      | undefined
   }
+  election: InferSafeActionFnInput<
+    typeof createElection | typeof editElection
+  >['parsedInput']
+  newCandidate: string
+  setNewCandidate: (value: string) => void
+  handleChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    isNumber?: boolean
+  ) => void
+  addCandidate: (candidateName: string) => void
+  removeCandidate: (index: number) => void
 }) {
   const t = useTranslations('admin.admin_main.new_election')
 
-  const [newCandidate, setNewCandidate] = useState('')
-  const [candidates, setCandidates] = useState<string[]>(
-    election?.candidates.map((c) => c.name) || []
-  )
-
-  const addCandidate = (candidateName: string) => {
-    setCandidates((candidates) => [...candidates, candidateName])
-    setNewCandidate('')
-  }
-
-  const removeCandidate = (index: number) => {
-    setCandidates((candidates) => candidates.filter((_, i) => i !== index))
-  }
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
@@ -55,14 +57,13 @@ export default function ElectionForm({
             type="text"
             id="title"
             name="title"
-            defaultValue={
-              election?.title || (state.formData?.get('title') as string) || ''
-            }
+            value={election.title}
+            onChange={handleChange}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {state.errors?.fieldErrors.title?.map((error) => (
+          {result.validationErrors?.fieldErrors.title?.map((error) => (
             <div key={error} className="text-red-500">
-              {t(error)}
+              {error}
             </div>
           ))}
         </div>
@@ -76,17 +77,14 @@ export default function ElectionForm({
           <textarea
             id="description"
             name="description"
-            defaultValue={
-              election?.description ||
-              (state.formData?.get('description') as string) ||
-              ''
-            }
+            value={election.description}
+            onChange={handleChange}
             rows={4}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {state.errors?.fieldErrors.description?.map((error) => (
+          {result.validationErrors?.fieldErrors.description?.map((error) => (
             <div key={error} className="text-red-500">
-              {t(error)}
+              {error}
             </div>
           ))}
         </div>
@@ -101,14 +99,13 @@ export default function ElectionForm({
             type="number"
             id="seats"
             name="seats"
-            defaultValue={
-              election?.seats || Number(state.formData?.get('seats')) || ''
-            }
+            value={election.seats}
+            onChange={(e) => handleChange(e, true)}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {state.errors?.fieldErrors.seats?.map((error) => (
+          {result.validationErrors?.fieldErrors.seats?.map((error) => (
             <div key={error} className="text-red-500">
-              {t(error)}
+              {error}
             </div>
           ))}
         </div>
@@ -142,9 +139,9 @@ export default function ElectionForm({
               {t('add_candidate')}
             </button>
           </div>
-          {state.errors?.fieldErrors.candidates?.map((error) => (
+          {result.validationErrors?.fieldErrors.candidates?.map((error) => (
             <div key={error} className="text-red-500">
-              {t(error)}
+              {error}
             </div>
           ))}
         </div>
@@ -153,7 +150,7 @@ export default function ElectionForm({
             {t('candidates')}
           </label>
           <ul className="space-y-2">
-            {candidates.map((candidate, i) => (
+            {election.candidates.map((candidate, i) => (
               <li
                 key={i}
                 className="flex items-center justify-between rounded-lg border border-gray-200 p-3"
@@ -170,13 +167,10 @@ export default function ElectionForm({
             ))}
           </ul>
         </div>
-        {candidates.map((candidate, i) => (
-          <input key={i} type="hidden" name="candidates" value={candidate} />
-        ))}
       </div>
-      {state.errors?.formErrors.map((error) => (
+      {result.validationErrors?.formErrors.map((error) => (
         <div key={error} className="text-red-500">
-          {t(error)}
+          {error}
         </div>
       ))}
     </div>

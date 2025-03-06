@@ -2,15 +2,13 @@
 
 import { revalidateTag } from 'next/cache'
 
-import { protectedAction } from '~/actions/utils/isAuthorized'
+import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
+import { actionClient } from '~/actions/safe-action'
 
-// eslint-disable-next-line @typescript-eslint/require-await
-async function pollVotes() {
-  revalidateTag('admin-election')
-  return {
-    success: true,
-    message: 'votes_polled'
-  }
-}
-
-export const protectedPollVotes = protectedAction(pollVotes)
+export const pollVotes = actionClient
+  .use(isAuthorizedMiddleware)
+  // eslint-disable-next-line @typescript-eslint/require-await
+  .action(async () => {
+    revalidateTag('admin-election')
+    return { message: 'votes_polled' }
+  })

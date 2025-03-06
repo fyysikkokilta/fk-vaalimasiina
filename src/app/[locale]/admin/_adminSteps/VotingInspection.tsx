@@ -1,14 +1,15 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import React, { useEffect } from 'react'
+import { useAction } from 'next-safe-action/hooks'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
-import { protectedChangeEmail } from '~/actions/admin/changeEmail'
-import { protectedAbortVoting } from '~/actions/admin/election/abortVoting'
-import { protectedEndVoting } from '~/actions/admin/election/endVoting'
-import { protectedPollVotes } from '~/actions/admin/election/pollVotes'
+import { changeEmail } from '~/actions/admin/changeEmail'
+import { abortVoting } from '~/actions/admin/election/abortVoting'
+import { endVoting } from '~/actions/admin/election/endVoting'
+import { pollVotes } from '~/actions/admin/election/pollVotes'
 import AdminNavigation from '~/components/AdminNavigation'
-import { useToastedActionState } from '~/hooks/useToastedActionState'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
 import { ElectionStepProps } from '../page'
@@ -17,41 +18,62 @@ export default function VotingInspection({
   election: { electionId, title, description },
   voters
 }: ElectionStepProps) {
+  const [oldEmail, setOldEmail] = useState('')
+  const [newEmail, setNewEmail] = useState('')
   const t = useTranslations('admin.admin_main.voting_inspection')
 
-  const abortVotingAction = protectedAbortVoting.bind(null, electionId)
-  const endVotingAction = protectedEndVoting.bind(null, electionId)
-
-  const [, abortVoting, abortVotingPending] = useToastedActionState(
-    abortVotingAction,
+  const { execute: executeAbort, isPending: isPendingAbort } = useAction(
+    abortVoting,
     {
-      success: false,
-      message: ''
-    },
-    'admin.admin_main.voting_inspection'
+      onSuccess: ({ data }) => {
+        if (data?.message) {
+          toast.success(data.message)
+        }
+      },
+      onError: ({ error }) => {
+        if (error.serverError) {
+          toast.error(error.serverError)
+        }
+      }
+    }
   )
 
-  const [, endVoting, endVotingPending] = useToastedActionState(
-    endVotingAction,
+  const { execute: executeVoting, isPending: isPendingVoting } = useAction(
+    endVoting,
     {
-      success: false,
-      message: ''
-    },
-    'admin.admin_main.voting_inspection'
+      onSuccess: ({ data }) => {
+        if (data?.message) {
+          toast.success(data.message)
+        }
+      },
+      onError: ({ error }) => {
+        if (error.serverError) {
+          toast.error(error.serverError)
+        }
+      }
+    }
   )
 
-  const [, formAction, pending] = useToastedActionState(
-    protectedChangeEmail,
-    {
-      success: false,
-      message: ''
+  const {
+    execute: executeEmail,
+    isPending: isPendingEmail,
+    result: resultEmail
+  } = useAction(changeEmail, {
+    onSuccess: ({ data }) => {
+      if (data?.message) {
+        toast.success(data.message)
+      }
     },
-    'admin.admin_main.voting_inspection'
-  )
+    onError: ({ error }) => {
+      if (error.serverError) {
+        toast.error(error.serverError)
+      }
+    }
+  })
 
   useEffect(() => {
     const interval = setInterval(() => {
-      void protectedPollVotes()
+      void pollVotes()
     }, 3000)
 
     return () => clearInterval(interval)
@@ -63,10 +85,10 @@ export default function VotingInspection({
   return (
     <AdminNavigation
       electionStep={ElectionStep.VOTING}
-      disablePrevious={abortVotingPending}
-      disableNext={remainingVoters.length > 0 || endVotingPending}
-      onBack={abortVoting}
-      onNext={endVoting}
+      disablePrevious={isPendingAbort}
+      disableNext={remainingVoters.length > 0 || isPendingVoting}
+      onBack={() => executeAbort({ electionId })}
+      onNext={() => executeVoting({ electionId })}
     >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
@@ -98,9 +120,17 @@ export default function VotingInspection({
               </label>
               <input
                 id="oldEmail"
-                name="oldEmail"
+                value={oldEmail}
+                onChange={(e) => setOldEmail(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
+              {resultEmail.validationErrors?.fieldErrors.oldEmail?.map(
+                (error) => (
+                  <div key={error} className="text-red-500">
+                    {error}
+                  </div>
+                )
+              )}
             </div>
             <div>
               <label
@@ -111,14 +141,21 @@ export default function VotingInspection({
               </label>
               <input
                 id="newEmail"
-                name="newEmail"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
+              {resultEmail.validationErrors?.fieldErrors.newEmail?.map(
+                (error) => (
+                  <div key={error} className="text-red-500">
+                    {error}
+                  </div>
+                )
+              )}
             </div>
             <button
-              formAction={formAction}
-              type="submit"
-              disabled={pending}
+              onClick={() => executeEmail({ oldEmail, newEmail })}
+              disabled={isPendingEmail}
               className={
                 'bg-fk-yellow text-fk-black w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500'
               }

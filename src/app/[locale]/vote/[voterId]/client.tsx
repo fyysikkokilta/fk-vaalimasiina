@@ -7,12 +7,12 @@ import {
   DropResult
 } from '@hello-pangea/dnd'
 import { useTranslations } from 'next-intl'
+import { useAction } from 'next-safe-action/hooks'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { vote } from '~/actions/vote'
 import TitleWrapper from '~/components/TitleWrapper'
-import { useToastedActionState } from '~/hooks/useToastedActionState'
 import { Link } from '~/i18n/navigation'
 
 import type { VotePageProps } from './page'
@@ -25,19 +25,24 @@ export default function Vote({ election, voter }: VotePageProps) {
     election.candidates.map((c) => c.candidateId)
   )
 
-  const voteAction = vote.bind(null, voter.voterId)
   const t = useTranslations('voter.vote')
-  const [state, formAction, pending] = useToastedActionState(
-    voteAction,
-    {
-      ballotId: '',
-      success: false,
-      message: ''
+  const { execute, isPending, result } = useAction(vote, {
+    onExecute: () => setDisableVote(true),
+    onSuccess: ({ data }) => {
+      setConfirmingVote(false)
+      if (data?.message) {
+        toast.success(data.message)
+      }
     },
-    'voter.vote',
-    () => setConfirmingVote(false),
-    () => setDisableVote(false)
-  )
+    onError: ({ error }) => {
+      setDisableVote(false)
+      if (error.serverError) {
+        toast.error(error.serverError)
+      } else {
+        toast.error(t('invalid_ballot'))
+      }
+    }
+  })
 
   const handleDragStart = () => {
     setDisableVote(true)
@@ -126,7 +131,10 @@ export default function Vote({ election, voter }: VotePageProps) {
     return election?.candidates.find((c) => c.candidateId === candidateId)?.name
   }
 
-  const getBallotCode = async (ballotId: string) => {
+  const getBallotCode = async (ballotId: string | undefined) => {
+    if (!ballotId) {
+      return
+    }
     await navigator.clipboard.writeText(ballotId)
     toast.success(t('audit_copied_to_clipboard'))
   }
@@ -156,216 +164,213 @@ export default function Vote({ election, voter }: VotePageProps) {
 
   return (
     <TitleWrapper title={t('title')}>
-      <form>
-        <div className="overflow-hidden rounded-lg border bg-white shadow">
-          <div className="bg-gray-50 p-4">
-            <h4 className="text-lg">{election.title}</h4>
-          </div>
-          <div className="p-4">
-            <Link
-              href="/"
-              className="bg-fk-yellow text-fk-black mb-3 inline-block rounded-lg px-4 py-3 transition-colors hover:bg-amber-500"
-            >
-              {t('back_to_frontpage')}
-            </Link>
-            <p className="mb-4">{election.description}</p>
-            {!!voter.hasVoted || !!state.ballotId ? (
-              <div className="rounded-lg bg-green-50 p-4 text-center text-green-700">
-                <h4 className="mb-3 text-lg font-semibold">
-                  {state.ballotId ? t('thanks_for_voting') : t('already_voted')}
-                </h4>
-                {!!state.ballotId && (
-                  <>
-                    <p>{t('audit_info')}</p>
-                    <button
-                      type="button"
-                      onClick={() => getBallotCode(state.ballotId)}
-                      className="bg-fk-yellow text-fk-black mt-3 cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500"
-                    >
-                      {t('audit_button')}
-                    </button>
-                  </>
-                )}
-              </div>
-            ) : (
-              <>
-                <div className="my-3 font-bold">{t('vote_instruction')}</div>
-                <DragDropContext
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                >
-                  <div className="flex flex-col gap-4 md:flex-row">
-                    <div className="flex-1">
-                      <h5 className="mb-2 font-medium">{t('your_ballot')}</h5>
-                      <Droppable droppableId="selectedCandidates">
-                        {(provided) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className="bg-fk-yellow mb-3 min-h-[200px] rounded-lg border p-2"
-                            id="selected-candidates"
-                          >
-                            <div className="space-y-2">
-                              {selectedCandidates.map((candidateId, index) => (
-                                <Draggable
-                                  key={candidateId}
-                                  draggableId={candidateId}
-                                  index={index}
-                                >
-                                  {(provided) => (
-                                    <div
-                                      ref={provided.innerRef}
-                                      id={candidateId}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      className="flex items-center rounded-lg bg-white p-2 shadow-sm"
-                                      onDoubleClick={handleDoubleClickRemove}
-                                    >
-                                      {index + 1}
-                                      {'. '}
-                                      {getCandidateName(candidateId)}
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </div>
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-                    <div className="flex-1">
-                      <h5 className="mb-2 font-medium">
-                        {t('available_candidates')}
-                      </h5>
-                      <Droppable droppableId="availableCandidates">
-                        {(provided) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className="bg-fk-black mb-3 min-h-[200px] rounded-lg border p-2"
-                            id="available-candidates"
-                          >
-                            <div className="space-y-2">
-                              {availableCandidates.map((candidateId, index) => (
-                                <Draggable
-                                  key={candidateId}
-                                  draggableId={candidateId}
-                                  index={index}
-                                >
-                                  {(provided) => (
-                                    <div
-                                      ref={provided.innerRef}
-                                      id={candidateId}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      className="flex items-center rounded-lg bg-white p-2 shadow-sm"
-                                      onDoubleClick={handleDoubleClickAdd}
-                                    >
-                                      {getCandidateName(candidateId)}
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </div>
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-                  </div>
-                </DragDropContext>
-                <div className="mt-6 flex justify-center">
-                  <button
-                    type="button"
-                    onClick={handleVoteConfirmation}
-                    disabled={disableVote || pending}
-                    className={`text-fk-black rounded-lg px-4 py-2 ${
-                      disableVote
-                        ? 'cursor-not-allowed bg-gray-300'
-                        : 'bg-fk-yellow cursor-pointer transition-colors hover:bg-amber-500'
-                    }`}
-                  >
-                    {t('submit_vote')}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+      <div className="overflow-hidden rounded-lg border bg-white shadow">
+        <div className="bg-gray-50 p-4">
+          <h4 className="text-lg">{election.title}</h4>
         </div>
-        {confirmingVote && (
-          <div
-            className="fixed inset-0 z-50 overflow-y-auto backdrop-blur-sm"
-            aria-labelledby="modal-title"
-            role="dialog"
-            aria-modal="true"
+        <div className="p-4">
+          <Link
+            href="/"
+            className="bg-fk-yellow text-fk-black mb-3 inline-block rounded-lg px-4 py-3 transition-colors hover:bg-amber-500"
           >
-            <div
-              className="fixed inset-0 bg-gray-500/60 transition-opacity"
-              onClick={handleVoteCancel}
-            />
-            <div className="flex min-h-screen items-center justify-center p-4">
-              <div
-                className="animate-in fade-in relative w-full max-w-lg transform rounded-lg border-2 border-white/10 bg-white shadow-[0_0_40px_rgba(0,0,0,0.2)] ring-1 ring-black/5 transition-all duration-200"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <h3 className="text-lg font-medium" id="modal-title">
-                    {t('confirm_vote')}
-                  </h3>
-                  <div className="mt-4 text-center">
-                    <p>{t('confirm_vote_description')}</p>
-                    {selectedCandidates.length > 0 ? (
-                      <div className="mt-4 space-y-2">
-                        {selectedCandidates.map((candidateId, index) => (
-                          <div
-                            key={candidateId}
-                            className="rounded-lg border p-2"
-                          >
-                            {index + 1}
-                            {'. '}
-                            {getCandidateName(candidateId)}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="mx-5 mt-4 rounded-lg bg-red-50 p-4 text-center text-red-700">
-                        {t('empty_ballot')}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                  <button
-                    type="submit"
-                    formAction={formAction}
-                    disabled={disableVote || pending}
-                    className="bg-fk-yellow text-fk-black mb-2 w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500 sm:mb-0 sm:ml-2 sm:w-auto"
-                  >
-                    {t('confirm')}
-                  </button>
+            {t('back_to_frontpage')}
+          </Link>
+          <p className="mb-4">{election.description}</p>
+          {!!voter.hasVoted || !!result.data?.ballotId ? (
+            <div className="rounded-lg bg-green-50 p-4 text-center text-green-700">
+              <h4 className="mb-3 text-lg font-semibold">
+                {result.data?.ballotId
+                  ? t('thanks_for_voting')
+                  : t('already_voted')}
+              </h4>
+              {!!result.data?.ballotId && (
+                <>
+                  <p>{t('audit_info')}</p>
                   <button
                     type="button"
-                    onClick={handleVoteCancel}
-                    disabled={disableVote || pending}
-                    className="w-full cursor-pointer rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 sm:w-auto"
+                    onClick={() => getBallotCode(result.data?.ballotId)}
+                    className="bg-fk-yellow text-fk-black mt-3 cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500"
                   >
-                    {t('cancel')}
+                    {t('audit_button')}
                   </button>
+                </>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="my-3 font-bold">{t('vote_instruction')}</div>
+              <DragDropContext
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              >
+                <div className="flex flex-col gap-4 md:flex-row">
+                  <div className="flex-1">
+                    <h5 className="mb-2 font-medium">{t('your_ballot')}</h5>
+                    <Droppable droppableId="selectedCandidates">
+                      {(provided) => (
+                        <div
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          className="bg-fk-yellow mb-3 min-h-[200px] rounded-lg border p-2"
+                          id="selected-candidates"
+                        >
+                          <div className="space-y-2">
+                            {selectedCandidates.map((candidateId, index) => (
+                              <Draggable
+                                key={candidateId}
+                                draggableId={candidateId}
+                                index={index}
+                              >
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    id={candidateId}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="flex items-center rounded-lg bg-white p-2 shadow-sm"
+                                    onDoubleClick={handleDoubleClickRemove}
+                                  >
+                                    {index + 1}
+                                    {'. '}
+                                    {getCandidateName(candidateId)}
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        </div>
+                      )}
+                    </Droppable>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="mb-2 font-medium">
+                      {t('available_candidates')}
+                    </h5>
+                    <Droppable droppableId="availableCandidates">
+                      {(provided) => (
+                        <div
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          className="bg-fk-black mb-3 min-h-[200px] rounded-lg border p-2"
+                          id="available-candidates"
+                        >
+                          <div className="space-y-2">
+                            {availableCandidates.map((candidateId, index) => (
+                              <Draggable
+                                key={candidateId}
+                                draggableId={candidateId}
+                                index={index}
+                              >
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    id={candidateId}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="flex items-center rounded-lg bg-white p-2 shadow-sm"
+                                    onDoubleClick={handleDoubleClickAdd}
+                                  >
+                                    {getCandidateName(candidateId)}
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        </div>
+                      )}
+                    </Droppable>
+                  </div>
                 </div>
+              </DragDropContext>
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={handleVoteConfirmation}
+                  disabled={disableVote || isPending}
+                  className={`text-fk-black rounded-lg px-4 py-2 ${
+                    disableVote
+                      ? 'cursor-not-allowed bg-gray-300'
+                      : 'bg-fk-yellow cursor-pointer transition-colors hover:bg-amber-500'
+                  }`}
+                >
+                  {t('submit_vote')}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      {confirmingVote && (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto backdrop-blur-sm"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="fixed inset-0 bg-gray-500/60 transition-opacity"
+            onClick={handleVoteCancel}
+          />
+          <div className="flex min-h-screen items-center justify-center p-4">
+            <div
+              className="animate-in fade-in relative w-full max-w-lg transform rounded-lg border-2 border-white/10 bg-white shadow-[0_0_40px_rgba(0,0,0,0.2)] ring-1 ring-black/5 transition-all duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 className="text-lg font-medium" id="modal-title">
+                  {t('confirm_vote')}
+                </h3>
+                <div className="mt-4 text-center">
+                  <p>{t('confirm_vote_description')}</p>
+                  {selectedCandidates.length > 0 ? (
+                    <div className="mt-4 space-y-2">
+                      {selectedCandidates.map((candidateId, index) => (
+                        <div
+                          key={candidateId}
+                          className="rounded-lg border p-2"
+                        >
+                          {index + 1}
+                          {'. '}
+                          {getCandidateName(candidateId)}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mx-5 mt-4 rounded-lg bg-red-50 p-4 text-center text-red-700">
+                      {t('empty_ballot')}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button
+                  onClick={() =>
+                    execute({
+                      voterId: voter.voterId,
+                      ballot: selectedCandidates.map((candidateId, index) => ({
+                        candidateId,
+                        rank: index + 1
+                      }))
+                    })
+                  }
+                  disabled={disableVote || isPending}
+                  className="bg-fk-yellow text-fk-black mb-2 w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500 sm:mb-0 sm:ml-2 sm:w-auto"
+                >
+                  {t('confirm')}
+                </button>
+                <button
+                  onClick={handleVoteCancel}
+                  disabled={disableVote || isPending}
+                  className="w-full cursor-pointer rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 sm:w-auto"
+                >
+                  {t('cancel')}
+                </button>
               </div>
             </div>
           </div>
-        )}
-        {selectedCandidates.map((candidateId, index) => (
-          <input
-            key={index}
-            type="hidden"
-            name="ballot"
-            value={`${candidateId},${index + 1}`}
-          />
-        ))}
-      </form>
+        </div>
+      )}
     </TitleWrapper>
   )
 }

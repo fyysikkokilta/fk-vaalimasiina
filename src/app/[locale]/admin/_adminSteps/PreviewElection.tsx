@@ -1,12 +1,13 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import React from 'react'
+import { useAction } from 'next-safe-action/hooks'
+import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
-import { protectedStartEditing } from '~/actions/admin/election/startEditing'
-import { protectedStartVoting } from '~/actions/admin/election/startVoting'
+import { startEditing } from '~/actions/admin/election/startEditing'
+import { startVoting } from '~/actions/admin/election/startVoting'
 import AdminNavigation from '~/components/AdminNavigation'
-import { useToastedActionState } from '~/hooks/useToastedActionState'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
 import { ElectionStepProps } from '../page'
@@ -14,38 +15,65 @@ import { ElectionStepProps } from '../page'
 export default function PreviewElection({
   election: { electionId, title, description, seats, candidates }
 }: ElectionStepProps) {
+  const [emails, setEmails] = useState('')
+
   const t = useTranslations('admin.admin_main.preview_election')
 
-  const startEditingAction = protectedStartEditing.bind(null, electionId)
-  const startVotingAction = protectedStartVoting.bind(null, electionId)
-
-  const [, startEditing, startEditingPending] = useToastedActionState(
-    startEditingAction,
+  const { execute: executeEditing, isPending: isPendingEditing } = useAction(
+    startEditing,
     {
-      success: false,
-      message: ''
-    },
-    'admin.admin_main.preview_election'
+      onSuccess: ({ data }) => {
+        if (data?.message) {
+          toast.success(data.message)
+        }
+      },
+      onError: ({ error }) => {
+        if (error.serverError) {
+          toast.error(error.serverError)
+        }
+      }
+    }
   )
 
-  const [submitState, startVoting, startVotingPending] = useToastedActionState(
-    startVotingAction,
-    {
-      success: false,
-      message: '',
-      errors: { formErrors: [], fieldErrors: {} },
-      formData: new FormData()
+  const {
+    execute: executeVoting,
+    isPending: isPendingVoting,
+    result: resultVoting
+  } = useAction(startVoting, {
+    onSuccess: ({ data }) => {
+      if (data?.message) {
+        toast.success(data.message)
+      }
     },
-    'admin.admin_main.preview_election'
-  )
+    onError: ({ error }) => {
+      if (error.serverError) {
+        toast.error(error.serverError)
+      } else {
+        toast.error(t('invalid_voter_data'))
+      }
+    }
+  })
+
+  const getEmails = (emails: string) => {
+    return emails
+      .split('\n')
+      .map((email) => email.trim())
+      .map((email) => email.toLowerCase())
+      .filter(Boolean)
+  }
 
   return (
     <AdminNavigation
       electionStep={ElectionStep.PREVIEW}
-      disablePrevious={startEditingPending}
-      disableNext={startVotingPending}
-      onBack={startEditing}
-      onNext={startVoting}
+      disablePrevious={isPendingEditing}
+      disableNext={isPendingVoting}
+      onBack={() => executeEditing({ electionId })}
+      onNext={() =>
+        executeVoting({
+          electionId,
+          emails: getEmails(emails) as [string, ...string[]]
+        })
+      }
     >
       <div className="mx-auto max-w-lg p-6">
         <div className="flex flex-col items-center">
@@ -79,39 +107,34 @@ export default function PreviewElection({
             </label>
             <textarea
               id="emails"
-              name="emails"
+              onChange={(e) => setEmails(e.target.value)}
+              value={emails}
               rows={5}
-              defaultValue={
-                ('formData' in submitState &&
-                  (submitState.formData?.get('emails') as string)) ||
-                ''
-              }
               placeholder={t('email_list_placeholder')}
               className={
                 'w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'
               }
             />
-            {'errors' in submitState &&
-              submitState.errors.fieldErrors.emails?.map((error) => (
+            {resultVoting?.validationErrors?.fieldErrors.emails?.map(
+              (error) => (
                 <div key={error} className="text-red-500">
-                  {t(error)}
+                  {error}
                 </div>
-              ))}
+              )
+            )}
           </div>
-        </div>
-        {'errors' in submitState &&
-          submitState.errors.fieldErrors.electionId?.map((error) => (
-            <div key={error} className="text-red-500">
-              {t(error)}
+          {emails.length > 0 && (
+            <div className={'mt-2 text-center text-green-600'}>
+              {`${t('voter_count')}: ${getEmails(emails).length}`}
             </div>
-          ))}
+          )}
+        </div>
       </div>
-      {'errors' in submitState &&
-        submitState.errors.formErrors.map((error) => (
-          <div key={error} className="text-red-500">
-            {t(error)}
-          </div>
-        ))}
+      {resultVoting.validationErrors?.formErrors?.map((error) => (
+        <div key={error} className="text-center text-red-500">
+          {error}
+        </div>
+      ))}
     </AdminNavigation>
   )
 }

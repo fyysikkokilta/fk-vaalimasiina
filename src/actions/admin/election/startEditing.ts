@@ -2,59 +2,48 @@
 
 import { and, eq } from 'drizzle-orm'
 import { revalidateTag } from 'next/cache'
+import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
-import { protectedAction } from '~/actions/utils/isAuthorized'
+import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
+import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
 
-const startEditingSchema = z.object({
-  electionId: z
-    .string({
-      message: 'validation.electionId_string'
-    })
-    .uuid({ message: 'validation.electionId_uuid' })
-})
-
-async function startEditing(electionId: string) {
-  const startEditingData = {
-    electionId
-  }
-  const validatedStartEditingData =
-    startEditingSchema.safeParse(startEditingData)
-
-  if (!validatedStartEditingData.success) {
-    return {
-      success: false,
-      message: 'invalid_election_identifier'
-    }
-  }
-  const statuses = await db
-    .update(electionsTable)
-    .set({
-      status: 'UPDATING'
-    })
-    .where(
-      and(
-        eq(electionsTable.electionId, electionId),
-        eq(electionsTable.status, 'CREATED')
-      )
-    )
-    .returning({ status: electionsTable.status })
-
-  if (!statuses[0]) {
-    return {
-      success: false,
-      message: 'election_not_found'
-    }
-  }
-
-  revalidateTag('admin-election')
-
-  return {
-    success: true,
-    message: 'editing_started'
-  }
+const startEditingSchema = async () => {
+  const t = await getTranslations(
+    'admin.admin_main.preview_election.validation'
+  )
+  return z.object({
+    electionId: z
+      .string({
+        message: t('electionId_string')
+      })
+      .uuid({ message: t('electionId_uuid') })
+  })
 }
 
-export const protectedStartEditing = protectedAction(startEditing)
+export const startEditing = actionClient
+  .schema(startEditingSchema)
+  .use(isAuthorizedMiddleware)
+  .action(async ({ parsedInput: { electionId } }) => {
+    const t = await getTranslations('admin.admin_main.preview_election')
+    const statuses = await db
+      .update(electionsTable)
+      .set({ status: 'UPDATING' })
+      .where(
+        and(
+          eq(electionsTable.electionId, electionId),
+          eq(electionsTable.status, 'CREATED')
+        )
+      )
+      .returning({ status: electionsTable.status })
+
+    if (!statuses[0]) {
+      throw new ActionError(t('election_not_found'))
+    }
+
+    revalidateTag('admin-election')
+
+    return { message: t('editing_started') }
+  })
