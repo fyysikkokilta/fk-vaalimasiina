@@ -1,181 +1,118 @@
 {
-  "app": {
+  "Info": {
+    "title": "Tervetuloa vaalimasiinaan!",
+    "info": "Tämä on vaalimasiinan etusivu! Saat sähköpostitse uniikin äänestyslinkin, kun äänestys alkaa.",
+    "info_2": "Vain killan varsinaiset jäsenet saavat äänestää. Poistu kokouksesta, jos et ole varsinainen jäsen. Jos olet saanut äänestyslinkin, mutta et ole varsinainen jäsen, ilmoita asiasta puheenjohtajalle tai sihteerille välittömästi.",
+    "info_3": "Jos sinulla on kysyttävää tai ongelmia, ota yhteyttä puheenjohtajaan tai sihteeriin."
+  },
+  "NotFound": {
+    "title": "Etsimääsi sivua ei löytynyt",
+    "description": "Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+    "back_to_frontpage": "Takaisin etusivulle"
+  },
+  "LoadingSpinner": {
+    "loading": "Ladataan..."
+  },
+  "ErrorBoundary": {
+    "title": "Jotain meni pieleen",
+    "message": "Lataa sivu uudelleen ja kokeile uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+    "error_message": "Virheviesti",
+    "back_to_frontpage": "Takaisin etusivulle",
+    "reload": "Lataa uudelleen"
+  },
+  "VoterNotFound": {
+    "title": "Äänestyslinkkiä ei löytynyt",
+    "description": "Äänestyslinkkiä ei löytynyt. Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+    "back_to_frontpage": "Takaisin etusivulle"
+  },
+  "Vote": {
+    "title": "Äänestäminen",
+    "election_not_ongoing": "Tämän äänestyslinkin äänestys ei ole käynnissä",
+    "election_not_ongoing_description": "Tämän äänestyslinkin äänestys ei ole käynnissä. Äänestys on todennäköisesti loppunut jo. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+    "vote_instruction": "Valitse ehdokkaat haluamassasi järjestyksessä raahaamalla ne Äänestyslippusi-laatikkoon ja paina Äänestä-nappia",
+    "available_candidates": "Ehdokkaat",
+    "your_ballot": "Äänestyslippusi",
+    "candidates_instruction": "Valitse ehdokas",
+    "remove_selection": "Poista",
+    "submit_vote": "Äänestä",
+    "thanks_for_voting": "Kiitos äänestämisestä!",
+    "already_voted": "Olet jo äänestänyt!",
+    "back_to_frontpage": "Takaisin etusivulle",
+    "audit_info": "Painamalla alla olevaa nappia voit kopioida äänestyslippusi tunnisteen. Voit tarkastaa, että äänestyslippusi on oikein ja otettu huomioon tuloksessa tarkastusnäkymässä, kun äänestys on päättynyt. Ota tunniste talteen, sillä et voi saada sitä enää myöhemmin uudelleen.",
+    "audit_button": "Kopioi äänestyslipun tunniste",
+    "audit_copied_to_clipboard": "Äänestyslipun tunniste kopioitu leikepöydälle",
+    "confirm_vote": "Äänen vahvistus",
+    "confirm_vote_description": "Tarkasta äänestyslippusi ja paina vahvista ääni -nappia vahvistaaksesi äänesi. Ääntä ei voi enää muuttaa vahvistuksen jälkeen.",
+    "empty_ballot": "Tyhjä äänestyslippu",
+    "cancel": "Peruuta",
+    "confirm": "Vahvista",
+    "invalid_ballot": "Virheellinen äänestyslippu"
+  },
+  "Login": {
+    "title": "Hallintaan kirjautuminen",
+    "username": "Käyttäjätunnus",
+    "password": "Salasana",
+    "login_button": "Kirjaudu",
+    "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana"
+  },
+  "ElectionList": {
+    "title": "Tulokset",
+    "no_previous_results": "Ei aiempia tuloksia",
+    "no_previous_results_description": "Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu."
+  },
+  "Election": {
+    "title": "Tulokset",
+    "back_to_list": "Takaisin listaukseen"
+  },
+  "ElectionNotFound": {
+    "title": "Vaalia ei löytynyt",
+    "description": "Vaalia ei löytynyt. Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+    "back_to_frontpage": "Takaisin etusivulle"
+  },
+  "Audit": {
+    "title": "Auditointi",
+    "ballot_id": "Äänestyslipun tunniste",
+    "ballot": "Äänestyslippu",
+    "no_finished_election": "Ei päättynyttä vaalia",
+    "no_finished_election_description": "Voit tarkastella vain juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
+    "empty_ballot": "Tyhjä äänestyslippu",
+    "search_ballot": "Hae äänestyslippua"
+  },
+  "Admin": {
+    "title": "Hallinta"
+  },
+  "VotingInspection": {
+    "given_votes": "Annettuja ääniä",
+    "voters": "Äänestäjiä",
+    "old_email": "Vaihdettava sähköposti",
+    "new_email": "Uusi sähköposti",
+    "change_email": "Vaihda sähköposti"
+  },
+  "PreviewElection": {
+    "seats": "Paikkoja",
+    "candidates": "Ehdokkaat",
+    "voters": "Äänestäjät",
+    "email_list_instruction": "Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna",
+    "email_list_placeholder": "sähköposti@mail.com\nsähköposti2@mail.com\n",
+    "voter_count": "Äänestäjien määrä",
+    "invalid_voter_data": "Virheelliset äänestäjätiedot"
+  },
+  "NewElection": {
+    "invalid_election_data": "Virheelliset vaalitiedot"
+  },
+  "EditElection": {
+    "invalid_election_data": "Virheelliset vaalitiedot"
+  },
+  "LanguageSwitcher": {
+    "other_language": "In English"
+  },
+  "Header": {
     "main": "Etusivu",
     "audit": "Auditointi",
     "previous_results": "Tulokset",
-    "admin": "Hallinta",
-    "loading": "Ladataan...",
-    "not_found": {
-      "title": "Etsimääsi sivua ei löytynyt",
-      "description": "Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
-      "back_to_frontpage": "Takaisin etusivulle"
-    }
+    "admin": "Hallinta"
   },
-  "voter": {
-    "audit": {
-      "title": "Auditointi",
-      "ballot_id": "Äänestyslipun tunniste",
-      "ballot": "Äänestyslippu",
-      "no_finished_election": "Ei päättynyttä vaalia",
-      "no_finished_election_description": "Voit tarkastella vain juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
-      "empty_ballot": "Tyhjä äänestyslippu",
-      "search_ballot": "Hae äänestyslippua"
-    },
-    "info": {
-      "title": "Tervetuloa vaalimasiinaan!",
-      "info": "Tämä on vaalimasiinan etusivu! Saat sähköpostitse uniikin äänestyslinkin, kun äänestys alkaa.",
-      "info_2": "Vain killan varsinaiset jäsenet saavat äänestää. Poistu kokouksesta, jos et ole varsinainen jäsen. Jos olet saanut äänestyslinkin, mutta et ole varsinainen jäsen, ilmoita asiasta puheenjohtajalle tai sihteerille välittömästi.",
-      "info_3": "Jos sinulla on kysyttävää tai ongelmia, ota yhteyttä puheenjohtajaan tai sihteeriin."
-    },
-    "vote": {
-      "title": "Äänestäminen",
-      "election_not_ongoing": "Tämän äänestyslinkin äänestys ei ole käynnissä",
-      "election_not_ongoing_description": "Tämän äänestyslinkin äänestys ei ole käynnissä. Äänestys on todennäköisesti loppunut jo. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
-      "vote_instruction": "Valitse ehdokkaat haluamassasi järjestyksessä raahaamalla ne Äänestyslippusi-laatikkoon ja paina Äänestä-nappia",
-      "available_candidates": "Ehdokkaat",
-      "your_ballot": "Äänestyslippusi",
-      "candidates_instruction": "Valitse ehdokas",
-      "remove_selection": "Poista",
-      "submit_vote": "Äänestä",
-      "thanks_for_voting": "Kiitos äänestämisestä!",
-      "already_voted": "Olet jo äänestänyt!",
-      "back_to_frontpage": "Takaisin etusivulle",
-      "audit_info": "Painamalla alla olevaa nappia voit kopioida äänestyslippusi tunnisteen. Voit tarkastaa, että äänestyslippusi on oikein ja otettu huomioon tuloksessa tarkastusnäkymässä, kun äänestys on päättynyt. Ota tunniste talteen, sillä et voi saada sitä enää myöhemmin uudelleen.",
-      "audit_button": "Kopioi äänestyslipun tunniste",
-      "audit_copied_to_clipboard": "Äänestyslipun tunniste kopioitu leikepöydälle",
-      "confirm_vote": "Äänen vahvistus",
-      "confirm_vote_description": "Tarkasta äänestyslippusi ja paina vahvista ääni -nappia vahvistaaksesi äänesi. Ääntä ei voi enää muuttaa vahvistuksen jälkeen.",
-      "empty_ballot": "Tyhjä äänestyslippu",
-      "cancel": "Peruuta",
-      "confirm": "Vahvista",
-      "ballot_saved": "Äänesi on tallennettu",
-      "voter_not_found": "Äänestäjää ei löytynyt",
-      "voting_not_ongoing": "Äänestys ei ole käynnissä",
-      "invalid_ballot": "Virheellinen äänestyslippu",
-      "invalid_choices": "Virheelliset valinnat",
-      "voter_already_voted": "Äänestäjä on jo äänestänyt",
-      "error_saving_ballot": "Virhe tallennettaessa äänestyslippua",
-      "validation": {
-        "voterId_string": "Äänestäjätunnisteen tulee olla merkkijono",
-        "voterId_uuid": "Äänestäjätunnisteen tulee olla kelvollinen UUID",
-        "candidateId_string": "Ehdokastunnisteen tulee olla merkkijono",
-        "candidateId_uuid": "Ehdokastunnisteen tulee olla kelvollinen UUID",
-        "rank_number": "Sijoituksen tulee olla numero",
-        "rank_min": "Sijoituksen tulee olla vähintään 1",
-        "preference_object": "Sijoituksen tulee olla objekti",
-        "ballot_array": "Äänestyslipun tulee olla taulukko",
-        "ranks_unique": "Sijoitusten tulee olla uniikkeja"
-      },
-      "not_found": {
-        "title": "Äänestyslinkkiä ei löytynyt",
-        "description": "Äänestyslinkkiä ei löytynyt. Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
-        "back_to_frontpage": "Takaisin etusivulle"
-      }
-    }
-  },
-  "admin": {
-    "title": "Hallinta",
-    "login": {
-      "title": "Hallintaan kirjautuminen",
-      "username": "Käyttäjätunnus",
-      "password": "Salasana",
-      "login_button": "Kirjaudu",
-      "login_successful": "Kirjautuminen onnistui",
-      "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana",
-      "validation": {
-        "username_string": "Käyttäjätunnuksen tulee olla merkkijono",
-        "username_nonempty": "Käyttäjätunnus ei saa olla tyhjä",
-        "password_string": "Salasanan tulee olla merkkijono",
-        "password_nonempty": "Salasana ei saa olla tyhjä"
-      }
-    },
-    "admin_main": {
-      "new_election": {
-        "election_title": "Otsikko",
-        "description": "Kuvaus",
-        "seats": "Paikkoja",
-        "new_candidate": "Uusi ehdokas",
-        "add_candidate": "Lisää ehdokas",
-        "remove_candidate": "Poista ehdokas",
-        "candidates": "Ehdokkaat",
-        "cancelled_editing": "Muokkaus peruttu",
-        "election_created": "Vaali luotu",
-        "election_edited": "Vaali muokattu",
-        "election_not_found": "Vaalia ei löytynyt",
-        "invalid_election_data": "Virheelliset vaalitiedot",
-        "invalid_election_identifier": "Virheellinen vaalitunniste",
-        "validation": {
-          "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
-          "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID",
-          "title_string": "Otsikon tulee olla merkkijono",
-          "title_nonempty": "Otsikko ei saa olla tyhjä",
-          "description_string": "Kuvauksen tulee olla merkkijono",
-          "description_nonempty": "Kuvaus ei saa olla tyhjä",
-          "seats_number": "Paikkamäärän tulee olla numero",
-          "seats_min": "Paikkamäärän tulee olla vähintään 1",
-          "candidate_string": "Ehdokkaan tulee olla merkkijono",
-          "candidate_nonempty": "Ehdokas ei saa olla tyhjä",
-          "candidates_array": "Ehdokkaiden tulee olla taulukko",
-          "candidates_nonempty": "Ehdokkaita tulee olla vähintään yksi",
-          "candidates_geq_seats": "Ehdokkaiden määrän tulee olla vähintään yhtä suuri kuin paikkojen määrä"
-        }
-      },
-      "preview_election": {
-        "seats": "Paikkoja",
-        "candidates": "Ehdokkaat",
-        "voters": "Äänestäjät",
-        "email_list_instruction": "Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna",
-        "email_list_placeholder": "sähköposti@mail.com\nsähköposti2@mail.com\n",
-        "voter_count": "Äänestäjien määrä",
-        "editing_started": "Muokkaus aloitettu",
-        "voting_started": "Äänestys aloitettu",
-        "invalid_emails": "Kaikki sähköpostit eivät ole kelvollisia",
-        "mail_sending_failed": "Sähköpostin lähettäminen epäonnistui",
-        "election_not_found": "Vaalia ei löytynyt",
-        "invalid_election_identifier": "Virheellinen vaalitunniste",
-        "invalid_voter_data": "Virheelliset äänestäjätiedot",
-        "validation": {
-          "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
-          "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID",
-          "email_string": "Sähköpostiosoitteen tulee olla merkkijono",
-          "email_nonempty": "Sähköpostiosoite ei saa olla tyhjä",
-          "email_email": "Sähköpostiosoitteen tulee olla kelvollinen sähköpostiosoite",
-          "emails_array": "Sähköpostiosoitteiden tulee olla taulukko",
-          "emails_nonempty": "Sähköpostiosoitteita tulee olla vähintään yksi",
-          "emails_unique": "Sähköpostiosoitteiden tulee olla uniikkeja"
-        }
-      },
-      "voting_inspection": {
-        "given_votes": "Annettuja ääniä",
-        "voters": "Äänestäjiä",
-        "old_email": "Vaihdettava sähköposti",
-        "new_email": "Uusi sähköposti",
-        "change_email": "Vaihda sähköposti",
-        "email_changed": "Sähköposti vaihdettu",
-        "voting_aborted": "Äänestys keskeytetty",
-        "voting_finished": "Äänestys päätetty",
-        "votes_polled": "Äänet haettu",
-        "email_already_exists": "Sähköposti on jo käytössä",
-        "error_updating_email": "Virhe päivitettäessä sähköpostia",
-        "mail_sending_failed": "Sähköpostin lähettäminen epäonnistui",
-        "election_not_found": "Vaalia ei löytynyt",
-        "not_everyone_voted": "Kaikki eivät ole äänestäneet",
-        "voter_not_found": "Äänestäjää ei löytynyt",
-        "invalid_election_identifier": "Virheellinen vaalitunniste",
-        "validation": {
-          "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
-          "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID",
-          "oldEmail_string": "Vaihdettavan sähköpostin tulee olla merkkijono",
-          "oldEmail_nonempty": "Vaihdettava sähköposti ei saa olla tyhjä",
-          "oldEmail_email": "Vaihdettavan sähköpostin tulee olla kelvollinen sähköpostiosoite",
-          "newEmail_string": "Uuden sähköpostin tulee olla merkkijono",
-          "newEmail_nonempty": "Uusi sähköposti ei saa olla tyhjä",
-          "newEmail_email": "Uuden sähköpostin tulee olla kelvollinen sähköpostiosoite"
-        }
-      }
-    }
-  },
-  "results": {
+  "ElectionResults": {
     "total_votes": "Ääniä",
     "non_empty_votes": "Epätyhjiä ääniä",
     "export_csv": "Lataa äänestysliput CSV-tiedostona",
@@ -199,30 +136,184 @@
     "vote_count": "Ääniä",
     "voter_count": "Äänestäjiä",
     "result": "Tulos",
-    "invalid_result": "Ei-vaalikelpoinen tulos. Äänestys uusitaan.",
-    "election_not_found": "Vaalia ei löytynyt",
-    "invalid_close_election_data": "Virheelliset vaalitiedot",
-    "validation": {
-      "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
-      "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"
+    "invalid_result": "Ei-vaalikelpoinen tulos. Äänestys uusitaan."
+  },
+  "ElectionForm": {
+    "election_title": "Otsikko",
+    "description": "Kuvaus",
+    "seats": "Paikkoja",
+    "new_candidate": "Uusi ehdokas",
+    "add_candidate": "Lisää ehdokas",
+    "remove_candidate": "Poista ehdokas",
+    "candidates": "Ehdokkaat"
+  },
+  "actions": {
+    "vote": {
+      "action_status": {
+        "ballot_saved": "Äänesi on tallennettu",
+        "voter_not_found": "Äänestäjää ei löytynyt",
+        "voting_not_ongoing": "Äänestys ei ole käynnissä",
+        "invalid_choices": "Virheelliset valinnat",
+        "voter_already_voted": "Äänestäjä on jo äänestänyt",
+        "error_saving_ballot": "Virhe tallennettaessa äänestyslippua"
+      },
+      "validation": {
+        "voterId_string": "Äänestäjätunnisteen tulee olla merkkijono",
+        "voterId_uuid": "Äänestäjätunnisteen tulee olla kelvollinen UUID",
+        "candidateId_string": "Ehdokastunnisteen tulee olla merkkijono",
+        "candidateId_uuid": "Ehdokastunnisteen tulee olla kelvollinen UUID",
+        "rank_number": "Sijoituksen tulee olla numero",
+        "rank_min": "Sijoituksen tulee olla vähintään 1",
+        "preference_object": "Sijoituksen tulee olla objekti",
+        "ballot_array": "Äänestyslipun tulee olla taulukko",
+        "ranks_unique": "Sijoitusten tulee olla uniikkeja"
+      }
+    },
+    "changeEmail": {
+      "action_status": {
+        "email_changed": "Sähköposti vaihdettu",
+        "email_already_exists": "Sähköposti on jo käytössä",
+        "error_updating_email": "Virhe päivitettäessä sähköpostia",
+        "mail_sending_failed": "Sähköpostin lähettäminen epäonnistui",
+        "voter_not_found": "Äänestäjää ei löytynyt"
+      },
+      "validation": {
+        "oldEmail_string": "Vaihdettavan sähköpostin tulee olla merkkijono",
+        "oldEmail_nonempty": "Vaihdettava sähköposti ei saa olla tyhjä",
+        "oldEmail_email": "Vaihdettavan sähköpostin tulee olla kelvollinen sähköpostiosoite",
+        "newEmail_string": "Uuden sähköpostin tulee olla merkkijono",
+        "newEmail_nonempty": "Uusi sähköposti ei saa olla tyhjä",
+        "newEmail_email": "Uuden sähköpostin tulee olla kelvollinen sähköpostiosoite"
+      }
+    },
+    "authenticate": {
+      "action_status": {
+        "login_successful": "Kirjautuminen onnistui",
+        "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana"
+      },
+      "validation": {
+        "username_string": "Käyttäjätunnuksen tulee olla merkkijono",
+        "username_nonempty": "Käyttäjätunnus ei saa olla tyhjä",
+        "password_string": "Salasanan tulee olla merkkijono",
+        "password_nonempty": "Salasana ei saa olla tyhjä"
+      }
+    },
+    "startVoting": {
+      "action_status": {
+        "voting_started": "Äänestys aloitettu",
+        "mail_sending_failed": "Sähköpostin lähettäminen epäonnistui",
+        "election_not_found": "Vaalia ei löytynyt"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID",
+        "email_string": "Sähköpostiosoitteen tulee olla merkkijono",
+        "email_nonempty": "Sähköpostiosoite ei saa olla tyhjä",
+        "email_email": "Sähköpostiosoitteen tulee olla kelvollinen sähköpostiosoite",
+        "emails_array": "Sähköpostiosoitteiden tulee olla taulukko",
+        "emails_nonempty": "Sähköpostiosoitteita tulee olla vähintään yksi",
+        "emails_unique": "Sähköpostiosoitteiden tulee olla uniikkeja",
+        "invalid_emails": "Kaikki sähköpostit eivät ole kelvollisia"
+      }
+    },
+    "startEditing": {
+      "action_status": {
+        "election_not_found": "Vaalia ei löytynyt",
+        "editing_started": "Muokkaus aloitettu"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"
+      }
+    },
+    "pollVotes": {
+      "action_status": {
+        "votes_polled": "Äänet haettu"
+      }
+    },
+    "endVoting": {
+      "action_status": {
+        "voting_finished": "Äänestys päätetty",
+        "election_not_found": "Vaalia ei löytynyt",
+        "not_everyone_voted": "Kaikki eivät ole äänestäneet"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"
+      }
+    },
+    "editElection": {
+      "action_status": {
+        "election_edited": "Vaali muokattu",
+        "election_not_found": "Vaalia ei löytynyt"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID",
+        "title_string": "Otsikon tulee olla merkkijono",
+        "title_nonempty": "Otsikko ei saa olla tyhjä",
+        "description_string": "Kuvauksen tulee olla merkkijono",
+        "description_nonempty": "Kuvaus ei saa olla tyhjä",
+        "seats_number": "Paikkamäärän tulee olla numero",
+        "seats_min": "Paikkamäärän tulee olla vähintään 1",
+        "candidate_string": "Ehdokkaan tulee olla merkkijono",
+        "candidate_nonempty": "Ehdokas ei saa olla tyhjä",
+        "candidates_array": "Ehdokkaiden tulee olla taulukko",
+        "candidates_nonempty": "Ehdokkaita tulee olla vähintään yksi",
+        "candidates_geq_seats": "Ehdokkaiden määrän tulee olla vähintään yhtä suuri kuin paikkojen määrä"
+      }
+    },
+    "createElection": {
+      "action_status": {
+        "election_created": "Vaali luotu"
+      },
+      "validation": {
+        "title_string": "Otsikon tulee olla merkkijono",
+        "title_nonempty": "Otsikko ei saa olla tyhjä",
+        "description_string": "Kuvauksen tulee olla merkkijono",
+        "description_nonempty": "Kuvaus ei saa olla tyhjä",
+        "seats_number": "Paikkamäärän tulee olla numero",
+        "seats_min": "Paikkamäärän tulee olla vähintään 1",
+        "candidate_string": "Ehdokkaan tulee olla merkkijono",
+        "candidate_nonempty": "Ehdokas ei saa olla tyhjä",
+        "candidates_array": "Ehdokkaiden tulee olla taulukko",
+        "candidates_nonempty": "Ehdokkaita tulee olla vähintään yksi",
+        "candidates_geq_seats": "Ehdokkaiden määrän tulee olla vähintään yhtä suuri kuin paikkojen määrä"
+      }
+    },
+    "closeElection": {
+      "action_status": {
+        "election_closed": "Vaali suljettu",
+        "election_not_found": "Vaalia ei löytynyt"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"
+      }
+    },
+    "cancelEditing": {
+      "action_status": {
+        "editing_cancelled": "Muokkaus peruttu",
+        "election_not_found": "Vaalia ei löytynyt"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"
+      }
+    },
+    "abortVoting": {
+      "action_status": {
+        "voting_aborted": "Äänestys keskeytetty",
+        "election_not_found": "Vaalia ei löytynyt"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"
+      }
     }
   },
-  "previous_results": {
-    "title": "Tulokset",
-    "back_to_list": "Takaisin listaukseen",
-    "no_previous_results": "Ei aiempia tuloksia",
-    "no_previous_results_description": "Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu.",
-    "not_found": {
-      "title": "Vaalia ei löytynyt",
-      "description": "Vaalia ei löytynyt. Tarkista, että olet käyttänyt oikeaa linkkiä ja yritä uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
-      "back_to_frontpage": "Takaisin etusivulle"
-    }
-  },
-  "error_boundary": {
-    "title": "Jotain meni pieleen",
-    "message": "Lataa sivu uudelleen ja kokeile uudelleen. Jos ongelma toistuu, ota yhteyttä puheenjohtajaan tai sihteeriin.",
-    "error_message": "Virheviesti",
-    "back_to_frontpage": "Takaisin etusivulle",
-    "reload": "Lataa uudelleen"
+  "metadata": {
+    "title": "Vaalimasiina",
+    "description": "Fyysikkokillan sähköinen äänestysjärjestelmä"
   }
 }

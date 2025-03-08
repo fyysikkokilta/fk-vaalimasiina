@@ -5,10 +5,10 @@ import { useAction } from 'next-safe-action/hooks'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
+import { abortVoting } from '~/actions/admin/abortVoting'
 import { changeEmail } from '~/actions/admin/changeEmail'
-import { abortVoting } from '~/actions/admin/election/abortVoting'
-import { endVoting } from '~/actions/admin/election/endVoting'
-import { pollVotes } from '~/actions/admin/election/pollVotes'
+import { endVoting } from '~/actions/admin/endVoting'
+import { pollVotes } from '~/actions/admin/pollVotes'
 import AdminNavigation from '~/components/AdminNavigation'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
@@ -20,7 +20,7 @@ export default function VotingInspection({
 }: ElectionStepProps) {
   const [oldEmail, setOldEmail] = useState('')
   const [newEmail, setNewEmail] = useState('')
-  const t = useTranslations('admin.admin_main.voting_inspection')
+  const t = useTranslations('VotingInspection')
 
   const { execute: executeAbort, isPending: isPendingAbort } = useAction(
     abortVoting,

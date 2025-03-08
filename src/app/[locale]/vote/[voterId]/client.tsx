@@ -25,7 +25,7 @@ export default function Vote({ election, voter }: VotePageProps) {
     election.candidates.map((c) => c.candidateId)
   )
 
-  const t = useTranslations('voter.vote')
+  const t = useTranslations('Vote')
   const { execute, isPending, result } = useAction(vote, {
     onExecute: () => setDisableVote(true),
     onSuccess: ({ data }) => {

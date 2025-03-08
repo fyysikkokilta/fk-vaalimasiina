@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 
 import { redirect } from '~/i18n/navigation'
@@ -9,7 +10,7 @@ import Login from './client'
 export default async function LoginPage({
   params
 }: {
-  params: Promise<{ locale: string }>
+  params: Promise<{ locale: Locale }>
 }) {
   const { locale } = await params
   setRequestLocale(locale)

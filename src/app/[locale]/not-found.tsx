@@ -3,8 +3,8 @@ import { getTranslations } from 'next-intl/server'
 import TitleWrapper from '~/components/TitleWrapper'
 import { Link } from '~/i18n/navigation'
 
-export default async function VoterNotFound() {
-  const t = await getTranslations('app.not_found')
+export default async function NotFound() {
+  const t = await getTranslations('NotFound')
 
   return (
     <TitleWrapper title={t('title')}>

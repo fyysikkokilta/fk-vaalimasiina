@@ -1,3 +1,4 @@
+import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import React from 'react'
 
@@ -6,12 +7,12 @@ import TitleWrapper from '~/components/TitleWrapper'
 export default async function Info({
   params
 }: {
-  params: Promise<{ locale: string }>
+  params: Promise<{ locale: Locale }>
 }) {
   const { locale } = await params
   setRequestLocale(locale)
 
-  const t = await getTranslations('voter.info')
+  const t = await getTranslations('Info')
 
   return (
     <TitleWrapper title={t('title')}>

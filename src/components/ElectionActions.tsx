@@ -17,7 +17,7 @@ export default function ElectionActions({
   election: Election
   votingResult: ValidVotingResult
 }) {
-  const t = useTranslations('results')
+  const t = useTranslations('ElectionResults')
   const roundToTwoDecimals = (num: number) =>
     Math.round((num + Number.EPSILON) * 100) / 100
 

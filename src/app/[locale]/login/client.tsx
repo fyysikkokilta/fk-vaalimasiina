@@ -12,7 +12,7 @@ export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const t = useTranslations('admin.login')
+  const t = useTranslations('Login')
 
   const { execute, isPending, result } = useAction(authenticate, {
     onSuccess: ({ data }) => {

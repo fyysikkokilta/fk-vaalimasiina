@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { actionClient, ActionError } from '../safe-action'
 
 const authenticateSchema = async () => {
-  const t = await getTranslations('admin.login.validation')
+  const t = await getTranslations('actions.authenticate.validation')
   return z.object({
     username: z
       .string({
@@ -28,7 +28,7 @@ const authenticateSchema = async () => {
 export const authenticate = actionClient
   .schema(authenticateSchema)
   .action(async ({ parsedInput: { username, password } }) => {
-    const t = await getTranslations('admin.login')
+    const t = await getTranslations('actions.authenticate.action_status')
     const cookieStore = await cookies()
 
     if (process.env.NODE_ENV === 'development') {

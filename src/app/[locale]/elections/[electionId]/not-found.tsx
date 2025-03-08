@@ -4,7 +4,7 @@ import TitleWrapper from '~/components/TitleWrapper'
 import { Link } from '~/i18n/navigation'
 
 export default async function ElectionNotFound() {
-  const t = await getTranslations('previous_results.not_found')
+  const t = await getTranslations('ElectionNotFound')
 
   return (
     <TitleWrapper title={t('title')}>

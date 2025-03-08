@@ -27,7 +27,7 @@ export default async function Header() {
   const APP_TITLE_SHORT =
     process.env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT
 
-  const t = await getTranslations('app')
+  const t = await getTranslations('Header')
   return (
     <header className="bg-fk-black shadow-md">
       <div className="container m-auto flex items-center justify-between px-5 py-2">

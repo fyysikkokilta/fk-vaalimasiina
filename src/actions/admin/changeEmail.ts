@@ -14,9 +14,7 @@ import { isAuthorizedMiddleware } from '../middleware/isAuthorized'
 import { actionClient, ActionError } from '../safe-action'
 
 const changeEmailSchema = async () => {
-  const t = await getTranslations(
-    'admin.admin_main.voting_inspection.validation'
-  )
+  const t = await getTranslations('actions.changeEmail.validation')
   return z.object({
     oldEmail: z
       .string({
@@ -43,7 +41,7 @@ export const changeEmail = actionClient
   .schema(changeEmailSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { oldEmail, newEmail } }) => {
-    const t = await getTranslations('admin.admin_main.voting_inspection')
+    const t = await getTranslations('actions.changeEmail.action_status')
     const hashedOldEmail = createHash('sha256').update(oldEmail).digest('hex')
     const hashedNewEmail = createHash('sha256').update(newEmail).digest('hex')
     try {

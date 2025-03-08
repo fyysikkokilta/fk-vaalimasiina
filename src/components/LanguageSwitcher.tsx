@@ -1,7 +1,7 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import React, { useTransition } from 'react'
 
 import { usePathname, useRouter } from '~/i18n/navigation'
@@ -12,10 +12,10 @@ export default function LanguageSwitcher() {
   const pathname = usePathname()
   const params = useParams()
   const [isPending, startTransition] = useTransition()
-  const isEnglish = locale === 'en'
+  const t = useTranslations('LanguageSwitcher')
 
   const toggleLanguage = () => {
-    const newLocale = isEnglish ? 'fi' : 'en'
+    const newLocale = locale === 'en' ? 'fi' : 'en'
     startTransition(() => {
       // @ts-expect-error -- TypeScript will validate that only known `params`
       // are used in combination with a given `pathname`. Since the two will
@@ -31,7 +31,7 @@ export default function LanguageSwitcher() {
       type="button"
       onClick={toggleLanguage}
     >
-      {isEnglish ? 'Suomeksi' : 'In English'}
+      {t('other_language')}
     </button>
   )
 }

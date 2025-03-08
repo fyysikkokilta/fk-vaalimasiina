@@ -11,7 +11,7 @@ import { db } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
 const editElectionSchema = async () => {
-  const t = await getTranslations('admin.admin_main.new_election.validation')
+  const t = await getTranslations('actions.editElection.validation')
   return z
     .object({
       electionId: z
@@ -49,7 +49,7 @@ export const editElection = actionClient
     async ({
       parsedInput: { electionId, title, description, seats, candidates }
     }) => {
-      const t = await getTranslations('admin.admin_main.new_election')
+      const t = await getTranslations('actions.editElection.action_status')
       return db.transaction(async (transaction) => {
         const elections = await transaction
           .update(electionsTable)

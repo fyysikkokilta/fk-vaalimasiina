@@ -4,7 +4,7 @@ import { useAction } from 'next-safe-action/hooks'
 import React from 'react'
 import { toast } from 'react-toastify'
 
-import { closeElection } from '~/actions/admin/election/closeElection'
+import { closeElection } from '~/actions/admin/closeElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionResults from '~/components/ElectionResults'
 import { ElectionStep } from '~/settings/electionStepSettings'

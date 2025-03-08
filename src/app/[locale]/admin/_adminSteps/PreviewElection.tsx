@@ -5,8 +5,8 @@ import { useAction } from 'next-safe-action/hooks'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { startEditing } from '~/actions/admin/election/startEditing'
-import { startVoting } from '~/actions/admin/election/startVoting'
+import { startEditing } from '~/actions/admin/startEditing'
+import { startVoting } from '~/actions/admin/startVoting'
 import AdminNavigation from '~/components/AdminNavigation'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
@@ -17,7 +17,7 @@ export default function PreviewElection({
 }: ElectionStepProps) {
   const [emails, setEmails] = useState('')
 
-  const t = useTranslations('admin.admin_main.preview_election')
+  const t = useTranslations('PreviewElection')
 
   const { execute: executeEditing, isPending: isPendingEditing } = useAction(
     startEditing,

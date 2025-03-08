@@ -1,5 +1,6 @@
 import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { notFound } from 'next/navigation'
+import { Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 
 import { db } from '~/db'
@@ -43,7 +44,7 @@ const getVoter = async (voterId: string) => {
 export default async function VotePage({
   params
 }: {
-  params: Promise<{ locale: string; voterId: string }>
+  params: Promise<{ locale: Locale; voterId: string }>
 }) {
   const { locale, voterId } = await params
   setRequestLocale(locale)

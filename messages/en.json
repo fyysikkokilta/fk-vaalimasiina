@@ -1,181 +1,118 @@
 {
-  "app": {
+  "Info": {
+    "title": "Welcome to the Voting Machine!",
+    "info": "This is the frontpage of the Voting Machine! You will get a unique voting link by email when the voting starts.",
+    "info_2": "Only regular members of the guild are allowed to vote. Please exit the meeting if you are not a regular member. If you have received a voting link but are not a regular member, please inform the chairperson or secretary immediately.",
+    "info_3": "If you have any questions or problems, please contact the chairperson or secretary."
+  },
+  "NotFound": {
+    "title": "The page you are looking for was not found",
+    "description": "Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
+    "back_to_frontpage": "Back to frontpage"
+  },
+  "LoadingSpinner": {
+    "loading": "Loading..."
+  },
+  "ErrorBoundary": {
+    "title": "An error occurred",
+    "message": "Reload the page and try again. If the error persists, please contact the chairperson or secretary.",
+    "error_message": "Error message",
+    "back_to_frontpage": "Back to frontpage",
+    "reload": "Reload"
+  },
+  "VoterNotFound": {
+    "title": "Voting link not found",
+    "description": "Voting link not found. Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
+    "back_to_frontpage": "Back to frontpage"
+  },
+  "Vote": {
+    "title": "Voting",
+    "election_not_ongoing": "The voting for this voting link is not ongoing",
+    "election_not_ongoing_description": "The voting for this voting link is not ongoing. The voting has probably already ended. If you think this is an error, please contact the chairperson or secretary.",
+    "vote_instruction": "Select the candidates in the order you prefer by dragging them to the Your ballot box and press the Vote button",
+    "available_candidates": "Candidates",
+    "your_ballot": "Your ballot",
+    "candidates_instruction": "Select a candidate",
+    "remove_selection": "Remove",
+    "submit_vote": "Vote",
+    "thanks_for_voting": "Thank you for voting!",
+    "already_voted": "You have already voted!",
+    "back_to_frontpage": "Back to frontpage",
+    "audit_info": "By pressing the button below, you can copy the ID of your ballot. You can check that your ballot is correct and taken into account in the auditing view when the voting has ended. Save the ID, as you cannot get it again later.",
+    "audit_button": "Copy ballot ID",
+    "audit_copied_to_clipboard": "Ballot ID copied to clipboard",
+    "confirm_vote": "Vote confirmation",
+    "confirm_vote_description": "Check your ballot and press the confirm vote button to confirm your vote. The vote cannot be changed after confirmation.",
+    "empty_ballot": "Empty ballot",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "invalid_ballot": "Invalid ballot"
+  },
+  "Login": {
+    "title": "Log in to admin",
+    "username": "Username",
+    "password": "Password",
+    "login_button": "Log in",
+    "wrong_username_or_password": "Wrong username or password"
+  },
+  "ElectionList": {
+    "title": "Results",
+    "no_previous_results": "No previous results",
+    "no_previous_results_description": "There have been no elections held yet or their results have not been published."
+  },
+  "Election": {
+    "title": "Results",
+    "back_to_list": "Back to list"
+  },
+  "ElectionNotFound": {
+    "title": "Election not found",
+    "description": "Election not found. Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
+    "back_to_frontpage": "Back to frontpage"
+  },
+  "Audit": {
+    "title": "Auditing",
+    "ballot_id": "Ballot ID",
+    "ballot": "Ballot",
+    "no_finished_election": "There is no finished election",
+    "no_finished_election_description": "You can only audit the election whose results have just been published. If you think this is an error, please contact the chairperson or secretary.",
+    "empty_ballot": "Empty ballot",
+    "search_ballot": "Search ballot"
+  },
+  "Admin": {
+    "title": "Admin"
+  },
+  "VotingInspection": {
+    "given_votes": "Given votes",
+    "voters": "Voters",
+    "old_email": "Email to change",
+    "new_email": "New email",
+    "change_email": "Change email"
+  },
+  "PreviewElection": {
+    "seats": "Seats",
+    "candidates": "Candidates",
+    "voters": "Voters",
+    "email_list_instruction": "Add the voters' email addresses here separated by line breaks",
+    "email_list_placeholder": "email@email.com\nemail2@mail.com",
+    "voter_count": "Voter count",
+    "invalid_voter_data": "Invalid voter data"
+  },
+  "NewElection": {
+    "invalid_election_data": "Invalid election data"
+  },
+  "EditElection": {
+    "invalid_election_data": "Invalid election data"
+  },
+  "LanguageSwitcher": {
+    "other_language": "Suomeksi"
+  },
+  "Header": {
     "main": "Main",
     "audit": "Auditing",
     "previous_results": "Results",
-    "admin": "Admin",
-    "loading": "Loading...",
-    "not_found": {
-      "title": "The page you are looking for was not found",
-      "description": "Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
-      "back_to_frontpage": "Back to frontpage"
-    }
+    "admin": "Admin"
   },
-  "voter": {
-    "audit": {
-      "title": "Auditing",
-      "ballot_id": "Ballot ID",
-      "ballot": "Ballot",
-      "no_finished_election": "There is no finished election",
-      "no_finished_election_description": "You can only audit the election whose results have just been published. If you think this is an error, please contact the chairperson or secretary.",
-      "empty_ballot": "Empty ballot",
-      "search_ballot": "Search ballot"
-    },
-    "info": {
-      "title": "Welcome to the Voting Machine!",
-      "info": "This is the frontpage of the Voting Machine! You will get a unique voting link by email when the voting starts.",
-      "info_2": "Only regular members of the guild are allowed to vote. Please exit the meeting if you are not a regular member. If you have received a voting link but are not a regular member, please inform the chairperson or secretary immediately.",
-      "info_3": "If you have any questions or problems, please contact the chairperson or secretary."
-    },
-    "vote": {
-      "title": "Voting",
-      "election_not_ongoing": "The voting for this voting link is not ongoing",
-      "election_not_ongoing_description": "The voting for this voting link is not ongoing. The voting has probably already ended. If you think this is an error, please contact the chairperson or secretary.",
-      "vote_instruction": "Select the candidates in the order you prefer by dragging them to the Your ballot box and press the Vote button",
-      "available_candidates": "Candidates",
-      "your_ballot": "Your ballot",
-      "candidates_instruction": "Select a candidate",
-      "remove_selection": "Remove",
-      "submit_vote": "Vote",
-      "thanks_for_voting": "Thank you for voting!",
-      "already_voted": "You have already voted!",
-      "back_to_frontpage": "Back to frontpage",
-      "audit_info": "By pressing the button below, you can copy the ID of your ballot. You can check that your ballot is correct and taken into account in the auditing view when the voting has ended. Save the ID, as you cannot get it again later.",
-      "audit_button": "Copy ballot ID",
-      "audit_copied_to_clipboard": "Ballot ID copied to clipboard",
-      "confirm_vote": "Vote confirmation",
-      "confirm_vote_description": "Check your ballot and press the confirm vote button to confirm your vote. The vote cannot be changed after confirmation.",
-      "empty_ballot": "Empty ballot",
-      "cancel": "Cancel",
-      "confirm": "Confirm",
-      "ballot_saved": "Your vote has been saved",
-      "voter_not_found": "Voter not found",
-      "voting_not_ongoing": "Voting is not ongoing",
-      "invalid_ballot": "Invalid ballot",
-      "invalid_choices": "Invalid choices",
-      "voter_already_voted": "Voter has already voted",
-      "error_saving_ballot": "Error saving ballot",
-      "validation": {
-        "voterId_string": "Voter identifier must be a string",
-        "voterId_uuid": "Voter identifier must be a valid UUID",
-        "candidateId_string": "Candidate identifier must be a string",
-        "candidateId_uuid": "Candidate identifier must be a valid UUID",
-        "rank_number": "Rank must be a number",
-        "rank_min": "Rank must be at least 1",
-        "preference_object": "Preference must be an object",
-        "ballot_array": "Ballot must be an array",
-        "ranks_unique": "Ranks must be unique"
-      },
-      "not_found": {
-        "title": "Voting link not found",
-        "description": "Voting link not found. Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
-        "back_to_frontpage": "Back to frontpage"
-      }
-    }
-  },
-  "admin": {
-    "title": "Admin",
-    "login": {
-      "title": "Log in to admin",
-      "username": "Username",
-      "password": "Password",
-      "login_button": "Log in",
-      "login_successful": "Login successful",
-      "wrong_username_or_password": "Wrong username or password",
-      "validation": {
-        "username_string": "Username must be a string",
-        "username_nonempty": "Username must not be empty",
-        "password_string": "Password must be a string",
-        "password_nonempty": "Password must not be empty"
-      }
-    },
-    "admin_main": {
-      "new_election": {
-        "election_title": "Title",
-        "description": "Description",
-        "seats": "Seats",
-        "new_candidate": "New candidate",
-        "add_candidate": "Add candidate",
-        "remove_candidate": "Remove candidate",
-        "candidates": "Candidates",
-        "cancelled_editing": "Editing cancelled",
-        "election_created": "Election created",
-        "election_edited": "Election edited",
-        "election_not_found": "Election not found",
-        "invalid_election_data": "Invalid election data",
-        "invalid_election_identifier": "Invalid election identifier",
-        "validation": {
-          "electionId_string": "Election identifier must be a string",
-          "electionId_uuid": "Election identifier must be a valid UUID",
-          "title_string": "Title must be a string",
-          "title_nonempty": "Title must not be empty",
-          "description_string": "Description must be a string",
-          "description_nonempty": "Description must not be empty",
-          "seats_number": "Seats must be a number",
-          "seats_min": "Seats must be at least 1",
-          "candidate_string": "Candidate must be a string",
-          "candidate_nonempty": "Candidate must not be empty",
-          "candidates_array": "Candidates must be an array",
-          "candidates_nonempty": "There must be at least one candidate",
-          "candidates_geq_seats": "There must be at least as many candidates as there are seats"
-        }
-      },
-      "preview_election": {
-        "seats": "Seats",
-        "candidates": "Candidates",
-        "voters": "Voters",
-        "email_list_instruction": "Add the voters' email addresses here separated by line breaks",
-        "email_list_placeholder": "email@email.com\nemail2@mail.com",
-        "voter_count": "Voter count",
-        "editing_started": "Editing started",
-        "voting_started": "Voting started",
-        "invalid_emails": "Not all emails are valid",
-        "mail_sending_failed": "Mail sending failed",
-        "election_not_found": "Election not found",
-        "invalid_election_identifier": "Invalid election identifier",
-        "invalid_voter_data": "Invalid voter data",
-        "validation": {
-          "electionId_string": "Election identifier must be a string",
-          "electionId_uuid": "Election identifier must be a valid UUID",
-          "email_string": "Email must be a string",
-          "email_nonempty": "Email must not be empty",
-          "email_email": "Email must be a valid email",
-          "emails_array": "Emails must be an array",
-          "emails_nonempty": "There must be at least one email",
-          "emails_unique": "Emails must be unique"
-        }
-      },
-      "voting_inspection": {
-        "given_votes": "Given votes",
-        "voters": "Voters",
-        "old_email": "Email to change",
-        "new_email": "New email",
-        "change_email": "Change email",
-        "email_changed": "Email changed",
-        "voting_aborted": "Voting aborted",
-        "voting_finished": "Voting finished",
-        "votes_polled": "Votes polled",
-        "email_already_exists": "Email already exists",
-        "error_updating_email": "Error updating email",
-        "mail_sending_failed": "Mail sending failed",
-        "election_not_found": "Election not found",
-        "not_everyone_voted": "Not everyone has voted",
-        "voter_not_found": "Voter not found",
-        "invalid_election_identifier": "Invalid election identifier",
-        "validation": {
-          "electionId_string": "Election identifier must be a string",
-          "electionId_uuid": "Election identifier must be a valid UUID",
-          "oldEmail_string": "Old email must be a string",
-          "oldEmail_nonempty": "Old email must not be empty",
-          "oldEmail_email": "Old email must be a valid email",
-          "newEmail_string": "New email must be a string",
-          "newEmail_nonempty": "New email must not be empty",
-          "newEmail_email": "New email must be a valid email"
-        }
-      }
-    }
-  },
-  "results": {
+  "ElectionResults": {
     "total_votes": "Votes",
     "non_empty_votes": "Non-empty votes",
     "export_csv": "Download ballots as CSV",
@@ -199,30 +136,184 @@
     "vote_count": "Votes",
     "voter_count": "Voters",
     "result": "Result",
-    "invalid_result": "Ineligible result. The election will be repeated.",
-    "election_not_found": "Election not found",
-    "invalid_close_election_data": "Invalid election data",
-    "validation": {
-      "electionId_string": "Election identifier must be a string",
-      "electionId_uuid": "Election identifier must be a valid UUID"
+    "invalid_result": "Ineligible result. The election will be repeated."
+  },
+  "ElectionForm": {
+    "election_title": "Title",
+    "description": "Description",
+    "seats": "Seats",
+    "new_candidate": "New candidate",
+    "add_candidate": "Add candidate",
+    "remove_candidate": "Remove candidate",
+    "candidates": "Candidates"
+  },
+  "actions": {
+    "vote": {
+      "action_status": {
+        "ballot_saved": "Your vote has been saved",
+        "voter_not_found": "Voter not found",
+        "voting_not_ongoing": "Voting is not ongoing",
+        "invalid_choices": "Invalid choices",
+        "voter_already_voted": "Voter has already voted",
+        "error_saving_ballot": "Error saving ballot"
+      },
+      "validation": {
+        "voterId_string": "Voter identifier must be a string",
+        "voterId_uuid": "Voter identifier must be a valid UUID",
+        "candidateId_string": "Candidate identifier must be a string",
+        "candidateId_uuid": "Candidate identifier must be a valid UUID",
+        "rank_number": "Rank must be a number",
+        "rank_min": "Rank must be at least 1",
+        "preference_object": "Preference must be an object",
+        "ballot_array": "Ballot must be an array",
+        "ranks_unique": "Ranks must be unique"
+      }
+    },
+    "changeEmail": {
+      "action_status": {
+        "email_changed": "Email changed",
+        "email_already_exists": "Email already exists",
+        "error_updating_email": "Error updating email",
+        "mail_sending_failed": "Mail sending failed",
+        "voter_not_found": "Voter not found"
+      },
+      "validation": {
+        "oldEmail_string": "Old email must be a string",
+        "oldEmail_nonempty": "Old email must not be empty",
+        "oldEmail_email": "Old email must be a valid email",
+        "newEmail_string": "New email must be a string",
+        "newEmail_nonempty": "New email must not be empty",
+        "newEmail_email": "New email must be a valid email"
+      }
+    },
+    "authenticate": {
+      "action_status": {
+        "login_successful": "Login successful",
+        "wrong_username_or_password": "Wrong username or password"
+      },
+      "validation": {
+        "username_string": "Username must be a string",
+        "username_nonempty": "Username must not be empty",
+        "password_string": "Password must be a string",
+        "password_nonempty": "Password must not be empty"
+      }
+    },
+    "startVoting": {
+      "action_status": {
+        "voting_started": "Voting started",
+        "mail_sending_failed": "Mail sending failed",
+        "election_not_found": "Election not found"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID",
+        "email_string": "Email must be a string",
+        "email_nonempty": "Email must not be empty",
+        "email_email": "Email must be a valid email",
+        "emails_array": "Emails must be an array",
+        "emails_nonempty": "There must be at least one email",
+        "emails_unique": "Emails must be unique",
+        "invalid_emails": "Not all emails are valid"
+      }
+    },
+    "startEditing": {
+      "action_status": {
+        "election_not_found": "Election not found",
+        "editing_started": "Editing started"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID"
+      }
+    },
+    "pollVotes": {
+      "action_status": {
+        "votes_polled": "Votes polled"
+      }
+    },
+    "endVoting": {
+      "action_status": {
+        "voting_finished": "Voting finished",
+        "election_not_found": "Election not found",
+        "not_everyone_voted": "Not everyone has voted"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID"
+      }
+    },
+    "editElection": {
+      "action_status": {
+        "election_edited": "Election edited",
+        "election_not_found": "Election not found"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID",
+        "title_string": "Title must be a string",
+        "title_nonempty": "Title must not be empty",
+        "description_string": "Description must be a string",
+        "description_nonempty": "Description must not be empty",
+        "seats_number": "Seats must be a number",
+        "seats_min": "Seats must be at least 1",
+        "candidate_string": "Candidate must be a string",
+        "candidate_nonempty": "Candidate must not be empty",
+        "candidates_array": "Candidates must be an array",
+        "candidates_nonempty": "There must be at least one candidate",
+        "candidates_geq_seats": "There must be at least as many candidates as there are seats"
+      }
+    },
+    "createElection": {
+      "action_status": {
+        "election_created": "Election created"
+      },
+      "validation": {
+        "title_string": "Title must be a string",
+        "title_nonempty": "Title must not be empty",
+        "description_string": "Description must be a string",
+        "description_nonempty": "Description must not be empty",
+        "seats_number": "Seats must be a number",
+        "seats_min": "Seats must be at least 1",
+        "candidate_string": "Candidate must be a string",
+        "candidate_nonempty": "Candidate must not be empty",
+        "candidates_array": "Candidates must be an array",
+        "candidates_nonempty": "There must be at least one candidate",
+        "candidates_geq_seats": "There must be at least as many candidates as there are seats"
+      }
+    },
+    "closeElection": {
+      "action_status": {
+        "election_closed": "Election closed",
+        "election_not_found": "Election not found"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID"
+      }
+    },
+    "cancelEditing": {
+      "action_status": {
+        "editing_cancelled": "Editing cancelled",
+        "election_not_found": "Election not found"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID"
+      }
+    },
+    "abortVoting": {
+      "action_status": {
+        "voting_aborted": "Voting aborted",
+        "election_not_found": "Election not found"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID"
+      }
     }
   },
-  "previous_results": {
-    "title": "Results",
-    "back_to_list": "Back to list",
-    "no_previous_results": "No previous results",
-    "no_previous_results_description": "There have been no elections held yet or their results have not been published.",
-    "not_found": {
-      "title": "Election not found",
-      "description": "Election not found. Check that you have used the correct link and try again. If the problem persists, please contact the chairperson or secretary.",
-      "back_to_frontpage": "Back to frontpage"
-    }
-  },
-  "error_boundary": {
-    "title": "An error occurred",
-    "message": "Reload the page and try again. If the error persists, please contact the chairperson or secretary.",
-    "error_message": "Error message",
-    "back_to_frontpage": "Back to frontpage",
-    "reload": "Reload"
+  "metadata": {
+    "title": "Voting Machine",
+    "description": "Guild of Physics e-voting system"
   }
 }

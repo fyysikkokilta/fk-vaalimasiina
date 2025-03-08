@@ -9,7 +9,7 @@ import type { AuditPageProps } from './page'
 
 export default function Audit({ election, ballots }: AuditPageProps) {
   const [search, setSearch] = useState('')
-  const t = useTranslations('voter.audit')
+  const t = useTranslations('Audit')
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.toLowerCase().trim()

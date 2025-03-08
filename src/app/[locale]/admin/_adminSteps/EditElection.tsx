@@ -6,8 +6,8 @@ import { useAction } from 'next-safe-action/hooks'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { cancelEditing } from '~/actions/admin/election/cancelEditing'
-import { editElection } from '~/actions/admin/election/editElection'
+import { cancelEditing } from '~/actions/admin/cancelEditing'
+import { editElection } from '~/actions/admin/editElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
 import { ElectionStep } from '~/settings/electionStepSettings'
@@ -26,7 +26,7 @@ export default function EditElection({ election }: ElectionStepProps) {
     ]
   })
 
-  const t = useTranslations('admin.admin_main.new_election')
+  const t = useTranslations('EditElection')
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

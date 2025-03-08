@@ -10,7 +10,7 @@ import { db } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
 const createElectionSchema = async () => {
-  const t = await getTranslations('admin.admin_main.new_election.validation')
+  const t = await getTranslations('actions.createElection.validation')
   return z
     .object({
       title: z
@@ -41,7 +41,7 @@ export const createElection = actionClient
   .use(isAuthorizedMiddleware)
   .action(
     async ({ parsedInput: { title, description, seats, candidates } }) => {
-      const t = await getTranslations('admin.admin_main.new_election')
+      const t = await getTranslations('actions.createElection.action_status')
       return db.transaction(async (transaction) => {
         const elections = await transaction
           .insert(electionsTable)

@@ -3,8 +3,8 @@
 import { useTranslations } from 'next-intl'
 import { InferSafeActionFnInput } from 'next-safe-action'
 
-import type { createElection } from '~/actions/admin/election/createElection'
-import type { editElection } from '~/actions/admin/election/editElection'
+import type { createElection } from '~/actions/admin/createElection'
+import type { editElection } from '~/actions/admin/editElection'
 
 export default function ElectionForm({
   result,
@@ -41,7 +41,7 @@ export default function ElectionForm({
   addCandidate: (candidateName: string) => void
   removeCandidate: (index: number) => void
 }) {
-  const t = useTranslations('admin.admin_main.new_election')
+  const t = useTranslations('ElectionForm')
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

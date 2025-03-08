@@ -1,5 +1,6 @@
 import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { cookies } from 'next/headers'
+import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
@@ -64,12 +65,12 @@ const getAdminElection = async () => {
 export default async function AdminPage({
   params
 }: {
-  params: Promise<{ locale: string }>
+  params: Promise<{ locale: Locale }>
 }) {
   const { locale } = await params
   setRequestLocale(locale)
 
-  const t = await getTranslations('admin')
+  const t = await getTranslations('Admin')
 
   const cookieStore = await cookies()
   const value = cookieStore.get('admin-token')?.value

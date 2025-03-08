@@ -4,7 +4,7 @@ import TitleWrapper from '~/components/TitleWrapper'
 import { Link } from '~/i18n/navigation'
 
 export default async function VoterNotFound() {
-  const t = await getTranslations('voter.vote.not_found')
+  const t = await getTranslations('VoterNotFound')
 
   return (
     <TitleWrapper title={t('title')}>

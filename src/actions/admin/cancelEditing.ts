@@ -10,8 +10,8 @@ import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
 
-const closeElectionSchema = async () => {
-  const t = await getTranslations('results.validation')
+const cancelEditingSchema = async () => {
+  const t = await getTranslations('actions.cancelEditing.validation')
   return z.object({
     electionId: z
       .string({
@@ -21,33 +21,27 @@ const closeElectionSchema = async () => {
   })
 }
 
-export const closeElection = actionClient
-  .schema(closeElectionSchema)
+export const cancelEditing = actionClient
+  .schema(cancelEditingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getTranslations('results')
+    const t = await getTranslations('actions.cancelEditing.action_status')
     const statuses = await db
       .update(electionsTable)
-      .set({
-        status: 'CLOSED'
-      })
+      .set({ status: 'CREATED' })
       .where(
         and(
           eq(electionsTable.electionId, electionId),
-          eq(electionsTable.status, 'FINISHED')
+          eq(electionsTable.status, 'UPDATING')
         )
       )
-      .returning({
-        status: electionsTable.status
-      })
+      .returning({ status: electionsTable.status })
 
     if (!statuses[0]) {
       throw new ActionError(t('election_not_found'))
     }
 
     revalidateTag('admin-election')
-    revalidateTag('elections')
-    revalidateTag('auditable-election')
 
-    return { message: t('election_closed') }
+    return { message: t('editing_cancelled') }
   })

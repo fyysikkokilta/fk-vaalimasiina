@@ -10,8 +10,8 @@ import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
 
-const cancelEditingSchema = async () => {
-  const t = await getTranslations('admin.admin_main.new_election.validation')
+const startEditingSchema = async () => {
+  const t = await getTranslations('actions.startEditing.validation')
   return z.object({
     electionId: z
       .string({
@@ -21,18 +21,18 @@ const cancelEditingSchema = async () => {
   })
 }
 
-export const cancelEditing = actionClient
-  .schema(cancelEditingSchema)
+export const startEditing = actionClient
+  .schema(startEditingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getTranslations('admin.admin_main.new_election')
+    const t = await getTranslations('actions.startEditing.action_status')
     const statuses = await db
       .update(electionsTable)
-      .set({ status: 'CREATED' })
+      .set({ status: 'UPDATING' })
       .where(
         and(
           eq(electionsTable.electionId, electionId),
-          eq(electionsTable.status, 'UPDATING')
+          eq(electionsTable.status, 'CREATED')
         )
       )
       .returning({ status: electionsTable.status })
@@ -43,5 +43,5 @@ export const cancelEditing = actionClient
 
     revalidateTag('admin-election')
 
-    return { message: t('cancelled_editing') }
+    return { message: t('editing_started') }
   })

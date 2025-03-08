@@ -6,7 +6,7 @@ import { useAction } from 'next-safe-action/hooks'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { createElection } from '~/actions/admin/election/createElection'
+import { createElection } from '~/actions/admin/createElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
 import { ElectionStep } from '~/settings/electionStepSettings'
@@ -22,7 +22,7 @@ export default function NewElection() {
     candidates: [] as unknown as [string, ...string[]]
   })
 
-  const t = useTranslations('admin.admin_main.new_election')
+  const t = useTranslations('NewElection')
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

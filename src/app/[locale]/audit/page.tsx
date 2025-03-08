@@ -1,4 +1,5 @@
 import { unstable_cacheTag as cacheTag } from 'next/cache'
+import { Locale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 
 import { db } from '~/db'
@@ -49,7 +50,7 @@ const findFinishedElection = async () => {
 export default async function AuditPage({
   params
 }: {
-  params: Promise<{ locale: string }>
+  params: Promise<{ locale: Locale }>
 }) {
   const { locale } = await params
   setRequestLocale(locale)

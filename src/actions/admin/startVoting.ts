@@ -13,9 +13,14 @@ import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 
 const startVotingSchame = async () => {
-  const t = await getTranslations(
-    'admin.admin_main.preview_election.validation'
-  )
+  const t = await getTranslations('actions.startVoting.validation')
+  const emailSchema = z
+    .string({
+      message: t('email_string')
+    })
+    .nonempty({ message: t('email_nonempty') })
+    .email({ message: t('email_email') })
+
   return z.object({
     electionId: z
       .string({
@@ -23,18 +28,27 @@ const startVotingSchame = async () => {
       })
       .uuid({ message: t('electionId_uuid') }),
     emails: z
-      .array(
-        z
-          .string({
-            message: t('email_string')
-          })
-          .nonempty({ message: t('email_nonempty') })
-          .email({ message: t('email_email') }),
-        {
-          message: t('emails_array')
-        }
-      )
+      .array(emailSchema, { message: t('emails_array') })
       .nonempty({ message: t('emails_nonempty') })
+      .superRefine((items, ctx) => {
+        const errors = items
+          .map((item, index) => {
+            const result = emailSchema.safeParse(item)
+            if (!result.success) {
+              return { index, errors: result.error.format() }
+            }
+            return null
+          })
+          .filter(Boolean)
+
+        if (errors.length > 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: t('invalid_emails'),
+            path: []
+          })
+        }
+      })
       .refine((items) => new Set(items).size === items.length, {
         message: t('emails_unique')
       })
@@ -45,7 +59,7 @@ export const startVoting = actionClient
   .schema(startVotingSchame)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId, emails } }) => {
-    const t = await getTranslations('admin.admin_main.preview_election')
+    const t = await getTranslations('actions.startVoting.action_status')
     return db.transaction(async (transaction) => {
       const elections = await transaction
         .update(electionsTable)

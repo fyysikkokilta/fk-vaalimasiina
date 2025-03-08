@@ -19,7 +19,7 @@ function InitialVotes({
   election: Election
   votingResult: ValidVotingResult
 }) {
-  const t = useTranslations('results')
+  const t = useTranslations('ElectionResults')
   return (
     <div
       id="initial_votes"
@@ -77,7 +77,7 @@ function RoundResult({
   tieBreaker?: boolean | undefined
   emptyVotes: number
 }) {
-  const t = useTranslations('results')
+  const t = useTranslations('ElectionResults')
 
   const roundToTwoDecimals = (num: number) =>
     Math.round((num + Number.EPSILON) * 100) / 100
@@ -167,7 +167,7 @@ function RoundResult({
 }
 
 function Winners({ winners }: { winners: ValidVotingResult['winners'] }) {
-  const t = useTranslations('results')
+  const t = useTranslations('ElectionResults')
   return (
     <div
       id="chosen_candidates"
@@ -206,7 +206,7 @@ export default function ElectionResults({
   voterCount: number
 }) {
   const [currentRound, setCurrentRound] = useState(0)
-  const t = useTranslations('results')
+  const t = useTranslations('ElectionResults')
 
   const votingResult = calculateSTVResult(election, ballots, voterCount)
 

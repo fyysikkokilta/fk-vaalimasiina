@@ -1,5 +1,6 @@
 import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { notFound } from 'next/navigation'
+import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import React from 'react'
 
@@ -73,10 +74,10 @@ const getElection = async (electionId: string) => {
   return { election: electionWithoutVoters, ballots, voterCount }
 }
 
-export default async function ElectionPage({
+export default async function Election({
   params
 }: {
-  params: Promise<{ locale: string; electionId: string }>
+  params: Promise<{ locale: Locale; electionId: string }>
 }) {
   const { locale, electionId } = await params
   setRequestLocale(locale)
@@ -86,7 +87,7 @@ export default async function ElectionPage({
   }
 
   const electionBallotsVoterCount = await getElection(electionId)
-  const t = await getTranslations('previous_results')
+  const t = await getTranslations('Election')
 
   if (!electionBallotsVoterCount) {
     notFound()

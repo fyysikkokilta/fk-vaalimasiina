@@ -11,7 +11,7 @@ import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
 import { actionClient, ActionError } from './safe-action'
 
 const voteSchema = async () => {
-  const t = await getTranslations('voter.vote.validation')
+  const t = await getTranslations('actions.vote.validation')
   return z.object({
     voterId: z
       .string({
@@ -57,7 +57,7 @@ const voteSchema = async () => {
 export const vote = actionClient
   .schema(voteSchema)
   .action(async ({ parsedInput: { voterId, ballot } }) => {
-    const t = await getTranslations('voter.vote')
+    const t = await getTranslations('actions.vote.action_status')
     const validVoter = await db.query.votersTable.findFirst({
       where: (votersTable, { eq }) => eq(votersTable.voterId, voterId),
       with: {

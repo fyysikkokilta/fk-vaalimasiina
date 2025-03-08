@@ -1,19 +1,33 @@
 import '../globals.css'
 
-import { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import { hasLocale, NextIntlClientProvider } from 'next-intl'
-import { getMessages, setRequestLocale } from 'next-intl/server'
+import { hasLocale, Locale, NextIntlClientProvider } from 'next-intl'
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale
+} from 'next-intl/server'
 import { Flip, ToastContainer } from 'react-toastify'
 
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import { routing } from '~/i18n/routing'
 
-export const metadata: Metadata = {
-  title: 'Vaalimasiina',
-  description: 'Fyysikkokillan sähköinen äänestysjärjestelmä'
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: Locale }>
+}) {
+  const { locale } = await params
+  const t = await getTranslations({
+    locale,
+    namespace: 'metadata'
+  })
+  return {
+    title: t('title'),
+    description: t('description')
+  }
 }
 
 export function generateStaticParams() {

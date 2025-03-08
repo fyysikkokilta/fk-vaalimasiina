@@ -1,4 +1,5 @@
 import { unstable_cacheTag as cacheTag } from 'next/cache'
+import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import React from 'react'
 
@@ -14,16 +15,16 @@ const getElections = async () => {
   })
 }
 
-export default async function ElectionListPage({
+export default async function ElectionList({
   params
 }: {
-  params: Promise<{ locale: string }>
+  params: Promise<{ locale: Locale }>
 }) {
   const { locale } = await params
   setRequestLocale(locale)
 
   const elections = await getElections()
-  const t = await getTranslations('previous_results')
+  const t = await getTranslations('ElectionList')
 
   return (
     <TitleWrapper title={t('title')}>

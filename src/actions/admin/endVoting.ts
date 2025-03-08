@@ -11,9 +11,7 @@ import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 
 const endVotingSchema = async () => {
-  const t = await getTranslations(
-    'admin.admin_main.voting_inspection.validation'
-  )
+  const t = await getTranslations('actions.endVoting.validation')
   return z.object({
     electionId: z
       .string({
@@ -27,7 +25,7 @@ export const endVoting = actionClient
   .schema(endVotingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getTranslations('admin.admin_main.voting_inspection')
+    const t = await getTranslations('actions.endVoting.action_status')
     return db.transaction(async (transaction) => {
       const voters = await transaction.query.votersTable.findMany({
         with: {
