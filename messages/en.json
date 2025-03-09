@@ -148,6 +148,9 @@
     "candidates": "Candidates"
   },
   "actions": {
+    "isAuthorized": {
+      "unauthorized": "Unauthorized"
+    },
     "vote": {
       "action_status": {
         "ballot_saved": "Your vote has been saved",

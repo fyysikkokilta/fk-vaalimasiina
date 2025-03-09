@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers'
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { MiddlewareResult } from 'next-safe-action'
 
 import { redirect } from '~/i18n/navigation'
@@ -17,6 +17,7 @@ export const isAuthorizedMiddleware = async ({
   const cookieStore = await cookies()
   const adminToken = cookieStore.get('admin-token')
   const authorized = isAuthorized(adminToken?.value)
+  const t = await getTranslations('actions.isAuthorized')
 
   if (!authorized) {
     const locale = await getLocale()
@@ -24,7 +25,7 @@ export const isAuthorizedMiddleware = async ({
       href: '/login',
       locale
     })
-    throw new ActionError('unauthorized')
+    throw new ActionError(t('unauthorized'))
   }
   return next()
 }

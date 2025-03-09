@@ -148,6 +148,9 @@
     "candidates": "Ehdokkaat"
   },
   "actions": {
+    "isAuthorized": {
+      "unauthorized": "Ei oikeuksia"
+    },
     "vote": {
       "action_status": {
         "ballot_saved": "Äänesi on tallennettu",
