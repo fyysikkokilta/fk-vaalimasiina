@@ -1,6 +1,6 @@
 import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { Locale } from 'next-intl'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { db } from '~/db'
 
@@ -45,6 +45,32 @@ const findFinishedElection = async () => {
 
   const { ballots, ...electionWithoutVotes } = election
   return { election: electionWithoutVotes, ballots }
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: Locale }>
+}) {
+  const { locale } = await params
+  const t = await getTranslations({
+    locale,
+    namespace: 'metadata.audit'
+  })
+  const electionAndBallots = await findFinishedElection()
+  if (!electionAndBallots.election) {
+    return {
+      title: t('title'),
+      description: t('description_no_election')
+    }
+  }
+  const {
+    election: { title }
+  } = electionAndBallots
+  return {
+    title: t('title'),
+    description: t('description', { title })
+  }
 }
 
 export default async function AuditPage({

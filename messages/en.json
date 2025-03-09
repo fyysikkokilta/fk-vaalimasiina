@@ -317,6 +317,31 @@
   },
   "metadata": {
     "title": "Voting Machine",
-    "description": "Guild of Physics e-voting system"
+    "description": "Guild of Physics e-voting system",
+    "vote": {
+      "title": "Voting",
+      "description": "Vote in the election"
+    },
+    "login": {
+      "title": "Log in",
+      "description": "Log in to admin"
+    },
+    "elections": {
+      "title": "Results",
+      "description": "View the results of previous elections"
+    },
+    "election": {
+      "title": "{title}",
+      "description": "View the results of the election {title}"
+    },
+    "audit": {
+      "title": "Auditing",
+      "description": "Audit the election {title}",
+      "description_no_election": "Audit the election"
+    },
+    "admin": {
+      "title": "Admin",
+      "description": "Manage the elections"
+    }
   }
 }

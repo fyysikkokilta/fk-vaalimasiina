@@ -317,6 +317,31 @@
   },
   "metadata": {
     "title": "Vaalimasiina",
-    "description": "Fyysikkokillan sähköinen äänestysjärjestelmä"
+    "description": "Fyysikkokillan sähköinen äänestysjärjestelmä",
+    "vote": {
+      "title": "Äänestäminen",
+      "description": "Äänestä vaaleissa"
+    },
+    "login": {
+      "title": "Kirjautuminen",
+      "description": "Kirjaudu hallintapaneeliin"
+    },
+    "elections": {
+      "title": "Tulokset",
+      "description": "Katso aiempien vaalien tulokset"
+    },
+    "election": {
+      "title": "{title}",
+      "description": "Katso vaalin {title} tulokset"
+    },
+    "audit": {
+      "title": "Auditointi",
+      "description": "Tarkasta vaalia {title}",
+      "description_no_election": "Tarkasta vaalia"
+    },
+    "admin": {
+      "title": "Hallinta",
+      "description": "Hallinnoi vaaleja"
+    }
   }
 }

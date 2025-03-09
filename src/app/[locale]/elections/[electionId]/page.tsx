@@ -74,6 +74,31 @@ const getElection = async (electionId: string) => {
   return { election: electionWithoutVoters, ballots, voterCount }
 }
 
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: Locale; electionId: string }>
+}) {
+  const { locale, electionId } = await params
+  const t = await getTranslations({
+    locale,
+    namespace: 'metadata.election'
+  })
+  const electionBallotsVoterCount = await getElection(electionId)
+
+  if (!electionBallotsVoterCount) {
+    return null
+  }
+
+  const {
+    election: { title }
+  } = electionBallotsVoterCount
+  return {
+    title: t('title', { title }),
+    description: t('description', { title })
+  }
+}
+
 export default async function Election({
   params
 }: {

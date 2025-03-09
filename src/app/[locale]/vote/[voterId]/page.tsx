@@ -1,7 +1,7 @@
 import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { Locale } from 'next-intl'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { db } from '~/db'
 import isUUID from '~/utils/isUUID'
@@ -39,6 +39,22 @@ const getVoter = async (voterId: string) => {
   }
   const { election, ...voterWithoutElections } = voter
   return { voter: voterWithoutElections, election }
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: Locale }>
+}) {
+  const { locale } = await params
+  const t = await getTranslations({
+    locale,
+    namespace: 'metadata.vote'
+  })
+  return {
+    title: t('title'),
+    description: t('description')
+  }
 }
 
 export default async function VotePage({

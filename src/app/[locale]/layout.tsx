@@ -14,6 +14,8 @@ import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import { routing } from '~/i18n/routing'
 
+const mainUrl = process.env.BASE_URL || 'https://vaalit.fyysikkokilta.fi'
+
 export async function generateMetadata({
   params
 }: {
@@ -25,8 +27,15 @@ export async function generateMetadata({
     namespace: 'metadata'
   })
   return {
-    title: t('title'),
-    description: t('description')
+    title: {
+      template: `%s | ${t('title')}`,
+      default: t('title')
+    },
+    description: t('description'),
+    metadataBase: new URL(mainUrl),
+    generator: 'Next.js',
+    applicationName: t('title'),
+    creator: 'Fyysikkokilta ry'
   }
 }
 
