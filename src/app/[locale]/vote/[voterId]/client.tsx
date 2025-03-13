@@ -142,7 +142,7 @@ export default function Vote({ election, voter }: VotePageProps) {
   if (!election || election.status !== 'ONGOING') {
     return (
       <TitleWrapper title={t('title')}>
-        <div className="bg-fk-yellow text-fk-black flex flex-col items-center rounded-lg text-center">
+        <div className="text-fk-black flex flex-col items-center rounded-lg text-center">
           <h2 className="mb-3 text-xl font-semibold">
             {t('election_not_ongoing')}
           </h2>
