@@ -1,5 +1,4 @@
 import { render } from '@react-email/components'
-import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 
 import EmailTemplate from './Email'

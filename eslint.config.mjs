@@ -1,7 +1,6 @@
 import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
-import reactCompiler from 'eslint-plugin-react-compiler'
 import globals from 'globals'
 import tsParser from '@typescript-eslint/parser'
 
@@ -17,12 +16,11 @@ const eslintConfig = [
       'next',
       'eslint:recommended',
       'plugin:@typescript-eslint/recommended-type-checked',
-      'plugin:prettier/recommended',
+      'plugin:prettier/recommended'
     ]
   }),
   {
     plugins: {
-      'react-compiler': reactCompiler,
       'simple-import-sort': simpleImportSort
     },
 
@@ -40,7 +38,6 @@ const eslintConfig = [
     },
 
     rules: {
-      'react-compiler/react-compiler': 'error',
       '@typescript-eslint/no-misused-promises': [
         'error',
         { checksVoidReturn: false }
@@ -56,7 +53,12 @@ const eslintConfig = [
         },
         {
           name: 'next/navigation',
-          importNames: ['redirect', 'permanentRedirect', 'useRouter', 'usePathname'],
+          importNames: [
+            'redirect',
+            'permanentRedirect',
+            'useRouter',
+            'usePathname'
+          ],
           message: 'Please import from `@/i18n/routing` instead.'
         }
       ]

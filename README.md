@@ -2,12 +2,12 @@
 
 ## Setup
 
-0. Have node and npm installed
+0. Have node and pnpm installed
 1. Clone the repository
-2. Install dependencies with `npm install`
+2. Install dependencies with `pnpm install`
 3. Setup a Postgres database and add the environment variables to .env
-4. Setup the database by running migrations using `npm run db:migrate`
-5. Start the project with `npm run dev`
+4. Setup the database by running migrations using `pnpm db:migrate`
+5. Start the project with `pnpm dev`
 
 ## Docker
 
@@ -19,11 +19,11 @@ Production docker setup can be setupped with `docker-compose -f .\docker-compose
 
 ## Migrations
 
-Migrations can be run with command `npm run db:migrate`. Database environment variables need to be set.
+Migrations can be run with command `pnpm db:migrate`. Database environment variables need to be set.
 
-A new migration can be create using `npm run db:generate-migration`.
+A new migration can be create using `pnpm db:generate-migration`.
 
-Other Drizzle features can be accessed using `npx drizzle-kit [command]`.
+Other Drizzle features can be accessed using `pnpx drizzle-kit [command]`.
 
 ## Voting System Overview
 

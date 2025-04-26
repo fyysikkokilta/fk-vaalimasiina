@@ -11,8 +11,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY .eslint* package.json package-lock.json ./
-RUN npm set cache .npm
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -25,8 +24,8 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN npm run build
-RUN npm run db:migrate
+RUN pnpm run build
+RUN pnpm run db:migrate
 
 # Production image, copy all the files and run next
 FROM base AS runner
