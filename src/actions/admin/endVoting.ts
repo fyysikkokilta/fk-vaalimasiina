@@ -65,6 +65,7 @@ export const endVoting = actionClient
 
       revalidateTag('admin-election')
       revalidateTag('auditable-election')
+      revalidateTag('voters')
 
       return { message: t('voting_finished') }
     })

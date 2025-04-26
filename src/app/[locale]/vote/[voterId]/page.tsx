@@ -10,7 +10,7 @@ import Vote from './client'
 
 const getVoter = async (voterId: string) => {
   'use cache'
-  cacheTag(`voter-${voterId}`)
+  cacheTag(`voter-${voterId}`, 'voters')
   const voter = await db.query.votersTable.findFirst({
     columns: {
       voterId: true
