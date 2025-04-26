@@ -3,11 +3,7 @@ import '../globals.css'
 import { Roboto } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { hasLocale, Locale, NextIntlClientProvider } from 'next-intl'
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale
-} from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Flip, ToastContainer } from 'react-toastify'
 
 import Footer from '~/components/Footer'
@@ -65,18 +61,11 @@ export default async function RootLayout({
 
   setRequestLocale(locale)
 
-  const messages = await getMessages()
-
   return (
     <html lang={locale} className={`${roboto.variable} ${roboto.className}`}>
       {/*<Script src="https://unpkg.com/react-scan/dist/auto.global.js" />*/}
       <body className="bg-fk-yellow text-fk-black flex h-dvh flex-col">
-        <NextIntlClientProvider
-          messages={messages}
-          timeZone="Europe/Helsinki"
-          now={new Date()}
-          locale={locale}
-        >
+        <NextIntlClientProvider>
           <Header />
           <main className="m-5 flex flex-1 flex-shrink-0 flex-col items-center">
             <div className="fii-background flex max-w-5xl justify-center rounded-lg bg-white py-4 shadow-md">

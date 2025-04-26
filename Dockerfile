@@ -25,7 +25,6 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN pnpm run build
-RUN pnpm run db:migrate
 
 # Production image, copy all the files and run next
 FROM base AS runner
