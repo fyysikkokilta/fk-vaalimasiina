@@ -3,7 +3,7 @@ FROM node:22-alpine
 WORKDIR /opt/vaalimasiina
 
 # Copy configuration files
-COPY .eslint* package.json package-lock.json ./
+COPY .eslint* package.json pnpm-lock.yaml ./
 
 # Set environment variables
 ENV NODE_ENV=development \
