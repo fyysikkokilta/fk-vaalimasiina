@@ -1,7 +1,7 @@
 'use server'
 
 import { and, eq } from 'drizzle-orm'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
@@ -45,9 +45,9 @@ export const closeElection = actionClient
       throw new ActionError(t('election_not_found'))
     }
 
-    revalidateTag('admin-election')
-    revalidateTag('elections')
-    revalidateTag('auditable-election')
+    revalidatePath('/[locale]/elections', 'page')
+    revalidatePath('/[locale]/audit', 'page')
+    revalidatePath('/[locale]/admin', 'page')
 
     return { message: t('election_closed') }
   })

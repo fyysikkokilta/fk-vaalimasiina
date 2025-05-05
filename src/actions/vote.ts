@@ -1,11 +1,12 @@
 'use server'
 
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
 import { db } from '~/db'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
+import { routing } from '~/i18n/routing'
 import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
 
 import { actionClient, ActionError } from './safe-action'
@@ -119,7 +120,9 @@ export const vote = actionClient
 
         return ballots[0].ballotId
       })
-      revalidateTag(`voter-${voterId}`)
+      routing.locales.forEach((locale) => {
+        revalidatePath(`/${locale}/vote/${voterId}`)
+      })
       return { message: t('ballot_saved'), ballotId }
     } catch (error) {
       if (isUniqueConstraintError(error)) {

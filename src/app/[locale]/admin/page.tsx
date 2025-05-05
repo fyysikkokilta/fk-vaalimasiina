@@ -1,4 +1,3 @@
-import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { cookies } from 'next/headers'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -11,8 +10,6 @@ import isAuthorized from '~/utils/isAuthorized'
 import Admin from './client'
 
 const getAdminElection = async () => {
-  'use cache'
-  cacheTag('admin-election')
   const elections = await db.query.electionsTable.findMany({
     where: (electionsTable, { eq, not }) =>
       not(eq(electionsTable.status, 'CLOSED')),

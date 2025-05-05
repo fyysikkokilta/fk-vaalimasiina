@@ -1,4 +1,3 @@
-import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -8,9 +7,12 @@ import isUUID from '~/utils/isUUID'
 
 import Vote from './client'
 
+export const generateStaticParams = () => {
+  // Generate all paths statically when first visited
+  return []
+}
+
 const getVoter = async (voterId: string) => {
-  'use cache'
-  cacheTag(`voter-${voterId}`, 'voters')
   const voter = await db.query.votersTable.findFirst({
     columns: {
       voterId: true

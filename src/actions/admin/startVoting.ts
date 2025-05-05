@@ -2,7 +2,7 @@
 
 import { createHash } from 'crypto'
 import { and, eq } from 'drizzle-orm'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
@@ -106,7 +106,8 @@ export const startVoting = actionClient
         throw new ActionError(t('mail_sending_failed'))
       }
 
-      revalidateTag('admin-election')
+      revalidatePath('/[locale]/vote/[voterId]', 'page')
+      revalidatePath('/[locale]/admin', 'page')
 
       return { message: t('voting_started') }
     })

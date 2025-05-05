@@ -1,4 +1,3 @@
-import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
@@ -7,8 +6,6 @@ import { db } from '~/db'
 import Audit from './client'
 
 const findFinishedElection = async () => {
-  'use cache'
-  cacheTag('auditable-election')
   const election = await db.query.electionsTable.findFirst({
     columns: {
       status: false

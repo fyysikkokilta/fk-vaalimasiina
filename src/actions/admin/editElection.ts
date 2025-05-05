@@ -1,7 +1,7 @@
 'use server'
 
 import { and, eq } from 'drizzle-orm'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
@@ -84,7 +84,7 @@ export const editElection = actionClient
           }))
         )
 
-        revalidateTag('admin-election')
+        revalidatePath('/[locale]/admin', 'page')
 
         return { message: t('election_edited') }
       })

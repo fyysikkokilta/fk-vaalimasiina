@@ -1,4 +1,4 @@
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
@@ -6,11 +6,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  const { tags } = (await req.json()) as { tags: string[] }
-  if (!tags) return NextResponse.json({ error: 'Missing tag' }, { status: 400 })
+  const { paths } = (await req.json()) as {
+    paths: string[]
+  }
+  if (!paths)
+    return NextResponse.json({ error: 'Missing path' }, { status: 400 })
 
-  tags.forEach((tag) => revalidateTag(tag))
-  return NextResponse.json({ message: `Revalidated tag: ${tags.join(', ')}` })
+  paths.forEach((path) => revalidatePath(path, 'page'))
+  return NextResponse.json({
+    message: `Revalidated path: ${paths.join(', ')}`
+  })
 }
 
 export function GET() {

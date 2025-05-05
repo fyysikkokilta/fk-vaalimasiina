@@ -1,7 +1,7 @@
 'use server'
 
 import { and, eq } from 'drizzle-orm'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
@@ -53,7 +53,8 @@ export const abortVoting = actionClient
       throw new ActionError(t('election_not_found'))
     }
 
-    revalidateTag('admin-election')
+    revalidatePath('/[locale]/vote/[voterId]', 'page')
+    revalidatePath('/[locale]/admin', 'page')
 
     return { message: t('voting_aborted') }
   })

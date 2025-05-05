@@ -1,7 +1,7 @@
 'use server'
 
 import { and, eq, sql } from 'drizzle-orm'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
@@ -63,9 +63,9 @@ export const endVoting = actionClient
         })
         .where(eq(votersTable.electionId, electionId))
 
-      revalidateTag('admin-election')
-      revalidateTag('auditable-election')
-      revalidateTag('voters')
+      revalidatePath('/[locale]/audit', 'page')
+      revalidatePath('/[locale]/vote/[voterId]', 'page')
+      revalidatePath('/[locale]/admin', 'page')
 
       return { message: t('voting_finished') }
     })

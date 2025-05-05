@@ -1,6 +1,6 @@
 'use server'
 
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
@@ -69,7 +69,7 @@ export const createElection = actionClient
             name: candidatesTable.name
           })
 
-        revalidateTag('admin-election')
+        revalidatePath('/[locale]/admin', 'page')
 
         return { message: t('election_created') }
       })

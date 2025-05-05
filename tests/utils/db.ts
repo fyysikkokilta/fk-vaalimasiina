@@ -16,7 +16,9 @@ export type Vote = Ballot['votes'][number]
 
 export const resetDatabase = async (request: APIRequestContext) => {
   await request.post('/api/revalidate', {
-    data: { tags: ['admin-election', 'auditable-election', 'elections'] }
+    data: {
+      paths: ['/[locale]/elections', '/[locale]/audit', '/[locale]/admin']
+    }
   })
   return clearTables()
 }
@@ -32,7 +34,9 @@ export const insertElection = async (
   request: APIRequestContext
 ) => {
   await request.post('/api/revalidate', {
-    data: { tags: ['admin-election', 'auditable-election', 'elections'] }
+    data: {
+      paths: ['/[locale]/elections', '/[locale]/audit', '/[locale]/admin']
+    }
   })
   return createElection(data)
 }
@@ -43,7 +47,9 @@ export const changeElectionStatus = async (
   request: APIRequestContext
 ) => {
   await request.post('/api/revalidate', {
-    data: { tags: ['admin-election', 'auditable-election', 'elections'] }
+    data: {
+      paths: ['/[locale]/elections', '/[locale]/audit', '/[locale]/admin']
+    }
   })
   return changeStatus(electionId, status)
 }

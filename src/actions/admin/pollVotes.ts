@@ -1,6 +1,6 @@
 'use server'
 
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
@@ -10,6 +10,6 @@ export const pollVotes = actionClient
   .use(isAuthorizedMiddleware)
   .action(async () => {
     const t = await getTranslations('actions.pollVotes.action_status')
-    revalidateTag('admin-election')
+    revalidatePath('/[locale]/admin', 'page')
     return { message: t('votes_polled') }
   })

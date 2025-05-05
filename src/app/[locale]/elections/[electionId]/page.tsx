@@ -1,4 +1,3 @@
-import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -22,8 +21,6 @@ export const generateStaticParams = async () => {
 }
 
 const getElection = async (electionId: string) => {
-  'use cache'
-  cacheTag(`election-${electionId}`)
   const election = await db.query.electionsTable.findFirst({
     columns: {
       status: false

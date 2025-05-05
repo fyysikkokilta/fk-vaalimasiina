@@ -1,4 +1,3 @@
-import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import React from 'react'
@@ -8,8 +7,6 @@ import { db } from '~/db'
 import { Link } from '~/i18n/navigation'
 
 const getElections = async () => {
-  'use cache'
-  cacheTag('elections')
   return db.query.electionsTable.findMany({
     where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED')
   })
