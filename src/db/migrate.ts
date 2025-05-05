@@ -2,7 +2,7 @@ import 'dotenv/config'
 
 import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
-import { resolve } from 'path'
+import path from 'path'
 import postgres from 'postgres'
 
 void (async () => {
@@ -17,7 +17,7 @@ void (async () => {
     max: 1
   })
   await migrate(drizzle(migrationClient), {
-    migrationsFolder: resolve('src/drizzle')
+    migrationsFolder: path.join(process.cwd(), 'src/drizzle')
   })
   await migrationClient.end()
   console.log('Database migrated!')
