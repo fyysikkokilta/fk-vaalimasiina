@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import React from 'react'
 
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
@@ -17,7 +16,10 @@ export const generateStaticParams = async () => {
     }
   })
 
-  return elections
+  // If there are no elections, return a dummy election
+  // Currently it seems that empty array causes the route to not work at all
+  // What happens is that even valid electionId gives 500 error
+  return elections.length > 0 ? elections : [{ electionId: 'electionId' }]
 }
 
 const getElection = async (electionId: string) => {
