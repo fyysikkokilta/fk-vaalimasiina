@@ -8,7 +8,7 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 
@@ -60,7 +60,7 @@ export const startVoting = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId, emails } }) => {
     const t = await getTranslations('actions.startVoting.action_status')
-    return db.transaction(async (transaction) => {
+    return getDb().transaction(async (transaction) => {
       const elections = await transaction
         .update(electionsTable)
         .set({ status: 'ONGOING' })

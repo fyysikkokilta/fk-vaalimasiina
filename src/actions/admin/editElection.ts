@@ -7,7 +7,7 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
 const editElectionSchema = async () => {
@@ -50,7 +50,7 @@ export const editElection = actionClient
       parsedInput: { electionId, title, description, seats, candidates }
     }) => {
       const t = await getTranslations('actions.editElection.action_status')
-      return db.transaction(async (transaction) => {
+      return getDb().transaction(async (transaction) => {
         const elections = await transaction
           .update(electionsTable)
           .set({

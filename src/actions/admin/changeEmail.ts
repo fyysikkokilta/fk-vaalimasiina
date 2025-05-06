@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
@@ -45,7 +45,7 @@ export const changeEmail = actionClient
     const hashedOldEmail = createHash('sha256').update(oldEmail).digest('hex')
     const hashedNewEmail = createHash('sha256').update(newEmail).digest('hex')
     try {
-      const voterElectionPairs = await db
+      const voterElectionPairs = await getDb()
         .update(votersTable)
         .set({ email: hashedNewEmail })
         .from(electionsTable)

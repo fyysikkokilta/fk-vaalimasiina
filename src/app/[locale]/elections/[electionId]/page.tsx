@@ -4,12 +4,12 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
 export const generateStaticParams = async () => {
-  const elections = await db.query.electionsTable.findMany({
+  const elections = await getDb().query.electionsTable.findMany({
     where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED'),
     columns: {
       electionId: true
@@ -23,7 +23,7 @@ export const generateStaticParams = async () => {
 }
 
 const getElection = async (electionId: string) => {
-  const election = await db.query.electionsTable.findFirst({
+  const election = await getDb().query.electionsTable.findFirst({
     columns: {
       status: false
     },

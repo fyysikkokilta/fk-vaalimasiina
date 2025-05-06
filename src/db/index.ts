@@ -1,24 +1,24 @@
 import 'dotenv/config'
 
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+import { drizzle } from 'drizzle-orm/node-postgres'
+import { Pool } from 'pg'
+import { cache } from 'react'
 
 import * as relations from './relations'
 import * as schema from './schema'
 
-// You can specify any property from the node-postgres connection options
-export const client = postgres({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-})
-
-export const db = drizzle(client, {
-  schema: {
-    ...schema,
-    ...relations
-  },
-  logger: process.env.NODE_ENV === 'development'
+export const getDb = cache(() => {
+  const pool = new Pool({
+    connectionString: process.env.DB_URL,
+    // You don't want to reuse the same connection for multiple requests
+    maxUses: 1
+  })
+  return drizzle({
+    client: pool,
+    schema: {
+      ...schema,
+      ...relations
+    },
+    logger: process.env.NODE_ENV === 'development'
+  })
 })

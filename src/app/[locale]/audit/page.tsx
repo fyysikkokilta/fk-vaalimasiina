@@ -1,12 +1,12 @@
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
-import { db } from '~/db'
+import { getDb } from '~/db'
 
 import Audit from './client'
 
 const findFinishedElection = async () => {
-  const election = await db.query.electionsTable.findFirst({
+  const election = await getDb().query.electionsTable.findFirst({
     columns: {
       status: false
     },

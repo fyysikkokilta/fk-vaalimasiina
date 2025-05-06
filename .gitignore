@@ -12,12 +12,17 @@ dist
 dist-ssr
 data
 *.local
-.env
 stats.html
 tsconfig.tsbuildinfo
 
+.env
+.dev.vars
+
 .next
 next-env.d.ts
+
+.open-next
+.wrangler
 
 # Editor directories and files
 .vscode/*

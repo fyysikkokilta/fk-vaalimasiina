@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
 export const createElection = async ({
@@ -16,7 +16,7 @@ export const createElection = async ({
   status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
   candidates: { name: string }[]
 }) => {
-  const election = await db.transaction(async (transaction) => {
+  const election = await getDb().transaction(async (transaction) => {
     const elections = await transaction
       .insert(electionsTable)
       .values([
@@ -49,7 +49,7 @@ export const changeStatus = async (
   electionId: string,
   status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 ) => {
-  const election = await db
+  const election = await getDb()
     .update(electionsTable)
     .set({
       status

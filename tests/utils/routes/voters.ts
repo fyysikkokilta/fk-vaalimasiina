@@ -1,10 +1,10 @@
 import { createHash } from 'node:crypto'
 
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { votersTable } from '~/db/schema'
 
 export const createVoters = async (electionId: string, emails: string[]) => {
-  return db
+  return getDb()
     .insert(votersTable)
     .values(
       emails.map((email) => ({

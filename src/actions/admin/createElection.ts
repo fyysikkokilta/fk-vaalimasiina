@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient } from '~/actions/safe-action'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
 const createElectionSchema = async () => {
@@ -42,7 +42,7 @@ export const createElection = actionClient
   .action(
     async ({ parsedInput: { title, description, seats, candidates } }) => {
       const t = await getTranslations('actions.createElection.action_status')
-      return db.transaction(async (transaction) => {
+      return getDb().transaction(async (transaction) => {
         const elections = await transaction
           .insert(electionsTable)
           .values([

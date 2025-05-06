@@ -1,4 +1,5 @@
 import bundleAnalyzer from '@next/bundle-analyzer'
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare'
 import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
@@ -9,10 +10,10 @@ const withBundleAnalyzer = bundleAnalyzer({
 const withNextIntl = createNextIntlPlugin()
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  //output: 'standalone',
   experimental: {
     reactCompiler: true,
-    useCache: true,
+    //useCache: true,
     serverActions: {
       allowedOrigins: [
         'localhost:8010',
@@ -40,3 +41,5 @@ const nextConfig: NextConfig = {
 }
 
 export default withBundleAnalyzer(withNextIntl(nextConfig))
+
+initOpenNextCloudflareForDev()

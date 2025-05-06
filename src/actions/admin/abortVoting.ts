@@ -7,7 +7,7 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { ballotsTable, electionsTable, votersTable } from '~/db/schema'
 
 const abortVotingSchema = async () => {
@@ -26,7 +26,7 @@ export const abortVoting = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.abortVoting.action_status')
-    const statuses = await db.transaction(async (transaction) => {
+    const statuses = await getDb().transaction(async (transaction) => {
       await transaction
         .delete(votersTable)
         .where(eq(votersTable.electionId, electionId))

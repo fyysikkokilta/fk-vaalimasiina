@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
-import { db } from '~/db'
+import { getDb } from '~/db'
 import isUUID from '~/utils/isUUID'
 
 import Vote from './client'
@@ -16,7 +16,7 @@ export const generateStaticParams = () => {
 }
 
 const getVoter = async (voterId: string) => {
-  const voter = await db.query.votersTable.findFirst({
+  const voter = await getDb().query.votersTable.findFirst({
     columns: {
       voterId: true
     },

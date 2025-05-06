@@ -3,14 +3,14 @@ import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { redirect } from '~/i18n/navigation'
 import isAuthorized from '~/utils/isAuthorized'
 
 import Admin from './client'
 
 const getAdminElection = async () => {
-  const elections = await db.query.electionsTable.findMany({
+  const elections = await getDb().query.electionsTable.findMany({
     where: (electionsTable, { eq, not }) =>
       not(eq(electionsTable.status, 'CLOSED')),
     with: {

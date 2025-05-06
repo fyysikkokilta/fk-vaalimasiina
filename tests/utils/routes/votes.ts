@@ -1,4 +1,4 @@
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 
 export const createVotes = async (
@@ -8,7 +8,7 @@ export const createVotes = async (
     ballot: { candidateId: string; rank: number }[]
   }[]
 ) => {
-  return db.transaction(async (transaction) => {
+  return getDb().transaction(async (transaction) => {
     const ballots = await transaction
       .insert(ballotsTable)
       .values(

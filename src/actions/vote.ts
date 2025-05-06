@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 import { routing } from '~/i18n/routing'
 import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
@@ -59,7 +59,7 @@ export const vote = actionClient
   .schema(voteSchema)
   .action(async ({ parsedInput: { voterId, ballot } }) => {
     const t = await getTranslations('actions.vote.action_status')
-    const validVoter = await db.query.votersTable.findFirst({
+    const validVoter = await getDb().query.votersTable.findFirst({
       where: (votersTable, { eq }) => eq(votersTable.voterId, voterId),
       with: {
         election: {
@@ -97,7 +97,7 @@ export const vote = actionClient
     }
 
     try {
-      const ballotId = await db.transaction(async (transaction) => {
+      const ballotId = await getDb().transaction(async (transaction) => {
         const ballots = await transaction
           .insert(ballotsTable)
           .values({ electionId: election.electionId })

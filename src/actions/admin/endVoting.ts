@@ -7,7 +7,7 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 
 const endVotingSchema = async () => {
@@ -26,7 +26,7 @@ export const endVoting = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.endVoting.action_status')
-    return db.transaction(async (transaction) => {
+    return getDb().transaction(async (transaction) => {
       const voters = await transaction.query.votersTable.findMany({
         with: {
           hasVoted: true

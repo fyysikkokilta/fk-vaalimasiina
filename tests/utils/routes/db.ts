@@ -1,4 +1,4 @@
-import { db } from '~/db'
+import { getDb } from '~/db'
 import {
   ballotsTable,
   candidatesTable,
@@ -9,7 +9,7 @@ import {
 } from '~/db/schema'
 
 export const clearTables = async () => {
-  await db.transaction(async (transaction) => {
+  await getDb().transaction(async (transaction) => {
     await transaction.delete(ballotsTable)
     await transaction.delete(candidatesTable)
     await transaction.delete(electionsTable)

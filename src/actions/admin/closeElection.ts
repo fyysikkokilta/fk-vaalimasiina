@@ -7,7 +7,7 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { db } from '~/db'
+import { getDb } from '~/db'
 import { electionsTable } from '~/db/schema'
 
 const closeElectionSchema = async () => {
@@ -26,7 +26,7 @@ export const closeElection = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.closeElection.action_status')
-    const statuses = await db
+    const statuses = await getDb()
       .update(electionsTable)
       .set({
         status: 'CLOSED'
