@@ -8,13 +8,14 @@
     "build": "next build --turbo",
     "start": "next start",
     "lint": "next lint",
+    "ci": "pnpm db:migrate && pnpm build",
     "generate-election": "tsx ./tests/fixtures/generate-election.ts",
     "test:unit": "vitest",
     "type:check": "tsc --noEmit",
     "prettier:format": "prettier --write .",
     "db:generate-migration": "drizzle-kit generate",
     "db:migrate": "tsx ./src/db/migrate.ts",
-    "preinstall": "npx only-allow pnpm",
+    "preinstall": "pnpx only-allow pnpm",
     "prepare": "simple-git-hooks"
   },
   "lint-staged": {
@@ -23,7 +24,7 @@
     "src/**/*.{js,jsx,ts,tsx,css,scss,md}": "prettier --write --ignore-unknown"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "pnpx lint-staged"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
