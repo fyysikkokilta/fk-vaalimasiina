@@ -37,7 +37,7 @@ const createElectionSchema = async () => {
 }
 
 export const createElection = actionClient
-  .schema(createElectionSchema)
+  .inputSchema(createElectionSchema)
   .use(isAuthorizedMiddleware)
   .action(
     async ({ parsedInput: { title, description, seats, candidates } }) => {

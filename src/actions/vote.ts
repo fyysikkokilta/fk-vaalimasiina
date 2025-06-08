@@ -56,7 +56,7 @@ const voteSchema = async () => {
 }
 
 export const vote = actionClient
-  .schema(voteSchema)
+  .inputSchema(voteSchema)
   .action(async ({ parsedInput: { voterId, ballot } }) => {
     const t = await getTranslations('actions.vote.action_status')
     const validVoter = await db.query.votersTable.findFirst({

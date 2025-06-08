@@ -22,7 +22,7 @@ const startEditingSchema = async () => {
 }
 
 export const startEditing = actionClient
-  .schema(startEditingSchema)
+  .inputSchema(startEditingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.startEditing.action_status')

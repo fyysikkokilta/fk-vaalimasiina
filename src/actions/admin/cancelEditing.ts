@@ -22,7 +22,7 @@ const cancelEditingSchema = async () => {
 }
 
 export const cancelEditing = actionClient
-  .schema(cancelEditingSchema)
+  .inputSchema(cancelEditingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.cancelEditing.action_status')

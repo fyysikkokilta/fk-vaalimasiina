@@ -56,7 +56,7 @@ const startVotingSchame = async () => {
 }
 
 export const startVoting = actionClient
-  .schema(startVotingSchame)
+  .inputSchema(startVotingSchame)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId, emails } }) => {
     const t = await getTranslations('actions.startVoting.action_status')

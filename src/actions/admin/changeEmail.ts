@@ -38,7 +38,7 @@ const changeEmailSchema = async () => {
 }
 
 export const changeEmail = actionClient
-  .schema(changeEmailSchema)
+  .inputSchema(changeEmailSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { oldEmail, newEmail } }) => {
     const t = await getTranslations('actions.changeEmail.action_status')

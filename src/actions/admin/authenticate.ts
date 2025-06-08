@@ -26,7 +26,7 @@ const authenticateSchema = async () => {
 }
 
 export const authenticate = actionClient
-  .schema(authenticateSchema)
+  .inputSchema(authenticateSchema)
   .action(async ({ parsedInput: { username, password } }) => {
     const t = await getTranslations('actions.authenticate.action_status')
     const cookieStore = await cookies()

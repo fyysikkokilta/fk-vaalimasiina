@@ -22,7 +22,7 @@ const abortVotingSchema = async () => {
 }
 
 export const abortVoting = actionClient
-  .schema(abortVotingSchema)
+  .inputSchema(abortVotingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.abortVoting.action_status')

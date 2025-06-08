@@ -43,7 +43,7 @@ const editElectionSchema = async () => {
 }
 
 export const editElection = actionClient
-  .schema(editElectionSchema)
+  .inputSchema(editElectionSchema)
   .use(isAuthorizedMiddleware)
   .action(
     async ({

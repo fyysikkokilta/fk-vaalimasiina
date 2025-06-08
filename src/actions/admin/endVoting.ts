@@ -22,7 +22,7 @@ const endVotingSchema = async () => {
 }
 
 export const endVoting = actionClient
-  .schema(endVotingSchema)
+  .inputSchema(endVotingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.endVoting.action_status')
