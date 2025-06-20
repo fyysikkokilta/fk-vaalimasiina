@@ -1,3 +1,4 @@
 #!/bin/bash
 git pull
-docker compose -f docker-compose.yml up --build -d
+docker compose pull
+docker compose up -d
