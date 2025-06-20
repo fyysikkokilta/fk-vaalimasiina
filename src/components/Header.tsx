@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import React from 'react'
 
+import { env } from '~/env'
 import { Link } from '~/i18n/navigation'
 
 import LanguageSwitcher from './LanguageSwitcher'
@@ -23,9 +24,8 @@ function HeaderLink({
 }
 
 export default async function Header() {
-  const APP_TITLE = process.env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT
-  const APP_TITLE_SHORT =
-    process.env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT
+  const APP_TITLE = env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT
+  const APP_TITLE_SHORT = env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT
 
   const t = await getTranslations('Header')
   return (

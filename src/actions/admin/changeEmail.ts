@@ -8,7 +8,6 @@ import { z } from 'zod'
 import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
-import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
 
 import { isAuthorizedMiddleware } from '../middleware/isAuthorized'
 import { actionClient, ActionError } from '../safe-action'
@@ -82,7 +81,8 @@ export const changeEmail = actionClient
       }
       return { message: t('email_changed') }
     } catch (error) {
-      if (isUniqueConstraintError(error)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.code === '23505') {
         throw new ActionError(t('email_already_exists'))
       }
       if (error instanceof ActionError) {

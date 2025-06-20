@@ -8,9 +8,8 @@ import { Flip, ToastContainer } from 'react-toastify'
 
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
+import { env } from '~/env'
 import { routing } from '~/i18n/routing'
-
-const mainUrl = process.env.BASE_URL || 'https://vaalit.fyysikkokilta.fi'
 
 export async function generateMetadata({
   params
@@ -28,7 +27,7 @@ export async function generateMetadata({
       default: t('title')
     },
     description: t('description'),
-    metadataBase: new URL(mainUrl),
+    metadataBase: new URL(env.BASE_URL),
     generator: 'Next.js',
     applicationName: t('title'),
     creator: 'Fyysikkokilta ry'

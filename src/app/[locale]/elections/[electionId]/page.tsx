@@ -8,19 +8,7 @@ import { db } from '~/db'
 import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
-export const generateStaticParams = async () => {
-  const elections = await db.query.electionsTable.findMany({
-    where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED'),
-    columns: {
-      electionId: true
-    }
-  })
-
-  // If there are no elections, return a dummy election
-  // Currently it seems that empty array causes the route to not work at all
-  // What happens is that even valid electionId gives 500 error
-  return elections.length > 0 ? elections : [{ electionId: 'electionId' }]
-}
+export const dynamic = 'force-static'
 
 const getElection = async (electionId: string) => {
   const election = await db.query.electionsTable.findFirst({

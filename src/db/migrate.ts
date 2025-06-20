@@ -1,24 +1,22 @@
 import 'dotenv/config'
 
-import { drizzle } from 'drizzle-orm/postgres-js'
-import { migrate } from 'drizzle-orm/postgres-js/migrator'
+import { drizzle } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import path from 'path'
-import postgres from 'postgres'
+import { Pool } from 'pg'
 
-void (async () => {
-  console.log('Migrating database...')
-  const migrationClient = postgres({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    // for migrations, we want to be able to run multiple queries in a single transaction
-    max: 1
-  })
-  await migrate(drizzle(migrationClient), {
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 1
+})
+
+const db = drizzle(pool)
+
+try {
+  await migrate(db, {
     migrationsFolder: path.join(process.cwd(), 'src/drizzle')
   })
-  await migrationClient.end()
-  console.log('Database migrated!')
-})()
+  console.log('Migration successful')
+} catch (error) {
+  console.error('Migration failed:', error)
+}

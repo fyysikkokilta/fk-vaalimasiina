@@ -7,13 +7,7 @@ import isUUID from '~/utils/isUUID'
 
 import Vote from './client'
 
-export const generateStaticParams = () => {
-  // Generate all paths statically when first visited
-
-  // Currently it seems that empty array causes the route to not work at all
-  // What happens is that even valid voterId gives 500 error
-  return [{ voterId: 'voterId' }]
-}
+export const dynamic = 'force-static'
 
 const getVoter = async (voterId: string) => {
   const voter = await db.query.votersTable.findFirst({

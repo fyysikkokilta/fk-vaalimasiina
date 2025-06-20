@@ -1,9 +1,11 @@
 import jsonwebtoken from 'jsonwebtoken'
 
-export const authenticate = () => {
-  const username = process.env.ADMIN_USERNAME!
+import { env } from '~/env'
 
-  return jsonwebtoken.sign({ username }, process.env.JWT_SECRET!, {
+export const authenticate = () => {
+  const username = env.ADMIN_USERNAME
+
+  return jsonwebtoken.sign({ username }, env.JWT_SECRET, {
     expiresIn: '10h'
   })
 }

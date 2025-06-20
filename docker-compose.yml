@@ -1,49 +1,14 @@
 services:
-  database-dev:
-    image: postgres:latest
-    environment:
-      - POSTGRES_DB=$DB_NAME
-      - POSTGRES_USER=$DB_USERNAME
-      - POSTGRES_PASSWORD=$DB_PASSWORD
+  app:
+    image: ghcr.io/fyysikkokilta/fk-vaalimasiina:latest
+    restart: always
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    env_file:
+      - .env
     ports:
-      - '5432:5432'
-    volumes:
-      - ./data:/var/lib/postgresql/data
-  web-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    command: npm run dev
-    depends_on:
-      - database-dev
-    environment:
-      - DB_HOST=database-dev
-      - NODE_ENV=development
-      - HOSTNAME=0.0.0.
-    volumes:
-      - type: bind
-        source: ./src/
-        target: /opt/vaalimasiina/src/
-      - type: bind
-        source: ./public
-        target: /opt/vaalimasiina/public
-      - type: bind
-        source: ./messages
-        target: /opt/vaalimasiina/messages
-      - type: bind
-        source: ./next.config.ts
-        target: /opt/vaalimasiina/next.config.ts
-      - type: bind
-        source: ./drizzle.config.ts
-        target: /opt/vaalimasiina/drizzle.config.ts
-      - type: bind
-        source: ./postcss.config.js
-        target: /opt/vaalimasiina/postcss.config.js
-      - type: bind
-        source: ./tsconfig.json
-        target: /opt/vaalimasiina/tsconfig.json
-      - type: bind
-        source: ./.env
-        target: /opt/vaalimasiina/.env
-    ports:
-      - '3000:3000'
+      - '127.0.0.1:8010:3000'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '50m'

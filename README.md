@@ -5,23 +5,97 @@
 0. Have node and pnpm installed
 1. Clone the repository
 2. Install dependencies with `pnpm install`
-3. Setup a Postgres database and add the environment variables to .env
-4. Setup the database by running migrations using `pnpm db:migrate`
-5. Start the project with `pnpm dev`
+3. Copy `.env.example` to `.env` and configure your environment variables
+4. Setup a PostgreSQL database and update the `DATABASE_URL` in your `.env` file
+5. Setup the database by running migrations using `pnpm db:migrate`
+6. Start the project with `pnpm dev`
 
-## Docker
+## Environment Variables
 
-There is a separate Docker config for development and production. Both configurations start a containerized Postgres database. For both configs you should also define your environment variables in .env according to .env.example
+This project uses `@t3-oss/env-nextjs` for environment variable validation. All environment variables are validated at runtime to ensure they are properly configured.
 
-Development docker setup can be setupped with `docker-compose -f .\docker-compose.yml up`.
+### Required Environment Variables
 
-Production docker setup can be setupped with `docker-compose -f .\docker-compose.prod.yml up`.
+#### Database
+
+- `DATABASE_URL`: PostgreSQL connection string
+  - Format: `postgresql://username:password@host:port/database`
+  - Examples:
+    - Local: `postgresql://postgres:password@localhost:5432/vaalimasiina`
+    - Railway: `postgresql://user:pass@containers-us-west-1.railway.app:5432/railway`
+    - Supabase: `postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres`
+
+#### Application
+
+- `BASE_URL`: Base URL of the application
+  - Development: `http://localhost:3000`
+  - Production: `https://vaalit.fyysikkokilta.fi`
+
+#### Authentication
+
+- `ADMIN_USERNAME`: Admin username for authentication
+- `ADMIN_PASSWORD`: Admin password for authentication (use a strong password!)
+- `JWT_SECRET`: Secret key for JWT tokens (generate a random string!)
+
+#### Email
+
+- `MAIL_FROM`: Email address for sending emails
+  - Example: `Vaalimasiina <vaalit@fyysikkokilta.fi>`
+
+### Optional Environment Variables
+
+#### Email Configuration (for production)
+
+- `MAILGUN_API_KEY`: Mailgun API key for sending emails
+- `MAILGUN_DOMAIN`: Mailgun domain for sending emails
+- `MAILGUN_HOST`: Mailgun server (default: `https://api.eu.mailgun.net`)
+
+#### Branding
+
+- `BRANDING_EMAIL_SUBJECT_PREFIX`: Email subject prefix (default: `Vaalimasiina`)
+- `BRANDING_MAIL_FOOTER_TEXT`: Email footer text (default: `Rakkaudella Fysistit`)
+- `BRANDING_MAIL_FOOTER_LINK`: Email footer link (default: `https://fyysikkokilta.fi`)
+
+#### Development & Debugging
+
+- `PORT`: Server port (default: `3000`)
+- `ANALYZE`: Enable bundle analysis (default: `false`)
+- `SKIP_ENV_VALIDATION`: Skip environment validation during build (default: `false`)
+
+### Client-Side Environment Variables
+
+These variables are exposed to the browser and can be customized for branding:
+
+- `NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT`: Header title (default: `Vaalimasiina`)
+- `NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT`: Short header title (default: `Vaalimasiina`)
+- `NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT`: Footer home text (default: `fyysikkokilta.fi`)
+- `NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK`: Footer home link (default: `https://fyysikkokilta.fi`)
+
+### Environment Validation
+
+The application will validate all environment variables on startup. If any required variables are missing or invalid, the application will fail to start with a clear error message.
+
+For development, you can set `SKIP_ENV_VALIDATION=true` to bypass validation during build.
+
+### Quick Setup
+
+1. Copy the example file:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Update the required variables in `.env`:
+   - Set your `DATABASE_URL`
+   - Change `ADMIN_USERNAME` and `ADMIN_PASSWORD`
+   - Generate a random `JWT_SECRET`
+   - Update `BASE_URL` for your environment
 
 ## Migrations
 
-Migrations can be run with command `pnpm db:migrate`. Database environment variables need to be set.
+Migrations can be run with command `pnpm db:migrate`. The `DATABASE_URL` environment variable must be set.
 
-A new migration can be create using `pnpm db:generate-migration`.
+A new migration can be created using `pnpm db:generate-migration`.
 
 Other Drizzle features can be accessed using `pnpx drizzle-kit [command]`.
 
@@ -102,7 +176,7 @@ The steps to calculate the result are as follows:
 5. **Elimination Process**
 
 - If no candidate reaches the quota after all surpluses are transferred, the candidate with the **fewest votes** is eliminated.
-- The eliminated candidate’s votes are redistributed to the next preferred candidate on each ballot.
+- The eliminated candidate's votes are redistributed to the next preferred candidate on each ballot.
 - This process of **elimination and redistribution** continues until all seats are filled.
 
   5.1. **Multiple candidates with fewest votes**

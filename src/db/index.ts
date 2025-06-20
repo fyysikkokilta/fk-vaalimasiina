@@ -1,24 +1,19 @@
-import 'dotenv/config'
+import { drizzle } from 'drizzle-orm/node-postgres'
+import { Pool } from 'pg'
 
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+import { env } from '~/env'
 
 import * as relations from './relations'
 import * as schema from './schema'
 
-// You can specify any property from the node-postgres connection options
-export const client = postgres({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+const pool = new Pool({
+  connectionString: env.DATABASE_URL
 })
 
-export const db = drizzle(client, {
+export const db = drizzle(pool, {
   schema: {
     ...schema,
     ...relations
   },
-  logger: process.env.NODE_ENV === 'development'
+  logger: env.NODE_ENV === 'development'
 })

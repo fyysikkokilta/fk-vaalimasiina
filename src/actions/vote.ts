@@ -7,7 +7,6 @@ import { z } from 'zod'
 import { db } from '~/db'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 import { routing } from '~/i18n/routing'
-import isUniqueConstraintError from '~/utils/isUniqueConstraintError'
 
 import { actionClient, ActionError } from './safe-action'
 
@@ -125,7 +124,8 @@ export const vote = actionClient
       })
       return { message: t('ballot_saved'), ballotId }
     } catch (error) {
-      if (isUniqueConstraintError(error)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.code === '23505') {
         throw new ActionError(t('voter_already_voted'))
       }
       throw new ActionError(t('error_saving_ballot'))

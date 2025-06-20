@@ -1,8 +1,10 @@
 import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
+import { env } from '~/env'
+
 export async function POST(req: Request) {
-  if (process.env.NODE_ENV !== 'development') {
+  if (env.NODE_ENV !== 'development') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 

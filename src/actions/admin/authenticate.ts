@@ -5,6 +5,8 @@ import { cookies } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
+import { env } from '~/env'
+
 import { actionClient, ActionError } from '../safe-action'
 
 const authenticateSchema = async () => {
@@ -31,9 +33,9 @@ export const authenticate = actionClient
     const t = await getTranslations('actions.authenticate.action_status')
     const cookieStore = await cookies()
 
-    if (process.env.NODE_ENV === 'development') {
+    if (env.NODE_ENV === 'development') {
       if (username === 'admin' && password === 'password') {
-        const jwt = jsonwebtoken.sign({ username }, process.env.JWT_SECRET!, {
+        const jwt = jsonwebtoken.sign({ username }, env.JWT_SECRET, {
           expiresIn: '10h'
         })
         cookieStore.set('admin-token', jwt)
@@ -42,14 +44,14 @@ export const authenticate = actionClient
       }
     }
 
-    const adminUsername = process.env.ADMIN_USERNAME!
-    const adminPassword = process.env.ADMIN_PASSWORD!
+    const adminUsername = env.ADMIN_USERNAME
+    const adminPassword = env.ADMIN_PASSWORD
 
     if (adminUsername !== username || adminPassword !== password) {
       throw new ActionError(t('wrong_username_or_password'))
     }
 
-    const jwt = jsonwebtoken.sign({ username }, process.env.JWT_SECRET!, {
+    const jwt = jsonwebtoken.sign({ username }, env.JWT_SECRET, {
       expiresIn: '10h'
     })
 

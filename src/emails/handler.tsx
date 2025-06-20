@@ -1,6 +1,8 @@
 import { render } from '@react-email/components'
 import Mailgun from 'mailgun.js'
 
+import { env } from '~/env'
+
 import EmailTemplate from './Email'
 
 export interface VotingMailParams {
@@ -13,13 +15,13 @@ export interface VotingMailParams {
 
 const getMailgunClient = () => {
   const mailgun = new Mailgun(FormData)
-  if (!process.env.MAILGUN_API_KEY) {
+  if (!env.MAILGUN_API_KEY) {
     throw new Error('MAILGUN_API_KEY is not set')
   }
   return mailgun.client({
     username: 'api',
-    key: process.env.MAILGUN_API_KEY,
-    url: process.env.MAILGUN_HOST || 'https://api.eu.mailgun.net'
+    key: env.MAILGUN_API_KEY,
+    url: env.MAILGUN_HOST
   })
 }
 
@@ -27,7 +29,7 @@ export const sendVotingMail = async (
   to: { email: string; voterId: string }[],
   params: VotingMailParams
 ) => {
-  if (process.env.NODE_ENV === 'development') {
+  if (env.NODE_ENV === 'development') {
     console.log('Sending voting mail to:', to)
     console.log('Params:', params)
     return true
@@ -36,22 +38,21 @@ export const sendVotingMail = async (
     const brandedParams = {
       ...params,
       branding: {
-        footerText: process.env.BRANDING_MAIL_FOOTER_TEXT,
-        footerLink: process.env.BRANDING_MAIL_FOOTER_LINK
+        footerText: env.BRANDING_MAIL_FOOTER_TEXT,
+        footerLink: env.BRANDING_MAIL_FOOTER_LINK
       },
       // %recipient.voterId% is populated by Mailgun
-      votingLinkFi: `${process.env.BASE_URL}/fi/vote/%recipient.voterId%`,
-      votingLinkEn: `${process.env.BASE_URL}/en/vote/%recipient.voterId%`
+      votingLinkFi: `${env.BASE_URL}/fi/vote/%recipient.voterId%`,
+      votingLinkEn: `${env.BASE_URL}/en/vote/%recipient.voterId%`
     }
 
     const html = await render(<EmailTemplate {...brandedParams} />)
-    const subjectPrefix =
-      process.env.BRANDING_EMAIL_SUBJECT_PREFIX || 'Vaalimasiina'
+    const subjectPrefix = env.BRANDING_EMAIL_SUBJECT_PREFIX
     const subject = `${subjectPrefix} - ${params.election.title}`
 
     const emailParams = {
       to: to.map((voter) => voter.email),
-      from: process.env.MAIL_FROM || 'Vaalimasiina <vaalit@kilta.fi>',
+      from: env.MAIL_FROM,
       subject,
       html,
       'recipient-variables': JSON.stringify(
@@ -67,11 +68,11 @@ export const sendVotingMail = async (
 
     const client = getMailgunClient()
 
-    if (!process.env.MAILGUN_DOMAIN) {
+    if (!env.MAILGUN_DOMAIN) {
       throw new Error('MAILGUN_DOMAIN is not set')
     }
 
-    await client.messages.create(process.env.MAILGUN_DOMAIN, emailParams)
+    await client.messages.create(env.MAILGUN_DOMAIN, emailParams)
     return true
   } catch (error) {
     console.error('Error sending voting mail:', error)
