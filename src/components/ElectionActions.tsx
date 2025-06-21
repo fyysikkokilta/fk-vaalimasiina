@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { downloadElectionCsv } from '~/actions/admin/downloadElectionCsv'
@@ -20,13 +19,11 @@ export default function ElectionActions({
   votingResult: ValidVotingResult
 }) {
   const t = useTranslations('ElectionResults')
-  const [isDownloading, setIsDownloading] = useState(false)
 
   const roundToTwoDecimals = (num: number) =>
     Math.round((num + Number.EPSILON) * 100) / 100
 
   const handleCsvDownload = async () => {
-    setIsDownloading(true)
     try {
       const result = await downloadElectionCsv({
         electionId: election.electionId
@@ -53,8 +50,6 @@ export default function ElectionActions({
       console.error('Error downloading CSV:', error)
       // Fallback to client-side generation on any error
       exportBallotsToCSV(votingResult.ballots, election)
-    } finally {
-      setIsDownloading(false)
     }
   }
 
@@ -152,14 +147,9 @@ export default function ElectionActions({
       <button
         type="button"
         onClick={handleCsvDownload}
-        disabled={isDownloading}
-        className={`rounded-lg px-4 py-2 text-white transition-colors duration-200 ${
-          isDownloading
-            ? 'cursor-not-allowed bg-gray-400'
-            : 'bg-fk-black cursor-pointer hover:bg-gray-900'
-        }`}
+        className="bg-fk-black cursor-pointer rounded-lg px-4 py-2 text-white transition-colors duration-200 hover:bg-gray-900"
       >
-        {isDownloading ? t('downloading') : t('export_csv')}
+        {t('export_csv')}
       </button>
       <button
         type="button"
