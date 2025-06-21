@@ -45,8 +45,6 @@ export default function VotingInspection({
         if (data?.message) {
           toast.success(data.message)
         }
-        setOldEmail('')
-        setNewEmail('')
       },
       onError: ({ error }) => {
         if (error.serverError) {
@@ -65,6 +63,8 @@ export default function VotingInspection({
       if (data?.message) {
         toast.success(data.message)
       }
+      setOldEmail('')
+      setNewEmail('')
     },
     onError: ({ error }) => {
       if (error.serverError) {
