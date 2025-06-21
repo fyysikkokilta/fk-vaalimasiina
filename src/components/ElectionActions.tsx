@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { toast } from 'react-toastify'
 
-import { downloadElectionCsv } from '~/actions/admin/downloadElectionCsv'
+import { downloadElectionCsv } from '~/actions/downloadElectionCsv'
 import type {
   Ballot,
   Election,

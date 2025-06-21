@@ -4,7 +4,6 @@ import { eq } from 'drizzle-orm'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
-import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
@@ -27,7 +26,6 @@ const downloadElectionCsvSchema = async () => {
 
 export const downloadElectionCsv = actionClient
   .inputSchema(downloadElectionCsvSchema)
-  .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const t = await getTranslations('actions.downloadElectionCsv.action_status')
 
