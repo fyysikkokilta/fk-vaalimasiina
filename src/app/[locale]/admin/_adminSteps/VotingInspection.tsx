@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { abortVoting } from '~/actions/admin/abortVoting'
@@ -45,6 +45,8 @@ export default function VotingInspection({
         if (data?.message) {
           toast.success(data.message)
         }
+        setOldEmail('')
+        setNewEmail('')
       },
       onError: ({ error }) => {
         if (error.serverError) {
@@ -154,7 +156,10 @@ export default function VotingInspection({
               )}
             </div>
             <button
-              onClick={() => executeEmail({ oldEmail, newEmail })}
+              onClick={(e) => {
+                e.preventDefault()
+                executeEmail({ oldEmail, newEmail })
+              }}
               disabled={isPendingEmail}
               className={
                 'bg-fk-yellow text-fk-black w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500'

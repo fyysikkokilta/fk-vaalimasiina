@@ -58,7 +58,12 @@
   "ElectionList": {
     "title": "Tulokset",
     "no_previous_results": "Ei aiempia tuloksia",
-    "no_previous_results_description": "Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu."
+    "no_previous_results_description": "Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu.",
+    "pagination": {
+      "previous": "Edellinen",
+      "next": "Seuraava",
+      "page": "Sivu"
+    }
   },
   "Election": {
     "title": "Tulokset",
@@ -76,7 +81,12 @@
     "no_finished_election": "Ei päättynyttä vaalia",
     "no_finished_election_description": "Voit tarkastella vain juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
     "empty_ballot": "Tyhjä äänestyslippu",
-    "search_ballot": "Hae äänestyslippua"
+    "search_ballot": "Hae äänestyslippua",
+    "pagination": {
+      "previous": "Edellinen",
+      "next": "Seuraava",
+      "page": "Sivu"
+    }
   },
   "Admin": {
     "title": "Hallinta"

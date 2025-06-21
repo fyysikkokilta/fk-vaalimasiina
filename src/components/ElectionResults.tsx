@@ -216,7 +216,7 @@ export default function ElectionResults({
         <div className="text-center">
           <h3 className="mb-4 text-2xl font-semibold">{election.title}</h3>
           <div className="mb-2 text-center">
-            {election.date.toLocaleDateString()}
+            {election.date.toLocaleDateString('fi-FI')}
           </div>
           <div className="mb-4">{election.description}</div>
           <div className="flex flex-col space-y-2">
@@ -244,7 +244,7 @@ export default function ElectionResults({
       <div className="mb-4 text-center">
         <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
         <div className="mb-2 text-center">
-          {election.date.toLocaleDateString()}
+          {election.date.toLocaleDateString('fi-FI')}
         </div>
         <div className="mb-3">{election.description}</div>
         <ElectionActions election={election} votingResult={votingResult} />

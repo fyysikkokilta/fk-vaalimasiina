@@ -58,7 +58,12 @@
   "ElectionList": {
     "title": "Results",
     "no_previous_results": "No previous results",
-    "no_previous_results_description": "There have been no elections held yet or their results have not been published."
+    "no_previous_results_description": "There have been no elections held yet or their results have not been published.",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page"
+    }
   },
   "Election": {
     "title": "Results",
@@ -76,7 +81,12 @@
     "no_finished_election": "There is no finished election",
     "no_finished_election_description": "You can only audit the election whose results have just been published. If you think this is an error, please contact the chairperson or secretary.",
     "empty_ballot": "Empty ballot",
-    "search_ballot": "Search ballot"
+    "search_ballot": "Search ballot",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page"
+    }
   },
   "Admin": {
     "title": "Admin"

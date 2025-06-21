@@ -1,25 +1,47 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
+import Pagination from '~/components/Pagination'
 import TitleWrapper from '~/components/TitleWrapper'
 
 import type { AuditPageProps } from './page'
 
+const ITEMS_PER_PAGE = 25
+
 export default function Audit({ election, ballots }: AuditPageProps) {
   const [search, setSearch] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   const t = useTranslations('Audit')
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.toLowerCase().trim()
     setSearch(value)
+    setCurrentPage(1) // Reset to first page when searching
   }
+
   const match = ballots.filter(
     (audit) => audit.ballotId.toLowerCase().trim() === search
   )
 
   const allOrOneBallot = match.length === 1 ? match : ballots
+
+  // Calculate pagination
+  const totalItems = allOrOneBallot.length
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+  const paginatedBallots = allOrOneBallot.slice(startIndex, endIndex)
+
+  const paginationTranslations = useMemo(
+    () => ({
+      page: t('pagination.page'),
+      previous: t('pagination.previous'),
+      next: t('pagination.next')
+    }),
+    [t]
+  )
 
   return !election || !ballots ? (
     <TitleWrapper title={t('title')}>
@@ -57,7 +79,7 @@ export default function Audit({ election, ballots }: AuditPageProps) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {allOrOneBallot.map((audit, index) => (
+          {paginatedBallots.map((audit, index) => (
             <tr key={index} className="hover:bg-gray-50">
               <td className="px-6 py-4 text-sm text-gray-500">
                 {audit.ballotId}
@@ -90,6 +112,14 @@ export default function Audit({ election, ballots }: AuditPageProps) {
           ))}
         </tbody>
       </table>
+      <div className="mt-6">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          translations={paginationTranslations}
+        />
+      </div>
     </TitleWrapper>
   )
 }
