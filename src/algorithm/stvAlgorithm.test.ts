@@ -13,7 +13,8 @@ const createElection = (candidates: string[], seats: number) => ({
     name
   })),
   seats,
-  date: new Date()
+  date: new Date(),
+  csvFilePath: null
 })
 
 const createBallot = (votes: string[]) => ({

@@ -1,0 +1,1 @@
+ALTER TABLE "elections" ADD COLUMN "csv_file_path" varchar;

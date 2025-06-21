@@ -27,7 +27,8 @@ export const electionsTable = pgTable(
     description: varchar('description').notNull(),
     seats: integer('seats').notNull(),
     status: statusEnum('status').notNull().default('CREATED'),
-    date: timestamp('date').notNull().defaultNow()
+    date: timestamp('date').notNull().defaultNow(),
+    csvFilePath: varchar('csv_file_path')
   },
   (table) => [
     uniqueIndex('unique_active_election')

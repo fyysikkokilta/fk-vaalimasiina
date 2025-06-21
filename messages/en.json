@@ -126,6 +126,7 @@
     "total_votes": "Votes",
     "non_empty_votes": "Non-empty votes",
     "export_csv": "Download ballots as CSV",
+    "downloading": "Downloading...",
     "export_minutes": "Copy results to clipboard",
     "minutes_copied_to_clipboard": "Results copied to clipboard",
     "previous_round": "Previous",
@@ -318,6 +319,16 @@
       "action_status": {
         "voting_aborted": "Voting aborted",
         "election_not_found": "Election not found"
+      },
+      "validation": {
+        "electionId_string": "Election identifier must be a string",
+        "electionId_uuid": "Election identifier must be a valid UUID"
+      }
+    },
+    "downloadElectionCsv": {
+      "action_status": {
+        "election_not_found": "Election not found",
+        "csv_file_not_found": "CSV file not found"
       },
       "validation": {
         "electionId_string": "Election identifier must be a string",

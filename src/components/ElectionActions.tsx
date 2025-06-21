@@ -1,14 +1,16 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import React from 'react'
+import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
+import { downloadElectionCsv } from '~/actions/admin/downloadElectionCsv'
 import type {
   Ballot,
   Election,
   ValidVotingResult
 } from '~/algorithm/stvAlgorithm'
+import { generateCsvContent } from '~/utils/csvGenerator'
 
 export default function ElectionActions({
   election,
@@ -18,26 +20,46 @@ export default function ElectionActions({
   votingResult: ValidVotingResult
 }) {
   const t = useTranslations('ElectionResults')
+  const [isDownloading, setIsDownloading] = useState(false)
+
   const roundToTwoDecimals = (num: number) =>
     Math.round((num + Number.EPSILON) * 100) / 100
 
+  const handleCsvDownload = async () => {
+    setIsDownloading(true)
+    try {
+      const result = await downloadElectionCsv({
+        electionId: election.electionId
+      })
+
+      if (result?.data?.downloadUrl) {
+        // S3 storage is configured and file exists - download from S3
+        const link = document.createElement('a')
+        link.href = result.data.downloadUrl
+        link.download = `${election.title}.csv`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        toast.success('CSV file downloaded successfully')
+      } else if (result?.serverError) {
+        // Server error occurred
+        toast.error(result.serverError)
+      } else {
+        // S3 not configured or file doesn't exist - fallback to client-side generation
+        exportBallotsToCSV(votingResult.ballots, election)
+      }
+    } catch (error) {
+      console.error('Error downloading CSV:', error)
+      // Fallback to client-side generation on any error
+      exportBallotsToCSV(votingResult.ballots, election)
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
   const exportBallotsToCSV = (ballots: Ballot[], election: Election) => {
-    const headers = Array.from(
-      { length: election.candidates.length },
-      (_, i) => `Preference ${i + 1}`
-    )
-
-    const rows = ballots.map((ballot) =>
-      ballot.votes.map(
-        ({ candidateId }) =>
-          election.candidates.find((c) => c.candidateId === candidateId)!.name
-      )
-    )
-
-    const csvContent = [
-      headers.join(';'),
-      ...rows.map((row) => row.join(';'))
-    ].join('\n')
+    const csvContent = generateCsvContent(ballots, election)
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
 
@@ -129,10 +151,15 @@ export default function ElectionActions({
     <div className="flex flex-col justify-center gap-4 md:flex-row">
       <button
         type="button"
-        onClick={() => exportBallotsToCSV(votingResult.ballots, election)}
-        className="bg-fk-black cursor-pointer rounded-lg px-4 py-2 text-white transition-colors duration-200 hover:bg-gray-900"
+        onClick={handleCsvDownload}
+        disabled={isDownloading}
+        className={`rounded-lg px-4 py-2 text-white transition-colors duration-200 ${
+          isDownloading
+            ? 'cursor-not-allowed bg-gray-400'
+            : 'bg-fk-black cursor-pointer hover:bg-gray-900'
+        }`}
       >
-        {t('export_csv')}
+        {isDownloading ? t('downloading') : t('export_csv')}
       </button>
       <button
         type="button"
