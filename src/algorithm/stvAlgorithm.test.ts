@@ -12,7 +12,8 @@ const createElection = (candidates: string[], seats: number) => ({
     electionId: 'test-election',
     name
   })),
-  seats
+  seats,
+  date: new Date()
 })
 
 const createBallot = (votes: string[]) => ({

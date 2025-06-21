@@ -4,6 +4,7 @@ import {
   integer,
   pgEnum,
   pgTable,
+  timestamp,
   unique,
   uniqueIndex,
   uuid,
@@ -25,7 +26,8 @@ export const electionsTable = pgTable(
     title: varchar('title').notNull(),
     description: varchar('description').notNull(),
     seats: integer('seats').notNull(),
-    status: statusEnum('status').notNull().default('CREATED')
+    status: statusEnum('status').notNull().default('CREATED'),
+    date: timestamp('date').notNull().defaultNow()
   },
   (table) => [
     uniqueIndex('unique_active_election')

@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   type Ballot,
@@ -215,6 +215,9 @@ export default function ElectionResults({
       <div className="container mx-auto mb-4">
         <div className="text-center">
           <h3 className="mb-4 text-2xl font-semibold">{election.title}</h3>
+          <div className="mb-2 text-center">
+            {election.date.toLocaleDateString()}
+          </div>
           <div className="mb-4">{election.description}</div>
           <div className="flex flex-col space-y-2">
             <span>
@@ -240,6 +243,9 @@ export default function ElectionResults({
     <div className="container">
       <div className="mb-4 text-center">
         <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
+        <div className="mb-2 text-center">
+          {election.date.toLocaleDateString()}
+        </div>
         <div className="mb-3">{election.description}</div>
         <ElectionActions election={election} votingResult={votingResult} />
       </div>

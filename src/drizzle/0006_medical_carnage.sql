@@ -1,0 +1,1 @@
+ALTER TABLE "elections" ADD COLUMN "date" timestamp DEFAULT now() NOT NULL;
