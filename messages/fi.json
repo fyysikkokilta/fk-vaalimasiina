@@ -126,6 +126,7 @@
     "total_votes": "Ääniä",
     "non_empty_votes": "Epätyhjiä ääniä",
     "export_csv": "Lataa äänestysliput CSV-tiedostona",
+    "downloading": "Ladataan...",
     "export_minutes": "Kopioi tulokset leikepöydälle",
     "minutes_copied_to_clipboard": "Tulokset kopioitu leikepöydälle",
     "previous_round": "Edellinen",
@@ -318,6 +319,16 @@
       "action_status": {
         "voting_aborted": "Äänestys keskeytetty",
         "election_not_found": "Vaalia ei löytynyt"
+      },
+      "validation": {
+        "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
+        "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"
+      }
+    },
+    "downloadElectionCsv": {
+      "action_status": {
+        "election_not_found": "Vaalia ei löytynyt",
+        "csv_file_not_found": "CSV-tiedostoa ei löytynyt"
       },
       "validation": {
         "electionId_string": "Vaalitunnisteen tulee olla merkkijono",
