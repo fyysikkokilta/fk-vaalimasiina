@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto'
+import 'dotenv/config'
 
 import { clearTables } from '../utils/routes/db'
 import { createElection } from '../utils/routes/elections'

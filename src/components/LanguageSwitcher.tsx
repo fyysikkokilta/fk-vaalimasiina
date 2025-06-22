@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import React, { useTransition } from 'react'
+import { useTransition } from 'react'
 
 import { usePathname, useRouter } from '~/i18n/navigation'
 

@@ -7,7 +7,9 @@ import isUUID from '~/utils/isUUID'
 
 import Vote from './client'
 
-export const dynamic = 'force-static'
+export const generateStaticParams = async () => {
+  return Promise.resolve([])
+}
 
 const getVoter = async (voterId: string) => {
   const voter = await db.query.votersTable.findFirst({

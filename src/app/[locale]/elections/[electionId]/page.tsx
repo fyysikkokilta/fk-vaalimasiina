@@ -8,7 +8,9 @@ import { db } from '~/db'
 import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
-export const dynamic = 'force-static'
+export const generateStaticParams = async () => {
+  return Promise.resolve([])
+}
 
 const getElection = async (electionId: string) => {
   const election = await db.query.electionsTable.findFirst({

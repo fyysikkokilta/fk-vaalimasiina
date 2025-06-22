@@ -212,7 +212,7 @@ export default function ElectionResults({
 
   if (!votingResult.validResult) {
     return (
-      <div className="container mx-auto mb-4">
+      <div className="mx-auto mb-4">
         <div className="text-center">
           <h3 className="mb-4 text-2xl font-semibold">{election.title}</h3>
           <div className="mb-2 text-center">
@@ -240,7 +240,7 @@ export default function ElectionResults({
   }
 
   return (
-    <div className="container">
+    <div>
       <div className="mb-4 text-center">
         <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
         <div className="mb-2 text-center">
