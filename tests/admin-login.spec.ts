@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('./login')
+  await page.goto('/login')
 })
 
 test('should login with valid credentials', async ({ page }) => {

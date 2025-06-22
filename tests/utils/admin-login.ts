@@ -3,7 +3,7 @@ import { Page } from '@playwright/test'
 import { authenticate } from './routes/login'
 
 export const loginAdmin = async (page: Page) => {
-  const jwt = authenticate()
+  const jwt = await authenticate()
 
   if (!jwt) {
     throw new Error('Failed to login')
@@ -16,5 +16,5 @@ export const loginAdmin = async (page: Page) => {
       url: 'http://localhost:3000'
     }
   ])
-  await page.goto('./admin')
+  await page.goto('/admin')
 }

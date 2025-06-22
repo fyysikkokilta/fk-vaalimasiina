@@ -81,12 +81,13 @@ export const changeEmail = actionClient
       }
       return { message: t('email_changed') }
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.cause.code === '23505') {
-        throw new ActionError(t('email_already_exists'))
-      }
       if (error instanceof ActionError) {
         throw error
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.cause.code === '23505') {
+        console.log('Email already exists')
+        throw new ActionError(t('email_already_exists'))
       }
       console.error('Error updating email:', error)
       throw new ActionError(t('error_updating_email'))

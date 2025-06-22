@@ -33,7 +33,7 @@ test.beforeEach(async ({ request }) => {
 
 test.describe('voting page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`./vote/${voters[0].voterId}`)
+    await page.goto(`/vote/${voters[0].voterId}`)
   })
 
   test('should show voting view', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('voting page', () => {
 
 test.describe('voting', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`./vote/${voters[0].voterId}`)
+    await page.goto(`/vote/${voters[0].voterId}`)
   })
 
   test('should allow to select candidates', async ({ page }) => {
@@ -151,7 +151,7 @@ test.describe('voting', () => {
 
 test.describe('audit view', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`./vote/${voters[0].voterId}`)
+    await page.goto(`/vote/${voters[0].voterId}`)
   })
 
   test('should show ballot after voting has ended', async ({
@@ -166,7 +166,7 @@ test.describe('audit view', () => {
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED', request)
-    await page.goto('./audit')
+    await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     await expect(page.getByText(ballotId)).toBeVisible()
@@ -184,7 +184,7 @@ test.describe('audit view', () => {
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED', request)
-    await page.goto('./audit')
+    await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     await expect(page.getByText(ballotId)).toBeVisible()
@@ -200,7 +200,7 @@ test.describe('audit view', () => {
 
     await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED', request)
-    await page.goto('./audit')
+    await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     await expect(page.getByText(ballotId)).toBeVisible()

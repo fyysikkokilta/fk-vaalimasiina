@@ -1,11 +1,8 @@
-import { cookies } from 'next/headers'
 import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
-import { redirect } from '~/i18n/navigation'
-import isAuthorized from '~/utils/isAuthorized'
 
 import Admin from './client'
 
@@ -84,16 +81,6 @@ export default async function AdminPage({
   setRequestLocale(locale)
 
   const t = await getTranslations('Admin')
-
-  const cookieStore = await cookies()
-  const value = cookieStore.get('admin-token')?.value
-  const authorized = isAuthorized(value)
-  if (!authorized) {
-    redirect({
-      href: '/login',
-      locale
-    })
-  }
 
   const adminElection = await getAdminElection()
 
