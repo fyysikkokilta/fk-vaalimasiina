@@ -37,8 +37,6 @@ export default function ElectionActions({
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-
-        toast.success('CSV file downloaded successfully')
       } else if (result?.serverError) {
         // Server error occurred
         toast.error(result.serverError)
