@@ -11,7 +11,12 @@ export const env = createEnv({
     AUTH_SECRET: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-    ADMIN_EMAIL: z.string().email(),
+    ADMIN_EMAILS: z.string().transform((val) =>
+      val
+        .split(',')
+        .map((email) => email.trim())
+        .filter((email) => email.length > 0)
+    ),
     BASE_URL: z.string().url().default('https://vaalit.fyysikkokilta.fi'),
     MAIL_FROM: z.string().default('Vaalimasiina <vaalit@fyysikkokilta.fi>'),
     MAILGUN_API_KEY: z.string().optional(),

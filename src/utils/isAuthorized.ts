@@ -29,7 +29,7 @@ export default async function isAuthorized(
 
     return (
       typeof adminPayload.email === 'string' &&
-      adminPayload.email === env.ADMIN_EMAIL
+      env.ADMIN_EMAILS.includes(adminPayload.email)
     )
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {

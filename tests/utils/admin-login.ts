@@ -3,9 +3,11 @@ import { SignJWT } from 'jose'
 
 import { env } from '~/env'
 
+const TEST_ADMIN_EMAIL = 'test@email.com'
+
 export const loginAdmin = async (page: Page) => {
-  // Create a JWT token for the admin user
-  const jwt = await new SignJWT({ email: env.ADMIN_EMAIL })
+  // Create a JWT token for the test admin user
+  const jwt = await new SignJWT({ email: TEST_ADMIN_EMAIL })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setIssuer('fk-vaalimasiina')

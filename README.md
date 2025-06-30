@@ -36,7 +36,7 @@ This project uses `@t3-oss/env-nextjs` for environment variable validation. All 
 - `AUTH_SECRET`: Secret key for JWT tokens (generate a random string!)
 - `GOOGLE_CLIENT_ID`: Google OAuth client ID from Google Cloud Console
 - `GOOGLE_CLIENT_SECRET`: Google OAuth client secret from Google Cloud Console
-- `ADMIN_EMAIL`: Email address allowed to access admin panel
+- `ADMIN_EMAILS`: Comma-separated list of email addresses allowed to access admin panel
 
 #### Email
 
@@ -98,7 +98,7 @@ For development, you can set `SKIP_ENV_VALIDATION=true` to bypass validation dur
    - Set your `DATABASE_URL`
    - Set up Google OAuth credentials in Google Cloud Console
    - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` from Google OAuth
-   - Set `ADMIN_EMAIL` to the email address that should have admin access
+   - Set `ADMIN_EMAILS` to comma-separated email addresses that should have admin access (e.g., `admin1@example.com,admin2@example.com`)
    - Generate a random `AUTH_SECRET`
    - Update `BASE_URL` for your environment
 
@@ -107,6 +107,8 @@ For development, you can set `SKIP_ENV_VALIDATION=true` to bypass validation dur
    - Create a project and enable Google+ API
    - Create OAuth 2.0 credentials
    - Add authorized redirect URI: `[YOUR_BASE_URL]/api/auth/google`
+
+**Note for Testing**: When running tests, make sure `test@email.com` is included in your `ADMIN_EMAILS` list as this is the email used by the test utilities.
 
 ## Migrations
 
