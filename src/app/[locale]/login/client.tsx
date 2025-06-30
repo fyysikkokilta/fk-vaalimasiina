@@ -1,10 +1,10 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
-import { env } from '~/env'
+import { getGoogleAuthUrl } from '~/actions/auth/getGoogleAuthUrl'
 import TitleWrapper from '~/components/TitleWrapper'
 
 export default function Login() {
@@ -13,14 +13,8 @@ export default function Login() {
   const error = searchParams.get('error')
 
   const handleGoogleSignIn = () => {
-    const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
-    googleAuthUrl.searchParams.set('client_id', env.GOOGLE_CLIENT_ID)
-    googleAuthUrl.searchParams.set('redirect_uri', `${env.BASE_URL}/api/auth/google`)
-    googleAuthUrl.searchParams.set('response_type', 'code')
-    googleAuthUrl.searchParams.set('scope', 'openid email profile')
-    googleAuthUrl.searchParams.set('access_type', 'offline')
-    
-    window.location.href = googleAuthUrl.toString()
+    const googleAuthUrl = getGoogleAuthUrl()
+    window.location.href = googleAuthUrl
   }
 
   const getErrorMessage = () => {
@@ -44,25 +38,23 @@ export default function Login() {
         <div className="w-full max-w-md">
           <div className="space-y-4">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">
                 {t('admin_login')}
               </h2>
-              <p className="text-gray-600 mb-6">
-                {t('signin_description')}
-              </p>
+              <p className="mb-6 text-gray-600">{t('signin_description')}</p>
             </div>
-            
+
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <div className="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
                 {getErrorMessage()}
               </div>
             )}
-            
+
             <button
               onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg px-4 py-2 text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
