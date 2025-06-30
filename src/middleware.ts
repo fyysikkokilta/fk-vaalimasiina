@@ -21,7 +21,7 @@ function extractLocale(pathname: string) {
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const locale = extractLocale(pathname)
+  const locale = extractLocale(pathname) || routing.defaultLocale
 
   try {
     const adminToken = request.cookies.get(JWT_COOKIE)?.value

@@ -4,11 +4,13 @@ import { NextRequest } from 'next/server'
 
 import { env } from '~/env'
 import { redirect } from '~/i18n/navigation'
+import { routing } from '~/i18n/routing'
 import { JWT_COOKIE } from '~/utils/isAuthorized'
 
 export async function GET(request: NextRequest) {
   const cookieStore = await cookies()
-  const locale = cookieStore.get('NEXT_LOCALE')?.value as 'en' | 'fi'
+  const locale = (cookieStore.get('NEXT_LOCALE')?.value ||
+    routing.defaultLocale) as 'en' | 'fi'
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code') || ''
   const error = searchParams.get('error')
