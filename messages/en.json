@@ -50,8 +50,7 @@
   },
   "Login": {
     "title": "Log in to admin",
-    "admin_login": "Admin Login",
-    "signin_description": "Sign in with your authorized Google account to access the admin panel.",
+    "signin_description": "Sign in with your Google account to access the admin panel.",
     "signin_with_google": "Sign in with Google",
     "error_access_denied": "Access denied. Please try again.",
     "error_unauthorized": "You are not authorized to access this application.",

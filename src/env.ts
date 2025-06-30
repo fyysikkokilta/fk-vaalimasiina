@@ -64,5 +64,6 @@ export const env = createEnv({
     NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK:
       process.env.NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK
   },
+  emptyStringAsUndefined: true,
   skipValidation: process.env.SKIP_ENV_VALIDATION === 'true'
 })

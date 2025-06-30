@@ -1,16 +1,12 @@
-import { type JWTPayload, jwtVerify } from 'jose'
+import { jwtVerify } from 'jose'
 
 import { env } from '~/env'
 
-interface AdminPayload extends JWTPayload {
-  email: string
-}
+import { TEST_ADMIN_USER } from '../../tests/utils/admin-login'
 
-const TEST_ADMIN_EMAIL = 'test@email.com'
+export const JWT_COOKIE = 'admin-token'
 
-export default async function isAuthorized(
-  jwt: string | undefined
-): Promise<boolean> {
+export default async function isAuthorized(jwt: string | undefined) {
   if (!jwt || typeof jwt !== 'string' || jwt.trim().length === 0) {
     return false
   }
@@ -23,20 +19,16 @@ export default async function isAuthorized(
       issuer: 'fk-vaalimasiina'
     })
 
-    if (!payload || typeof payload !== 'object' || !('email' in payload)) {
+    if (!payload || typeof payload !== 'object' || !('user' in payload)) {
       return false
     }
 
-    const adminPayload = payload as AdminPayload
-
-    if (typeof adminPayload.email !== 'string') {
-      return false
-    }
+    const adminPayload = payload.user as { email: string; name: string }
 
     // Allow test email in test and development environments for testing
     if (
       (env.NODE_ENV === 'test' || env.NODE_ENV === 'development') &&
-      adminPayload.email === TEST_ADMIN_EMAIL
+      adminPayload.email === TEST_ADMIN_USER.email
     ) {
       return true
     }

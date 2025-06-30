@@ -50,9 +50,8 @@
   },
   "Login": {
     "title": "Hallintaan kirjautuminen",
-    "admin_login": "Ylläpidon kirjautuminen",
-    "signin_description": "Kirjaudu sisään valtuutetulla Google-tililläsi päästäksesi ylläpitopaneeliin.",
-    "signin_with_google": "Kirjaudu Google-tilillä",
+    "signin_description": "Kirjaudu sisään Google-tililläsi päästäksesi ylläpitopaneeliin.",
+    "signin_with_google": "Kirjaudu Google",
     "error_access_denied": "Pääsy evätty. Yritä uudelleen.",
     "error_unauthorized": "Sinulla ei ole oikeutta käyttää tätä sovellusta.",
     "error_server_error": "Palvelinvirhe. Yritä myöhemmin uudelleen.",
