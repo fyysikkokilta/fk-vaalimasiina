@@ -50,10 +50,12 @@
   },
   "Login": {
     "title": "Log in to admin",
-    "username": "Username",
-    "password": "Password",
-    "login_button": "Log in",
-    "wrong_username_or_password": "Wrong username or password"
+    "signin_description": "Sign in with your Google account to access the admin panel.",
+    "signin_with_google": "Sign in with Google",
+    "error_access_denied": "Access denied. Please try again.",
+    "error_unauthorized": "You are not authorized to access this application.",
+    "error_server_error": "A server error occurred. Please try again later.",
+    "error_no_code": "Invalid authorization code. Please try again."
   },
   "ElectionList": {
     "title": "Results",

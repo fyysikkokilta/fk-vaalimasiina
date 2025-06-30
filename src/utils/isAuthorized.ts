@@ -1,36 +1,38 @@
-import { type JWTPayload, jwtVerify } from 'jose'
+import { jwtVerify } from 'jose'
 
 import { env } from '~/env'
 
-interface AdminPayload extends JWTPayload {
-  username: string
-}
+export const JWT_COOKIE = 'admin-token'
 
-export default async function isAuthorized(
-  jwt: string | undefined
-): Promise<boolean> {
+export default async function isAuthorized(jwt: string | undefined) {
   if (!jwt || typeof jwt !== 'string' || jwt.trim().length === 0) {
     return false
   }
 
   try {
-    const secret = new TextEncoder().encode(env.JWT_SECRET)
+    const secret = new TextEncoder().encode(env.AUTH_SECRET)
 
     const { payload } = await jwtVerify(jwt, secret, {
       algorithms: ['HS256'],
       issuer: 'fk-vaalimasiina'
     })
 
-    if (!payload || typeof payload !== 'object' || !('username' in payload)) {
+    if (!payload || typeof payload !== 'object' || !('user' in payload)) {
       return false
     }
 
-    const adminPayload = payload as AdminPayload
+    const adminPayload = payload.user as { email: string; name: string }
 
-    return (
-      typeof adminPayload.username === 'string' &&
-      adminPayload.username === env.ADMIN_USERNAME
-    )
+    // Allow test email in test and development environments for testing
+    if (
+      (env.NODE_ENV === 'test' || env.NODE_ENV === 'development') &&
+      adminPayload.email === 'test@email.com'
+    ) {
+      return true
+    }
+
+    // Check if email is in the admin emails list
+    return env.ADMIN_EMAILS.includes(adminPayload.email)
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
       console.warn('JWT verification failed:', error)

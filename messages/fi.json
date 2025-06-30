@@ -50,10 +50,12 @@
   },
   "Login": {
     "title": "Hallintaan kirjautuminen",
-    "username": "Käyttäjätunnus",
-    "password": "Salasana",
-    "login_button": "Kirjaudu",
-    "wrong_username_or_password": "Väärä käyttäjätunnus tai salasana"
+    "signin_description": "Kirjaudu sisään Google-tililläsi päästäksesi ylläpitopaneeliin.",
+    "signin_with_google": "Kirjaudu Google",
+    "error_access_denied": "Pääsy evätty. Yritä uudelleen.",
+    "error_unauthorized": "Sinulla ei ole oikeutta käyttää tätä sovellusta.",
+    "error_server_error": "Palvelinvirhe. Yritä myöhemmin uudelleen.",
+    "error_no_code": "Virheellinen valtuutuskoodi. Yritä uudelleen."
   },
   "ElectionList": {
     "title": "Tulokset",

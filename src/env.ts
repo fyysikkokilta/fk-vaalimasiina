@@ -8,9 +8,15 @@ export const env = createEnv({
       .default('3000')
       .transform((val) => parseInt(val, 10)),
     DATABASE_URL: z.string().url(),
-    ADMIN_USERNAME: z.string(),
-    ADMIN_PASSWORD: z.string(),
-    JWT_SECRET: z.string(),
+    AUTH_SECRET: z.string(),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    ADMIN_EMAILS: z.string().transform((val) =>
+      val
+        .split(',')
+        .map((email) => email.trim())
+        .filter((email) => email.length > 0)
+    ),
     BASE_URL: z.string().url().default('https://vaalit.fyysikkokilta.fi'),
     MAIL_FROM: z.string().default('Vaalimasiina <vaalit@fyysikkokilta.fi>'),
     MAILGUN_API_KEY: z.string().optional(),
@@ -58,5 +64,6 @@ export const env = createEnv({
     NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK:
       process.env.NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK
   },
+  emptyStringAsUndefined: true,
   skipValidation: process.env.SKIP_ENV_VALIDATION === 'true'
 })

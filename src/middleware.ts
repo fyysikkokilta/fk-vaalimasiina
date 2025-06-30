@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import createIntlMiddleware from 'next-intl/middleware'
 
 import { routing } from './i18n/routing'
-import isAuthorized from './utils/isAuthorized'
+import isAuthorized, { JWT_COOKIE } from './utils/isAuthorized'
 
 const intlMiddleware = createIntlMiddleware(routing)
 
@@ -24,7 +24,7 @@ export default async function middleware(request: NextRequest) {
   const locale = extractLocale(pathname)
 
   try {
-    const adminToken = request.cookies.get('admin-token')?.value
+    const adminToken = request.cookies.get(JWT_COOKIE)?.value
     const authorized = await isAuthorized(adminToken)
 
     // Redirect only if the path contains the locale
@@ -48,5 +48,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/(en|fi)/:path*', '/((?!api|_next|_vercel|.*\\..*).*)']
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 }

@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { createMiddleware } from 'next-safe-action'
 
 import { redirect } from '~/i18n/navigation'
-import isAuthorized from '~/utils/isAuthorized'
+import isAuthorized, { JWT_COOKIE } from '~/utils/isAuthorized'
 
 import { ActionError } from '../safe-action'
 
@@ -11,7 +11,7 @@ export const isAuthorizedMiddleware = createMiddleware().define(
   async ({ next }) => {
     try {
       const cookieStore = await cookies()
-      const adminToken = cookieStore.get('admin-token')
+      const adminToken = cookieStore.get(JWT_COOKIE)
       const authorized = await isAuthorized(adminToken?.value)
 
       if (!authorized) {
