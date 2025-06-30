@@ -106,7 +106,7 @@ For development, you can set `SKIP_ENV_VALIDATION=true` to bypass validation dur
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
    - Create a project and enable Google+ API
    - Create OAuth 2.0 credentials
-   - Add authorized redirect URI: `[YOUR_BASE_URL]/api/auth/google`
+   - Add authorized redirect URI: `[YOUR_BASE_URL]/api/auth/google/callback`
 
 **Note for Testing**: When running tests, make sure `test@email.com` is included in your `ADMIN_EMAILS` list as this is the email used by the test utilities.
 

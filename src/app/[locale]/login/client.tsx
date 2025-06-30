@@ -4,7 +4,6 @@ import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import React from 'react'
 
-import { getGoogleAuthUrl } from '~/actions/auth/getGoogleAuthUrl'
 import TitleWrapper from '~/components/TitleWrapper'
 
 export default function Login() {
@@ -13,8 +12,7 @@ export default function Login() {
   const error = searchParams.get('error')
 
   const handleGoogleSignIn = () => {
-    const googleAuthUrl = getGoogleAuthUrl()
-    window.location.href = googleAuthUrl
+    window.location.href = '/api/auth/google'
   }
 
   const getErrorMessage = () => {
