@@ -33,9 +33,10 @@ This project uses `@t3-oss/env-nextjs` for environment variable validation. All 
 
 #### Authentication
 
-- `ADMIN_USERNAME`: Admin username for authentication
-- `ADMIN_PASSWORD`: Admin password for authentication (use a strong password!)
-- `JWT_SECRET`: Secret key for JWT tokens (generate a random string!)
+- `AUTH_SECRET`: Secret key for JWT tokens (generate a random string!)
+- `GOOGLE_CLIENT_ID`: Google OAuth client ID from Google Cloud Console
+- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret from Google Cloud Console
+- `ADMIN_EMAIL`: Email address allowed to access admin panel
 
 #### Email
 
@@ -95,9 +96,17 @@ For development, you can set `SKIP_ENV_VALIDATION=true` to bypass validation dur
 
 2. Update the required variables in `.env`:
    - Set your `DATABASE_URL`
-   - Change `ADMIN_USERNAME` and `ADMIN_PASSWORD`
-   - Generate a random `JWT_SECRET`
+   - Set up Google OAuth credentials in Google Cloud Console
+   - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` from Google OAuth
+   - Set `ADMIN_EMAIL` to the email address that should have admin access
+   - Generate a random `AUTH_SECRET`
    - Update `BASE_URL` for your environment
+
+3. Configure Google OAuth:
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a project and enable Google+ API
+   - Create OAuth 2.0 credentials
+   - Add authorized redirect URI: `[YOUR_BASE_URL]/api/auth/google`
 
 ## Migrations
 

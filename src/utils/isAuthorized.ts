@@ -3,7 +3,7 @@ import { type JWTPayload, jwtVerify } from 'jose'
 import { env } from '~/env'
 
 interface AdminPayload extends JWTPayload {
-  username: string
+  email: string
 }
 
 export default async function isAuthorized(
@@ -14,22 +14,22 @@ export default async function isAuthorized(
   }
 
   try {
-    const secret = new TextEncoder().encode(env.JWT_SECRET)
+    const secret = new TextEncoder().encode(env.AUTH_SECRET)
 
     const { payload } = await jwtVerify(jwt, secret, {
       algorithms: ['HS256'],
       issuer: 'fk-vaalimasiina'
     })
 
-    if (!payload || typeof payload !== 'object' || !('username' in payload)) {
+    if (!payload || typeof payload !== 'object' || !('email' in payload)) {
       return false
     }
 
     const adminPayload = payload as AdminPayload
 
     return (
-      typeof adminPayload.username === 'string' &&
-      adminPayload.username === env.ADMIN_USERNAME
+      typeof adminPayload.email === 'string' &&
+      adminPayload.email === env.ADMIN_EMAIL
     )
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {

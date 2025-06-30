@@ -8,9 +8,10 @@ export const env = createEnv({
       .default('3000')
       .transform((val) => parseInt(val, 10)),
     DATABASE_URL: z.string().url(),
-    ADMIN_USERNAME: z.string(),
-    ADMIN_PASSWORD: z.string(),
-    JWT_SECRET: z.string(),
+    AUTH_SECRET: z.string(),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    ADMIN_EMAIL: z.string().email(),
     BASE_URL: z.string().url().default('https://vaalit.fyysikkokilta.fi'),
     MAIL_FROM: z.string().default('Vaalimasiina <vaalit@fyysikkokilta.fi>'),
     MAILGUN_API_KEY: z.string().optional(),
