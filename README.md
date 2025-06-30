@@ -108,7 +108,7 @@ For development, you can set `SKIP_ENV_VALIDATION=true` to bypass validation dur
    - Create OAuth 2.0 credentials
    - Add authorized redirect URI: `[YOUR_BASE_URL]/api/auth/google/callback`
 
-**Note for Testing**: When running tests, make sure `test@email.com` is included in your `ADMIN_EMAILS` list as this is the email used by the test utilities.
+**Note for Testing**: Tests automatically use `test@email.com` for admin authentication. This email is automatically authorized in development and test environments, so you don't need to include it in your `ADMIN_EMAILS` configuration for local development or testing.
 
 ## Migrations
 
