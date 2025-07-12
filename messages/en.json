@@ -173,9 +173,7 @@
         "error_saving_ballot": "Error saving ballot"
       },
       "validation": {
-        "voterId_string": "Voter identifier must be a string",
         "voterId_uuid": "Voter identifier must be a valid UUID",
-        "candidateId_string": "Candidate identifier must be a string",
         "candidateId_uuid": "Candidate identifier must be a valid UUID",
         "rank_number": "Rank must be a number",
         "rank_min": "Rank must be at least 1",
@@ -193,24 +191,8 @@
         "voter_not_found": "Voter not found"
       },
       "validation": {
-        "oldEmail_string": "Old email must be a string",
-        "oldEmail_nonempty": "Old email must not be empty",
         "oldEmail_email": "Old email must be a valid email",
-        "newEmail_string": "New email must be a string",
-        "newEmail_nonempty": "New email must not be empty",
         "newEmail_email": "New email must be a valid email"
-      }
-    },
-    "authenticate": {
-      "action_status": {
-        "login_successful": "Login successful",
-        "wrong_username_or_password": "Wrong username or password"
-      },
-      "validation": {
-        "username_string": "Username must be a string",
-        "username_nonempty": "Username must not be empty",
-        "password_string": "Password must be a string",
-        "password_nonempty": "Password must not be empty"
       }
     },
     "startVoting": {
@@ -220,15 +202,11 @@
         "election_not_found": "Election not found"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID",
-        "email_string": "Email must be a string",
-        "email_nonempty": "Email must not be empty",
         "email_email": "Email must be a valid email",
         "emails_array": "Emails must be an array",
         "emails_nonempty": "There must be at least one email",
-        "emails_unique": "Emails must be unique",
-        "invalid_emails": "Not all emails are valid"
+        "emails_unique": "Emails must be unique"
       }
     },
     "startEditing": {
@@ -237,7 +215,6 @@
         "editing_started": "Editing started"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID"
       }
     },
@@ -253,7 +230,6 @@
         "not_everyone_voted": "Not everyone has voted"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID"
       }
     },
@@ -263,7 +239,6 @@
         "election_not_found": "Election not found"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID",
         "title_string": "Title must be a string",
         "title_nonempty": "Title must not be empty",
@@ -302,7 +277,6 @@
         "election_not_found": "Election not found"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID"
       }
     },
@@ -312,7 +286,6 @@
         "election_not_found": "Election not found"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID"
       }
     },
@@ -322,7 +295,6 @@
         "election_not_found": "Election not found"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID"
       }
     },
@@ -332,7 +304,6 @@
         "csv_file_not_found": "CSV file not found"
       },
       "validation": {
-        "electionId_string": "Election identifier must be a string",
         "electionId_uuid": "Election identifier must be a valid UUID"
       }
     }

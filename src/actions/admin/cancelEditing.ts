@@ -13,11 +13,7 @@ import { electionsTable } from '~/db/schema'
 const cancelEditingSchema = async () => {
   const t = await getTranslations('actions.cancelEditing.validation')
   return z.object({
-    electionId: z
-      .string({
-        message: t('electionId_string')
-      })
-      .uuid({ message: t('electionId_uuid') })
+    electionId: z.uuid({ error: t('electionId_uuid') })
   })
 }
 

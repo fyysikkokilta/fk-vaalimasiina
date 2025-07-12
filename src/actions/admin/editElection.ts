@@ -14,31 +14,27 @@ const editElectionSchema = async () => {
   const t = await getTranslations('actions.editElection.validation')
   return z
     .object({
-      electionId: z
-        .string({
-          message: t('electionId_string')
-        })
-        .uuid({ message: t('electionId_uuid') }),
+      electionId: z.uuid({ error: t('electionId_uuid') }),
       title: z
-        .string({ message: t('title_string') })
-        .nonempty({ message: t('title_nonempty') }),
+        .string({ error: t('title_string') })
+        .nonempty({ error: t('title_nonempty') }),
       description: z
-        .string({ message: t('description_string') })
-        .nonempty({ message: t('description_nonempty') }),
+        .string({ error: t('description_string') })
+        .nonempty({ error: t('description_nonempty') }),
       seats: z
-        .number({ message: t('seats_number') })
-        .min(1, { message: t('seats_min') }),
+        .number({ error: t('seats_number') })
+        .min(1, { error: t('seats_min') }),
       candidates: z
         .array(
-          z.string({ message: t('candidate_string') }).nonempty({
-            message: t('candidate_nonempty')
+          z.string({ error: t('candidate_string') }).nonempty({
+            error: t('candidate_nonempty')
           }),
-          { message: t('candidates_array') }
+          { error: t('candidates_array') }
         )
-        .nonempty({ message: t('candidates_nonempty') })
+        .nonempty({ error: t('candidates_nonempty') })
     })
     .refine((data) => data.candidates.length >= data.seats, {
-      message: t('candidates_geq_seats')
+      error: t('candidates_geq_seats')
     })
 }
 

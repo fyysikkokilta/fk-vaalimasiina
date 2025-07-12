@@ -13,11 +13,7 @@ import { electionsTable, votersTable } from '~/db/schema'
 const endVotingSchema = async () => {
   const t = await getTranslations('actions.endVoting.validation')
   return z.object({
-    electionId: z
-      .string({
-        message: t('electionId_string')
-      })
-      .uuid({ message: t('electionId_uuid') })
+    electionId: z.uuid({ error: t('electionId_uuid') })
   })
 }
 

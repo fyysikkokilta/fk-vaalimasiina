@@ -15,24 +15,14 @@ import { actionClient, ActionError } from '../safe-action'
 const changeEmailSchema = async () => {
   const t = await getTranslations('actions.changeEmail.validation')
   return z.object({
-    oldEmail: z
-      .string({
-        message: t('oldEmail_string')
-      })
-      .nonempty({ message: t('oldEmail_nonempty') })
-      .email({
-        message: t('oldEmail_email')
-      }),
-    newEmail: z
-      .string({
-        message: t('newEmail_string')
-      })
-      .nonempty({
-        message: t('newEmail_nonempty')
-      })
-      .email({
-        message: t('newEmail_email')
-      })
+    oldEmail: z.email({
+      pattern: z.regexes.html5Email,
+      error: t('oldEmail_email')
+    }),
+    newEmail: z.email({
+      pattern: z.regexes.html5Email,
+      error: t('newEmail_email')
+    })
   })
 }
 

@@ -14,43 +14,22 @@ import { sendVotingMail } from '~/emails/handler'
 
 const startVotingSchame = async () => {
   const t = await getTranslations('actions.startVoting.validation')
-  const emailSchema = z
-    .string({
-      message: t('email_string')
-    })
-    .nonempty({ message: t('email_nonempty') })
-    .email({ message: t('email_email') })
 
   return z.object({
-    electionId: z
-      .string({
-        message: t('electionId_string')
-      })
-      .uuid({ message: t('electionId_uuid') }),
+    electionId: z.uuid({
+      error: t('electionId_uuid')
+    }),
     emails: z
-      .array(emailSchema, { message: t('emails_array') })
-      .nonempty({ message: t('emails_nonempty') })
-      .superRefine((items, ctx) => {
-        const errors = items
-          .map((item, index) => {
-            const result = emailSchema.safeParse(item)
-            if (!result.success) {
-              return { index, errors: result.error.format() }
-            }
-            return null
-          })
-          .filter(Boolean)
-
-        if (errors.length > 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: t('invalid_emails'),
-            path: []
-          })
-        }
-      })
+      .array(
+        z.email({
+          pattern: z.regexes.html5Email,
+          error: t('email_email')
+        }),
+        { error: t('emails_array') }
+      )
+      .nonempty({ error: t('emails_nonempty') })
       .refine((items) => new Set(items).size === items.length, {
-        message: t('emails_unique')
+        error: t('emails_unique')
       })
   })
 }

@@ -13,33 +13,25 @@ import { actionClient, ActionError } from './safe-action'
 const voteSchema = async () => {
   const t = await getTranslations('actions.vote.validation')
   return z.object({
-    voterId: z
-      .string({
-        message: t('voterId_string')
-      })
-      .uuid({
-        message: t('voterId_uuid')
-      }),
+    voterId: z.uuid({
+      error: t('voterId_uuid')
+    }),
     ballot: z
       .array(
         z.object(
           {
-            candidateId: z
-              .string({
-                message: t('candidateId_string')
-              })
-              .uuid({
-                message: t('candidateId_uuid')
-              }),
+            candidateId: z.uuid({
+              error: t('candidateId_uuid')
+            }),
             rank: z
               .number({
-                message: t('rank_number')
+                error: t('rank_number')
               })
-              .min(1, { message: t('rank_min') })
+              .min(1, { error: t('rank_min') })
           },
-          { message: t('preference_object') }
+          { error: t('preference_object') }
         ),
-        { message: t('ballot_array') }
+        { error: t('ballot_array') }
       )
       .refine(
         (ballot) => {
@@ -49,7 +41,7 @@ const voteSchema = async () => {
             ranks.every((rank, index) => rank === index + 1)
           )
         },
-        { message: t('ranks_unique') }
+        { error: t('ranks_unique') }
       )
   })
 }
