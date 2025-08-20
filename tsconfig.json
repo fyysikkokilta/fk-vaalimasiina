@@ -35,6 +35,7 @@
     "./global.d.ts",
     "./next.config.ts",
     "./eslint.config.mjs",
+    "./.lintstagedrc.ts",
     "./postcss.config.js",
     "./playwright.config.ts",
     "./vitest.config.ts",

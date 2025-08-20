@@ -1,7 +1,8 @@
 {
   "name": "fk-vaalimasiina",
-  "private": true,
   "version": "1.0.0",
+  "description": "Electronic voting system for the Guild of Physics",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "next dev --turbo",
@@ -16,11 +17,6 @@
     "db:migrate": "tsx ./src/db/migrate.ts",
     "preinstall": "pnpx only-allow pnpm",
     "prepare": "simple-git-hooks"
-  },
-  "lint-staged": {
-    "**/*.ts?(x)": "bash -c tsc -p tsconfig.json --noEmit",
-    "src/**/*.{js,jsx,ts,tsx}": "eslint --fix",
-    "src/**/*.{js,jsx,ts,tsx,css,scss,md}": "prettier --write --ignore-unknown"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpx lint-staged"
