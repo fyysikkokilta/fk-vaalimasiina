@@ -29,28 +29,25 @@
     "target": "ES2022"
   },
   "include": [
-    "./dist/types/**/*.ts",
-    "./drizzle.config.ts",
-    "./next-env.d.ts",
-    "./global.d.ts",
-    "./next.config.ts",
-    "./eslint.config.mjs",
-    "./.lintstagedrc.ts",
-    "./postcss.config.js",
-    "./playwright.config.ts",
-    "./vitest.config.ts",
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./tests/**/*.ts",
-    "./types/**/*",
-    ".next/types/**/*.ts"
+    "drizzle.config.ts",
+    "next-env.d.ts",
+    "global.d.ts",
+    "next.config.ts",
+    "eslint.config.ts",
+    ".lintstagedrc.ts",
+    "postcss.config.js",
+    "playwright.config.ts",
+    "vitest.config.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "next/types/**/*.ts"
   ],
   "exclude": [
-    "./data",
-    "./dist",
-    "./node_modules",
-    "./playwright-report",
-    "./public",
-    "./test-results"
+    "data",
+    "node_modules",
+    "playwright-report",
+    "public",
+    "test-results"
   ]
 }
