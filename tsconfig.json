@@ -29,19 +29,19 @@
     "target": "ES2022"
   },
   "include": [
-    "drizzle.config.ts",
-    "next-env.d.ts",
-    "global.d.ts",
-    "next.config.ts",
-    "eslint.config.ts",
     ".lintstagedrc.ts",
-    "postcss.config.js",
+    "drizzle.config.ts",
+    "eslint.config.ts",
+    "global.d.ts",
+    "next-env.d.ts",
+    "next.config.ts",
     "playwright.config.ts",
-    "vitest.config.ts",
+    "postcss.config.js",
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
-    "next/types/**/*.ts"
+    "vitest.config.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "data",
