@@ -1,8 +1,8 @@
 import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
+import tsParser from '@typescript-eslint/parser'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
-import tsParser from '@typescript-eslint/parser'
 
 const compat = new FlatCompat({
   // import.meta.dirname is available after Node.js v20.11.0
@@ -11,14 +11,21 @@ const compat = new FlatCompat({
 })
 
 const eslintConfig = [
-  ...compat.config({
-    extends: [
-      'next',
-      'eslint:recommended',
-      'plugin:@typescript-eslint/recommended-type-checked',
-      'plugin:prettier/recommended'
+  {
+    ignores: [
+      'node_modules/**',
+      '.next/**',
+      'out/**',
+      'build/**',
+      'next-env.d.ts'
     ]
-  }),
+  },
+  ...compat.extends(
+    'next/core-web-vitals',
+    'next/typescript',
+    'plugin:prettier/recommended',
+    'plugin:@typescript-eslint/recommended-type-checked'
+  ),
   {
     plugins: {
       'simple-import-sort': simpleImportSort

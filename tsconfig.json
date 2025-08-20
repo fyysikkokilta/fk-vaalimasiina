@@ -1,22 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "baseUrl": ".",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "allowJs": true,
     "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
     "esModuleInterop": true,
-    /* Bundler mode */
+    "module": "esnext",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "preserve",
-    "allowJs": true,
     "incremental": true,
-    /* Linting */
-    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -29,7 +25,8 @@
     ],
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    "target": "ES2022"
   },
   "include": [
     "./dist/types/**/*.ts",
@@ -37,6 +34,7 @@
     "./next-env.d.ts",
     "./global.d.ts",
     "./next.config.ts",
+    "./eslint.config.mjs",
     "./postcss.config.js",
     "./playwright.config.ts",
     "./vitest.config.ts",

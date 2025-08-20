@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     useCache: true
   },
+  // eslint-disable-next-line @typescript-eslint/require-await
   async headers() {
     return [
       {

@@ -7,7 +7,7 @@
     "dev": "next dev --turbo",
     "build": "next build --turbo",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "generate-election": "tsx ./tests/fixtures/generate-election.ts",
     "test:unit": "vitest",
     "type:check": "tsc --noEmit",
