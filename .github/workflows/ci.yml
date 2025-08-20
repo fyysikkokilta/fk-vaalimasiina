@@ -50,6 +50,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Next.js types
+        run: pnpm typegen
+
       - name: Lint and fix
         run: pnpm lint --fix
 

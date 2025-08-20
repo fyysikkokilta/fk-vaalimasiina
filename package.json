@@ -9,6 +9,7 @@
     "build": "next build --turbo",
     "start": "next start",
     "lint": "eslint .",
+    "typegen": "next typegen",
     "generate-election": "tsx ./tests/fixtures/generate-election.ts",
     "test:unit": "vitest",
     "type:check": "tsc --noEmit",
