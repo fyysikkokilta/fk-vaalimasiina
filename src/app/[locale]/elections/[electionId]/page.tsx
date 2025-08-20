@@ -67,12 +67,11 @@ const getElection = async (electionId: string) => {
 
 export async function generateMetadata({
   params
-}: {
-  params: Promise<{ locale: Locale; electionId: string }>
-}) {
+}: PageProps<'/[locale]/elections/[electionId]'>) {
   const { locale, electionId } = await params
+  const nextIntlLocale = locale as Locale
   const t = await getTranslations({
-    locale,
+    locale: nextIntlLocale,
     namespace: 'metadata.election'
   })
   const electionBallotsVoterCount = await getElection(electionId)
@@ -92,11 +91,10 @@ export async function generateMetadata({
 
 export default async function Election({
   params
-}: {
-  params: Promise<{ locale: Locale; electionId: string }>
-}) {
+}: PageProps<'/[locale]/elections/[electionId]'>) {
   const { locale, electionId } = await params
-  setRequestLocale(locale)
+  const nextIntlLocale = locale as Locale
+  setRequestLocale(nextIntlLocale)
 
   if (!isUUID(electionId)) {
     notFound()

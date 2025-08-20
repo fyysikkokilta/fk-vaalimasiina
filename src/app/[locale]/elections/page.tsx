@@ -14,12 +14,11 @@ const getElections = async () => {
 
 export async function generateMetadata({
   params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+}: PageProps<'/[locale]/elections'>) {
   const { locale } = await params
+  const nextIntlLocale = locale as Locale
   const t = await getTranslations({
-    locale,
+    locale: nextIntlLocale,
     namespace: 'metadata.elections'
   })
   return {
@@ -30,11 +29,10 @@ export async function generateMetadata({
 
 export default async function ElectionList({
   params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+}: PageProps<'/[locale]/elections'>) {
   const { locale } = await params
-  setRequestLocale(locale)
+  const nextIntlLocale = locale as Locale
+  setRequestLocale(nextIntlLocale)
 
   const elections = await getElections()
 

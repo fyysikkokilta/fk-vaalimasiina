@@ -58,12 +58,11 @@ const getAdminElection = async () => {
 
 export async function generateMetadata({
   params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+}: PageProps<'/[locale]/admin'>) {
   const { locale } = await params
+  const nextIntlLocale = locale as Locale
   const t = await getTranslations({
-    locale,
+    locale: nextIntlLocale,
     namespace: 'metadata.admin'
   })
   return {
@@ -74,11 +73,10 @@ export async function generateMetadata({
 
 export default async function AdminPage({
   params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+}: PageProps<'/[locale]/admin'>) {
   const { locale } = await params
-  setRequestLocale(locale)
+  const nextIntlLocale = locale as Locale
+  setRequestLocale(nextIntlLocale)
 
   const t = await getTranslations('Admin')
 

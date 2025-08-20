@@ -21,11 +21,10 @@ export async function generateMetadata({
 
 export default async function LoginPage({
   params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+}: PageProps<'/[locale]/login'>) {
   const { locale } = await params
-  setRequestLocale(locale)
+  const nextIntlLocale = locale as Locale
+  setRequestLocale(nextIntlLocale)
 
   return <Login />
 }

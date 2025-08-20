@@ -46,12 +46,11 @@ const findFinishedElection = async () => {
 
 export async function generateMetadata({
   params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+}: PageProps<'/[locale]/audit'>) {
   const { locale } = await params
+  const nextIntlLocale = locale as Locale
   const t = await getTranslations({
-    locale,
+    locale: nextIntlLocale,
     namespace: 'metadata.audit'
   })
   const electionAndBallots = await findFinishedElection()
@@ -72,11 +71,10 @@ export async function generateMetadata({
 
 export default async function AuditPage({
   params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+}: PageProps<'/[locale]/audit'>) {
   const { locale } = await params
-  setRequestLocale(locale)
+  const nextIntlLocale = locale as Locale
+  setRequestLocale(nextIntlLocale)
 
   const electionAndBallots = await findFinishedElection()
 
