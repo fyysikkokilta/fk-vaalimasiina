@@ -60,10 +60,10 @@ const EmailTemplate = ({
         <Text style={{ fontStyle: 'italic' }}>In English below</Text>
         <Text>Tervetuloa äänestämään Fyysikkokillan vaaleissa!</Text>
         <Text>
-          <strong>Äänestyksen nimi:</strong> {election.title}
+          <strong>Vaalin nimi:</strong> {election.title}
         </Text>
         <Text>
-          <strong>Äänestyksen kuvaus:</strong> {election.description}
+          <strong>Vaalin kuvaus:</strong> {election.description}
         </Text>
         <Text>
           <strong>Valittavien määrä:</strong> {election.seats}
@@ -97,7 +97,7 @@ const EmailTemplate = ({
           <strong>Election description:</strong> {election.description}
         </Text>
         <Text>
-          <strong>Amount to elect:</strong> {election.seats}
+          <strong>Seats:</strong> {election.seats}
         </Text>
         <Text>
           You can only vote once and you cannot change your vote after voting.
