@@ -169,7 +169,7 @@ test.describe('audit view', () => {
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
-    await expect(page.getByText(ballotId)).toBeVisible()
+    await expect(page.getByText(ballotId)).not.toBeVisible()
     await expect(page.getByText('Candidate 1')).toBeVisible()
   })
 
@@ -187,7 +187,7 @@ test.describe('audit view', () => {
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
-    await expect(page.getByText(ballotId)).toBeVisible()
+    await expect(page.getByText(ballotId)).not.toBeVisible()
     await expect(page.getByText('Empty ballot')).toBeVisible()
   })
 
@@ -203,12 +203,12 @@ test.describe('audit view', () => {
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
-    await expect(page.getByText(ballotId)).toBeVisible()
+    await expect(page.getByText(ballotId)).not.toBeVisible()
     await expect(page.getByText('Candidate 1')).toBeVisible()
 
     await expect(page.locator('#searchBallot')).toBeVisible()
     await page.fill('#searchBallot', ballotId)
-    await expect(page.getByText(ballotId)).toBeVisible()
+    await expect(page.getByText(ballotId)).not.toBeVisible()
     await expect(page.getByText('Candidate 1')).toBeVisible()
   })
 })

@@ -112,13 +112,11 @@ test.describe('Audit page', () => {
   })
 
   test('should handle search with pagination', async ({ page }) => {
-    // Get a ballot ID from the first page
+    // Get a ballot ID from the first ballot
     const firstBallotId = await page
       .locator('tbody tr')
       .first()
-      .locator('td')
-      .first()
-      .textContent()
+      .getAttribute('id')
 
     // Search for that specific ballot
     await page.fill('input[placeholder="Ballot ID"]', firstBallotId!)

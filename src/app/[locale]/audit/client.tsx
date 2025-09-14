@@ -61,7 +61,7 @@ export default function Audit({ election, ballots }: AuditPageProps) {
         </label>
         <input
           id="searchBallot"
-          type="text"
+          type="password"
           className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           placeholder={t('ballot_id')}
           onChange={handleSearch}
@@ -70,8 +70,8 @@ export default function Audit({ election, ballots }: AuditPageProps) {
       <table className="w-full border-collapse overflow-hidden rounded-lg">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-              {t('ballot_id')}
+            <th className="px-3 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+              {t('ballot_number')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
               {t('ballot')}
@@ -80,9 +80,9 @@ export default function Audit({ election, ballots }: AuditPageProps) {
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {paginatedBallots.map((audit, index) => (
-            <tr key={index} className="hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm text-gray-500">
-                {audit.ballotId}
+            <tr key={index} id={audit.ballotId} className="hover:bg-gray-50">
+              <td className="px-3 py-4 text-left text-sm text-gray-900">
+                {`${index + 1}.`}
               </td>
               <td className="px-6 py-4 text-sm text-gray-900">
                 <div className="flex flex-wrap gap-2">

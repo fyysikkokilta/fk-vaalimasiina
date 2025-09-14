@@ -79,6 +79,7 @@
   "Audit": {
     "title": "Auditing",
     "ballot_id": "Ballot ID",
+    "ballot_number": "#",
     "ballot": "Ballot",
     "no_finished_election": "There is no finished election",
     "no_finished_election_description": "You can only audit the election whose results have just been published. If you think this is an error, please contact the chairperson or secretary.",

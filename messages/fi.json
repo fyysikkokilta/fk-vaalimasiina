@@ -79,6 +79,7 @@
   "Audit": {
     "title": "Auditointi",
     "ballot_id": "Äänestyslipun tunniste",
+    "ballot_number": "#",
     "ballot": "Äänestyslippu",
     "no_finished_election": "Ei päättynyttä vaalia",
     "no_finished_election_description": "Voit tarkastella vain juuri päättynyttä vaalia. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.",
