@@ -79,17 +79,13 @@
   "Audit": {
     "title": "Auditing",
     "ballot_id": "Ballot ID",
-    "ballot_number": "#",
     "ballot": "Ballot",
     "no_finished_election": "There is no finished election",
     "no_finished_election_description": "You can only audit the election whose results have just been published. If you think this is an error, please contact the chairperson or secretary.",
     "empty_ballot": "Empty ballot",
     "search_ballot": "Search ballot",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "page": "Page"
-    }
+    "placeholder_no_id": "Enter a ballot ID to view the ballot",
+    "placeholder_incorrect_id": "No ballot found with this ID"
   },
   "Admin": {
     "title": "Admin"

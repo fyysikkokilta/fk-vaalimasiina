@@ -154,61 +154,81 @@ test.describe('audit view', () => {
     await page.goto(`/vote/${voters[0].voterId}`)
   })
 
-  test('should show ballot after voting has ended', async ({
+  test('should show search bar and placeholder initially', async ({
     page,
     request
   }) => {
-    await selectCandidate(page, 'Candidate 1')
-    await page.getByRole('button', { name: 'Vote' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
-    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
-
-    await expect(page.getByText('Thank you for voting!')).toBeVisible()
     await changeElectionStatus(election.electionId, 'FINISHED', request)
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
-    await expect(page.getByText(ballotId)).not.toBeVisible()
-    await expect(page.getByText('Candidate 1')).toBeVisible()
-  })
-
-  test('should show empty ballot after voting has ended', async ({
-    page,
-    request
-  }) => {
-    await page.getByRole('button', { name: 'Vote' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
-    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
-
-    await expect(page.getByText('Thank you for voting!')).toBeVisible()
-    await changeElectionStatus(election.electionId, 'FINISHED', request)
-    await page.goto('/audit')
-    await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
-
-    await expect(page.getByText(ballotId)).not.toBeVisible()
-    await expect(page.getByText('Empty ballot')).toBeVisible()
-  })
-
-  test('should allow to search for ballot', async ({ page, request }) => {
-    await selectCandidate(page, 'Candidate 1')
-    await page.getByRole('button', { name: 'Vote' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
-    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
-
-    await expect(page.getByText('Thank you for voting!')).toBeVisible()
-    await changeElectionStatus(election.electionId, 'FINISHED', request)
-    await page.goto('/audit')
-    await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
-
-    await expect(page.getByText(ballotId)).not.toBeVisible()
-    await expect(page.getByText('Candidate 1')).toBeVisible()
-
+    // Should show search input and placeholder text
     await expect(page.locator('#searchBallot')).toBeVisible()
+    await expect(
+      page.getByText('Enter a ballot ID to view the ballot')
+    ).toBeVisible()
+  })
+
+  test('should show ballot when correct ID is entered', async ({
+    page,
+    request
+  }) => {
+    await selectCandidate(page, 'Candidate 1')
+    await page.getByRole('button', { name: 'Vote' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
+    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
+    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
+
+    await expect(page.getByText('Thank you for voting!')).toBeVisible()
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
+    await page.goto('/audit')
+    await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
+
+    // Search for the ballot
     await page.fill('#searchBallot', ballotId)
-    await expect(page.getByText(ballotId)).not.toBeVisible()
+
+    // Should show the ballot (without ID) and the candidate
+    await expect(page.getByRole('heading', { name: 'Ballot' })).toBeVisible()
     await expect(page.getByText('Candidate 1')).toBeVisible()
+    // Should not show the ballot ID
+    await expect(page.getByText(ballotId)).not.toBeVisible()
+  })
+
+  test('should show empty ballot when ballot has no votes', async ({
+    page,
+    request
+  }) => {
+    await page.getByRole('button', { name: 'Vote' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
+    await page.getByRole('button', { name: 'Copy ballot ID' }).click()
+    const ballotId = await page.evaluate(() => navigator.clipboard.readText())
+
+    await expect(page.getByText('Thank you for voting!')).toBeVisible()
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
+    await page.goto('/audit')
+    await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
+
+    // Search for the ballot
+    await page.fill('#searchBallot', ballotId)
+
+    // Should show empty ballot message
+    await expect(page.getByText('Empty ballot')).toBeVisible()
+    // Should not show the ballot ID
+    await expect(page.getByText(ballotId)).not.toBeVisible()
+  })
+
+  test('should show error message when incorrect ID is entered', async ({
+    page,
+    request
+  }) => {
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
+    await page.goto('/audit')
+    await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
+
+    // Search for non-existent ballot
+    await page.fill('#searchBallot', 'non-existent-id')
+
+    // Should show error message
+    await expect(page.getByText('No ballot found with this ID')).toBeVisible()
   })
 })
