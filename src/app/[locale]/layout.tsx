@@ -4,6 +4,7 @@ import { Roboto } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { hasLocale, Locale, NextIntlClientProvider } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import NextTopLoader from 'nextjs-toploader'
 import { Flip, ToastContainer } from 'react-toastify'
 
 import Footer from '~/components/Footer'
@@ -11,14 +12,11 @@ import Header from '~/components/Header'
 import { env } from '~/env'
 import { routing } from '~/i18n/routing'
 
-export async function generateMetadata({
-  params
-}: {
-  params: Promise<{ locale: Locale }>
-}) {
+export async function generateMetadata({ params }: LayoutProps<'/[locale]'>) {
   const { locale } = await params
+  const nextIntlLocale = locale as Locale
   const t = await getTranslations({
-    locale,
+    locale: nextIntlLocale,
     namespace: 'metadata'
   })
   return {
@@ -62,8 +60,13 @@ export default async function RootLayout({
       {/*<Script src="https://unpkg.com/react-scan/dist/auto.global.js" />*/}
       <body className="bg-fk-yellow text-fk-black flex h-dvh flex-col">
         <NextIntlClientProvider>
+          <NextTopLoader
+            color="#fbdb1d"
+            showSpinner={false}
+            showForHashAnchor={false}
+          />
           <Header />
-          <main className="m-5 flex flex-1 flex-shrink-0 flex-col items-center">
+          <main className="m-5 flex flex-1 shrink-0 flex-col items-center">
             <div className="fii-background flex max-w-5xl justify-center rounded-lg bg-white py-4 shadow-md">
               {children}
             </div>

@@ -1,32 +1,16 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { Suspense } from 'react'
 
+import LoginError from '~/components/LoginError'
 import TitleWrapper from '~/components/TitleWrapper'
 
 export default function Login() {
   const t = useTranslations('Login')
-  const searchParams = useSearchParams()
-  const error = searchParams.get('error')
 
   const handleGoogleSignIn = () => {
     window.location.href = '/api/auth/google'
-  }
-
-  const getErrorMessage = () => {
-    switch (error) {
-      case 'access_denied':
-        return t('error_access_denied')
-      case 'unauthorized':
-        return t('error_unauthorized')
-      case 'server_error':
-        return t('error_server_error')
-      case 'no_code':
-        return t('error_no_code')
-      default:
-        return null
-    }
   }
 
   return (
@@ -37,11 +21,9 @@ export default function Login() {
             <div className="text-center">
               <p className="text-fk-black mb-6">{t('signin_description')}</p>
             </div>
-            {error && (
-              <div className="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-                {getErrorMessage()}
-              </div>
-            )}
+            <Suspense>
+              <LoginError />
+            </Suspense>
 
             <button
               onClick={handleGoogleSignIn}

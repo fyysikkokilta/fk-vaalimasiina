@@ -26,7 +26,7 @@ export default function LanguageSwitcher() {
 
   return (
     <button
-      className="cursor-pointer rounded-lg border-1 border-amber-50 px-4 py-2 text-white transition-colors hover:bg-white/10 hover:text-white/90"
+      className="cursor-pointer rounded-lg border border-amber-50 px-4 py-2 text-white transition-colors hover:bg-white/10 hover:text-white/90"
       disabled={isPending}
       type="button"
       onClick={toggleLanguage}
