@@ -8,10 +8,9 @@ import { db } from '~/db'
 import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
-export const generateStaticParams = () => {
-  // SSG with empty array in generateStaticParams doesn't work for some reason
-  // This is a workaround to make it work
-  return [{ electionId: '00000000-0000-0000-0000-000000000000' }]
+export const generateStaticParams = async () => {
+  // Enable SSG
+  return Promise.resolve([])
 }
 
 const getElection = async (electionId: string) => {

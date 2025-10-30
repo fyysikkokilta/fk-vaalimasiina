@@ -7,10 +7,9 @@ import isUUID from '~/utils/isUUID'
 
 import Vote from './client'
 
-export const generateStaticParams = () => {
-  // SSG with empty array in generateStaticParams doesn't work for some reason
-  // This is a workaround to make it work
-  return [{ voterId: '00000000-0000-0000-0000-000000000000' }]
+export const generateStaticParams = async () => {
+  // Enable SSG
+  return Promise.resolve([])
 }
 
 const getVoter = async (voterId: string) => {
