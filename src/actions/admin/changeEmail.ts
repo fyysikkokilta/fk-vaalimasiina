@@ -74,7 +74,6 @@ export const changeEmail = actionClient
       if (error instanceof ActionError) {
         throw error
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.cause.code === '23505') {
         console.log('Email already exists')
         throw new ActionError(t('email_already_exists'))

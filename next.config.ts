@@ -10,12 +10,11 @@ const withNextIntl = createNextIntlPlugin()
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  reactCompiler: true,
   experimental: {
-    reactCompiler: true,
-    useCache: true
+    turbopackFileSystemCacheForDev: true
   },
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async headers() {
+  headers() {
     return [
       {
         source: '/:path*{/}?',

@@ -1,7 +1,6 @@
 'use client'
 
 import { useAction } from 'next-safe-action/hooks'
-import React from 'react'
 import { toast } from 'react-toastify'
 
 import { closeElection } from '~/actions/admin/closeElection'

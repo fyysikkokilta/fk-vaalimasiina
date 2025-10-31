@@ -10,7 +10,6 @@ import {
   Link,
   Text
 } from '@react-email/components'
-import * as React from 'react'
 
 const EmailTemplate = ({
   election,

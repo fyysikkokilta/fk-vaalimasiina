@@ -116,7 +116,6 @@ export const vote = actionClient
       })
       return { message: t('ballot_saved'), ballotId }
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.cause.code === '23505') {
         throw new ActionError(t('voter_already_voted'))
       }
