@@ -198,6 +198,9 @@ export default function Vote({ election, voter }: VotePageProps) {
             </div>
           ) : (
             <>
+              <div className="my-3 font-bold">
+                {t('to_choose', { seats: election.seats })}
+              </div>
               <div className="my-3 font-bold">{t('vote_instruction')}</div>
               <DragDropContext
                 onDragStart={handleDragStart}
