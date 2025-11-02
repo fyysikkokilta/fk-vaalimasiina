@@ -3,10 +3,16 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
+import { env } from '~/env'
 
 import Admin from './client'
 
 const getAdminElection = async () => {
+  // For building without database access
+  if (!env.DATABASE_URL) {
+    return null
+  }
+
   const elections = await db.query.electionsTable.findMany({
     where: (electionsTable, { eq, not }) =>
       not(eq(electionsTable.status, 'CLOSED')),

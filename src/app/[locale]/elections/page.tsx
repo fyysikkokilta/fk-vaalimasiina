@@ -2,10 +2,16 @@ import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { db } from '~/db'
+import { env } from '~/env'
 
 import ElectionListClient from './client'
 
 const getElections = async () => {
+  // For building without database access
+  if (!env.DATABASE_URL) {
+    return []
+  }
+
   return db.query.electionsTable.findMany({
     where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED'),
     orderBy: (electionsTable, { desc }) => desc(electionsTable.date)
