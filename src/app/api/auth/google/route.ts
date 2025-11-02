@@ -8,7 +8,7 @@ export function GET() {
   googleAuthUrl.searchParams.set('client_id', env.GOOGLE_CLIENT_ID)
   googleAuthUrl.searchParams.set(
     'redirect_uri',
-    `${env.BASE_URL}/api/auth/google/callback`
+    `${env.NEXT_PUBLIC_BASE_URL}/api/auth/google/callback`
   )
   googleAuthUrl.searchParams.set('response_type', 'code')
   googleAuthUrl.searchParams.set('scope', 'openid email profile')

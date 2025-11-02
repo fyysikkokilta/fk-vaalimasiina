@@ -7,7 +7,7 @@ export const env = createEnv({
       .string()
       .default('3000')
       .transform((val) => parseInt(val, 10)),
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
     AUTH_SECRET: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
@@ -17,21 +17,17 @@ export const env = createEnv({
         .map((email) => email.trim())
         .filter((email) => email.length > 0)
     ),
-    BASE_URL: z.string().url().default('https://vaalit.fyysikkokilta.fi'),
     MAIL_FROM: z.string().default('Vaalimasiina <vaalit@fyysikkokilta.fi>'),
     MAILGUN_API_KEY: z.string().optional(),
     MAILGUN_DOMAIN: z.string().optional(),
-    MAILGUN_HOST: z.string().url().default('https://api.eu.mailgun.net'),
+    MAILGUN_HOST: z.url().default('https://api.eu.mailgun.net'),
     BRANDING_EMAIL_SUBJECT_PREFIX: z.string().default('Vaalimasiina'),
     BRANDING_MAIL_FOOTER_TEXT: z.string().default('Rakkaudella Fysistit'),
-    BRANDING_MAIL_FOOTER_LINK: z
-      .string()
-      .url()
-      .default('https://fyysikkokilta.fi'),
+    BRANDING_MAIL_FOOTER_LINK: z.url().default('https://fyysikkokilta.fi'),
     S3_ACCESS_KEY_ID: z.string().optional(),
     S3_SECRET_ACCESS_KEY: z.string().optional(),
     S3_BUCKET_NAME: z.string().optional(),
-    S3_ENDPOINT: z.string().url().optional(),
+    S3_ENDPOINT: z.url().optional(),
     S3_REGION: z.string().default('auto'),
     ANALYZE: z
       .string()
@@ -42,6 +38,7 @@ export const env = createEnv({
       .default('development')
   },
   client: {
+    NEXT_PUBLIC_BASE_URL: z.url().default('https://vaalit.fyysikkokilta.fi'),
     NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT: z.string().default('Vaalimasiina'),
     NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT: z
       .string()
@@ -50,11 +47,11 @@ export const env = createEnv({
       .string()
       .default('fyysikkokilta.fi'),
     NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK: z
-      .string()
       .url()
       .default('https://fyysikkokilta.fi')
   },
   experimental__runtimeEnv: {
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT:
       process.env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT,
     NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT:

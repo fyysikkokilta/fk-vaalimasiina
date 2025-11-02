@@ -10,6 +10,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   SKIP_ENV_VALIDATION: true
+  NEXT_PUBLIC_BASE_URL: 'https://vaalit.fyysikkokilta.fi'
   NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT: 'FK Vaalimasiina'
   NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT: 'FK Vaalit'
   NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT: 'fyysikkokilta.fi'

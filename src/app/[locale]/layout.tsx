@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: LayoutProps<'/[locale]'>) {
       default: t('title')
     },
     description: t('description'),
-    metadataBase: new URL(env.BASE_URL),
+    metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL),
     generator: 'Next.js',
     applicationName: t('title'),
     creator: 'Fyysikkokilta ry'

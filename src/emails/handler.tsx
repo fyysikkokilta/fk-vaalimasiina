@@ -42,8 +42,8 @@ export const sendVotingMail = async (
         footerLink: env.BRANDING_MAIL_FOOTER_LINK
       },
       // %recipient.voterId% is populated by Mailgun
-      votingLinkFi: `${env.BASE_URL}/fi/vote/%recipient.voterId%`,
-      votingLinkEn: `${env.BASE_URL}/en/vote/%recipient.voterId%`
+      votingLinkFi: `${env.NEXT_PUBLIC_BASE_URL}/fi/vote/%recipient.voterId%`,
+      votingLinkEn: `${env.NEXT_PUBLIC_BASE_URL}/en/vote/%recipient.voterId%`
     }
 
     const html = await render(<EmailTemplate {...brandedParams} />)

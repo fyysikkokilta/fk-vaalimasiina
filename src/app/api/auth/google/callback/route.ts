@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       client_secret: env.GOOGLE_CLIENT_SECRET,
       code,
       grant_type: 'authorization_code',
-      redirect_uri: `${env.BASE_URL}/api/auth/google/callback`
+      redirect_uri: `${env.NEXT_PUBLIC_BASE_URL}/api/auth/google/callback`
     })
   })
 
