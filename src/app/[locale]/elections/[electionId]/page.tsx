@@ -5,15 +5,21 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
 import { db } from '~/db'
+import { env } from '~/env'
 import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
 export const generateStaticParams = async () => {
   // Enable SSG
-  return Promise.resolve([])
+  return Promise.resolve([{ electionId: '__placeholder__' }])
 }
 
 const getElection = async (electionId: string) => {
+  // For building without database access
+  if (!env.DATABASE_URL) {
+    return null
+  }
+
   const election = await db.query.electionsTable.findFirst({
     columns: {
       status: false

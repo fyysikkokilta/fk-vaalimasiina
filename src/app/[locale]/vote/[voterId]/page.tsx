@@ -3,16 +3,22 @@ import { Locale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { db } from '~/db'
+import { env } from '~/env'
 import isUUID from '~/utils/isUUID'
 
 import Vote from './client'
 
 export const generateStaticParams = async () => {
   // Enable SSG
-  return Promise.resolve([])
+  return Promise.resolve([{ voterId: '__placeholder__' }])
 }
 
 const getVoter = async (voterId: string) => {
+  // For building without database access
+  if (!env.DATABASE_URL) {
+    return null
+  }
+
   const voter = await db.query.votersTable.findFirst({
     columns: {
       voterId: true
