@@ -66,6 +66,11 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Recursively remove all *.meta files
+# https://github.com/vercel/next.js/discussions/46544#discussioncomment-11136615
+RUN find . -type f -name '*.meta' -exec rm -f {} \;
+RUN find . -type f -name '*.rsc' -exec rm -f {} \;
+
 USER nextjs
 
 EXPOSE 3000

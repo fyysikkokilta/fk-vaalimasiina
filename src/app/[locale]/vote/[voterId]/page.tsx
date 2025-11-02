@@ -10,11 +10,13 @@ import Vote from './client'
 
 export const generateStaticParams = async () => {
   // Enable SSG
+  // Placeholder needed to circumvent DYNAMIC_SERVER_USAGE errors
   return Promise.resolve([{ voterId: '__placeholder__' }])
 }
 
 const getVoter = async (voterId: string) => {
   // For building without database access
+  // This generates empty pages and *.meta files need to be removed to generate them properly
   if (!env.DATABASE_URL) {
     return null
   }

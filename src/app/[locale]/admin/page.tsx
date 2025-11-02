@@ -9,6 +9,7 @@ import Admin from './client'
 
 const getAdminElection = async () => {
   // For building without database access
+  // This generates empty pages and *.meta files need to be removed to generate them properly
   if (!env.DATABASE_URL) {
     return null
   }

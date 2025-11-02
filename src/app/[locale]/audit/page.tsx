@@ -8,6 +8,7 @@ import Audit from './client'
 
 const findFinishedElection = async () => {
   // For building without database access
+  // This generates empty pages and *.meta files need to be removed to generate them properly
   if (!env.DATABASE_URL) {
     return { election: null, ballots: [] }
   }
