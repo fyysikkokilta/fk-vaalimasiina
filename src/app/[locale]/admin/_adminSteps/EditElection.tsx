@@ -10,9 +10,8 @@ import { cancelEditing } from '~/actions/admin/cancelEditing'
 import { editElection } from '~/actions/admin/editElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
+import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
-
-import { ElectionStepProps } from '../page'
 
 export default function EditElection({ election }: ElectionStepProps) {
   const [newCandidate, setNewCandidate] = useState('')

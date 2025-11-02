@@ -10,9 +10,8 @@ import { changeEmail } from '~/actions/admin/changeEmail'
 import { endVoting } from '~/actions/admin/endVoting'
 import { pollVotes } from '~/actions/admin/pollVotes'
 import AdminNavigation from '~/components/AdminNavigation'
+import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
-
-import { ElectionStepProps } from '../page'
 
 export default function VotingInspection({
   election: { electionId, title, description },

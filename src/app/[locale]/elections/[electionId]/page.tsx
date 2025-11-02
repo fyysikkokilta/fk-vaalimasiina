@@ -4,72 +4,14 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
-import { db } from '~/db'
-import { env } from '~/env'
+import { getElection } from '~/data/getElection'
 import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
-export const generateStaticParams = async () => {
+export function generateStaticParams() {
   // Enable SSG
   // Placeholder needed to circumvent DYNAMIC_SERVER_USAGE errors
-  return Promise.resolve([{ electionId: '__placeholder__' }])
-}
-
-const getElection = async (electionId: string) => {
-  // For building without database access
-  // This generates empty pages and *.meta files need to be removed to generate them properly
-  if (!env.DATABASE_URL) {
-    return null
-  }
-
-  const election = await db.query.electionsTable.findFirst({
-    columns: {
-      status: false
-    },
-    where: (electionsTable, { and, eq }) =>
-      and(
-        eq(electionsTable.electionId, electionId),
-        eq(electionsTable.status, 'CLOSED')
-      ),
-    with: {
-      candidates: {
-        columns: {
-          candidateId: true,
-          name: true
-        }
-      },
-      ballots: {
-        columns: {},
-        with: {
-          votes: {
-            columns: {
-              candidateId: true,
-              rank: true
-            }
-          }
-        },
-        // BallotId is random, so this makes the order not the same as order of creation
-        orderBy: (ballotsTable) => ballotsTable.ballotId
-      },
-      voters: {
-        columns: {
-          voterId: true
-        }
-      }
-    }
-  })
-
-  if (!election) {
-    return null
-  }
-
-  const { ballots, ...electionWithoutVotes } = election
-  const voterCount = election.voters.length
-  const electionWithoutVoters = {
-    ...electionWithoutVotes,
-    voters: undefined
-  }
-  return { election: electionWithoutVoters, ballots, voterCount }
+  return [{ electionId: '00000000-0000-0000-0000-000000000000' }]
 }
 
 export async function generateMetadata({
@@ -128,7 +70,3 @@ export default async function Election({
     </TitleWrapper>
   )
 }
-
-export type ElectionPageProps = NonNullable<
-  Awaited<ReturnType<typeof getElection>>
->

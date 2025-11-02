@@ -8,9 +8,8 @@ import { toast } from 'react-toastify'
 import { startEditing } from '~/actions/admin/startEditing'
 import { startVoting } from '~/actions/admin/startVoting'
 import AdminNavigation from '~/components/AdminNavigation'
+import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
-
-import { ElectionStepProps } from '../page'
 
 export default function PreviewElection({
   election: { electionId, title, description, seats, candidates }

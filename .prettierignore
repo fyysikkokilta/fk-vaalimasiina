@@ -1,6 +1,6 @@
 
 **/.git
-data
+/data
 dist
 node_modules
 playwright-report

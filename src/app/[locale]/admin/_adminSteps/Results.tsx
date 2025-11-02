@@ -6,9 +6,8 @@ import { toast } from 'react-toastify'
 import { closeElection } from '~/actions/admin/closeElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionResults from '~/components/ElectionResults'
+import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
-
-import { ElectionStepProps } from '../page'
 
 export default function Results({
   election,

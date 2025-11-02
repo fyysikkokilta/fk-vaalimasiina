@@ -1,16 +1,17 @@
 'use client'
 
+import type { AdminElection } from '~/data/getAdminElection'
+
 import EditElection from './_adminSteps/EditElection'
 import NewElection from './_adminSteps/NewElection'
 import PreviewElection from './_adminSteps/PreviewElection'
 import Results from './_adminSteps/Results'
 import VotingInspection from './_adminSteps/VotingInspection'
-import { AdminPageProps } from './page'
 
 export default function Admin({
   adminElection
 }: {
-  adminElection: AdminPageProps
+  adminElection: AdminElection
 }) {
   if (!adminElection) {
     return <NewElection />

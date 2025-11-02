@@ -13,9 +13,8 @@ import { toast } from 'react-toastify'
 
 import { vote } from '~/actions/vote'
 import TitleWrapper from '~/components/TitleWrapper'
+import type { VotePageProps } from '~/data/getVoter'
 import { Link } from '~/i18n/navigation'
-
-import type { VotePageProps } from './page'
 
 export default function Vote({ election, voter }: VotePageProps) {
   const [confirmingVote, setConfirmingVote] = useState(false)

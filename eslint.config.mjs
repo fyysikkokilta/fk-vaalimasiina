@@ -10,7 +10,6 @@ const eslintConfig = defineConfig([
   prettier,
   globalIgnores([
     'node_modules/**',
-    'data/**',
     'dist/**',
     'public/**',
     'test-results/**',

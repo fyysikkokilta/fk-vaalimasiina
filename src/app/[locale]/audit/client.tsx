@@ -4,8 +4,7 @@ import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
 import TitleWrapper from '~/components/TitleWrapper'
-
-import type { AuditPageProps } from './page'
+import type { AuditPageProps } from '~/data/findFinishedElection'
 
 export default function Audit({ election, ballots }: AuditPageProps) {
   const [search, setSearch] = useState('')

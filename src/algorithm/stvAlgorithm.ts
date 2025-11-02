@@ -3,8 +3,8 @@
 // election configuration, and voter count.
 // The quota used is the Droop quota
 
-import type { ElectionStepProps } from '~/app/[locale]/admin/page'
-import type { ElectionPageProps } from '~/app/[locale]/elections/[electionId]/page'
+import type { ElectionStepProps } from '~/data/getAdminElection'
+import type { ElectionPageProps } from '~/data/getElection'
 
 import { shuffleWithSeed } from './shuffleWithSeed'
 
