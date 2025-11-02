@@ -1,10 +1,12 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
+import { useTranslations } from 'next-intl'
 
 import TitleWrapper from '~/components/TitleWrapper'
 import { Link } from '~/i18n/navigation'
 
-export default async function VoterNotFound() {
-  const t = await getTranslations('VoterNotFound')
+export default function VoterNotFound() {
+  const t = useTranslations('VoterNotFound')
 
   return (
     <TitleWrapper title={t('title')}>

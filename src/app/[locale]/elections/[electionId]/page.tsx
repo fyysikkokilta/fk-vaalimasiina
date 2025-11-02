@@ -9,9 +9,7 @@ import { Link } from '~/i18n/navigation'
 import isUUID from '~/utils/isUUID'
 
 export function generateStaticParams() {
-  // Enable SSG
-  // Placeholder needed to circumvent DYNAMIC_SERVER_USAGE errors
-  return [{ electionId: '00000000-0000-0000-0000-000000000000' }]
+  return []
 }
 
 export async function generateMetadata({

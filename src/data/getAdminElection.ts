@@ -1,7 +1,9 @@
+import { cache } from 'react'
+
 import { db } from '~/db'
 import { env } from '~/env'
 
-export const getAdminElection = async () => {
+export const getAdminElection = cache(async () => {
   // For building without database access
   // This generates empty pages and *.meta files need to be removed to generate them properly
   if (!env.DATABASE_URL) {
@@ -55,7 +57,7 @@ export const getAdminElection = async () => {
     voters,
     ballots
   }
-}
+})
 
 export type AdminElection = Awaited<ReturnType<typeof getAdminElection>>
 

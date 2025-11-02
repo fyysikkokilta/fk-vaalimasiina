@@ -8,9 +8,7 @@ import isUUID from '~/utils/isUUID'
 import Vote from './client'
 
 export function generateStaticParams() {
-  // Enable SSG
-  // Placeholder needed to circumvent DYNAMIC_SERVER_USAGE errors
-  return [{ voterId: '00000000-0000-0000-0000-000000000000' }]
+  return []
 }
 
 export async function generateMetadata({

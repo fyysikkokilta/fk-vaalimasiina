@@ -1,7 +1,9 @@
+import { cache } from 'react'
+
 import { db } from '~/db'
 import { env } from '~/env'
 
-export const getElection = async (electionId: string) => {
+export const getElection = cache(async (electionId: string) => {
   // For building without database access
   // This generates empty pages and *.meta files need to be removed to generate them properly
   if (!env.DATABASE_URL) {
@@ -56,7 +58,7 @@ export const getElection = async (electionId: string) => {
     voters: undefined
   }
   return { election: electionWithoutVoters, ballots, voterCount }
-}
+})
 
 export type ElectionPageProps = NonNullable<
   Awaited<ReturnType<typeof getElection>>
