@@ -62,7 +62,7 @@ export default function Audit({ election, ballots }: AuditPageProps) {
                     key={index}
                     className="flex items-center space-x-2 rounded bg-gray-50 p-2"
                   >
-                    <span className="min-w-[2rem] font-medium text-gray-700">
+                    <span className="min-w-8 font-medium text-gray-700">
                       {vote.rank}
                       {'.'}
                     </span>
