@@ -31,7 +31,7 @@
   "include": [
     ".lintstagedrc.ts",
     "drizzle.config.ts",
-    "eslint.config.mjs",
+    "eslint.config.ts",
     "global.d.ts",
     "next-env.d.ts",
     "next.config.ts",
