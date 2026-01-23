@@ -54,6 +54,9 @@ jobs:
       - name: Generate Next.js types
         run: pnpm typegen
 
+      - name: Type check
+        run: pnpm type:check
+
       - name: Lint and fix
         run: pnpm lint --fix
 

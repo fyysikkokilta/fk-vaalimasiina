@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { db } from '~/db'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 import { routing } from '~/i18n/routing'
+import { isPgUniqueViolation } from '~/utils/dbErrors'
 
 import { actionClient, ActionError } from './safe-action'
 
@@ -116,7 +117,7 @@ export const vote = actionClient
       })
       return { message: t('ballot_saved'), ballotId }
     } catch (error) {
-      if (error.cause.code === '23505') {
+      if (isPgUniqueViolation(error)) {
         throw new ActionError(t('voter_already_voted'))
       }
       throw new ActionError(t('error_saving_ballot'))

@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
+import { isPgUniqueViolation } from '~/utils/dbErrors'
 
 import { isAuthorizedMiddleware } from '../middleware/isAuthorized'
 import { actionClient, ActionError } from '../safe-action'
@@ -73,8 +74,7 @@ export const changeEmail = actionClient
       if (error instanceof ActionError) {
         throw error
       }
-      if (error.cause.code === '23505') {
-        console.log('Email already exists')
+      if (isPgUniqueViolation(error)) {
         throw new ActionError(t('email_already_exists'))
       }
       console.error('Error updating email:', error)

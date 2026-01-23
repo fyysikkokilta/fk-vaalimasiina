@@ -9,7 +9,10 @@ export const actionClient = createSafeActionClient({
     }
 
     console.error('Unhandled server error:', error)
-    return error.message
+    if (error instanceof Error) {
+      return error.message
+    }
+    return 'An unexpected error occurred'
   },
   defaultValidationErrorsShape: 'flattened'
 })
