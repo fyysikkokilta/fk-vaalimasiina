@@ -27,51 +27,71 @@ export default defineConfig({
   },
 
   /* Configure projects for major browsers */
-  projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] }
-      }
-    },
+  projects: process.env.CI
+    ? [
+        // In CI, only run Chromium for faster test execution
+        {
+          name: 'chromium',
+          use: {
+            ...devices['Desktop Chrome'],
+            contextOptions: {
+              permissions: ['clipboard-read', 'clipboard-write']
+            }
+          }
+        }
+      ]
+    : [
+        // Local development: run all browsers
+        {
+          name: 'chromium',
+          use: {
+            ...devices['Desktop Chrome'],
+            contextOptions: {
+              permissions: ['clipboard-read', 'clipboard-write']
+            }
+          }
+        },
 
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] }
-      }
-    },
+        {
+          name: 'firefox',
+          use: {
+            ...devices['Desktop Firefox'],
+            contextOptions: {
+              permissions: ['clipboard-read', 'clipboard-write']
+            }
+          }
+        },
 
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] }
-      }
-    }
+        {
+          name: 'webkit',
+          use: {
+            ...devices['Desktop Safari'],
+            contextOptions: {
+              permissions: ['clipboard-read', 'clipboard-write']
+            }
+          }
+        }
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+        /* Test against mobile viewports. */
+        // {
+        //   name: 'Mobile Chrome',
+        //   use: { ...devices['Pixel 5'] },
+        // },
+        // {
+        //   name: 'Mobile Safari',
+        //   use: { ...devices['iPhone 12'] },
+        // },
 
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
-  ],
+        /* Test against branded browsers. */
+        // {
+        //   name: 'Microsoft Edge',
+        //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+        // },
+        // {
+        //   name: 'Google Chrome',
+        //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+        // },
+      ],
 
   /* Run your local dev server before starting the tests */
   webServer: {
