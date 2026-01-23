@@ -51,6 +51,14 @@ test.describe('with no given votes', () => {
     await expect(page.locator('text=Given votes: 0')).toBeVisible()
   })
 
+  test('should list all remaining voters', async ({ page }) => {
+    await page.getByRole('button', { name: 'Show remaining voters' }).click()
+    await expect(page.getByText('email1@email.com')).toBeVisible()
+    await expect(page.getByText('email2@email.com')).toBeVisible()
+    await expect(page.getByText('email3@email.com')).toBeVisible()
+    await expect(page.getByText('email4@email.com')).toBeVisible()
+  })
+
   test('should not allow to end voting', async ({ page }) => {
     await expect(
       page.getByRole('button', { name: 'End voting' })
@@ -87,6 +95,14 @@ test.describe('with some votes', () => {
 
   test('should show correct vote numbers', async ({ page }) => {
     await expect(page.locator('text=Given votes: 2')).toBeVisible()
+  })
+
+  test('should list only remaining voters', async ({ page }) => {
+    await page.getByRole('button', { name: 'Show remaining voters' }).click()
+    await expect(page.getByText('email3@email.com')).toBeVisible()
+    await expect(page.getByText('email4@email.com')).toBeVisible()
+    await expect(page.getByText('email1@email.com')).not.toBeVisible()
+    await expect(page.getByText('email2@email.com')).not.toBeVisible()
   })
 
   test("shouldn't allow to end voting", async ({ page }) => {
@@ -151,6 +167,11 @@ test.describe('with all votes', () => {
 
   test('should show correct vote numbers', async ({ page }) => {
     await expect(page.locator('text=Given votes: 4')).toBeVisible()
+  })
+
+  test('should show no remaining voters message', async ({ page }) => {
+    await page.getByRole('button', { name: 'Show remaining voters' }).click()
+    await expect(page.locator('text=Everyone has voted')).toBeVisible()
   })
 
   test('should allow to end voting', async ({ page }) => {

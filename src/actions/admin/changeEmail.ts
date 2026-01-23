@@ -1,6 +1,5 @@
 'use server'
 
-import { createHash } from 'crypto'
 import { eq } from 'drizzle-orm'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -31,14 +30,14 @@ export const changeEmail = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { oldEmail, newEmail } }) => {
     const t = await getTranslations('actions.changeEmail.action_status')
-    const hashedOldEmail = createHash('sha256').update(oldEmail).digest('hex')
-    const hashedNewEmail = createHash('sha256').update(newEmail).digest('hex')
+    const normalizedOldEmail = oldEmail.trim().toLowerCase()
+    const normalizedNewEmail = newEmail.trim().toLowerCase()
     try {
       const voterElectionPairs = await db
         .update(votersTable)
-        .set({ email: hashedNewEmail })
+        .set({ email: normalizedNewEmail })
         .from(electionsTable)
-        .where(eq(votersTable.email, hashedOldEmail))
+        .where(eq(votersTable.email, normalizedOldEmail))
         .returning({
           voter: {
             voterId: votersTable.voterId,
@@ -58,7 +57,7 @@ export const changeEmail = actionClient
 
       const to = [
         {
-          email: newEmail,
+          email: normalizedNewEmail,
           voterId: voterElectionPairs[0].voter.voterId
         }
       ]

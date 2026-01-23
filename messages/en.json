@@ -94,7 +94,10 @@
     "voters": "Voters",
     "old_email": "Email to change",
     "new_email": "New email",
-    "change_email": "Change email"
+    "change_email": "Change email",
+    "show_remaining_voters": "Show remaining voters",
+    "hide_remaining_voters": "Hide remaining voters",
+    "remaining_voters_empty": "Everyone has voted"
   },
   "PreviewElection": {
     "seats": "Seats",

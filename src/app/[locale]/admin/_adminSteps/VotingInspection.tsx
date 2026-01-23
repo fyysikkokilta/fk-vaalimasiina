@@ -19,6 +19,7 @@ export default function VotingInspection({
 }: ElectionStepProps) {
   const [oldEmail, setOldEmail] = useState('')
   const [newEmail, setNewEmail] = useState('')
+  const [showRemainingVoters, setShowRemainingVoters] = useState(false)
   const t = useTranslations('VotingInspection')
 
   const { execute: executeAbort, isPending: isPendingAbort } = useAction(
@@ -166,6 +167,36 @@ export default function VotingInspection({
             >
               {t('change_email')}
             </button>
+          </div>
+          <div className="mt-6 w-full">
+            <div className="mb-3 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setShowRemainingVoters((value) => !value)}
+                className="bg-fk-yellow text-fk-black cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500"
+              >
+                {showRemainingVoters
+                  ? t('hide_remaining_voters')
+                  : t('show_remaining_voters')}
+              </button>
+            </div>
+            {showRemainingVoters &&
+              (remainingVoters.length === 0 ? (
+                <div className="text-center text-sm text-gray-600">
+                  {t('remaining_voters_empty')}
+                </div>
+              ) : (
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {remainingVoters.map((voter) => (
+                    <li
+                      key={voter.email}
+                      className="rounded-lg border border-gray-200 p-3 text-center"
+                    >
+                      {voter.email}
+                    </li>
+                  ))}
+                </ul>
+              ))}
           </div>
         </div>
       </div>

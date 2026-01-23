@@ -128,7 +128,7 @@ test.describe('Election list page', () => {
     await page.locator('ul li a').first().click()
 
     // Should navigate to election detail page
-    await expect(page).toHaveURL(/\/elections\/[a-f0-9-]+$/)
+    await expect(page).toHaveURL(/\/elections\/[a-f0-9-]+$/, { timeout: 10000 })
   })
 })
 

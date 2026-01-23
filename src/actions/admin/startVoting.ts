@@ -1,6 +1,5 @@
 'use server'
 
-import { createHash } from 'crypto'
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
@@ -60,25 +59,18 @@ export const startVoting = actionClient
         throw new ActionError(t('election_not_found'))
       }
 
-      const emailsData = emails.map((email) => ({
-        email,
-        hash: createHash('sha256').update(email).digest('hex')
-      }))
-
-      const insertedVoters = await transaction
+      const voters = await transaction
         .insert(votersTable)
         .values(
-          emailsData.map((email) => ({
+          emails.map((email) => ({
             electionId,
-            email: email.hash
+            email
           }))
         )
-        .returning()
-
-      const voters = insertedVoters.map((voter) => ({
-        email: emailsData.find((email) => email.hash === voter.email)!.email,
-        voterId: voter.voterId
-      }))
+        .returning({
+          email: votersTable.email,
+          voterId: votersTable.voterId
+        })
 
       const success = await sendVotingMail(voters, { election: elections[0] })
       if (!success) {

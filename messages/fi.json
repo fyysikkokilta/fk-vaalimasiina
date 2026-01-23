@@ -94,7 +94,10 @@
     "voters": "Äänestäjiä",
     "old_email": "Vaihdettava sähköposti",
     "new_email": "Uusi sähköposti",
-    "change_email": "Vaihda sähköposti"
+    "change_email": "Vaihda sähköposti",
+    "show_remaining_voters": "Näytä jäljellä olevat äänestäjät",
+    "hide_remaining_voters": "Piilota jäljellä olevat äänestäjät",
+    "remaining_voters_empty": "Kaikki ovat äänestäneet"
   },
   "PreviewElection": {
     "seats": "Paikkoja",

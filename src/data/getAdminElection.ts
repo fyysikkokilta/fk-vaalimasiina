@@ -21,7 +21,9 @@ export const getAdminElection = cache(async () => {
         }
       },
       voters: {
-        columns: {},
+        columns: {
+          email: true
+        },
         with: {
           hasVoted: {
             columns: {
