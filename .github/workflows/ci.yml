@@ -68,12 +68,97 @@ jobs:
             echo "✅ All generated files are up to date"
           fi
 
+  test:
+    timeout-minutes: 60
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    permissions:
+      contents: read
+    needs: lint
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: vaalimasiina_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      SKIP_ENV_VALIDATION: 'true'
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vaalimasiina_test
+      AUTH_SECRET: test-auth-secret-key-for-ci-testing-only
+      GOOGLE_CLIENT_ID: test-google-client-id
+      GOOGLE_CLIENT_SECRET: test-google-client-secret
+      ADMIN_EMAILS: test@email.com
+      MAIL_FROM: 'Vaalimasiina <vaalit@fyysikkokilta.fi>'
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+      NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT: Vaalimasiina
+      NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT: Vaalimasiina
+      NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT: fyysikkokilta.fi
+      NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK: https://fyysikkokilta.fi
+      BRANDING_EMAIL_SUBJECT_PREFIX: Vaalimasiina
+      BRANDING_MAIL_FOOTER_TEXT: Rakkaudella Fysistit
+      BRANDING_MAIL_FOOTER_LINK: https://fyysikkokilta.fi
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run database migrations
+        run: pnpm db:migrate
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
   build:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     permissions:
       contents: read
       packages: write
-    needs: lint
+    needs: [lint, test]
 
     steps:
       - name: Checkout repository
