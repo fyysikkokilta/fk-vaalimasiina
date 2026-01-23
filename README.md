@@ -47,9 +47,15 @@ This project uses `@t3-oss/env-nextjs` for environment variable validation. All 
 
 #### Email Configuration (for production)
 
-- `MAILGUN_API_KEY`: Mailgun API key for sending emails
-- `MAILGUN_DOMAIN`: Mailgun domain for sending emails
-- `MAILGUN_HOST`: Mailgun server (default: `https://api.eu.mailgun.net`)
+- `SMTP_HOST`: SMTP server hostname
+  - Examples:
+    - Gmail: `smtp.gmail.com`
+    - Outlook: `smtp-mail.outlook.com`
+    - Custom: `mail.example.com`
+- `SMTP_PORT`: SMTP server port (default: `587` for TLS, `465` for SSL)
+- `SMTP_SECURE`: Use SSL/TLS (default: `false`, set to `true` for port 465)
+- `SMTP_USER`: SMTP authentication username (usually your email address)
+- `SMTP_PASSWORD`: SMTP authentication password or app-specific password
 
 #### S3-Compatible Storage (optional - for election result persistence)
 

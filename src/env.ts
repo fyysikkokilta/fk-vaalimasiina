@@ -18,9 +18,17 @@ export const env = createEnv({
         .filter((email) => email.length > 0)
     ),
     MAIL_FROM: z.string().default('Vaalimasiina <vaalit@fyysikkokilta.fi>'),
-    MAILGUN_API_KEY: z.string().optional(),
-    MAILGUN_DOMAIN: z.string().optional(),
-    MAILGUN_HOST: z.url().default('https://api.eu.mailgun.net'),
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z
+      .string()
+      .default('587')
+      .transform((val) => parseInt(val, 10)),
+    SMTP_SECURE: z
+      .string()
+      .default('false')
+      .transform((val) => val === 'true'),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASSWORD: z.string().optional(),
     BRANDING_EMAIL_SUBJECT_PREFIX: z.string().default('Vaalimasiina'),
     BRANDING_MAIL_FOOTER_TEXT: z.string().default('Rakkaudella Fysistit'),
     BRANDING_MAIL_FOOTER_LINK: z.url().default('https://fyysikkokilta.fi'),

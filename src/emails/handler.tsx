@@ -1,5 +1,5 @@
 import { render } from '@react-email/components'
-import Mailgun from 'mailgun.js'
+import nodemailer from 'nodemailer'
 
 import { env } from '~/env'
 
@@ -13,15 +13,25 @@ export interface VotingMailParams {
   }
 }
 
-const getMailgunClient = () => {
-  const mailgun = new Mailgun(FormData)
-  if (!env.MAILGUN_API_KEY) {
-    throw new Error('MAILGUN_API_KEY is not set')
+const getSmtpTransporter = () => {
+  if (!env.SMTP_HOST) {
+    throw new Error('SMTP_HOST is not set')
   }
-  return mailgun.client({
-    username: 'api',
-    key: env.MAILGUN_API_KEY,
-    url: env.MAILGUN_HOST
+  if (!env.SMTP_USER) {
+    throw new Error('SMTP_USER is not set')
+  }
+  if (!env.SMTP_PASSWORD) {
+    throw new Error('SMTP_PASSWORD is not set')
+  }
+
+  return nodemailer.createTransport({
+    host: env.SMTP_HOST,
+    port: env.SMTP_PORT,
+    secure: env.SMTP_SECURE,
+    auth: {
+      user: env.SMTP_USER,
+      pass: env.SMTP_PASSWORD
+    }
   })
 }
 
@@ -35,44 +45,34 @@ export const sendVotingMail = async (
     return true
   }
   try {
-    const brandedParams = {
-      ...params,
-      branding: {
-        footerText: env.BRANDING_MAIL_FOOTER_TEXT,
-        footerLink: env.BRANDING_MAIL_FOOTER_LINK
-      },
-      // %recipient.voterId% is populated by Mailgun
-      votingLinkFi: `${env.NEXT_PUBLIC_BASE_URL}/fi/vote/%recipient.voterId%`,
-      votingLinkEn: `${env.NEXT_PUBLIC_BASE_URL}/en/vote/%recipient.voterId%`
-    }
-
-    const html = await render(<EmailTemplate {...brandedParams} />)
     const subjectPrefix = env.BRANDING_EMAIL_SUBJECT_PREFIX
     const subject = `${subjectPrefix} - ${params.election.title}`
 
-    const emailParams = {
-      to: to.map((voter) => voter.email),
-      from: env.MAIL_FROM,
-      subject,
-      html,
-      'recipient-variables': JSON.stringify(
-        to.reduce(
-          (acc, voter) => {
-            acc[voter.email] = { voterId: voter.voterId }
-            return acc
-          },
-          {} as Record<string, { voterId: string }>
-        )
-      )
-    }
+    const transporter = getSmtpTransporter()
 
-    const client = getMailgunClient()
+    // Send individual emails to each voter with personalized links
+    const emailPromises = to.map(async (voter) => {
+      const brandedParams = {
+        ...params,
+        branding: {
+          footerText: env.BRANDING_MAIL_FOOTER_TEXT,
+          footerLink: env.BRANDING_MAIL_FOOTER_LINK
+        },
+        votingLinkFi: `${env.NEXT_PUBLIC_BASE_URL}/fi/vote/${voter.voterId}`,
+        votingLinkEn: `${env.NEXT_PUBLIC_BASE_URL}/en/vote/${voter.voterId}`
+      }
 
-    if (!env.MAILGUN_DOMAIN) {
-      throw new Error('MAILGUN_DOMAIN is not set')
-    }
+      const html = await render(<EmailTemplate {...brandedParams} />)
 
-    await client.messages.create(env.MAILGUN_DOMAIN, emailParams)
+      return transporter.sendMail({
+        from: env.MAIL_FROM,
+        to: voter.email,
+        subject,
+        html
+      })
+    })
+
+    await Promise.all(emailPromises)
     return true
   } catch (error) {
     console.error('Error sending voting mail:', error)
