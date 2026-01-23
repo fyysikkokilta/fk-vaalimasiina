@@ -39,7 +39,8 @@ export const sendVotingMail = async (
   to: { email: string; voterId: string }[],
   params: VotingMailParams
 ) => {
-  if (env.NODE_ENV === 'development') {
+  // Skip actual email sending in development and test environments
+  if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') {
     console.log('Sending voting mail to:', to)
     console.log('Params:', params)
     return true
