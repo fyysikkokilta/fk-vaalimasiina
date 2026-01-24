@@ -1,9 +1,9 @@
 import '../globals.css'
 
 import { Roboto } from 'next/font/google'
-import { notFound } from 'next/navigation'
-import { hasLocale, Locale, NextIntlClientProvider } from 'next-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { locale } from 'next/root-params'
+import { NextIntlClientProvider } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import NextTopLoader from 'nextjs-toploader'
 import { Flip, ToastContainer } from 'react-toastify'
 
@@ -12,13 +12,8 @@ import Header from '~/components/Header'
 import { env } from '~/env'
 import { routing } from '~/i18n/routing'
 
-export async function generateMetadata({ params }: LayoutProps<'/[locale]'>) {
-  const { locale } = await params
-  const nextIntlLocale = locale as Locale
-  const t = await getTranslations({
-    locale: nextIntlLocale,
-    namespace: 'metadata'
-  })
+export async function generateMetadata() {
+  const t = await getTranslations('metadata')
   return {
     title: {
       template: `%s | ${t('title')}`,
@@ -36,6 +31,8 @@ export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }))
 }
 
+export const dynamicParams = false
+
 const roboto = Roboto({
   weight: ['400', '700'],
   display: 'swap',
@@ -45,18 +42,12 @@ const roboto = Roboto({
 })
 
 export default async function RootLayout({
-  children,
-  params
+  children
 }: LayoutProps<'/[locale]'>) {
-  const { locale } = await params
-  if (!hasLocale(routing.locales, locale)) {
-    notFound()
-  }
-
-  setRequestLocale(locale)
+  const curLocale = await locale()
 
   return (
-    <html lang={locale} className={`${roboto.variable} ${roboto.className}`}>
+    <html lang={curLocale} className={`${roboto.variable} ${roboto.className}`}>
       {/*<Script src="https://unpkg.com/react-scan/dist/auto.global.js" />*/}
       <body className="bg-fk-yellow text-fk-black flex h-dvh flex-col">
         <NextIntlClientProvider>

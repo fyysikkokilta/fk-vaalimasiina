@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
-import { Locale } from 'next-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 
 import ElectionResults from '~/components/ElectionResults'
 import TitleWrapper from '~/components/TitleWrapper'
@@ -15,12 +14,8 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params
 }: PageProps<'/[locale]/elections/[electionId]'>) {
-  const { locale, electionId } = await params
-  const nextIntlLocale = locale as Locale
-  const t = await getTranslations({
-    locale: nextIntlLocale,
-    namespace: 'metadata.election'
-  })
+  const { electionId } = await params
+  const t = await getTranslations('metadata.election')
   const electionBallotsVoterCount = await getElection(electionId)
 
   if (!electionBallotsVoterCount) {
@@ -39,9 +34,7 @@ export async function generateMetadata({
 export default async function Election({
   params
 }: PageProps<'/[locale]/elections/[electionId]'>) {
-  const { locale, electionId } = await params
-  const nextIntlLocale = locale as Locale
-  setRequestLocale(nextIntlLocale)
+  const { electionId } = await params
 
   if (!isUUID(electionId)) {
     notFound()

@@ -1,35 +1,21 @@
 /* eslint-disable no-restricted-imports */
 
 import Link from 'next/link'
-import { Locale } from 'next-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
 
 import LoginError from '~/components/LoginError'
 import TitleWrapper from '~/components/TitleWrapper'
 
-export async function generateMetadata({
-  params
-}: PageProps<'/[locale]/login'>) {
-  const { locale } = await params
-  const nextIntlLocale = locale as Locale
-  const t = await getTranslations({
-    locale: nextIntlLocale,
-    namespace: 'metadata.login'
-  })
+export async function generateMetadata() {
+  const t = await getTranslations('metadata.login')
   return {
     title: t('title'),
     description: t('description')
   }
 }
 
-export default async function LoginPage({
-  params
-}: PageProps<'/[locale]/login'>) {
-  const { locale } = await params
-  const nextIntlLocale = locale as Locale
-  setRequestLocale(nextIntlLocale)
-
+export default async function LoginPage() {
   const t = await getTranslations('Login')
 
   return (

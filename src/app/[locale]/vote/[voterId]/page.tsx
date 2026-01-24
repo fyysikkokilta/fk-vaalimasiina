@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
-import { Locale } from 'next-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 
 import { getVoter } from '~/data/getVoter'
 import isUUID from '~/utils/isUUID'
@@ -14,12 +13,8 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params
 }: PageProps<'/[locale]/vote/[voterId]'>) {
-  const { locale, voterId } = await params
-  const nextIntlLocale = locale as Locale
-  const t = await getTranslations({
-    locale: nextIntlLocale,
-    namespace: 'metadata.vote'
-  })
+  const { voterId } = await params
+  const t = await getTranslations('metadata.vote')
 
   if (!isUUID(voterId)) {
     return null
@@ -34,9 +29,7 @@ export async function generateMetadata({
 export default async function VotePage({
   params
 }: PageProps<'/[locale]/vote/[voterId]'>) {
-  const { locale, voterId } = await params
-  const nextIntlLocale = locale as Locale
-  setRequestLocale(nextIntlLocale)
+  const { voterId } = await params
 
   if (!isUUID(voterId)) {
     notFound()

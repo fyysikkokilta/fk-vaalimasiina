@@ -2,16 +2,16 @@
 
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
 
 const cancelEditingSchema = async () => {
-  const t = await getTranslations('actions.cancelEditing.validation')
+  const t = await getActionsTranslations('actions.cancelEditing.validation')
   return z.object({
     electionId: z.uuid({ error: t('electionId_uuid') })
   })
@@ -21,7 +21,9 @@ export const cancelEditing = actionClient
   .inputSchema(cancelEditingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getTranslations('actions.cancelEditing.action_status')
+    const t = await getActionsTranslations(
+      'actions.cancelEditing.action_status'
+    )
     const statuses = await db
       .update(electionsTable)
       .set({ status: 'CREATED' })

@@ -273,7 +273,8 @@
     "closeElection": {
       "action_status": {
         "election_closed": "Vaali suljettu",
-        "election_not_found": "Vaalia ei löytynyt"
+        "election_not_found": "Vaalia ei löytynyt",
+        "failed_to_close_election": "Vaalin sulkeutuminen ja tulosten tallentaminen epäonnistui"
       },
       "validation": {
         "electionId_uuid": "Vaalitunnisteen tulee olla kelvollinen UUID"

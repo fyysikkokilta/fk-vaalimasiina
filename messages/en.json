@@ -273,7 +273,8 @@
     "closeElection": {
       "action_status": {
         "election_closed": "Election closed",
-        "election_not_found": "Election not found"
+        "election_not_found": "Election not found",
+        "failed_to_close_election": "Failed to close election and store results"
       },
       "validation": {
         "electionId_uuid": "Election identifier must be a valid UUID"

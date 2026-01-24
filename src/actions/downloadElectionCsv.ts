@@ -1,10 +1,10 @@
 'use server'
 
 import { eq } from 'drizzle-orm'
-import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
 import { actionClient, ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
 import {
@@ -14,7 +14,9 @@ import {
 } from '~/utils/s3Storage'
 
 const downloadElectionCsvSchema = async () => {
-  const t = await getTranslations('actions.downloadElectionCsv.validation')
+  const t = await getActionsTranslations(
+    'actions.downloadElectionCsv.validation'
+  )
   return z.object({
     electionId: z.uuid({
       error: t('electionId_uuid')
@@ -25,7 +27,9 @@ const downloadElectionCsvSchema = async () => {
 export const downloadElectionCsv = actionClient
   .inputSchema(downloadElectionCsvSchema)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getTranslations('actions.downloadElectionCsv.action_status')
+    const t = await getActionsTranslations(
+      'actions.downloadElectionCsv.action_status'
+    )
 
     try {
       // If S3 is not configured, return null to indicate fallback to client-side generation

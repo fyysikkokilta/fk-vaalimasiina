@@ -2,16 +2,16 @@
 
 import { and, eq, sql } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 
 const endVotingSchema = async () => {
-  const t = await getTranslations('actions.endVoting.validation')
+  const t = await getActionsTranslations('actions.endVoting.validation')
   return z.object({
     electionId: z.uuid({ error: t('electionId_uuid') })
   })
@@ -21,7 +21,7 @@ export const endVoting = actionClient
   .inputSchema(endVotingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getTranslations('actions.endVoting.action_status')
+    const t = await getActionsTranslations('actions.endVoting.action_status')
     return db.transaction(async (transaction) => {
       const voters = await transaction.query.votersTable.findMany({
         with: {

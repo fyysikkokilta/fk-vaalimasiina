@@ -2,18 +2,18 @@
 
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { ballotsTable, electionsTable } from '~/db/schema'
 import { generateCsvContent, generateCsvFileName } from '~/utils/csvGenerator'
 import { isS3Configured, uploadCsvToS3 } from '~/utils/s3Storage'
 
 const closeElectionSchema = async () => {
-  const t = await getTranslations('actions.closeElection.validation')
+  const t = await getActionsTranslations('actions.closeElection.validation')
   return z.object({
     electionId: z.uuid({ error: t('electionId_uuid') })
   })
@@ -23,7 +23,9 @@ export const closeElection = actionClient
   .inputSchema(closeElectionSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getTranslations('actions.closeElection.action_status')
+    const t = await getActionsTranslations(
+      'actions.closeElection.action_status'
+    )
 
     try {
       // First, get the election data
@@ -94,6 +96,6 @@ export const closeElection = actionClient
       if (error instanceof ActionError) {
         throw error
       }
-      throw new ActionError('Failed to close election and store results')
+      throw new ActionError(t('failed_to_close_election'))
     }
   })

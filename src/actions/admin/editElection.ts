@@ -2,16 +2,16 @@
 
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
 const editElectionSchema = async () => {
-  const t = await getTranslations('actions.editElection.validation')
+  const t = await getActionsTranslations('actions.editElection.validation')
   return z
     .object({
       electionId: z.uuid({ error: t('electionId_uuid') }),
@@ -45,7 +45,9 @@ export const editElection = actionClient
     async ({
       parsedInput: { electionId, title, description, seats, candidates }
     }) => {
-      const t = await getTranslations('actions.editElection.action_status')
+      const t = await getActionsTranslations(
+        'actions.editElection.action_status'
+      )
       return db.transaction(async (transaction) => {
         const elections = await transaction
           .update(electionsTable)

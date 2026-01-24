@@ -1,11 +1,9 @@
 import { cookies } from 'next/headers'
-import { getLocale, getTranslations } from 'next-intl/server'
 import { createMiddleware } from 'next-safe-action'
 
-import { redirect } from '~/i18n/navigation'
+import { ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import isAuthorized, { JWT_COOKIE } from '~/utils/isAuthorized'
-
-import { ActionError } from '../safe-action'
 
 export const isAuthorizedMiddleware = createMiddleware().define(
   async ({ next }) => {
@@ -15,13 +13,7 @@ export const isAuthorizedMiddleware = createMiddleware().define(
       const authorized = await isAuthorized(adminToken?.value)
 
       if (!authorized) {
-        const locale = await getLocale()
-        const t = await getTranslations('actions.isAuthorized')
-
-        redirect({
-          href: '/login',
-          locale
-        })
+        const t = await getActionsTranslations('actions.isAuthorized')
 
         throw new ActionError(t('unauthorized'))
       }
@@ -36,7 +28,7 @@ export const isAuthorizedMiddleware = createMiddleware().define(
         console.error('Authorization middleware error:', error)
       }
 
-      const t = await getTranslations('actions.isAuthorized')
+      const t = await getActionsTranslations('actions.isAuthorized')
       throw new ActionError(t('unauthorized'))
     }
   }

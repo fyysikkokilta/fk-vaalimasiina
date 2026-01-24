@@ -1,19 +1,11 @@
-import { Locale } from 'next-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 
 import { findFinishedElection } from '~/data/findFinishedElection'
 
 import Audit from './client'
 
-export async function generateMetadata({
-  params
-}: PageProps<'/[locale]/audit'>) {
-  const { locale } = await params
-  const nextIntlLocale = locale as Locale
-  const t = await getTranslations({
-    locale: nextIntlLocale,
-    namespace: 'metadata.audit'
-  })
+export async function generateMetadata() {
+  const t = await getTranslations('metadata.audit')
   const electionAndBallots = await findFinishedElection()
   if (!electionAndBallots.election) {
     return {
@@ -30,13 +22,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function AuditPage({
-  params
-}: PageProps<'/[locale]/audit'>) {
-  const { locale } = await params
-  const nextIntlLocale = locale as Locale
-  setRequestLocale(nextIntlLocale)
-
+export default async function AuditPage() {
   const electionAndBallots = await findFinishedElection()
 
   return <Audit {...electionAndBallots} />

@@ -1,19 +1,18 @@
 'use server'
 
 import { eq } from 'drizzle-orm'
-import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
+import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
+import { actionClient, ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 import { isPgUniqueViolation } from '~/utils/dbErrors'
 
-import { isAuthorizedMiddleware } from '../middleware/isAuthorized'
-import { actionClient, ActionError } from '../safe-action'
-
 const changeEmailSchema = async () => {
-  const t = await getTranslations('actions.changeEmail.validation')
+  const t = await getActionsTranslations('actions.changeEmail.validation')
   return z.object({
     oldEmail: z.email({
       pattern: z.regexes.html5Email,
@@ -30,7 +29,7 @@ export const changeEmail = actionClient
   .inputSchema(changeEmailSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { oldEmail, newEmail } }) => {
-    const t = await getTranslations('actions.changeEmail.action_status')
+    const t = await getActionsTranslations('actions.changeEmail.action_status')
     const normalizedOldEmail = oldEmail.trim().toLowerCase()
     const normalizedNewEmail = newEmail.trim().toLowerCase()
     try {

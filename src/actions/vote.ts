@@ -1,18 +1,17 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
+import { actionClient, ActionError } from '~/actions/safe-action'
+import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 import { routing } from '~/i18n/routing'
 import { isPgUniqueViolation } from '~/utils/dbErrors'
 
-import { actionClient, ActionError } from './safe-action'
-
 const voteSchema = async () => {
-  const t = await getTranslations('actions.vote.validation')
+  const t = await getActionsTranslations('actions.vote.validation')
   return z.object({
     voterId: z.uuid({
       error: t('voterId_uuid')
@@ -50,7 +49,7 @@ const voteSchema = async () => {
 export const vote = actionClient
   .inputSchema(voteSchema)
   .action(async ({ parsedInput: { voterId, ballot } }) => {
-    const t = await getTranslations('actions.vote.action_status')
+    const t = await getActionsTranslations('actions.vote.action_status')
     const validVoter = await db.query.votersTable.findFirst({
       where: (votersTable, { eq }) => eq(votersTable.voterId, voterId),
       with: {

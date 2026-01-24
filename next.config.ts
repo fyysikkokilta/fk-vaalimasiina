@@ -12,8 +12,9 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   reactCompiler: true,
   experimental: {
+    globalNotFound: true,
     inlineCss: true,
-    turbopackFileSystemCacheForDev: true
+    rootParams: true
   },
   headers() {
     return [
