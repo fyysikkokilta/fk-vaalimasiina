@@ -31,7 +31,8 @@ const getSmtpTransporter = () => {
     auth: {
       user: env.SMTP_USER,
       pass: env.SMTP_PASSWORD
-    }
+    },
+    pool: true
   })
 }
 
@@ -51,19 +52,21 @@ export const sendVotingMail = async (
 
     const transporter = getSmtpTransporter()
 
-    // Send individual emails to each voter with personalized links
-    const emailPromises = to.map(async (voter) => {
-      const brandedParams = {
-        ...params,
-        branding: {
-          footerText: env.BRANDING_MAIL_FOOTER_TEXT,
-          footerLink: env.BRANDING_MAIL_FOOTER_LINK
-        },
-        votingLinkFi: `${env.NEXT_PUBLIC_BASE_URL}/fi/vote/${voter.voterId}`,
-        votingLinkEn: `${env.NEXT_PUBLIC_BASE_URL}/en/vote/${voter.voterId}`
+    const commonParams = {
+      ...params,
+      branding: {
+        footerText: env.BRANDING_MAIL_FOOTER_TEXT,
+        footerLink: env.BRANDING_MAIL_FOOTER_LINK
       }
-
-      const html = await render(<EmailTemplate {...brandedParams} />)
+    }
+    const emailPromises = to.map(async (voter) => {
+      const html = await render(
+        <EmailTemplate
+          {...commonParams}
+          votingLinkFi={`${env.NEXT_PUBLIC_BASE_URL}/fi/vote/${voter.voterId}`}
+          votingLinkEn={`${env.NEXT_PUBLIC_BASE_URL}/en/vote/${voter.voterId}`}
+        />
+      )
 
       return transporter.sendMail({
         from: env.MAIL_FROM,
