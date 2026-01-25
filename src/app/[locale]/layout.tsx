@@ -31,8 +31,6 @@ export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }))
 }
 
-export const dynamicParams = false
-
 const roboto = Roboto({
   weight: ['400', '700'],
   display: 'swap',
