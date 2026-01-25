@@ -1,17 +1,15 @@
 'use client'
 
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult
-} from '@hello-pangea/dnd'
+import { move } from '@dnd-kit/helpers'
+import { DragDropProvider } from '@dnd-kit/react'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { vote } from '~/actions/vote'
+import DroppableContainer from '~/components/DroppableContainer'
+import SortableItem from '~/components/SortableItem'
 import TitleWrapper from '~/components/TitleWrapper'
 import type { VotePageProps } from '~/data/getVoter'
 import { Link } from '~/i18n/navigation'
@@ -19,10 +17,13 @@ import { Link } from '~/i18n/navigation'
 export default function Vote({ election, voter }: VotePageProps) {
   const [confirmingVote, setConfirmingVote] = useState(false)
   const [disableVote, setDisableVote] = useState(false)
-  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
-  const [availableCandidates, setAvailableCandidates] = useState<string[]>(
-    election.candidates.map((c) => c.candidateId)
-  )
+  const [candidates, setCandidates] = useState({
+    selectedCandidates: [] as string[],
+    availableCandidates: election.candidates.map((c) => c.candidateId)
+  })
+
+  const selectedCandidates = candidates.selectedCandidates
+  const availableCandidates = candidates.availableCandidates
 
   const t = useTranslations('Vote')
   const { execute, isPending, result } = useAction(vote, {
@@ -43,87 +44,24 @@ export default function Vote({ election, voter }: VotePageProps) {
     }
   })
 
-  const handleDragStart = () => {
-    setDisableVote(true)
-  }
-
-  const handleDragEnd = (result: DropResult<string>) => {
-    if (!result.destination) {
-      return
-    }
-    const destinationIndex = result.destination.index
-
-    const candidateId = result.draggableId
-
-    if (
-      result.source.droppableId === 'availableCandidates' &&
-      result.destination.droppableId === 'selectedCandidates'
-    ) {
-      const candidate = availableCandidates.find(
-        (candidate) => candidate === candidateId
-      )
-      if (candidate) {
-        setSelectedCandidates((prev) => {
-          const newCandidates = [...prev]
-          newCandidates.splice(destinationIndex, 0, candidate)
-          return newCandidates
-        })
-        setAvailableCandidates((prev) => prev.filter((c) => c !== candidateId))
-      }
-    }
-
-    if (
-      result.source.droppableId === 'selectedCandidates' &&
-      result.destination.droppableId === 'selectedCandidates'
-    ) {
-      setSelectedCandidates((prev) => {
-        const newCandidates = [...prev]
-        const [removed] = newCandidates.splice(result.source.index, 1)
-        newCandidates.splice(destinationIndex, 0, removed)
-        return newCandidates
-      })
-    }
-
-    if (
-      result.source.droppableId === 'selectedCandidates' &&
-      result.destination.droppableId === 'availableCandidates'
-    ) {
-      setAvailableCandidates((prev) => {
-        const newCandidates = [...prev]
-        newCandidates.splice(destinationIndex, 0, candidateId)
-        return newCandidates
-      })
-      setSelectedCandidates((prev) => prev.filter((c) => c !== candidateId))
-    }
-
-    if (
-      result.source.droppableId === 'availableCandidates' &&
-      result.destination.droppableId === 'availableCandidates'
-    ) {
-      const [removed] = availableCandidates.splice(result.source.index, 1)
-      availableCandidates.splice(destinationIndex, 0, removed)
-    }
-    setDisableVote(false)
-  }
-
   const handleDoubleClickAdd = (event: React.MouseEvent<HTMLElement>) => {
     const candidateId = event.currentTarget.id
-    setSelectedCandidates((prev) => [...prev, candidateId])
-    setAvailableCandidates((prev) => prev.filter((c) => c !== candidateId))
+    setCandidates((prev) => ({
+      selectedCandidates: [...prev.selectedCandidates, candidateId],
+      availableCandidates: prev.availableCandidates.filter(
+        (c) => c !== candidateId
+      )
+    }))
   }
 
   const handleDoubleClickRemove = (event: React.MouseEvent<HTMLElement>) => {
     const candidateId = event.currentTarget.id
-    setAvailableCandidates((prev) => [...prev, candidateId])
-    setSelectedCandidates((prev) => prev.filter((c) => c !== candidateId))
-  }
-
-  const handleVoteConfirmation = () => {
-    setConfirmingVote(true)
-  }
-
-  const handleVoteCancel = () => {
-    setConfirmingVote(false)
+    setCandidates((prev) => ({
+      availableCandidates: [...prev.availableCandidates, candidateId],
+      selectedCandidates: prev.selectedCandidates.filter(
+        (c) => c !== candidateId
+      )
+    }))
   }
 
   const getCandidateName = (candidateId: string) => {
@@ -201,94 +139,62 @@ export default function Vote({ election, voter }: VotePageProps) {
                 {t('to_choose', { seats: election.seats })}
               </div>
               <div className="my-3 font-bold">{t('vote_instruction')}</div>
-              <DragDropContext
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
+              <DragDropProvider
+                onDragStart={() => setDisableVote(true)}
+                onDragOver={(event) =>
+                  setCandidates((prev) => move(prev, event))
+                }
+                onDragEnd={() => setDisableVote(false)}
               >
                 <div className="flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <h5 className="mb-2 font-medium">{t('your_ballot')}</h5>
-                    <Droppable droppableId="selectedCandidates">
-                      {(provided) => (
-                        <div
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          className="bg-fk-yellow mb-3 min-h-[200px] rounded-lg border p-2"
-                          id="selected-candidates"
-                        >
-                          <div className="space-y-2">
-                            {selectedCandidates.map((candidateId, index) => (
-                              <Draggable
-                                key={candidateId}
-                                draggableId={candidateId}
-                                index={index}
-                              >
-                                {(provided) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    id={candidateId}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="flex items-center rounded-lg bg-white p-2 shadow-sm"
-                                    onDoubleClick={handleDoubleClickRemove}
-                                  >
-                                    {index + 1}
-                                    {'. '}
-                                    {getCandidateName(candidateId)}
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        </div>
-                      )}
-                    </Droppable>
+                    <DroppableContainer
+                      id="selectedCandidates"
+                      className="bg-fk-yellow mb-3 min-h-[200px] rounded-lg border p-2"
+                    >
+                      <div className="space-y-2">
+                        {selectedCandidates.map((candidateId, index) => (
+                          <SortableItem
+                            key={candidateId}
+                            id={candidateId}
+                            index={index}
+                            name={getCandidateName(candidateId) ?? ''}
+                            onDoubleClick={handleDoubleClickRemove}
+                            showIndex={true}
+                            containerId="selectedCandidates"
+                          />
+                        ))}
+                      </div>
+                    </DroppableContainer>
                   </div>
                   <div className="flex-1">
                     <h5 className="mb-2 font-medium">
                       {t('available_candidates')}
                     </h5>
-                    <Droppable droppableId="availableCandidates">
-                      {(provided) => (
-                        <div
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          className="bg-fk-black mb-3 min-h-[200px] rounded-lg border p-2"
-                          id="available-candidates"
-                        >
-                          <div className="space-y-2">
-                            {availableCandidates.map((candidateId, index) => (
-                              <Draggable
-                                key={candidateId}
-                                draggableId={candidateId}
-                                index={index}
-                              >
-                                {(provided) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    id={candidateId}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="flex items-center rounded-lg bg-white p-2 shadow-sm"
-                                    onDoubleClick={handleDoubleClickAdd}
-                                  >
-                                    {getCandidateName(candidateId)}
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        </div>
-                      )}
-                    </Droppable>
+                    <DroppableContainer
+                      id="availableCandidates"
+                      className="bg-fk-black mb-3 min-h-[200px] rounded-lg border p-2"
+                    >
+                      <div className="space-y-2">
+                        {availableCandidates.map((candidateId, index) => (
+                          <SortableItem
+                            key={candidateId}
+                            id={candidateId}
+                            index={index}
+                            name={getCandidateName(candidateId) ?? ''}
+                            onDoubleClick={handleDoubleClickAdd}
+                            containerId="availableCandidates"
+                          />
+                        ))}
+                      </div>
+                    </DroppableContainer>
                   </div>
                 </div>
-              </DragDropContext>
+              </DragDropProvider>
               <div className="mt-6 flex justify-center">
                 <button
-                  onClick={handleVoteConfirmation}
+                  onClick={() => setConfirmingVote(true)}
                   disabled={disableVote || isPending}
                   className={`text-fk-black rounded-lg px-4 py-2 ${
                     disableVote
@@ -312,7 +218,7 @@ export default function Vote({ election, voter }: VotePageProps) {
         >
           <div
             className="fixed inset-0 bg-gray-500/60 transition-opacity"
-            onClick={handleVoteCancel}
+            onClick={() => setConfirmingVote(false)}
           />
           <div className="flex min-h-screen items-center justify-center p-4">
             <div
@@ -362,7 +268,7 @@ export default function Vote({ election, voter }: VotePageProps) {
                   {t('confirm')}
                 </button>
                 <button
-                  onClick={handleVoteCancel}
+                  onClick={() => setConfirmingVote(false)}
                   disabled={disableVote || isPending}
                   className="w-full cursor-pointer rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 sm:w-auto"
                 >

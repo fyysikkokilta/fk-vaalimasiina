@@ -23,7 +23,8 @@
     "pre-commit": "pnpx lint-staged"
   },
   "dependencies": {
-    "@hello-pangea/dnd": "^18.0.1",
+    "@dnd-kit/helpers": "^0.2.3",
+    "@dnd-kit/react": "^0.2.3",
     "@next/bundle-analyzer": "^16.1.4",
     "@react-email/components": "^1.0.6",
     "@t3-oss/env-nextjs": "^0.13.10",

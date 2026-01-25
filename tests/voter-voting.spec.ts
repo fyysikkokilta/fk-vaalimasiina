@@ -8,7 +8,12 @@ import {
   resetDatabase,
   Voter
 } from './utils/db'
-import { deselectCandidate, selectCandidate } from './utils/voter-voting'
+import {
+  deselectCandidate,
+  doubleClickToAdd,
+  doubleClickToRemove,
+  selectCandidate
+} from './utils/voter-voting'
 
 let election: Election
 let voters: Voter[]
@@ -48,10 +53,10 @@ test.describe('voting page', () => {
 
   test('should show candidates in available candidates', async ({ page }) => {
     await expect(page.getByText('Candidates', { exact: true })).toBeVisible()
-    await expect(page.locator('#available-candidates')).toBeVisible()
+    await expect(page.locator('#availableCandidates')).toBeVisible()
     for (const candidate of election.candidates) {
       await expect(
-        page.locator('#available-candidates').locator(`text=${candidate.name}`)
+        page.locator('#availableCandidates').locator(`text=${candidate.name}`)
       ).toBeVisible()
     }
   })
@@ -68,21 +73,93 @@ test.describe('voting', () => {
 
   test('should allow to select candidates', async ({ page }) => {
     await selectCandidate(page, 'Candidate 1')
+    // Selected candidates show with index prefix (e.g., "1. Candidate 1")
     await expect(
-      page.locator('#selected-candidates').getByText('Candidate 1')
+      page.locator('#selectedCandidates').getByText('Candidate 1')
     ).toBeVisible()
   })
 
   test('should allow to deselect candidates', async ({ page }) => {
     await selectCandidate(page, 'Candidate 1')
+    // Selected candidates show with index prefix (e.g., "1. Candidate 1")
     await expect(
-      page.locator('#selected-candidates').getByText('Candidate 1')
+      page.locator('#selectedCandidates').getByText('Candidate 1')
     ).toBeVisible()
 
     await deselectCandidate(page, 'Candidate 1')
     await expect(
-      page.locator('#available-candidates').getByText('Candidate 1')
+      page.locator('#availableCandidates').getByText('Candidate 1')
     ).toBeVisible()
+  })
+
+  test('should allow to add candidates by double-clicking', async ({
+    page
+  }) => {
+    // Double-click a candidate from available to selected
+    await doubleClickToAdd(page, 'Candidate 1')
+
+    // Selected candidates show with index prefix (e.g., "1. Candidate 1")
+    await expect(
+      page.locator('#selectedCandidates').getByText('Candidate 1')
+    ).toBeVisible()
+
+    // Should no longer be in available candidates
+    await expect(
+      page.locator('#availableCandidates').getByText('Candidate 1')
+    ).not.toBeVisible()
+  })
+
+  test('should allow to remove candidates by double-clicking', async ({
+    page
+  }) => {
+    // First add a candidate
+    await doubleClickToAdd(page, 'Candidate 1')
+    await expect(
+      page.locator('#selectedCandidates').getByText('Candidate 1')
+    ).toBeVisible()
+
+    // Double-click to remove from selected
+    await doubleClickToRemove(page, 'Candidate 1')
+
+    // Should be back in available candidates
+    await expect(
+      page.locator('#availableCandidates').getByText('Candidate 1')
+    ).toBeVisible()
+
+    // Should no longer be in selected candidates
+    await expect(
+      page.locator('#selectedCandidates').getByText('Candidate 1')
+    ).not.toBeVisible()
+  })
+
+  test('should allow multiple candidates to be added by double-clicking', async ({
+    page
+  }) => {
+    // Add first candidate
+    await doubleClickToAdd(page, 'Candidate 1')
+    await expect(
+      page.locator('#selectedCandidates').getByText('Candidate 1')
+    ).toBeVisible()
+
+    // Add second candidate
+    await doubleClickToAdd(page, 'Candidate 2')
+    await expect(
+      page.locator('#selectedCandidates').getByText('Candidate 2')
+    ).toBeVisible()
+
+    // Both should be in selected, neither in available
+    await expect(
+      page.locator('#selectedCandidates').getByText('Candidate 1')
+    ).toBeVisible()
+    await expect(
+      page.locator('#selectedCandidates').getByText('Candidate 2')
+    ).toBeVisible()
+    await expect(
+      page.locator('#availableCandidates').getByText('Candidate 1')
+    ).not.toBeVisible()
+    await expect(
+      page.locator('#availableCandidates').getByText('Candidate 2')
+    ).not.toBeVisible()
   })
 
   test('should show confirm vote dialog', async ({ page }) => {
