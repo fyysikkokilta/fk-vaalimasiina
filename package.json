@@ -75,6 +75,9 @@
     "vitest": "^4.0.18"
   },
   "pnpm": {
+    "overrides": {
+      "@types/nodemailer@*>@aws-sdk/client-sesv2": "-"
+    },
     "onlyBuiltDependencies": [
       "@parcel/watcher",
       "@swc/core",
