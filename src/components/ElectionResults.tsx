@@ -9,155 +9,226 @@ import {
   type Election,
   type ValidVotingResult
 } from '~/algorithm/stvAlgorithm'
+import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
 import ElectionActions from './ElectionActions'
 
-function InitialVotes({
+function ResultsTable({
   election,
-  votingResult
+  votingResult,
+  numCandidates,
+  stepsPerRound,
+  step
 }: {
   election: Election
   votingResult: ValidVotingResult
+  numCandidates: number
+  stepsPerRound: number
+  step?: number
 }) {
   const t = useTranslations('ElectionResults')
-  return (
-    <div
-      id="initial_votes"
-      className="mb-3 overflow-hidden rounded-lg border border-gray-200"
-    >
-      <h5 className="bg-gray-50 p-4 text-center font-medium">
-        {t('initial_votes')}
-      </h5>
-      <table className="w-full">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
-              {t('total_votes')}
-            </th>
-            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
-              {t('non_empty_votes')}
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          <tr className="even:bg-gray-50">
-            <td className="p-3">{votingResult.totalVotes}</td>
-            <td className="p-3">{votingResult.nonEmptyVotes}</td>
-          </tr>
-        </tbody>
-        <thead className="border-t border-gray-200 bg-gray-50">
-          <tr>
-            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
-              {t('seats')}
-            </th>
-            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
-              {t('election_threshold')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="even:bg-gray-50">
-            <td className="p-3">{election.seats}</td>
-            <td className="p-3">{votingResult.quota}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  )
-}
+  const showAllImmediately = step === undefined
 
-function RoundResult({
-  round,
-  candidateResults,
-  tieBreaker,
-  emptyVotes
-}: {
-  round: number
-  candidateResults: ValidVotingResult['roundResults'][0]['candidateResults']
-  tieBreaker?: boolean | undefined
-  emptyVotes: number
-}) {
-  const t = useTranslations('ElectionResults')
+  // All candidate rows are always shown
+  const allCandidates = votingResult.roundResults[0].candidateResults
 
-  const roundToTwoDecimals = (num: number) =>
-    Math.round((num + Number.EPSILON) * 100) / 100
+  // Determine which rounds (columns) to show
+  const visibleRoundCount = showAllImmediately
+    ? votingResult.roundResults.length
+    : Math.floor(step / stepsPerRound) + 1
+
+  const visibleRounds = votingResult.roundResults.slice(0, visibleRoundCount)
+
+  // Helper to check if a cell should be visible
+  const isCellVisible = (roundIdx: number, candidateIdx: number): boolean => {
+    if (showAllImmediately) return true
+    const cellStep = roundIdx * stepsPerRound + 1 + candidateIdx
+    return step! >= cellStep
+  }
+
+  // Helper to check if empty votes should be visible for a round
+  const isEmptyVotesVisible = (roundIdx: number): boolean => {
+    if (showAllImmediately) return true
+    const emptyStep = roundIdx * stepsPerRound + numCandidates + 1
+    return step! >= emptyStep
+  }
+
+  // Helper to check if results should be visible for a round
+  const isResultsVisible = (roundIdx: number): boolean => {
+    if (showAllImmediately) return true
+    const resultsStep = roundIdx * stepsPerRound + numCandidates + 2
+    return step! >= resultsStep
+  }
+
+  // Find election/elimination round for each candidate
+  const getCandidateStatus = (candidateId: string) => {
+    let electionRound: number | undefined
+    let eliminationRound: number | undefined
+
+    for (const roundResult of votingResult.roundResults) {
+      const candidate = roundResult.candidateResults.find(
+        (c) => c.id === candidateId
+      )
+      if (candidate?.isSelectedThisRound) {
+        electionRound = roundResult.round
+      }
+      if (candidate?.isEliminatedThisRound) {
+        eliminationRound = roundResult.round
+      }
+    }
+
+    return { electionRound, eliminationRound }
+  }
 
   return (
     <div
-      id={`round-${round}`}
-      className="mb-3 overflow-hidden rounded-lg border border-gray-200"
+      id={
+        showAllImmediately
+          ? 'results_by_candidate'
+          : 'results_by_candidate_paged'
+      }
+      className="mb-3 min-w-0 overflow-hidden rounded-lg border border-gray-200"
     >
-      <h5 className="bg-gray-50 p-4 text-center font-medium">
-        {t('round')} {round}
-      </h5>
-      <div>
-        <table className="w-full border-collapse">
+      <section
+        className="border-b border-gray-200 bg-blue-50 px-4 py-3"
+        aria-label={t('initial_votes')}
+      >
+        <h3 className="mb-3 text-center text-xs font-medium tracking-wide text-gray-700 uppercase">
+          {t('initial_votes')}
+        </h3>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-4 sm:gap-y-0">
+          {[
+            { key: 'total_votes' as const, value: votingResult.totalVotes },
+            {
+              key: 'non_empty_votes' as const,
+              value: votingResult.nonEmptyVotes
+            },
+            { key: 'seats' as const, value: election.seats },
+            {
+              key: 'quota' as const,
+              value: votingResult.quota
+            }
+          ].map(({ key, value }) => (
+            <div key={key}>
+              <div className="text-xs font-medium text-gray-500 uppercase">
+                {t(key)}
+              </div>
+              <div className="text-sm font-medium text-gray-900">{value}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="min-w-0 overflow-x-auto overflow-y-hidden max-md:overflow-x-scroll max-md:[-webkit-overflow-scrolling:touch]">
+        <table className="w-full min-w-[600px] table-auto border-collapse">
           <thead className="bg-gray-50">
             <tr>
-              <th className="p-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
+              <th className="sticky left-0 z-10 min-w-[140px] border-r border-gray-200 bg-gray-50 p-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                 {t('candidate_name')}
               </th>
-              <th className="p-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
-                {t('vote_count')}
-              </th>
-              <th className="px-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
+              {visibleRounds.map((round) => (
+                <th
+                  key={round.round}
+                  className="p-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
+                >
+                  {t('round')} {round.round}
+                </th>
+              ))}
+              <th className="min-w-[120px] p-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                 {t('result')}
               </th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-gray-200">
-            {candidateResults.map(
-              ({
-                id,
-                name,
-                voteCount,
-                isSelected,
-                isSelectedThisRound,
-                isEliminated,
-                isEliminatedThisRound
-              }) => (
-                <tr key={id} className="even:bg-gray-50">
-                  <td className="p-3 text-sm text-gray-900">{name}</td>
-                  <td className="p-3 text-sm text-gray-900">
-                    {isEliminated && !isEliminatedThisRound ? (
-                      '-'
-                    ) : (
-                      <div className="group relative">
-                        <span>{roundToTwoDecimals(voteCount)}</span>
-                        {voteCount !== roundToTwoDecimals(voteCount) && (
-                          <div className="invisible absolute top-full left-1/2 -translate-x-1/2 rounded px-2 text-xs text-gray-500 group-hover:visible">
-                            {voteCount}
-                          </div>
-                        )}
-                      </div>
-                    )}
+            {allCandidates.map((candidate, candidateIdx) => {
+              const { electionRound, eliminationRound } = getCandidateStatus(
+                candidate.id
+              )
+
+              const showElected =
+                electionRound && isResultsVisible(electionRound - 1)
+              const showEliminated =
+                eliminationRound && isResultsVisible(eliminationRound - 1)
+
+              const bgClass = showElected
+                ? 'bg-green-50'
+                : candidateIdx % 2 === 0
+                  ? 'bg-gray-50'
+                  : 'bg-white'
+
+              return (
+                <tr key={candidate.id} className={bgClass}>
+                  <td
+                    className={`sticky left-0 z-10 border-r border-gray-200 p-3 text-sm ${bgClass} ${
+                      showElected
+                        ? 'font-semibold text-green-700'
+                        : 'font-medium text-gray-900'
+                    }`}
+                  >
+                    {candidate.name}
                   </td>
-                  <td className="p-3 text-sm">
-                    {isSelected && (
-                      <span className="text-nowrap text-green-600">
-                        {t(isSelectedThisRound ? 'chosen' : 'chosen_before')}
+                  {visibleRounds.map((round, roundIdx) => {
+                    const cellVisible = isCellVisible(roundIdx, candidateIdx)
+                    const roundCandidate = round.candidateResults.find(
+                      (c) => c.id === candidate.id
+                    )
+                    const voteCount = roundCandidate?.voteCount ?? null
+                    const isEliminatedAfterThisRound =
+                      eliminationRound && round.round > eliminationRound
+                    const meetsQuota =
+                      voteCount != null && voteCount >= votingResult.quota
+
+                    return (
+                      <td
+                        key={round.round}
+                        className={`p-3 text-center text-sm text-gray-900 ${bgClass}`}
+                      >
+                        {cellVisible && voteCount != null ? (
+                          isEliminatedAfterThisRound ? (
+                            '-'
+                          ) : (
+                            <span className={meetsQuota ? 'font-semibold' : ''}>
+                              {roundToTwoDecimals(voteCount)}
+                            </span>
+                          )
+                        ) : (
+                          ''
+                        )}
+                      </td>
+                    )
+                  })}
+                  <td className={`p-3 text-left text-sm ${bgClass}`}>
+                    {showElected && (
+                      <span className="text-green-600">
+                        {t('chosen_before')}
                       </span>
                     )}
-                    {isEliminated && (
-                      <span className="text-nowrap text-red-600">
-                        {t(
-                          isEliminatedThisRound
-                            ? 'eliminated'
-                            : 'eliminated_before'
-                        )}
-                        {tieBreaker && ` - ${t('tie_breaker')}`}
+                    {showEliminated && (
+                      <span className="text-red-600">
+                        {t('eliminated_before')}
                       </span>
                     )}
                   </td>
                 </tr>
               )
-            )}
-            <tr className="bg-red-50 font-semibold">
-              <td className="p-3 text-sm text-gray-900">{t('empty_votes')}</td>
-              <td className="p-3 text-sm text-gray-900">
-                {roundToTwoDecimals(emptyVotes)}
+            })}
+            <tr key="empty" className="bg-red-50">
+              <td className="sticky left-0 z-10 border-r border-gray-200 bg-red-50 p-3 text-sm text-gray-900">
+                {t('empty_votes')}
               </td>
-              <td className="p-3"></td>
+              {visibleRounds.map((round, roundIdx) => {
+                const visible = isEmptyVotesVisible(roundIdx)
+                return (
+                  <td
+                    key={round.round}
+                    className="bg-red-50 p-3 text-center text-sm text-gray-900"
+                  >
+                    {visible ? roundToTwoDecimals(round.emptyVotes) : ''}
+                  </td>
+                )
+              })}
+              <td className="bg-red-50 p-3 text-left" />
             </tr>
           </tbody>
         </table>
@@ -166,122 +237,111 @@ function RoundResult({
   )
 }
 
-function Winners({ winners }: { winners: ValidVotingResult['winners'] }) {
-  const t = useTranslations('ElectionResults')
-  return (
-    <div
-      id="chosen_candidates"
-      className="mb-3 overflow-hidden rounded-lg border border-gray-200"
-    >
-      <h5 className="bg-gray-50 p-4 text-center font-medium">
-        {t('chosen_candidates')}
-      </h5>
-      <table className="w-full">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="p-3 text-xs font-medium text-gray-500 uppercase">
-              {t('candidate_name')}
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {winners.map(({ id, name }) => (
-            <tr key={id} className="even:bg-gray-50">
-              <td className="p-3">{name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
+const navButtonClass = (disabled: boolean) =>
+  `rounded-lg px-4 py-2 ${
+    disabled
+      ? 'cursor-not-allowed bg-gray-300'
+      : 'cursor-pointer bg-gray-600 text-white hover:bg-gray-700'
+  }`
 
 export default function ElectionResults({
   election,
   ballots,
-  voterCount
+  voterCount,
+  showAllImmediately
 }: {
   election: Election
   ballots: Ballot[]
   voterCount: number
+  showAllImmediately: boolean
 }) {
-  const [currentRound, setCurrentRound] = useState(0)
+  const [page, setPage] = useState(0)
   const t = useTranslations('ElectionResults')
-
   const votingResult = calculateSTVResult(election, ballots, voterCount)
 
   if (!votingResult.validResult) {
     return (
-      <div className="mx-auto mb-4">
-        <div className="text-center">
-          <h3 className="mb-4 text-2xl font-semibold">{election.title}</h3>
-          <div className="mb-2 text-center">
-            {election.date.toLocaleDateString('fi-FI')}
-          </div>
-          <div className="mb-4">{election.description}</div>
-          <div className="flex flex-col space-y-2">
-            <span>
-              {t('total_votes')}
-              {': '}
-              {votingResult.totalVotes}
-            </span>
-            <span>
-              {t('voter_count')}
-              {': '}
-              {votingResult.voterCount}
-            </span>
-          </div>
-          <div className="mt-4 rounded-lg bg-red-100 p-4 text-red-700">
-            {t('invalid_result')}
-          </div>
+      <div className="mx-auto mb-4 text-center">
+        <h3 className="mb-4 text-2xl font-semibold">{election.title}</h3>
+        <div className="mb-2">{election.date.toLocaleDateString('fi-FI')}</div>
+        <div className="mb-4">{election.description}</div>
+        <div className="mb-4 flex flex-col space-y-2">
+          <span>
+            {t('total_votes')}
+            {': '}
+            {votingResult.totalVotes}
+          </span>
+          <span>
+            {t('voter_count')}
+            {': '}
+            {votingResult.voterCount}
+          </span>
+        </div>
+        <div className="rounded-lg bg-red-100 p-4 text-red-700">
+          {t('invalid_result')}
         </div>
       </div>
     )
   }
 
+  const numCandidates = votingResult.roundResults[0].candidateResults.length
+  const stepsPerRound = numCandidates + 3 // 1 (round start) + N (candidates) + 1 (empty votes) + 1 (results)
+  const totalSteps = votingResult.roundResults.length * stepsPerRound
+
+  const header = (
+    <div className="mb-4 text-center">
+      <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
+      <div className="mb-2">{election.date.toLocaleDateString('fi-FI')}</div>
+      <div className="mb-3">{election.description}</div>
+      <ElectionActions election={election} votingResult={votingResult} />
+    </div>
+  )
+
+  if (showAllImmediately) {
+    return (
+      <div>
+        {header}
+        <ResultsTable
+          election={election}
+          votingResult={votingResult}
+          numCandidates={numCandidates}
+          stepsPerRound={stepsPerRound}
+        />
+      </div>
+    )
+  }
+
+  const isFirstPage = page === 0
+  const isLastPage = page === totalSteps - 1
+
   return (
     <div>
-      <div className="mb-4 text-center">
-        <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
-        <div className="mb-2 text-center">
-          {election.date.toLocaleDateString('fi-FI')}
-        </div>
-        <div className="mb-3">{election.description}</div>
-        <ElectionActions election={election} votingResult={votingResult} />
-      </div>
+      {header}
       <div className="mb-4 flex justify-between">
         <button
           type="button"
-          onClick={() => setCurrentRound((curr) => curr - 1)}
-          disabled={currentRound === 0}
-          className={`rounded-lg px-4 py-2 ${
-            currentRound === 0
-              ? 'cursor-not-allowed bg-gray-300'
-              : 'cursor-pointer bg-gray-600 text-white hover:bg-gray-700'
-          }`}
+          className={navButtonClass(isFirstPage)}
+          disabled={isFirstPage}
+          onClick={() => setPage((p) => Math.max(0, p - 1))}
         >
           {t('previous_round')}
         </button>
         <button
           type="button"
-          onClick={() => setCurrentRound((curr) => curr + 1)}
-          disabled={currentRound === votingResult.roundResults.length + 1}
-          className={`rounded-lg px-4 py-2 ${
-            currentRound === votingResult.roundResults.length + 1
-              ? 'cursor-not-allowed bg-gray-300'
-              : 'cursor-pointer bg-gray-600 text-white hover:bg-gray-700'
-          }`}
+          className={navButtonClass(isLastPage)}
+          disabled={isLastPage}
+          onClick={() => setPage((p) => Math.min(totalSteps - 1, p + 1))}
         >
           {t('next_round')}
         </button>
       </div>
-      {currentRound === 0 ? (
-        <InitialVotes election={election} votingResult={votingResult} />
-      ) : currentRound === votingResult.roundResults.length + 1 ? (
-        <Winners winners={votingResult.winners} />
-      ) : (
-        <RoundResult {...votingResult.roundResults[currentRound - 1]} />
-      )}
+      <ResultsTable
+        election={election}
+        votingResult={votingResult}
+        numCandidates={numCandidates}
+        stepsPerRound={stepsPerRound}
+        step={page}
+      />
     </div>
   )
 }

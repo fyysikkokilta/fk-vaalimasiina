@@ -177,7 +177,9 @@ test.describe('with all votes', () => {
   test('should allow to end voting', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'End voting' })).toBeEnabled()
     await page.getByRole('button', { name: 'End voting' }).click()
-    await expect(page.getByRole('heading', { name: 'Results' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'Results', exact: true })
+    ).toBeVisible()
   })
 })
 

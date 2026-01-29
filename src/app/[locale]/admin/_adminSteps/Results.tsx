@@ -37,6 +37,7 @@ export default function Results({
         election={election}
         ballots={ballots}
         voterCount={voters.length}
+        showAllImmediately={false}
       />
     </AdminNavigation>
   )

@@ -10,6 +10,7 @@ import type {
   ValidVotingResult
 } from '~/algorithm/stvAlgorithm'
 import { generateCsvContent } from '~/utils/csvGenerator'
+import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
 export default function ElectionActions({
   election,
@@ -19,9 +20,6 @@ export default function ElectionActions({
   votingResult: ValidVotingResult
 }) {
   const t = useTranslations('ElectionResults')
-
-  const roundToTwoDecimals = (num: number) =>
-    Math.round((num + Number.EPSILON) * 100) / 100
 
   const handleCsvDownload = async () => {
     try {

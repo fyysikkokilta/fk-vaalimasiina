@@ -57,7 +57,10 @@ export default async function Election({
           {t('back_to_list')}
         </Link>
       </div>
-      <ElectionResults {...electionBallotsVoterCount} />
+      <ElectionResults
+        {...electionBallotsVoterCount}
+        showAllImmediately={true}
+      />
     </TitleWrapper>
   )
 }
