@@ -1,0 +1,38 @@
+---
+description: Use Conventional Commits for all commit messages
+alwaysApply: true
+---
+
+# Conventional Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) for every commit message.
+
+## Format
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+- **type** (required): `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, etc.
+- **scope** (optional): area of the codebase, e.g. `i18n`, `admin`, `vote`
+- **description** (required): short, imperative, lowercase start (no period)
+
+## Examples
+
+```text
+feat: add admin results view by candidate
+feat(i18n): migrate translation JSON to TypeScript under src/i18n
+fix: optional chaining for formErrors in ElectionForm
+chore: update deps
+docs: update README deployment section
+```
+
+## When suggesting commits
+
+- Prefer **one logical change per commit**; use multiple commits when changes are unrelated.
+- Use **imperative** in the subject: "add feature" not "added feature".
+- Keep the **subject line under ~72 characters**; add a body only when needed.
