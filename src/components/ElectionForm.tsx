@@ -168,7 +168,7 @@ export default function ElectionForm({
           </ul>
         </div>
       </div>
-      {result.validationErrors?.formErrors.map((error) => (
+      {result.validationErrors?.formErrors?.map((error) => (
         <div key={error} className="text-red-500">
           {error}
         </div>

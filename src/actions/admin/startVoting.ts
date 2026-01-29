@@ -11,7 +11,7 @@ import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 
-const startVotingSchame = async () => {
+const startVotingSchema = async () => {
   const t = await getActionsTranslations('actions.startVoting.validation')
 
   return z.object({
@@ -34,7 +34,7 @@ const startVotingSchame = async () => {
 }
 
 export const startVoting = actionClient
-  .inputSchema(startVotingSchame)
+  .inputSchema(startVotingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId, emails } }) => {
     const t = await getActionsTranslations('actions.startVoting.action_status')
