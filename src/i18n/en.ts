@@ -59,9 +59,11 @@ const messages = {
   },
   Login: {
     title: 'Log in to admin',
-    signin_description:
-      'Sign in with your Google account to access the admin panel.',
+    signin_description: 'Sign in with your account to access the admin panel.',
+    signin_with: 'Sign in with {provider}',
     signin_with_google: 'Sign in with Google',
+    no_providers_configured:
+      'No OAuth providers are configured. Please contact the administrator.',
     error_access_denied: 'Access denied. Please try again.',
     error_unauthorized: 'You are not authorized to access this application.',
     error_server_error: 'A server error occurred. Please try again later.',

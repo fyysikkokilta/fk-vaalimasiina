@@ -60,8 +60,11 @@ const messages = {
   Login: {
     title: 'Hallintaan kirjautuminen',
     signin_description:
-      'Kirjaudu sisään Google-tililläsi päästäksesi ylläpitopaneeliin.',
+      'Kirjaudu sisään tililläsi päästäksesi ylläpitopaneeliin.',
+    signin_with: 'Kirjaudu {provider}',
     signin_with_google: 'Kirjaudu Google',
+    no_providers_configured:
+      'OAuth-palveluntarjoajia ei ole määritelty. Ota yhteyttä ylläpitäjään.',
     error_access_denied: 'Pääsy evätty. Yritä uudelleen.',
     error_unauthorized: 'Sinulla ei ole oikeutta käyttää tätä sovellusta.',
     error_server_error: 'Palvelinvirhe. Yritä myöhemmin uudelleen.',

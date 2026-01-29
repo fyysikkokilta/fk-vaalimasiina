@@ -2,15 +2,21 @@ import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
 
 export const env = createEnv({
+  /**
+   * Server-side environment variables
+   * ⚠️ These are NEVER exposed to the client browser
+   * Safe for secrets like passwords, API keys, database URLs, etc.
+   */
   server: {
     PORT: z
       .string()
       .default('3000')
       .transform((val) => parseInt(val, 10)),
-    DATABASE_URL: z.url(),
-    AUTH_SECRET: z.string(),
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
+    DATABASE_URL: z.url(), // SECRET: Database connection string
+    AUTH_SECRET: z.string(), // SECRET: JWT signing key
+    OAUTH_PROVIDERS: z.string().optional(),
+    // ⚠️ OAuth secrets (CLIENT_SECRET) are accessed via process.env in parseSingleProvider()
+    // They are never exposed to client-side code
     ADMIN_EMAILS: z.string().transform((val) =>
       val
         .split(',')
@@ -28,12 +34,12 @@ export const env = createEnv({
       .default('false')
       .transform((val) => val === 'true'),
     SMTP_USER: z.string().optional(),
-    SMTP_PASSWORD: z.string().optional(),
+    SMTP_PASSWORD: z.string().optional(), // SECRET: SMTP authentication password
     BRANDING_EMAIL_SUBJECT_PREFIX: z.string().default('Vaalimasiina'),
     BRANDING_MAIL_FOOTER_TEXT: z.string().default('Rakkaudella Fysistit'),
     BRANDING_MAIL_FOOTER_LINK: z.url().default('https://fyysikkokilta.fi'),
-    S3_ACCESS_KEY_ID: z.string().optional(),
-    S3_SECRET_ACCESS_KEY: z.string().optional(),
+    S3_ACCESS_KEY_ID: z.string().optional(), // SECRET: S3 access key
+    S3_SECRET_ACCESS_KEY: z.string().optional(), // SECRET: S3 secret key
     S3_BUCKET_NAME: z.string().optional(),
     S3_ENDPOINT: z.url().optional(),
     S3_REGION: z.string().default('auto'),
@@ -45,6 +51,11 @@ export const env = createEnv({
       .enum(['development', 'production', 'test'])
       .default('development')
   },
+  /**
+   * Client-side environment variables
+   * ⚠️ These ARE exposed to the client browser
+   * NEVER put secrets here - only public URLs and branding
+   */
   client: {
     NEXT_PUBLIC_BASE_URL: z.url().default('https://vaalit.fyysikkokilta.fi'),
     NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT: z.string().default('Vaalimasiina'),

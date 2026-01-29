@@ -79,7 +79,11 @@ export const sendVotingMail = async (
     await Promise.all(emailPromises)
     return true
   } catch (error) {
-    console.error('Error sending voting mail:', error)
+    // Log error type only to avoid leaking SMTP credentials in stack traces
+    console.error(
+      'Error sending voting mail:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
     return false
   }
 }

@@ -55,7 +55,11 @@ export async function uploadCsvToS3(fileName: string, csvContent: string) {
 
     return fileName
   } catch (error) {
-    console.error('Error uploading CSV to S3:', error)
+    // Log error type only to avoid leaking S3 credentials in stack traces
+    console.error(
+      'Error uploading CSV to S3:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
     throw new Error('Failed to upload CSV file to storage')
   }
 }
@@ -78,7 +82,11 @@ export async function getCsvFromS3(fileName: string) {
 
     return content
   } catch (error) {
-    console.error('Error fetching CSV from S3:', error)
+    // Log error type only to avoid leaking S3 credentials in stack traces
+    console.error(
+      'Error fetching CSV from S3:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
     return null
   }
 }
@@ -111,7 +119,11 @@ export async function getSignedDownloadUrl(fileName: string) {
     )
     return signedUrl
   } catch (error) {
-    console.error('Error generating signed URL:', error)
+    // Log error type only to avoid leaking S3 credentials in stack traces
+    console.error(
+      'Error generating signed URL:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
     throw new Error('Failed to generate download URL')
   }
 }
