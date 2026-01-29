@@ -1,7 +1,9 @@
 import * as rootParams from 'next/root-params'
-import { hasLocale } from 'next-intl'
+import { hasLocale, Messages } from 'next-intl'
 import { getRequestConfig } from 'next-intl/server'
 
+import en from './en'
+import fi from './fi'
 import { routing } from './routing'
 
 export default getRequestConfig(async ({ locale }) => {
@@ -14,12 +16,9 @@ export default getRequestConfig(async ({ locale }) => {
       : routing.defaultLocale
   }
 
+  const messages = locale === 'fi' ? fi : en
   return {
     locale,
-    messages: (
-      (await import(`../../messages/${locale}.json`)) as {
-        default: Record<string, string>
-      }
-    ).default
+    messages: messages as Messages
   }
 })
