@@ -6,37 +6,32 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
-const editElectionSchema = async () => {
-  const t = await getActionsTranslations('actions.editElection.validation')
-  return z
-    .object({
-      electionId: z.uuid({ error: t('electionId_uuid') }),
-      title: z
-        .string({ error: t('title_string') })
-        .nonempty({ error: t('title_nonempty') }),
-      description: z
-        .string({ error: t('description_string') })
-        .nonempty({ error: t('description_nonempty') }),
-      seats: z
-        .number({ error: t('seats_number') })
-        .min(1, { error: t('seats_min') }),
-      candidates: z
-        .array(
-          z.string({ error: t('candidate_string') }).nonempty({
-            error: t('candidate_nonempty')
-          }),
-          { error: t('candidates_array') }
-        )
-        .nonempty({ error: t('candidates_nonempty') })
-    })
-    .refine((data) => data.candidates.length >= data.seats, {
-      error: t('candidates_geq_seats')
-    })
-}
+const editElectionSchema = z
+  .object({
+    electionId: z.uuid('Election identifier must be a valid UUID'),
+    title: z.string('Title must be a string').min(1, 'Title must not be empty'),
+    description: z
+      .string('Description must be a string')
+      .min(1, 'Description must not be empty'),
+    seats: z
+      .number('Seats must be a number')
+      .min(1, 'Seats must be at least 1'),
+    candidates: z
+      .array(
+        z
+          .string('Candidate must be a string')
+          .min(1, 'Candidate must not be empty'),
+        'Candidates must be an array'
+      )
+      .min(1, 'There must be at least one candidate')
+  })
+  .refine(
+    (data) => data.candidates.length >= data.seats,
+    'There must be at least as many candidates as there are seats'
+  )
 
 export const editElection = actionClient
   .inputSchema(editElectionSchema)
@@ -45,9 +40,6 @@ export const editElection = actionClient
     async ({
       parsedInput: { electionId, title, description, seats, candidates }
     }) => {
-      const t = await getActionsTranslations(
-        'actions.editElection.action_status'
-      )
       return db.transaction(async (transaction) => {
         const elections = await transaction
           .update(electionsTable)
@@ -68,7 +60,7 @@ export const editElection = actionClient
           })
 
         if (!elections[0]) {
-          throw new ActionError(t('election_not_found'))
+          throw new ActionError('Election not found')
         }
 
         await transaction
@@ -84,7 +76,7 @@ export const editElection = actionClient
 
         revalidatePath('/[locale]/admin', 'page')
 
-        return { message: t('election_edited') }
+        return { message: 'Election edited' }
       })
     }
   )

@@ -1,8 +1,10 @@
 'use client'
 
 import { useLocale } from 'next-intl'
+import type { HookActionStatus } from 'next-safe-action/hooks'
 import React from 'react'
 
+import { Button } from '~/components/ui/Button'
 import {
   ElectionStep,
   electionStepSettingsEnglish,
@@ -13,8 +15,11 @@ type AdminNavigationProps = {
   electionStep: ElectionStep
   disablePrevious?: boolean
   disableNext?: boolean
-  onBack?: string | ((formData: FormData) => void | Promise<void>) | undefined
-  onNext: string | ((formData: FormData) => void | Promise<void>) | undefined
+  previousActionStatus?: HookActionStatus
+  nextActionStatus?: HookActionStatus
+  formId?: string
+  onBack?: () => void
+  onNext?: () => void
   children: React.ReactNode
 }
 
@@ -22,8 +27,11 @@ export default function AdminNavigation({
   electionStep,
   disablePrevious = false,
   disableNext = false,
-  onBack = async () => {},
-  onNext,
+  previousActionStatus,
+  nextActionStatus,
+  formId,
+  onBack = () => {},
+  onNext = () => {},
   children
 }: AdminNavigationProps) {
   const locale = useLocale()
@@ -34,7 +42,7 @@ export default function AdminNavigation({
       : electionStepSettingsEnglish[electionStep]
 
   return (
-    <form>
+    <div>
       <div className="mb-3">
         <div className="mb-6 flex justify-center">
           <h3 className="text-2xl font-semibold">{stepSettings.title}</h3>
@@ -42,39 +50,44 @@ export default function AdminNavigation({
         <div className="flex justify-between space-x-6">
           <div>
             {stepSettings.backButton && (
-              <button
-                formAction={onBack}
-                type="submit"
+              <Button
+                type="button"
+                variant="yellow"
                 disabled={disablePrevious}
-                className={`text-fk-black rounded-lg px-4 py-2 ${
-                  disablePrevious
-                    ? 'cursor-not-allowed bg-gray-300'
-                    : 'bg-fk-yellow cursor-pointer transition-colors hover:bg-amber-500'
-                }`}
+                actionStatus={previousActionStatus}
+                onClick={onBack}
               >
                 {stepSettings.backButton}
-              </button>
+              </Button>
             )}
           </div>
           <div>
-            {stepSettings.nextButton && (
-              <button
-                formAction={onNext}
-                type="submit"
-                disabled={disableNext}
-                className={`text-fk-black rounded-lg px-4 py-2 ${
-                  disableNext
-                    ? 'cursor-not-allowed bg-gray-300'
-                    : 'bg-fk-yellow cursor-pointer transition-colors hover:bg-amber-500'
-                }`}
-              >
-                {stepSettings.nextButton}
-              </button>
-            )}
+            {stepSettings.nextButton &&
+              (formId ? (
+                <Button
+                  type="submit"
+                  form={formId}
+                  variant="yellow"
+                  disabled={disableNext}
+                  actionStatus={nextActionStatus}
+                >
+                  {stepSettings.nextButton}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="yellow"
+                  disabled={disableNext}
+                  actionStatus={nextActionStatus}
+                  onClick={onNext}
+                >
+                  {stepSettings.nextButton}
+                </Button>
+              ))}
           </div>
         </div>
       </div>
       {children}
-    </form>
+    </div>
   )
 }

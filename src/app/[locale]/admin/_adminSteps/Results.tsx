@@ -1,7 +1,6 @@
 'use client'
 
 import { useAction } from 'next-safe-action/hooks'
-import { toast } from 'react-toastify'
 
 import { closeElection } from '~/actions/admin/closeElection'
 import AdminNavigation from '~/components/AdminNavigation'
@@ -14,23 +13,12 @@ export default function Results({
   ballots,
   voters
 }: ElectionStepProps) {
-  const { execute, isPending } = useAction(closeElection, {
-    onSuccess: ({ data }) => {
-      if (data?.message) {
-        toast.success(data.message)
-      }
-    },
-    onError: ({ error }) => {
-      if (error.serverError) {
-        toast.error(error.serverError)
-      }
-    }
-  })
+  const { execute, status: closeActionStatus } = useAction(closeElection)
 
   return (
     <AdminNavigation
       electionStep={ElectionStep.RESULTS}
-      disableNext={isPending}
+      nextActionStatus={closeActionStatus}
       onNext={() => execute({ electionId: election.electionId })}
     >
       <ElectionResults

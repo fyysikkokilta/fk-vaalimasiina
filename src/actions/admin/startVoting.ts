@@ -6,38 +6,25 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 
-const startVotingSchema = async () => {
-  const t = await getActionsTranslations('actions.startVoting.validation')
-
-  return z.object({
-    electionId: z.uuid({
-      error: t('electionId_uuid')
-    }),
-    emails: z
-      .array(
-        z.email({
-          pattern: z.regexes.html5Email,
-          error: t('email_email')
-        }),
-        { error: t('emails_array') }
-      )
-      .nonempty({ error: t('emails_nonempty') })
-      .refine((items) => new Set(items).size === items.length, {
-        error: t('emails_unique')
-      })
-  })
-}
+const startVotingSchema = z.object({
+  electionId: z.uuid('Election identifier must be a valid UUID'),
+  emails: z
+    .array(z.email('Email must be a valid email'), 'Emails must be an array')
+    .min(1, 'There must be at least one email')
+    .refine(
+      (items) => new Set(items).size === items.length,
+      'Emails must be unique'
+    )
+})
 
 export const startVoting = actionClient
   .inputSchema(startVotingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId, emails } }) => {
-    const t = await getActionsTranslations('actions.startVoting.action_status')
     return db.transaction(async (transaction) => {
       const elections = await transaction
         .update(electionsTable)
@@ -56,7 +43,7 @@ export const startVoting = actionClient
         })
 
       if (!elections[0]) {
-        throw new ActionError(t('election_not_found'))
+        throw new ActionError('Election not found')
       }
 
       const voters = await transaction
@@ -74,12 +61,12 @@ export const startVoting = actionClient
 
       const success = await sendVotingMail(voters, { election: elections[0] })
       if (!success) {
-        throw new ActionError(t('mail_sending_failed'))
+        throw new ActionError('Mail sending failed')
       }
 
       revalidatePath('/[locale]/vote/[voterId]', 'page')
       revalidatePath('/[locale]/admin', 'page')
 
-      return { message: t('voting_started') }
+      return { message: 'Voting started' }
     })
   })

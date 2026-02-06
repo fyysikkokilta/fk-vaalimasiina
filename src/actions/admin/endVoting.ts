@@ -6,22 +6,17 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 
-const endVotingSchema = async () => {
-  const t = await getActionsTranslations('actions.endVoting.validation')
-  return z.object({
-    electionId: z.uuid({ error: t('electionId_uuid') })
-  })
-}
+const endVotingSchema = z.object({
+  electionId: z.uuid('Election identifier must be a valid UUID')
+})
 
 export const endVoting = actionClient
   .inputSchema(endVotingSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getActionsTranslations('actions.endVoting.action_status')
     return db.transaction(async (transaction) => {
       const voters = await transaction.query.votersTable.findMany({
         with: {
@@ -33,7 +28,7 @@ export const endVoting = actionClient
       const everyoneVoted = voters.every((voter) => voter.hasVoted)
 
       if (!everyoneVoted) {
-        throw new ActionError(t('not_everyone_voted'))
+        throw new ActionError('Not everyone has voted')
       }
       const statuses = await transaction
         .update(electionsTable)
@@ -49,7 +44,7 @@ export const endVoting = actionClient
         })
 
       if (!statuses[0]) {
-        throw new ActionError(t('election_not_found'))
+        throw new ActionError('Election not found')
       }
 
       await transaction
@@ -63,6 +58,6 @@ export const endVoting = actionClient
       revalidatePath('/[locale]/vote/[voterId]', 'page')
       revalidatePath('/[locale]/admin', 'page')
 
-      return { message: t('voting_finished') }
+      return { message: 'Voting finished' }
     })
   })

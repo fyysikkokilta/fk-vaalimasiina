@@ -9,7 +9,6 @@ import {
   resetDatabase,
   Voter
 } from './utils/db'
-import { expectNoToast, expectToast } from './utils/toast'
 
 let election: Election
 let voters: Voter[]
@@ -43,12 +42,12 @@ test('should show correct navigation buttons', async ({ page }) => {
 })
 
 test('should show correct amount of voters', async ({ page }) => {
-  await expect(page.locator('text=Voters: 4')).toBeVisible()
+  await expect(page.getByText('Voters: 4')).toBeVisible()
 })
 
 test.describe('with no given votes', () => {
   test('should show correct vote numbers', async ({ page }) => {
-    await expect(page.locator('text=Given votes: 0')).toBeVisible()
+    await expect(page.getByText('Given votes: 0')).toBeVisible()
   })
 
   test('should list all remaining voters', async ({ page }) => {
@@ -94,7 +93,7 @@ test.describe('with some votes', () => {
   })
 
   test('should show correct vote numbers', async ({ page }) => {
-    await expect(page.locator('text=Given votes: 2')).toBeVisible()
+    await expect(page.getByText('Given votes: 2')).toBeVisible()
   })
 
   test('should list only remaining voters', async ({ page }) => {
@@ -166,12 +165,12 @@ test.describe('with all votes', () => {
   })
 
   test('should show correct vote numbers', async ({ page }) => {
-    await expect(page.locator('text=Given votes: 4')).toBeVisible()
+    await expect(page.getByText('Given votes: 4')).toBeVisible()
   })
 
   test('should show no remaining voters message', async ({ page }) => {
     await page.getByRole('button', { name: 'Show remaining voters' }).click()
-    await expect(page.locator('text=Everyone has voted')).toBeVisible()
+    await expect(page.getByText('Everyone has voted')).toBeVisible()
   })
 
   test('should allow to end voting', async ({ page }) => {
@@ -185,35 +184,38 @@ test.describe('with all votes', () => {
 
 test.describe('change email form', () => {
   test('should allow to change email', async ({ page }) => {
-    await page.fill('#oldEmail', 'email4@email.com')
-    await page.fill('#newEmail', 'email5@email.com')
+    await page.getByLabel('Email to change').fill('email4@email.com')
+    await page.getByLabel('New email').fill('email5@email.com')
     await page.getByRole('button', { name: 'Change email' }).click()
-    await expectToast(page, 'Email changed')
+    await expect(page.getByText('Email changed')).toBeVisible()
   })
 
   test("shouldn't allow to change email with invalid email", async ({
     page
   }) => {
-    await page.fill('#oldEmail', 'email4@email.com')
-    await page.fill('#newEmail', 'email5')
-    await expectNoToast(page)
+    await page.getByLabel('Email to change').fill('email4@email.com')
+    await page.getByLabel('New email').fill('email5')
+    await page.getByRole('button', { name: 'Change email' }).click()
+    await expect(
+      page.getByText('New email must be a valid email')
+    ).toBeVisible()
   })
 
   test("shouldn't allow to change an old email that doesn't exist", async ({
     page
   }) => {
-    await page.fill('#oldEmail', 'email5@email.com')
-    await page.fill('#newEmail', 'email6@email.com')
+    await page.getByLabel('Email to change').fill('email5@email.com')
+    await page.getByLabel('New email').fill('email6@email.com')
     await page.getByRole('button', { name: 'Change email' }).click()
-    await expectToast(page, 'Voter not found')
+    await expect(page.getByText('Voter not found')).toBeVisible()
   })
 
   test("shouldn't allow to change email to one that exists", async ({
     page
   }) => {
-    await page.fill('#oldEmail', 'email4@email.com')
-    await page.fill('#newEmail', 'email3@email.com')
+    await page.getByLabel('Email to change').fill('email4@email.com')
+    await page.getByLabel('New email').fill('email3@email.com')
     await page.getByRole('button', { name: 'Change email' }).click()
-    await expectToast(page, 'Email already exists')
+    await expect(page.getByText('Email already exists')).toBeVisible()
   })
 })

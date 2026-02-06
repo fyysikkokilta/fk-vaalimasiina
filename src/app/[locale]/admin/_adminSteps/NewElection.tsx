@@ -1,18 +1,17 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { InferSafeActionFnInput } from 'next-safe-action'
 import { useAction } from 'next-safe-action/hooks'
-import React, { useState } from 'react'
-import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 import { createElection } from '~/actions/admin/createElection'
 import AdminNavigation from '~/components/AdminNavigation'
 import ElectionForm from '~/components/ElectionForm'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
+const ELECTION_FORM_ID = 'election-form'
+
 export default function NewElection() {
-  const [newCandidate, setNewCandidate] = useState('')
   const [newElection, setNewElection] = useState<
     InferSafeActionFnInput<typeof createElection>['parsedInput']
   >({
@@ -22,26 +21,11 @@ export default function NewElection() {
     candidates: [] as unknown as [string, ...string[]]
   })
 
-  const t = useTranslations('NewElection')
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    isNumber: boolean = false
-  ) => {
-    setNewElection((electionState) => ({
-      ...electionState,
-      [event.target.name]: isNumber
-        ? parseInt(event.target.value, 10) || ''
-        : event.target.value
-    }))
-  }
-
   const addCandidate = (candidateName: string) => {
     setNewElection((electionState) => ({
       ...electionState,
       candidates: [...electionState.candidates, candidateName]
     }))
-    setNewCandidate('')
   }
 
   const removeCandidate = (index: number) => {
@@ -57,35 +41,21 @@ export default function NewElection() {
     })
   }
 
-  const { execute, isPending, result } = useAction(createElection, {
-    onSuccess: ({ data }) => {
-      if (data?.message) {
-        toast.success(data.message)
-      }
-    },
-    onError: ({ error }) => {
-      if (error.serverError) {
-        toast.error(error.serverError)
-      } else {
-        toast.error(t('invalid_election_data'))
-      }
-    }
-  })
+  const { execute, status: createActionStatus } = useAction(createElection)
 
   return (
     <AdminNavigation
-      disableNext={isPending}
       electionStep={ElectionStep.NEW}
-      onNext={() => execute(newElection)}
+      formId={ELECTION_FORM_ID}
+      nextActionStatus={createActionStatus}
+      onNext={() => {}}
     >
       <ElectionForm
-        result={result}
+        formId={ELECTION_FORM_ID}
         election={newElection}
-        newCandidate={newCandidate}
-        setNewCandidate={setNewCandidate}
-        handleChange={handleChange}
         addCandidate={addCandidate}
         removeCandidate={removeCandidate}
+        onValidSubmit={(data) => execute(data)}
       />
     </AdminNavigation>
   )

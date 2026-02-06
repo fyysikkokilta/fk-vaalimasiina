@@ -31,47 +31,47 @@ test('should show correct navigation buttons', async ({ page }) => {
 })
 
 test('should show correct election data', async ({ page }) => {
-  await expect(page.locator('#title')).toHaveValue('Election 1')
-  await expect(page.locator('#description')).toHaveValue('Description 1')
-  await expect(page.locator('#seats')).toHaveValue('1')
+  await expect(page.getByLabel('Title')).toHaveValue('Election 1')
+  await expect(page.getByLabel('Description')).toHaveValue('Description 1')
+  await expect(page.getByLabel('Seats')).toHaveValue('1')
   await expect(
     page.getByRole('button', { name: 'Remove candidate' })
   ).toHaveCount(1)
-  await expect(page.locator('text=Candidate 1')).toBeVisible()
+  await expect(page.getByText('Candidate 1')).toBeVisible()
 })
 
 test('should modify election', async ({ page }) => {
-  await page.fill('#title', 'Election 2')
-  await page.fill('#description', 'Description 2')
-  await page.fill('#seats', '2')
+  await page.getByLabel('Title').fill('Election 2')
+  await page.getByLabel('Description').fill('Description 2')
+  await page.getByLabel('Seats').fill('2')
 
-  await page.fill('#newCandidate', 'Candidate 2')
-  await page.click('text=Add candidate')
-  await expect(page.locator('text=Candidate 2')).toBeVisible()
+  await page.getByLabel('New candidate').fill('Candidate 2')
+  await page.getByRole('button', { name: 'Add candidate' }).click()
+  await expect(page.getByText('Candidate 2')).toBeVisible()
 
-  await page.click('text=Preview')
+  await page.getByRole('button', { name: 'Preview' }).click()
 
   await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
-  await expect(page.locator('text=Election 2')).toBeVisible()
-  await expect(page.locator('text=Description 2')).toBeVisible()
-  await expect(page.locator('text=Seats: 2')).toBeVisible()
-  await expect(page.locator('text=Candidate 1')).toBeVisible()
-  await expect(page.locator('text=Candidate 2')).toBeVisible()
+  await expect(page.getByText('Election 2')).toBeVisible()
+  await expect(page.getByText('Description 2')).toBeVisible()
+  await expect(page.getByText('Seats: 2')).toBeVisible()
+  await expect(page.getByText('Candidate 1')).toBeVisible()
+  await expect(page.getByText('Candidate 2')).toBeVisible()
 })
 
 test('should cancel modify election', async ({ page }) => {
-  await page.fill('#title', 'Election 2')
-  await page.fill('#description', 'Description 2')
-  await page.fill('#seats', '2')
+  await page.getByLabel('Title').fill('Election 2')
+  await page.getByLabel('Description').fill('Description 2')
+  await page.getByLabel('Seats').fill('2')
 
-  await page.fill('#newCandidate', 'Candidate 2')
-  await page.click('text=Add candidate')
-  await expect(page.locator('text=Candidate 2')).toBeVisible()
+  await page.getByLabel('New candidate').fill('Candidate 2')
+  await page.getByRole('button', { name: 'Add candidate' }).click()
+  await expect(page.getByText('Candidate 2')).toBeVisible()
 
-  await page.click('text=Cancel')
+  await page.getByRole('button', { name: 'Cancel' }).click()
 
   await expect(page.getByRole('heading', { name: 'Election 1' })).toBeVisible()
-  await expect(page.locator('text=Description 1')).toBeVisible()
-  await expect(page.locator('text=Seats: 1')).toBeVisible()
-  await expect(page.locator('text=Candidate 1')).toBeVisible()
+  await expect(page.getByText('Description 1')).toBeVisible()
+  await expect(page.getByText('Seats: 1')).toBeVisible()
+  await expect(page.getByText('Candidate 1')).toBeVisible()
 })

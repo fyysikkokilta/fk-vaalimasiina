@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import Pagination from '~/components/Pagination'
 import TitleWrapper from '~/components/TitleWrapper'
@@ -32,14 +32,11 @@ export default function ElectionListClient({
   const endIndex = startIndex + ITEMS_PER_PAGE
   const paginatedElections = elections.slice(startIndex, endIndex)
 
-  const paginationTranslations = useMemo(
-    () => ({
-      page: t('pagination.page'),
-      previous: t('pagination.previous'),
-      next: t('pagination.next')
-    }),
-    [t]
-  )
+  const paginationTranslations = {
+    page: t('pagination.page'),
+    previous: t('pagination.previous'),
+    next: t('pagination.next')
+  }
 
   return (
     <TitleWrapper title={t('title')}>

@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef } from 'react'
 
+import { Button } from '~/components/ui/Button'
 import { usePathname, useRouter } from '~/i18n/navigation'
 
 export default function ErrorBoundary({
@@ -41,18 +42,12 @@ export default function ErrorBoundary({
         </>
       )}
       <div className="mt-2 space-x-2">
-        <button
-          className="cursor-pointer rounded-md bg-gray-500 px-4 py-2 text-white"
-          onClick={() => reset()}
-        >
+        <Button variant="secondary" onClick={() => reset()}>
           {t('reload')}
-        </button>
-        <button
-          className="bg-fk-yellow text-fk-black mt-2 cursor-pointer rounded-md px-4 py-2 transition-colors hover:bg-amber-500"
-          onClick={() => router.push('/')}
-        >
+        </Button>
+        <Button variant="yellow" onClick={() => router.push('/')}>
           {t('back_to_frontpage')}
-        </button>
+        </Button>
       </div>
     </div>
   )

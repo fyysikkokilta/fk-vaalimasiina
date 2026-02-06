@@ -55,7 +55,15 @@ const messages = {
     empty_ballot: 'Tyhjä äänestyslippu',
     cancel: 'Peruuta',
     confirm: 'Vahvista',
-    invalid_ballot: 'Virheellinen äänestyslippu'
+    invalid_ballot: 'Virheellinen äänestyslippu',
+    validation: {
+      voterId_uuid: 'Äänestäjätunnisteen tulee olla kelvollinen UUID',
+      candidateId_uuid: 'Ehdokastunnisteen tulee olla kelvollinen UUID',
+      rank_number: 'Sijoituksen tulee olla numero',
+      rank_min: 'Sijoituksen tulee olla vähintään 1',
+      ballot_array: 'Äänestyslipun tulee olla taulukko',
+      ranks_unique: 'Sijoitusten tulee olla uniikkeja'
+    }
   },
   Login: {
     title: 'Hallintaan kirjautuminen',
@@ -114,7 +122,13 @@ const messages = {
     change_email: 'Vaihda sähköposti',
     show_remaining_voters: 'Näytä jäljellä olevat äänestäjät',
     hide_remaining_voters: 'Piilota jäljellä olevat äänestäjät',
-    remaining_voters_empty: 'Kaikki ovat äänestäneet'
+    remaining_voters_empty: 'Kaikki ovat äänestäneet',
+    validation: {
+      oldEmail_email:
+        'Vaihdettavan sähköpostin tulee olla kelvollinen sähköpostiosoite',
+      newEmail_email:
+        'Uuden sähköpostin tulee olla kelvollinen sähköpostiosoite'
+    }
   },
   PreviewElection: {
     seats: 'Paikkoja',
@@ -124,7 +138,14 @@ const messages = {
       'Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna',
     email_list_placeholder: 'sähköposti@mail.com\nsähköposti2@mail.com\n',
     voter_count: 'Äänestäjien määrä',
-    invalid_voter_data: 'Virheelliset äänestäjätiedot'
+    invalid_voter_data: 'Virheelliset äänestäjätiedot',
+    validation: {
+      email_email:
+        'Sähköpostiosoitteen tulee olla kelvollinen sähköpostiosoite',
+      emails_array: 'Sähköpostiosoitteiden tulee olla taulukko',
+      emails_nonempty: 'Sähköpostiosoitteita tulee olla vähintään yksi',
+      emails_unique: 'Sähköpostiosoitteiden tulee olla uniikkeja'
+    }
   },
   NewElection: {
     invalid_election_data: 'Virheelliset vaalitiedot'
@@ -168,162 +189,21 @@ const messages = {
     new_candidate: 'Uusi ehdokas',
     add_candidate: 'Lisää ehdokas',
     remove_candidate: 'Poista ehdokas',
-    candidates: 'Ehdokkaat'
-  },
-  actions: {
-    isAuthorized: {
-      unauthorized: 'Ei oikeuksia'
-    },
-    vote: {
-      action_status: {
-        ballot_saved: 'Äänesi on tallennettu',
-        voter_not_found: 'Äänestäjää ei löytynyt',
-        voting_not_ongoing: 'Äänestys ei ole käynnissä',
-        invalid_choices: 'Virheelliset valinnat',
-        voter_already_voted: 'Äänestäjä on jo äänestänyt',
-        error_saving_ballot: 'Virhe tallennettaessa äänestyslippua'
-      },
-      validation: {
-        voterId_uuid: 'Äänestäjätunnisteen tulee olla kelvollinen UUID',
-        candidateId_uuid: 'Ehdokastunnisteen tulee olla kelvollinen UUID',
-        rank_number: 'Sijoituksen tulee olla numero',
-        rank_min: 'Sijoituksen tulee olla vähintään 1',
-        preference_object: 'Sijoituksen tulee olla objekti',
-        ballot_array: 'Äänestyslipun tulee olla taulukko',
-        ranks_unique: 'Sijoitusten tulee olla uniikkeja'
-      }
-    },
-    changeEmail: {
-      action_status: {
-        email_changed: 'Sähköposti vaihdettu',
-        email_already_exists: 'Sähköposti on jo käytössä',
-        error_updating_email: 'Virhe päivitettäessä sähköpostia',
-        mail_sending_failed: 'Sähköpostin lähettäminen epäonnistui',
-        voter_not_found: 'Äänestäjää ei löytynyt'
-      },
-      validation: {
-        oldEmail_email:
-          'Vaihdettavan sähköpostin tulee olla kelvollinen sähköpostiosoite',
-        newEmail_email:
-          'Uuden sähköpostin tulee olla kelvollinen sähköpostiosoite'
-      }
-    },
-    startVoting: {
-      action_status: {
-        voting_started: 'Äänestys aloitettu',
-        mail_sending_failed: 'Sähköpostin lähettäminen epäonnistui',
-        election_not_found: 'Vaalia ei löytynyt'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID',
-        email_email:
-          'Sähköpostiosoitteen tulee olla kelvollinen sähköpostiosoite',
-        emails_array: 'Sähköpostiosoitteiden tulee olla taulukko',
-        emails_nonempty: 'Sähköpostiosoitteita tulee olla vähintään yksi',
-        emails_unique: 'Sähköpostiosoitteiden tulee olla uniikkeja'
-      }
-    },
-    startEditing: {
-      action_status: {
-        election_not_found: 'Vaalia ei löytynyt',
-        editing_started: 'Muokkaus aloitettu'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID'
-      }
-    },
-    pollVotes: {
-      action_status: {
-        votes_polled: 'Äänet haettu'
-      }
-    },
-    endVoting: {
-      action_status: {
-        voting_finished: 'Äänestys päätetty',
-        election_not_found: 'Vaalia ei löytynyt',
-        not_everyone_voted: 'Kaikki eivät ole äänestäneet'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID'
-      }
-    },
-    editElection: {
-      action_status: {
-        election_edited: 'Vaali muokattu',
-        election_not_found: 'Vaalia ei löytynyt'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID',
-        title_string: 'Otsikon tulee olla merkkijono',
-        title_nonempty: 'Otsikko ei saa olla tyhjä',
-        description_string: 'Kuvauksen tulee olla merkkijono',
-        description_nonempty: 'Kuvaus ei saa olla tyhjä',
-        seats_number: 'Paikkamäärän tulee olla numero',
-        seats_min: 'Paikkamäärän tulee olla vähintään 1',
-        candidate_string: 'Ehdokkaan tulee olla merkkijono',
-        candidate_nonempty: 'Ehdokas ei saa olla tyhjä',
-        candidates_array: 'Ehdokkaiden tulee olla taulukko',
-        candidates_nonempty: 'Ehdokkaita tulee olla vähintään yksi',
-        candidates_geq_seats:
-          'Ehdokkaiden määrän tulee olla vähintään yhtä suuri kuin paikkojen määrä'
-      }
-    },
-    createElection: {
-      action_status: {
-        election_created: 'Vaali luotu'
-      },
-      validation: {
-        title_string: 'Otsikon tulee olla merkkijono',
-        title_nonempty: 'Otsikko ei saa olla tyhjä',
-        description_string: 'Kuvauksen tulee olla merkkijono',
-        description_nonempty: 'Kuvaus ei saa olla tyhjä',
-        seats_number: 'Paikkamäärän tulee olla numero',
-        seats_min: 'Paikkamäärän tulee olla vähintään 1',
-        candidate_string: 'Ehdokkaan tulee olla merkkijono',
-        candidate_nonempty: 'Ehdokas ei saa olla tyhjä',
-        candidates_array: 'Ehdokkaiden tulee olla taulukko',
-        candidates_nonempty: 'Ehdokkaita tulee olla vähintään yksi',
-        candidates_geq_seats:
-          'Ehdokkaiden määrän tulee olla vähintään yhtä suuri kuin paikkojen määrä'
-      }
-    },
-    closeElection: {
-      action_status: {
-        election_closed: 'Vaali suljettu',
-        election_not_found: 'Vaalia ei löytynyt',
-        failed_to_close_election:
-          'Vaalin sulkeutuminen ja tulosten tallentaminen epäonnistui'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID'
-      }
-    },
-    cancelEditing: {
-      action_status: {
-        editing_cancelled: 'Muokkaus peruttu',
-        election_not_found: 'Vaalia ei löytynyt'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID'
-      }
-    },
-    abortVoting: {
-      action_status: {
-        voting_aborted: 'Äänestys keskeytetty',
-        election_not_found: 'Vaalia ei löytynyt'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID'
-      }
-    },
-    downloadElectionCsv: {
-      action_status: {
-        election_not_found: 'Vaalia ei löytynyt',
-        csv_file_not_found: 'CSV-tiedostoa ei löytynyt'
-      },
-      validation: {
-        electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID'
-      }
+    candidates: 'Ehdokkaat',
+    validation: {
+      title_string: 'Otsikon tulee olla merkkijono',
+      title_nonempty: 'Otsikko ei saa olla tyhjä',
+      description_string: 'Kuvauksen tulee olla merkkijono',
+      description_nonempty: 'Kuvaus ei saa olla tyhjä',
+      seats_number: 'Paikkamäärän tulee olla numero',
+      seats_min: 'Paikkamäärän tulee olla vähintään 1',
+      candidate_string: 'Ehdokkaan tulee olla merkkijono',
+      candidate_nonempty: 'Ehdokas ei saa olla tyhjä',
+      candidates_array: 'Ehdokkaiden tulee olla taulukko',
+      candidates_nonempty: 'Ehdokkaita tulee olla vähintään yksi',
+      candidates_geq_seats:
+        'Ehdokkaiden määrän tulee olla vähintään yhtä suuri kuin paikkojen määrä',
+      electionId_uuid: 'Vaalitunnisteen tulee olla kelvollinen UUID'
     }
   },
   metadata: {

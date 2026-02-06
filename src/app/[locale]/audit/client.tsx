@@ -1,5 +1,6 @@
 'use client'
 
+import { Input } from '@base-ui/react/input'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
@@ -35,7 +36,7 @@ export default function Audit({ election, ballots }: AuditPageProps) {
         >
           {t('search_ballot')}
         </label>
-        <input
+        <Input
           id="searchBallot"
           type="password"
           className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"

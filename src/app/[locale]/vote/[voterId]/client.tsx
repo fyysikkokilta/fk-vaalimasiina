@@ -4,19 +4,21 @@ import { move } from '@dnd-kit/helpers'
 import { DragDropProvider } from '@dnd-kit/react'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
-import React, { useState } from 'react'
-import { toast } from 'react-toastify'
+import { MouseEvent, useState } from 'react'
+import { z } from 'zod'
 
 import { vote } from '~/actions/vote'
 import DroppableContainer from '~/components/DroppableContainer'
 import SortableItem from '~/components/SortableItem'
 import TitleWrapper from '~/components/TitleWrapper'
+import { Button } from '~/components/ui/Button'
 import type { VotePageProps } from '~/data/getVoter'
 import { Link } from '~/i18n/navigation'
 
 export default function Vote({ election, voter }: VotePageProps) {
   const [confirmingVote, setConfirmingVote] = useState(false)
   const [disableVote, setDisableVote] = useState(false)
+  const [ballotCopied, setBallotCopied] = useState(false)
   const [candidates, setCandidates] = useState({
     selectedCandidates: [] as string[],
     availableCandidates: election.candidates.map((c) => c.candidateId)
@@ -26,25 +28,43 @@ export default function Vote({ election, voter }: VotePageProps) {
   const availableCandidates = candidates.availableCandidates
 
   const t = useTranslations('Vote')
-  const { execute, isPending, result } = useAction(vote, {
+
+  const voteSchema = z.object({
+    voterId: z.uuid(t('validation.voterId_uuid')),
+    ballot: z
+      .array(
+        z.object({
+          candidateId: z.uuid(t('validation.candidateId_uuid')),
+          rank: z
+            .number(t('validation.rank_number'))
+            .min(1, t('validation.rank_min'))
+        }),
+        t('validation.ballot_array')
+      )
+      .refine((ballot) => {
+        const ranks = ballot.map((v) => v.rank)
+        return (
+          ranks.length === new Set(ranks).size &&
+          ranks.every((rank, index) => rank === index + 1)
+        )
+      }, t('validation.ranks_unique'))
+  })
+
+  const {
+    execute,
+    status: voteActionStatus,
+    result
+  } = useAction(vote, {
     onExecute: () => setDisableVote(true),
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       setConfirmingVote(false)
-      if (data?.message) {
-        toast.success(data.message)
-      }
     },
-    onError: ({ error }) => {
+    onError: () => {
       setDisableVote(false)
-      if (error.serverError) {
-        toast.error(error.serverError)
-      } else {
-        toast.error(t('invalid_ballot'))
-      }
     }
   })
 
-  const handleDoubleClickAdd = (event: React.MouseEvent<HTMLElement>) => {
+  const handleDoubleClickAdd = (event: MouseEvent<HTMLElement>) => {
     const candidateId = event.currentTarget.id
     setCandidates((prev) => ({
       selectedCandidates: [...prev.selectedCandidates, candidateId],
@@ -54,7 +74,7 @@ export default function Vote({ election, voter }: VotePageProps) {
     }))
   }
 
-  const handleDoubleClickRemove = (event: React.MouseEvent<HTMLElement>) => {
+  const handleDoubleClickRemove = (event: MouseEvent<HTMLElement>) => {
     const candidateId = event.currentTarget.id
     setCandidates((prev) => ({
       availableCandidates: [...prev.availableCandidates, candidateId],
@@ -73,7 +93,8 @@ export default function Vote({ election, voter }: VotePageProps) {
       return
     }
     await navigator.clipboard.writeText(ballotId)
-    toast.success(t('audit_copied_to_clipboard'))
+    setBallotCopied(true)
+    setTimeout(() => setBallotCopied(false), 3000)
   }
 
   if (!election || election.status !== 'ONGOING') {
@@ -123,13 +144,16 @@ export default function Vote({ election, voter }: VotePageProps) {
               {!!result.data?.ballotId && (
                 <>
                   <p>{t('audit_info')}</p>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => getBallotCode(result.data?.ballotId)}
-                    className="bg-fk-yellow text-fk-black mt-3 cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500"
+                    variant="yellow"
+                    className="mt-3"
                   >
-                    {t('audit_button')}
-                  </button>
+                    {ballotCopied
+                      ? t('audit_copied_to_clipboard')
+                      : t('audit_button')}
+                  </Button>
                 </>
               )}
             </div>
@@ -193,17 +217,14 @@ export default function Vote({ election, voter }: VotePageProps) {
                 </div>
               </DragDropProvider>
               <div className="mt-6 flex justify-center">
-                <button
+                <Button
+                  variant="yellow"
+                  disabled={disableVote}
+                  actionStatus={voteActionStatus}
                   onClick={() => setConfirmingVote(true)}
-                  disabled={disableVote || isPending}
-                  className={`text-fk-black rounded-lg px-4 py-2 ${
-                    disableVote
-                      ? 'cursor-not-allowed bg-gray-300'
-                      : 'bg-fk-yellow cursor-pointer transition-colors hover:bg-amber-500'
-                  }`}
                 >
                   {t('submit_vote')}
-                </button>
+                </Button>
               </div>
             </>
           )}
@@ -252,28 +273,37 @@ export default function Vote({ election, voter }: VotePageProps) {
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <button
-                  onClick={() =>
-                    execute({
+                <Button
+                  variant="yellow"
+                  className="mb-2 w-full sm:mb-0 sm:ml-2 sm:w-auto"
+                  disabled={disableVote}
+                  actionStatus={voteActionStatus}
+                  onClick={() => {
+                    const payload = {
                       voterId: voter.voterId,
                       ballot: selectedCandidates.map((candidateId, index) => ({
                         candidateId,
                         rank: index + 1
                       }))
-                    })
-                  }
-                  disabled={disableVote || isPending}
-                  className="bg-fk-yellow text-fk-black mb-2 w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500 sm:mb-0 sm:ml-2 sm:w-auto"
+                    }
+                    const parsed = voteSchema.safeParse(payload)
+                    if (!parsed.success) {
+                      return
+                    }
+                    execute(parsed.data)
+                  }}
                 >
                   {t('confirm')}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="w-full sm:w-auto"
+                  disabled={disableVote}
+                  actionStatus={voteActionStatus}
                   onClick={() => setConfirmingVote(false)}
-                  disabled={disableVote || isPending}
-                  className="w-full cursor-pointer rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 sm:w-auto"
                 >
                   {t('cancel')}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

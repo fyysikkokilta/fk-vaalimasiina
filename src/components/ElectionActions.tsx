@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 import { downloadElectionCsv } from '~/actions/downloadElectionCsv'
 import type {
@@ -12,6 +12,8 @@ import type {
 import { generateCsvContent } from '~/utils/csvGenerator'
 import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
+import { Button } from './ui/Button'
+
 export default function ElectionActions({
   election,
   votingResult
@@ -19,6 +21,7 @@ export default function ElectionActions({
   election: Election
   votingResult: ValidVotingResult
 }) {
+  const [minutesCopied, setMinutesCopied] = useState(false)
   const t = useTranslations('ElectionResults')
 
   const handleCsvDownload = async () => {
@@ -35,9 +38,6 @@ export default function ElectionActions({
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-      } else if (result?.serverError) {
-        // Server error occurred
-        toast.error(result.serverError)
       } else {
         // S3 not configured or file doesn't exist - fallback to client-side generation
         exportBallotsToCSV(votingResult.ballots, election)
@@ -135,25 +135,21 @@ export default function ElectionActions({
         .filter((s) => s)
         .join('\n\n')
     )
-    toast.success(t('minutes_copied_to_clipboard'))
+    setMinutesCopied(true)
+    setTimeout(() => setMinutesCopied(false), 3000)
   }
 
   return (
     <div className="flex flex-col justify-center gap-4 md:flex-row">
-      <button
-        type="button"
-        onClick={handleCsvDownload}
-        className="bg-fk-black cursor-pointer rounded-lg px-4 py-2 text-white transition-colors duration-200 hover:bg-gray-900"
-      >
+      <Button onClick={handleCsvDownload} variant="secondary">
         {t('export_csv')}
-      </button>
-      <button
-        type="button"
+      </Button>
+      <Button
         onClick={() => getMinutesParagraphs(votingResult)}
-        className="bg-fk-black cursor-pointer rounded-lg px-4 py-2 text-white transition-colors duration-200 hover:bg-gray-900"
+        variant="secondary"
       >
-        {t('export_minutes')}
-      </button>
+        {minutesCopied ? t('minutes_copied_to_clipboard') : t('export_minutes')}
+      </Button>
     </div>
   )
 }

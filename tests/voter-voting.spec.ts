@@ -253,7 +253,7 @@ test.describe('audit view', () => {
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     // Should show search input and placeholder text
-    await expect(page.locator('#searchBallot')).toBeVisible()
+    await expect(page.getByLabel('Search ballot')).toBeVisible()
     await expect(
       page.getByText('Enter a ballot ID to view the ballot')
     ).toBeVisible()
@@ -281,7 +281,7 @@ test.describe('audit view', () => {
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     // Search for the ballot
-    await page.fill('#searchBallot', ballotId)
+    await page.getByLabel('Search ballot').fill(ballotId)
 
     // Should show the ballot (without ID) and the candidate
     await expect(page.getByRole('heading', { name: 'Ballot' })).toBeVisible()
@@ -305,7 +305,7 @@ test.describe('audit view', () => {
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     // Search for the ballot
-    await page.fill('#searchBallot', ballotId)
+    await page.getByLabel('Search ballot').fill(ballotId)
 
     // Should show empty ballot message
     await expect(page.getByText('Empty ballot')).toBeVisible()
@@ -322,7 +322,7 @@ test.describe('audit view', () => {
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     // Search for non-existent ballot
-    await page.fill('#searchBallot', 'non-existent-id')
+    await page.getByLabel('Search ballot').fill('non-existent-id')
 
     // Should show error message
     await expect(page.getByText('No ballot found with this ID')).toBeVisible()

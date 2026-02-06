@@ -5,31 +5,20 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable, votersTable } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 import { isPgUniqueViolation } from '~/utils/dbErrors'
 
-const changeEmailSchema = async () => {
-  const t = await getActionsTranslations('actions.changeEmail.validation')
-  return z.object({
-    oldEmail: z.email({
-      pattern: z.regexes.html5Email,
-      error: t('oldEmail_email')
-    }),
-    newEmail: z.email({
-      pattern: z.regexes.html5Email,
-      error: t('newEmail_email')
-    })
-  })
-}
+const changeEmailSchema = z.object({
+  oldEmail: z.email('Old email must be a valid email'),
+  newEmail: z.email('New email must be a valid email')
+})
 
 export const changeEmail = actionClient
   .inputSchema(changeEmailSchema)
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { oldEmail, newEmail } }) => {
-    const t = await getActionsTranslations('actions.changeEmail.action_status')
     const normalizedOldEmail = oldEmail.trim().toLowerCase()
     const normalizedNewEmail = newEmail.trim().toLowerCase()
     try {
@@ -52,7 +41,7 @@ export const changeEmail = actionClient
         })
 
       if (!voterElectionPairs[0]) {
-        throw new ActionError(t('voter_not_found'))
+        throw new ActionError('Voter not found')
       }
 
       const to = [
@@ -66,17 +55,17 @@ export const changeEmail = actionClient
         election: voterElectionPairs[0].election
       })
       if (!success) {
-        throw new ActionError(t('mail_sending_failed'))
+        throw new ActionError('Mail sending failed')
       }
-      return { message: t('email_changed') }
+      return { message: 'Email changed' }
     } catch (error) {
       if (error instanceof ActionError) {
         throw error
       }
       if (isPgUniqueViolation(error)) {
-        throw new ActionError(t('email_already_exists'))
+        throw new ActionError('Email already exists')
       }
       console.error('Error updating email:', error)
-      throw new ActionError(t('error_updating_email'))
+      throw new ActionError('Error updating email')
     }
   })

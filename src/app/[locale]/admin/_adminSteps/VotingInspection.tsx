@@ -1,15 +1,18 @@
 'use client'
 
+import { Form } from '@base-ui/react/form'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import { z } from 'zod'
 
 import { abortVoting } from '~/actions/admin/abortVoting'
 import { changeEmail } from '~/actions/admin/changeEmail'
 import { endVoting } from '~/actions/admin/endVoting'
 import { pollVotes } from '~/actions/admin/pollVotes'
 import AdminNavigation from '~/components/AdminNavigation'
+import { Button } from '~/components/ui/Button'
+import { Field } from '~/components/ui/Field'
 import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
@@ -17,61 +20,42 @@ export default function VotingInspection({
   election: { electionId, title, description },
   voters
 }: ElectionStepProps) {
-  const [oldEmail, setOldEmail] = useState('')
-  const [newEmail, setNewEmail] = useState('')
   const [showRemainingVoters, setShowRemainingVoters] = useState(false)
+  const [errors, setErrors] = useState<
+    Record<string, string | string[]> | undefined
+  >(undefined)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
   const t = useTranslations('VotingInspection')
 
-  const { execute: executeAbort, isPending: isPendingAbort } = useAction(
-    abortVoting,
-    {
-      onSuccess: ({ data }) => {
-        if (data?.message) {
-          toast.success(data.message)
-        }
-      },
-      onError: ({ error }) => {
-        if (error.serverError) {
-          toast.error(error.serverError)
-        }
-      }
-    }
-  )
-
-  const { execute: executeVoting, isPending: isPendingVoting } = useAction(
-    endVoting,
-    {
-      onSuccess: ({ data }) => {
-        if (data?.message) {
-          toast.success(data.message)
-        }
-      },
-      onError: ({ error }) => {
-        if (error.serverError) {
-          toast.error(error.serverError)
-        }
-      }
-    }
-  )
-
-  const {
-    execute: executeEmail,
-    isPending: isPendingEmail,
-    result: resultEmail
-  } = useAction(changeEmail, {
-    onSuccess: ({ data }) => {
-      if (data?.message) {
-        toast.success(data.message)
-      }
-      setOldEmail('')
-      setNewEmail('')
-    },
-    onError: ({ error }) => {
-      if (error.serverError) {
-        toast.error(error.serverError)
-      }
-    }
+  const changeEmailSchema = z.object({
+    oldEmail: z.email(t('validation.oldEmail_email')),
+    newEmail: z.email(t('validation.newEmail_email'))
   })
+
+  const { execute: executeAbort, status: abortActionStatus } =
+    useAction(abortVoting)
+
+  const { execute: executeVoting, status: votingActionStatus } =
+    useAction(endVoting)
+
+  const { execute: executeEmail, status: emailActionStatus } = useAction(
+    changeEmail,
+    {
+      onSuccess: ({ data }) => {
+        if (data?.message) {
+          setSuccessMessage(data.message)
+          setTimeout(() => setSuccessMessage(null), 3000)
+        }
+        setErrors(undefined)
+      },
+      onError: ({ error }) => {
+        if (error.serverError) {
+          setErrors({ serverError: [error.serverError] })
+        }
+      }
+    }
+  )
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -84,11 +68,24 @@ export default function VotingInspection({
   const remainingVoters = voters.filter((voter) => !voter.hasVoted)
   const votersWhoVoted = voters.filter((voter) => voter.hasVoted)
 
+  const handleChangeEmailSubmit = (formValues: Record<string, string>) => {
+    const result = changeEmailSchema.safeParse(formValues)
+    if (!result.success) {
+      setErrors(z.flattenError(result.error).fieldErrors)
+      setSuccessMessage(null)
+      return
+    }
+    setErrors(undefined)
+    setSuccessMessage(null)
+    executeEmail(result.data)
+  }
+
   return (
     <AdminNavigation
       electionStep={ElectionStep.VOTING}
-      disablePrevious={isPendingAbort}
-      disableNext={remainingVoters.length > 0 || isPendingVoting}
+      previousActionStatus={abortActionStatus}
+      nextActionStatus={votingActionStatus}
+      disableNext={remainingVoters.length > 0}
       onBack={() => executeAbort({ electionId })}
       onNext={() => executeVoting({ electionId })}
     >
@@ -112,73 +109,58 @@ export default function VotingInspection({
               </span>
             </div>
           </div>
-          <div className="mt-6 w-full space-y-4">
-            <div>
-              <label
-                htmlFor="oldEmail"
-                className="mb-2 block text-sm font-medium text-gray-700"
+          <Form
+            errors={errors}
+            onFormSubmit={handleChangeEmailSubmit}
+            className="mt-6 w-full space-y-4"
+          >
+            {successMessage && (
+              <div
+                className="rounded-lg border border-green-200 bg-green-50 p-3 text-green-800"
+                role="alert"
               >
-                {t('old_email')}
-              </label>
-              <input
-                id="oldEmail"
-                value={oldEmail}
-                onChange={(e) => setOldEmail(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
-              {resultEmail.validationErrors?.fieldErrors.oldEmail?.map(
-                (error) => (
-                  <div key={error} className="text-red-500">
-                    {error}
-                  </div>
-                )
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="newEmail"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                {successMessage}
+              </div>
+            )}
+            {errors?.serverError && (
+              <div
+                className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800"
+                role="alert"
               >
-                {t('new_email')}
-              </label>
-              <input
-                id="newEmail"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-center shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
-              {resultEmail.validationErrors?.fieldErrors.newEmail?.map(
-                (error) => (
-                  <div key={error} className="text-red-500">
-                    {error}
-                  </div>
-                )
-              )}
-            </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                executeEmail({ oldEmail, newEmail })
-              }}
-              disabled={isPendingEmail}
-              className={
-                'bg-fk-yellow text-fk-black w-full cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500'
-              }
+                {Array.isArray(errors.serverError)
+                  ? errors.serverError[0]
+                  : errors.serverError}
+              </div>
+            )}
+            <Field.Root name="oldEmail">
+              <Field.Label>{t('old_email')}</Field.Label>
+              <Field.Control />
+              <Field.Error />
+            </Field.Root>
+            <Field.Root name="newEmail">
+              <Field.Label>{t('new_email')}</Field.Label>
+              <Field.Control />
+              <Field.Error />
+            </Field.Root>
+            <Button
+              type="submit"
+              variant="yellow"
+              actionStatus={emailActionStatus}
             >
               {t('change_email')}
-            </button>
-          </div>
+            </Button>
+          </Form>
           <div className="mt-6 w-full">
             <div className="mb-3 flex justify-center">
-              <button
+              <Button
                 type="button"
+                variant="yellow"
                 onClick={() => setShowRemainingVoters((value) => !value)}
-                className="bg-fk-yellow text-fk-black cursor-pointer rounded-lg px-4 py-2 transition-colors hover:bg-amber-500"
               >
                 {showRemainingVoters
                   ? t('hide_remaining_voters')
                   : t('show_remaining_voters')}
-              </button>
+              </Button>
             </div>
             {showRemainingVoters &&
               (remainingVoters.length === 0 ? (

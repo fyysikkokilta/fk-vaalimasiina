@@ -5,7 +5,6 @@ import { locale } from 'next/root-params'
 import { NextIntlClientProvider } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import NextTopLoader from 'nextjs-toploader'
-import { Flip, ToastContainer } from 'react-toastify'
 
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
@@ -61,17 +60,6 @@ export default async function RootLayout({
             </div>
           </main>
           <Footer />
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            transition={Flip}
-          />
         </NextIntlClientProvider>
       </body>
     </html>

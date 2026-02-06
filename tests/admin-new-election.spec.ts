@@ -21,19 +21,19 @@ test('should show correct navigation buttons', async ({ page }) => {
 })
 
 test('should create a new election', async ({ page }) => {
-  await page.fill('#title', 'Test Election')
-  await page.fill('#description', 'Test Election Description')
-  await page.fill('#seats', '1')
+  await page.getByLabel('Title').fill('Test Election')
+  await page.getByLabel('Description').fill('Test Election Description')
+  await page.getByLabel('Seats').fill('1')
 
-  await page.fill('#newCandidate', 'Test Candidate 1')
-  await page.click('text=Add candidate')
-  await expect(page.locator('text=Test Candidate 1')).toBeVisible()
+  await page.getByLabel('New candidate').fill('Test Candidate 1')
+  await page.getByRole('button', { name: 'Add candidate' }).click()
+  await expect(page.getByText('Test Candidate 1')).toBeVisible()
 
-  await page.fill('#newCandidate', 'Test Candidate 2')
-  await page.click('text=Add candidate')
-  await expect(page.locator('text=Test Candidate 2')).toBeVisible()
+  await page.getByLabel('New candidate').fill('Test Candidate 2')
+  await page.getByRole('button', { name: 'Add candidate' }).click()
+  await expect(page.getByText('Test Candidate 2')).toBeVisible()
 
-  await page.click('text=Create election')
+  await page.getByRole('button', { name: 'Create election' }).click()
 
   await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
 })

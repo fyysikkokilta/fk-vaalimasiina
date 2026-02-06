@@ -6,6 +6,8 @@ import { useTransition } from 'react'
 
 import { usePathname, useRouter } from '~/i18n/navigation'
 
+import { Button } from './ui/Button'
+
 export default function LanguageSwitcher() {
   const locale = useLocale()
   const router = useRouter()
@@ -25,13 +27,8 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <button
-      className="cursor-pointer rounded-lg border border-amber-50 px-4 py-2 text-white transition-colors hover:bg-white/10 hover:text-white/90"
-      disabled={isPending}
-      type="button"
-      onClick={toggleLanguage}
-    >
+    <Button variant="outline" disabled={isPending} onClick={toggleLanguage}>
       {t('other_language')}
-    </button>
+    </Button>
   )
 }

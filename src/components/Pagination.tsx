@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from './ui/Button'
+
 interface PaginationProps {
   currentPage: number
   totalPages: number
@@ -29,28 +31,20 @@ export default function Pagination({
         <span className="font-medium">{totalPages}</span>
       </div>
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`rounded-md px-3 py-2 text-sm font-medium ${
-            currentPage === 1
-              ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-              : 'bg-fk-yellow text-fk-black transition-colors hover:bg-amber-500'
-          }`}
+          variant="yellow"
         >
           {translations.previous}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`rounded-md px-3 py-2 text-sm font-medium ${
-            currentPage === totalPages
-              ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-              : 'bg-fk-yellow text-fk-black transition-colors hover:bg-amber-500'
-          }`}
+          variant="yellow"
         >
           {translations.next}
-        </button>
+        </Button>
       </div>
     </div>
   )

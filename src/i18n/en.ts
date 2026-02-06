@@ -55,7 +55,15 @@ const messages = {
     empty_ballot: 'Empty ballot',
     cancel: 'Cancel',
     confirm: 'Confirm',
-    invalid_ballot: 'Invalid ballot'
+    invalid_ballot: 'Invalid ballot',
+    validation: {
+      voterId_uuid: 'Voter identifier must be a valid UUID',
+      candidateId_uuid: 'Candidate identifier must be a valid UUID',
+      rank_number: 'Rank must be a number',
+      rank_min: 'Rank must be at least 1',
+      ballot_array: 'Ballot must be an array',
+      ranks_unique: 'Ranks must be unique'
+    }
   },
   Login: {
     title: 'Log in to admin',
@@ -113,7 +121,11 @@ const messages = {
     change_email: 'Change email',
     show_remaining_voters: 'Show remaining voters',
     hide_remaining_voters: 'Hide remaining voters',
-    remaining_voters_empty: 'Everyone has voted'
+    remaining_voters_empty: 'Everyone has voted',
+    validation: {
+      oldEmail_email: 'Old email must be a valid email',
+      newEmail_email: 'New email must be a valid email'
+    }
   },
   PreviewElection: {
     seats: 'Seats',
@@ -123,7 +135,13 @@ const messages = {
       "Add the voters' email addresses here separated by line breaks",
     email_list_placeholder: 'email@email.com\nemail2@mail.com',
     voter_count: 'Voter count',
-    invalid_voter_data: 'Invalid voter data'
+    invalid_voter_data: 'Invalid voter data',
+    validation: {
+      email_email: 'Email must be a valid email',
+      emails_array: 'Emails must be an array',
+      emails_nonempty: 'There must be at least one email',
+      emails_unique: 'Emails must be unique'
+    }
   },
   NewElection: {
     invalid_election_data: 'Invalid election data'
@@ -167,158 +185,21 @@ const messages = {
     new_candidate: 'New candidate',
     add_candidate: 'Add candidate',
     remove_candidate: 'Remove candidate',
-    candidates: 'Candidates'
-  },
-  actions: {
-    isAuthorized: {
-      unauthorized: 'Unauthorized'
-    },
-    vote: {
-      action_status: {
-        ballot_saved: 'Your vote has been saved',
-        voter_not_found: 'Voter not found',
-        voting_not_ongoing: 'Voting is not ongoing',
-        invalid_choices: 'Invalid choices',
-        voter_already_voted: 'Voter has already voted',
-        error_saving_ballot: 'Error saving ballot'
-      },
-      validation: {
-        voterId_uuid: 'Voter identifier must be a valid UUID',
-        candidateId_uuid: 'Candidate identifier must be a valid UUID',
-        rank_number: 'Rank must be a number',
-        rank_min: 'Rank must be at least 1',
-        preference_object: 'Preference must be an object',
-        ballot_array: 'Ballot must be an array',
-        ranks_unique: 'Ranks must be unique'
-      }
-    },
-    changeEmail: {
-      action_status: {
-        email_changed: 'Email changed',
-        email_already_exists: 'Email already exists',
-        error_updating_email: 'Error updating email',
-        mail_sending_failed: 'Mail sending failed',
-        voter_not_found: 'Voter not found'
-      },
-      validation: {
-        oldEmail_email: 'Old email must be a valid email',
-        newEmail_email: 'New email must be a valid email'
-      }
-    },
-    startVoting: {
-      action_status: {
-        voting_started: 'Voting started',
-        mail_sending_failed: 'Mail sending failed',
-        election_not_found: 'Election not found'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID',
-        email_email: 'Email must be a valid email',
-        emails_array: 'Emails must be an array',
-        emails_nonempty: 'There must be at least one email',
-        emails_unique: 'Emails must be unique'
-      }
-    },
-    startEditing: {
-      action_status: {
-        election_not_found: 'Election not found',
-        editing_started: 'Editing started'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID'
-      }
-    },
-    pollVotes: {
-      action_status: {
-        votes_polled: 'Votes polled'
-      }
-    },
-    endVoting: {
-      action_status: {
-        voting_finished: 'Voting finished',
-        election_not_found: 'Election not found',
-        not_everyone_voted: 'Not everyone has voted'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID'
-      }
-    },
-    editElection: {
-      action_status: {
-        election_edited: 'Election edited',
-        election_not_found: 'Election not found'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID',
-        title_string: 'Title must be a string',
-        title_nonempty: 'Title must not be empty',
-        description_string: 'Description must be a string',
-        description_nonempty: 'Description must not be empty',
-        seats_number: 'Seats must be a number',
-        seats_min: 'Seats must be at least 1',
-        candidate_string: 'Candidate must be a string',
-        candidate_nonempty: 'Candidate must not be empty',
-        candidates_array: 'Candidates must be an array',
-        candidates_nonempty: 'There must be at least one candidate',
-        candidates_geq_seats:
-          'There must be at least as many candidates as there are seats'
-      }
-    },
-    createElection: {
-      action_status: {
-        election_created: 'Election created'
-      },
-      validation: {
-        title_string: 'Title must be a string',
-        title_nonempty: 'Title must not be empty',
-        description_string: 'Description must be a string',
-        description_nonempty: 'Description must not be empty',
-        seats_number: 'Seats must be a number',
-        seats_min: 'Seats must be at least 1',
-        candidate_string: 'Candidate must be a string',
-        candidate_nonempty: 'Candidate must not be empty',
-        candidates_array: 'Candidates must be an array',
-        candidates_nonempty: 'There must be at least one candidate',
-        candidates_geq_seats:
-          'There must be at least as many candidates as there are seats'
-      }
-    },
-    closeElection: {
-      action_status: {
-        election_closed: 'Election closed',
-        election_not_found: 'Election not found',
-        failed_to_close_election: 'Failed to close election and store results'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID'
-      }
-    },
-    cancelEditing: {
-      action_status: {
-        editing_cancelled: 'Editing cancelled',
-        election_not_found: 'Election not found'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID'
-      }
-    },
-    abortVoting: {
-      action_status: {
-        voting_aborted: 'Voting aborted',
-        election_not_found: 'Election not found'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID'
-      }
-    },
-    downloadElectionCsv: {
-      action_status: {
-        election_not_found: 'Election not found',
-        csv_file_not_found: 'CSV file not found'
-      },
-      validation: {
-        electionId_uuid: 'Election identifier must be a valid UUID'
-      }
+    candidates: 'Candidates',
+    validation: {
+      title_string: 'Title must be a string',
+      title_nonempty: 'Title must not be empty',
+      description_string: 'Description must be a string',
+      description_nonempty: 'Description must not be empty',
+      seats_number: 'Seats must be a number',
+      seats_min: 'Seats must be at least 1',
+      candidate_string: 'Candidate must be a string',
+      candidate_nonempty: 'Candidate must not be empty',
+      candidates_array: 'Candidates must be an array',
+      candidates_nonempty: 'There must be at least one candidate',
+      candidates_geq_seats:
+        'There must be at least as many candidates as there are seats',
+      electionId_uuid: 'Election identifier must be a valid UUID'
     }
   },
   metadata: {

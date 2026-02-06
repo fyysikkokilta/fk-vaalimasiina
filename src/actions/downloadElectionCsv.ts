@@ -4,7 +4,6 @@ import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
 import {
@@ -13,24 +12,13 @@ import {
   isS3Configured
 } from '~/utils/s3Storage'
 
-const downloadElectionCsvSchema = async () => {
-  const t = await getActionsTranslations(
-    'actions.downloadElectionCsv.validation'
-  )
-  return z.object({
-    electionId: z.uuid({
-      error: t('electionId_uuid')
-    })
-  })
-}
+const downloadElectionCsvSchema = z.object({
+  electionId: z.uuid('Election identifier must be a valid UUID')
+})
 
 export const downloadElectionCsv = actionClient
   .inputSchema(downloadElectionCsvSchema)
   .action(async ({ parsedInput: { electionId } }) => {
-    const t = await getActionsTranslations(
-      'actions.downloadElectionCsv.action_status'
-    )
-
     try {
       // If S3 is not configured, return null to indicate fallback to client-side generation
       if (!isS3Configured()) {
@@ -48,7 +36,7 @@ export const downloadElectionCsv = actionClient
       })
 
       if (!election) {
-        throw new ActionError(t('election_not_found'))
+        throw new ActionError('Election not found')
       }
 
       if (!election.csvFilePath) {

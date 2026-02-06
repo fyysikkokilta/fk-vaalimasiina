@@ -240,7 +240,7 @@ test('should show export actions', async ({ page }) => {
 })
 
 test('should be able to navigate to next election', async ({ page }) => {
-  await page.click('text=Next election')
+  await page.getByRole('button', { name: 'Next election' }).click()
   await expect(
     page.getByRole('heading', { name: 'New election' })
   ).toBeVisible()

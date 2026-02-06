@@ -5,45 +5,37 @@ import { z } from 'zod'
 
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient } from '~/actions/safe-action'
-import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { candidatesTable, electionsTable } from '~/db/schema'
 
-const createElectionSchema = async () => {
-  const t = await getActionsTranslations('actions.createElection.validation')
-  return z
-    .object({
-      title: z
-        .string({ error: t('title_string') })
-        .nonempty({ error: t('title_nonempty') }),
-      description: z
-        .string({ error: t('description_string') })
-        .nonempty({ error: t('description_nonempty') }),
-      seats: z
-        .number({ error: t('seats_number') })
-        .min(1, { error: t('seats_min') }),
-      candidates: z
-        .array(
-          z.string({ error: t('candidate_string') }).nonempty({
-            error: t('candidate_nonempty')
-          }),
-          { error: t('candidates_array') }
-        )
-        .nonempty({ error: t('candidates_nonempty') })
-    })
-    .refine((data) => data.candidates.length >= data.seats, {
-      error: t('candidates_geq_seats')
-    })
-}
+const createElectionSchema = z
+  .object({
+    title: z.string('Title must be a string').min(1, 'Title must not be empty'),
+    description: z
+      .string('Description must be a string')
+      .min(1, 'Description must not be empty'),
+    seats: z
+      .number('Seats must be a number')
+      .min(1, 'Seats must be at least 1'),
+    candidates: z
+      .array(
+        z
+          .string('Candidate must be a string')
+          .min(1, 'Candidate must not be empty'),
+        'Candidates must be an array'
+      )
+      .min(1, 'There must be at least one candidate')
+  })
+  .refine(
+    (data) => data.candidates.length >= data.seats,
+    'There must be at least as many candidates as there are seats'
+  )
 
 export const createElection = actionClient
   .inputSchema(createElectionSchema)
   .use(isAuthorizedMiddleware)
   .action(
     async ({ parsedInput: { title, description, seats, candidates } }) => {
-      const t = await getActionsTranslations(
-        'actions.createElection.action_status'
-      )
       return db.transaction(async (transaction) => {
         const elections = await transaction
           .insert(electionsTable)
@@ -73,7 +65,7 @@ export const createElection = actionClient
 
         revalidatePath('/[locale]/admin', 'page')
 
-        return { message: t('election_created') }
+        return { message: 'Election created' }
       })
     }
   )

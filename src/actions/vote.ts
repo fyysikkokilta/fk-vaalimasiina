@@ -4,52 +4,35 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 import { actionClient, ActionError } from '~/actions/safe-action'
-import { getActionsTranslations } from '~/actions/utils/getActionsTranslations'
 import { db } from '~/db'
 import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 import { routing } from '~/i18n/routing'
 import { isPgUniqueViolation } from '~/utils/dbErrors'
 
-const voteSchema = async () => {
-  const t = await getActionsTranslations('actions.vote.validation')
-  return z.object({
-    voterId: z.uuid({
-      error: t('voterId_uuid')
-    }),
-    ballot: z
-      .array(
-        z.object(
-          {
-            candidateId: z.uuid({
-              error: t('candidateId_uuid')
-            }),
-            rank: z
-              .number({
-                error: t('rank_number')
-              })
-              .min(1, { error: t('rank_min') })
-          },
-          { error: t('preference_object') }
-        ),
-        { error: t('ballot_array') }
+const voteSchema = z.object({
+  voterId: z.uuid('Voter identifier must be a valid UUID'),
+  ballot: z
+    .array(
+      z.object({
+        candidateId: z.uuid('Candidate identifier must be a valid UUID'),
+        rank: z
+          .number('Rank must be a number')
+          .min(1, 'Rank must be at least 1')
+      }),
+      'Ballot must be an array'
+    )
+    .refine((ballot) => {
+      const ranks = ballot.map((vote) => vote.rank)
+      return (
+        ranks.length === new Set(ranks).size &&
+        ranks.every((rank, index) => rank === index + 1)
       )
-      .refine(
-        (ballot) => {
-          const ranks = ballot.map((vote) => vote.rank)
-          return (
-            ranks.length === new Set(ranks).size &&
-            ranks.every((rank, index) => rank === index + 1)
-          )
-        },
-        { error: t('ranks_unique') }
-      )
-  })
-}
+    }, 'Ranks must be unique')
+})
 
 export const vote = actionClient
   .inputSchema(voteSchema)
   .action(async ({ parsedInput: { voterId, ballot } }) => {
-    const t = await getActionsTranslations('actions.vote.action_status')
     const validVoter = await db.query.votersTable.findFirst({
       where: (votersTable, { eq }) => eq(votersTable.voterId, voterId),
       with: {
@@ -63,7 +46,7 @@ export const vote = actionClient
     })
 
     if (!validVoter) {
-      throw new ActionError(t('voter_not_found'))
+      throw new ActionError('Voter not found')
     }
 
     const election = validVoter.election
@@ -71,7 +54,7 @@ export const vote = actionClient
 
     // Check if the election is ongoing
     if (!election || !electionIsOnGoing) {
-      throw new ActionError(t('voting_not_ongoing'))
+      throw new ActionError('Voting is not ongoing')
     }
 
     // Check that every candidate in the ballot is a valid candidate
@@ -84,7 +67,7 @@ export const vote = actionClient
     )
 
     if (!validCandidates) {
-      throw new ActionError(t('invalid_choices'))
+      throw new ActionError('Invalid choices')
     }
 
     try {
@@ -114,11 +97,11 @@ export const vote = actionClient
       routing.locales.forEach((locale) => {
         revalidatePath(`/${locale}/vote/${voterId}`)
       })
-      return { message: t('ballot_saved'), ballotId }
+      return { message: 'Your vote has been saved', ballotId }
     } catch (error) {
       if (isPgUniqueViolation(error)) {
-        throw new ActionError(t('voter_already_voted'))
+        throw new ActionError('Voter has already voted')
       }
-      throw new ActionError(t('error_saving_ballot'))
+      throw new ActionError('Error saving ballot')
     }
   })

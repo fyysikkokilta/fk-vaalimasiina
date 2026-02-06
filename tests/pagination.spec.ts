@@ -32,7 +32,7 @@ test.describe('Election list page', () => {
     page
   }) => {
     // Check pagination info
-    await expect(page.locator('text=Page 1 / 2')).toBeVisible()
+    await expect(page.getByText('Page 1 / 2')).toBeVisible()
 
     // Check navigation buttons
     await expect(page.getByRole('button', { name: 'Previous' })).toBeDisabled()
@@ -49,7 +49,7 @@ test.describe('Election list page', () => {
     await expect(electionCards).toHaveCount(7)
 
     // Check pagination info updated
-    await expect(page.locator('text=Page 2 / 2')).toBeVisible()
+    await expect(page.getByText('Page 2 / 2')).toBeVisible()
 
     // Check navigation buttons updated
     await expect(page.getByRole('button', { name: 'Previous' })).toBeEnabled()
@@ -61,11 +61,11 @@ test.describe('Election list page', () => {
   test('should navigate back to first page', async ({ page }) => {
     // Go to second page first
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await expect(page.locator('text=Page 2 / 2')).toBeVisible()
+    await expect(page.getByText('Page 2 / 2')).toBeVisible()
 
     // Go back to first page
     await page.getByRole('button', { name: 'Previous', exact: true }).click()
-    await expect(page.locator('text=Page 1 / 2')).toBeVisible()
+    await expect(page.getByText('Page 1 / 2')).toBeVisible()
 
     // Check navigation buttons
     await expect(page.getByRole('button', { name: 'Previous' })).toBeDisabled()
@@ -96,7 +96,7 @@ test.describe('Election list page', () => {
     await page.goto('/elections')
 
     // Should not show pagination controls
-    await expect(page.locator('text=Page')).not.toBeVisible()
+    await expect(page.getByText('Page')).not.toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Previous' })
     ).not.toBeVisible()
@@ -150,7 +150,7 @@ test.describe('Pagination component edge cases', () => {
     await page.goto('/elections')
 
     // Should not show pagination
-    await expect(page.locator('text=Page')).not.toBeVisible()
+    await expect(page.getByText('Page')).not.toBeVisible()
   })
 
   test('should handle empty results', async ({ page, request }) => {
@@ -159,13 +159,13 @@ test.describe('Pagination component edge cases', () => {
     await page.goto('/elections')
 
     // Should show no results message
-    await expect(page.locator('text=No previous results')).toBeVisible()
+    await expect(page.getByText('No previous results')).toBeVisible()
     await expect(
-      page.locator('text=There have been no elections held yet')
+      page.getByText('There have been no elections held yet')
     ).toBeVisible()
 
     // Should not show pagination
-    await expect(page.locator('text=Page')).not.toBeVisible()
+    await expect(page.getByText('Page')).not.toBeVisible()
   })
 
   test('should handle audit page with no finished election', async ({
@@ -177,11 +177,9 @@ test.describe('Pagination component edge cases', () => {
     await page.goto('/audit')
 
     // Should show no finished election message
-    await expect(
-      page.locator('text=There is no finished election')
-    ).toBeVisible()
+    await expect(page.getByText('There is no finished election')).toBeVisible()
 
     // Should not show pagination
-    await expect(page.locator('text=Page')).not.toBeVisible()
+    await expect(page.getByText('Page')).not.toBeVisible()
   })
 })

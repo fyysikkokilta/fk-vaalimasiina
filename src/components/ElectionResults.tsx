@@ -12,6 +12,7 @@ import {
 import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
 import ElectionActions from './ElectionActions'
+import { Button } from './ui/Button'
 
 function ResultsTable({
   election,
@@ -237,13 +238,6 @@ function ResultsTable({
   )
 }
 
-const navButtonClass = (disabled: boolean) =>
-  `rounded-lg px-4 py-2 ${
-    disabled
-      ? 'cursor-not-allowed bg-gray-300'
-      : 'cursor-pointer bg-gray-600 text-white hover:bg-gray-700'
-  }`
-
 export default function ElectionResults({
   election,
   ballots,
@@ -255,7 +249,7 @@ export default function ElectionResults({
   voterCount: number
   showAllImmediately: boolean
 }) {
-  const [page, setPage] = useState(0)
+  const [step, setStep] = useState(0)
   const t = useTranslations('ElectionResults')
   const votingResult = calculateSTVResult(election, ballots, voterCount)
 
@@ -311,36 +305,34 @@ export default function ElectionResults({
     )
   }
 
-  const isFirstPage = page === 0
-  const isLastPage = page === totalSteps - 1
+  const isFirstStep = step === 0
+  const isLastStep = step === totalSteps - 1
 
   return (
     <div>
       {header}
       <div className="mb-4 flex justify-between">
-        <button
-          type="button"
-          className={navButtonClass(isFirstPage)}
-          disabled={isFirstPage}
-          onClick={() => setPage((p) => Math.max(0, p - 1))}
+        <Button
+          variant="secondary"
+          disabled={isFirstStep}
+          onClick={() => setStep((p) => Math.max(0, p - 1))}
         >
           {t('previous_round')}
-        </button>
-        <button
-          type="button"
-          className={navButtonClass(isLastPage)}
-          disabled={isLastPage}
-          onClick={() => setPage((p) => Math.min(totalSteps - 1, p + 1))}
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={isLastStep}
+          onClick={() => setStep((p) => Math.min(totalSteps - 1, p + 1))}
         >
           {t('next_round')}
-        </button>
+        </Button>
       </div>
       <ResultsTable
         election={election}
         votingResult={votingResult}
         numCandidates={numCandidates}
         stepsPerRound={stepsPerRound}
-        step={page}
+        step={step}
       />
     </div>
   )
