@@ -142,6 +142,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.apt-cache
+          key: ${{ runner.os }}-apt-deps-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-deps-
+
+      - name: Configure apt cache
+        run: |
+          sudo mkdir -p "$GITHUB_WORKSPACE/.apt-cache/archives"
+          echo 'Dir::Cache "'"$GITHUB_WORKSPACE"'/.apt-cache";' | sudo tee /etc/apt/apt.conf.d/99-ci-apt-cache.conf
+
       - name: Run database migrations
         run: pnpm db:migrate
 
@@ -155,6 +168,9 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
+      - name: Fix apt cache permissions for saving
+        run: sudo chown -R "$(whoami):$(whoami)" "$GITHUB_WORKSPACE/.apt-cache"
 
       - name: Run Playwright tests
         run: npx playwright test

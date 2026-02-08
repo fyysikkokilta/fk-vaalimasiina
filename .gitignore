@@ -33,3 +33,6 @@ next-env.d.ts
 
 # Claude
 .claude/
+
+# CI apt cache (workflow restores here)
+.apt-cache/
