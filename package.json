@@ -72,7 +72,7 @@
   "simple-git-hooks": {
     "pre-commit": "pnpx lint-staged"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.29.1",
   "pnpm": {
     "overrides": {
       "@types/nodemailer@*>@aws-sdk/client-sesv2": "-"
