@@ -24,7 +24,7 @@ function getEmails(emailsText: string): string[] {
 }
 
 export default function PreviewElection({
-  election: { electionId, title, description, seats, candidates }
+  election: { electionId, title, description, seats, votingMethod, candidates }
 }: ElectionStepProps) {
   const [errors, setErrors] = useState<Record<string, string | string[]> | undefined>(undefined)
 
@@ -73,6 +73,11 @@ export default function PreviewElection({
               {t('seats')}
               {': '}
               {seats}
+            </div>
+            <div className="mb-3">
+              {t('voting_method')}
+              {': '}
+              {votingMethod === 'MAJORITY' ? t('voting_method_majority') : t('voting_method_stv')}
             </div>
             <h4 className="mb-2 font-medium">{t('candidates')}</h4>
             <ul className="w-full space-y-2">

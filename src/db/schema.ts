@@ -19,6 +19,8 @@ export const statusEnum = pgEnum('election_status', [
   'CLOSED'
 ])
 
+export const votingMethodEnum = pgEnum('voting_method', ['STV', 'MAJORITY'])
+
 export const electionsTable = pgTable(
   'elections',
   {
@@ -27,6 +29,7 @@ export const electionsTable = pgTable(
     description: varchar('description').notNull(),
     seats: integer('seats').notNull(),
     status: statusEnum('status').notNull().default('CREATED'),
+    votingMethod: votingMethodEnum('voting_method').notNull().default('STV'),
     date: timestamp('date').notNull().defaultNow(),
     csvFilePath: varchar('csv_file_path')
   },

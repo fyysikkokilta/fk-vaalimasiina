@@ -3,16 +3,87 @@
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
-import {
-  type Ballot,
-  calculateSTVResult,
-  type Election,
-  type ValidVotingResult
-} from '~/algorithm/stvAlgorithm'
+import { calculateMajorityResult } from '~/algorithm/majorityAlgorithm'
+import { calculateSTVResult } from '~/algorithm/stvAlgorithm'
+import type { Ballot, Election, ValidVotingResult, ValidMajorityResult } from '~/algorithm/types'
 import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
 import ElectionActions from './ElectionActions'
 import { Button } from './ui/Button'
+
+function MajorityResultsTable({
+  election,
+  votingResult
+}: {
+  election: Election
+  votingResult: ValidMajorityResult
+}) {
+  const t = useTranslations('ElectionResults')
+  const winnerIds = new Set(votingResult.winners.map((w) => w.id))
+
+  return (
+    <div className="mb-3 min-w-0 overflow-hidden rounded-lg border border-gray-200">
+      <section
+        className="border-b border-gray-200 bg-blue-50 px-4 py-3"
+        aria-label={t('initial_votes')}
+      >
+        <h3 className="mb-3 text-center text-xs font-medium tracking-wide text-gray-700 uppercase">
+          {t('initial_votes')}
+        </h3>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-4 sm:gap-y-0">
+          {[
+            { key: 'total_votes' as const, value: votingResult.totalVotes },
+            { key: 'non_empty_votes' as const, value: votingResult.nonEmptyVotes },
+            { key: 'seats' as const, value: election.seats }
+          ].map(({ key, value }) => (
+            <div key={key}>
+              <div className="text-xs font-medium text-gray-500 uppercase">{t(key)}</div>
+              <div className="text-sm font-medium text-gray-900">{value}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+      <div className="min-w-0 overflow-x-auto">
+        <table className="w-full table-auto border-collapse">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="p-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                {t('candidate_name')}
+              </th>
+              <th className="p-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase">
+                {t('votes')}
+              </th>
+              <th className="p-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                {t('result')}
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {votingResult.candidateResults.map((candidate) => {
+              const isWinner = winnerIds.has(candidate.id)
+              const bgClass = isWinner ? 'bg-green-50' : 'bg-white'
+              return (
+                <tr key={candidate.id} className={bgClass}>
+                  <td
+                    className={`p-3 text-sm font-medium text-gray-900 ${bgClass} ${isWinner ? 'text-green-700' : ''}`}
+                  >
+                    {candidate.name}
+                  </td>
+                  <td className={`p-3 text-right text-sm text-gray-900 ${bgClass}`}>
+                    {candidate.voteCount}
+                  </td>
+                  <td className={`p-3 text-left text-sm ${bgClass}`}>
+                    {isWinner && <span className="text-green-600">{t('chosen_before')}</span>}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
 
 function ResultsTable({
   election,
@@ -225,6 +296,52 @@ export default function ElectionResults({
 }) {
   const [step, setStep] = useState(0)
   const t = useTranslations('ElectionResults')
+  const votingMethod = election.votingMethod ?? 'STV'
+
+  if (votingMethod === 'MAJORITY') {
+    const majorityResult = calculateMajorityResult(election, ballots, voterCount)
+    if (!majorityResult.validResult) {
+      return (
+        <div className="mx-auto mb-4 text-center">
+          <h3 className="mb-4 text-2xl font-semibold">{election.title}</h3>
+          <div className="mb-2">{election.date.toLocaleDateString('fi-FI')}</div>
+          <div className="mb-4">{election.description}</div>
+          <div className="mb-4 flex flex-col space-y-2">
+            <span>
+              {t('total_votes')}
+              {': '}
+              {majorityResult.totalVotes}
+            </span>
+            <span>
+              {t('voter_count')}
+              {': '}
+              {majorityResult.voterCount}
+            </span>
+          </div>
+          <div className="rounded-lg bg-red-100 p-4 text-red-700">{t('invalid_result')}</div>
+        </div>
+      )
+    }
+    const header = (
+      <div className="mb-4 text-center">
+        <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
+        <div className="mb-2">{election.date.toLocaleDateString('fi-FI')}</div>
+        <div className="mb-3">{election.description}</div>
+        <ElectionActions
+          election={election}
+          votingResult={majorityResult}
+          votingMethod="MAJORITY"
+        />
+      </div>
+    )
+    return (
+      <div>
+        {header}
+        <MajorityResultsTable election={election} votingResult={majorityResult} />
+      </div>
+    )
+  }
+
   const votingResult = calculateSTVResult(election, ballots, voterCount)
 
   if (!votingResult.validResult) {
@@ -259,7 +376,7 @@ export default function ElectionResults({
       <h3 className="mb-2 text-2xl font-semibold">{election.title}</h3>
       <div className="mb-2">{election.date.toLocaleDateString('fi-FI')}</div>
       <div className="mb-3">{election.description}</div>
-      <ElectionActions election={election} votingResult={votingResult} />
+      <ElectionActions election={election} votingResult={votingResult} votingMethod="STV" />
     </div>
   )
 

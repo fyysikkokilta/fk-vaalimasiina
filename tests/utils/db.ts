@@ -30,6 +30,7 @@ export const insertElection = async (
     seats: number
     candidates: { name: string }[]
     status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+    votingMethod?: 'STV' | 'MAJORITY'
   },
   request: APIRequestContext
 ) => {
@@ -111,4 +112,54 @@ export const createElectionWithVotersAndBallots = async (
   })
 
   return { election, voters, ballots }
+}
+
+export const createMajorityElectionWithVotersAndBallots = async (
+  title: string,
+  description: string,
+  seats: number,
+  status: 'ONGOING' | 'FINISHED' | 'CLOSED',
+  candidateNames: string[],
+  voterEmails: string[],
+  request: APIRequestContext,
+  ballots?: { candidateIndex: number | null }[]
+) => {
+  const election = await insertElection(
+    {
+      title,
+      description,
+      seats,
+      candidates: candidateNames.map((name) => ({ name })),
+      status,
+      votingMethod: 'MAJORITY'
+    },
+    request
+  )
+  const voters = await insertVoters({
+    electionId: election.electionId,
+    emails: voterEmails
+  })
+  if (ballots != null && ballots.length !== 0) {
+    if (ballots.length !== voters.length) {
+      throw new Error('ballots length must match voters length')
+    }
+    const voterIdBallotPairs = ballots.map((ballot, i) => {
+      const vote =
+        ballot.candidateIndex != null
+          ? [
+              {
+                candidateId: election.candidates[ballot.candidateIndex].candidateId,
+                rank: 1
+              }
+            ]
+          : []
+      return { voterId: voters[i].voterId, ballot: vote }
+    })
+    const createdBallots = await insertVotes({
+      electionId: election.electionId,
+      voterIdBallotPairs
+    })
+    return { election, voters, ballots: createdBallots }
+  }
+  return { election, voters, ballots: [] }
 }

@@ -3,65 +3,18 @@
 // election configuration, and voter count.
 // The quota used is the Droop quota
 
-import type { ElectionStepProps } from '~/data/getAdminElection'
-import type { ElectionPageProps } from '~/data/getElection'
+import type {
+  Ballot,
+  BallotData,
+  CandidateId,
+  CandidateResult,
+  Election,
+  VoteMap,
+  VotingResult,
+  VotingRoundResult
+} from './types'
 
 import { shuffleWithSeed } from './shuffleWithSeed'
-
-export type Election = ElectionPageProps['election'] | ElectionStepProps['election']
-
-export type Ballot = ElectionPageProps['ballots'][number]
-
-type CandidateId = Election['candidates'][number]['candidateId']
-
-type BallotData = CandidateId[]
-
-interface WeightedVote {
-  weight: number
-  vote: BallotData
-}
-
-type VoteMap = Map<CandidateId, WeightedVote[]>
-
-interface CandidateResult {
-  id: CandidateId
-  name: string
-  voteCount: number
-  isSelectedThisRound: boolean
-  isSelected: boolean
-  isEliminatedThisRound: boolean
-  isEliminated: boolean
-}
-
-interface VotingRoundResult {
-  round: number
-  candidateResults: CandidateResult[]
-  emptyVotes: number
-  tieBreaker?: boolean
-}
-
-interface Winner {
-  id: CandidateId
-  name: string
-}
-
-export type ValidVotingResult = {
-  validResult: true
-  totalVotes: number
-  nonEmptyVotes: number
-  quota: number
-  roundResults: VotingRoundResult[]
-  winners: Winner[]
-  ballots: Ballot[]
-}
-
-export type InvalidVotingResult = {
-  validResult: false
-  totalVotes: number
-  voterCount: number
-}
-
-export type VotingResult = ValidVotingResult | InvalidVotingResult
 
 // Function to compute the current vote counts for each candidate based on the voteMap.
 // voteMap is a Map where keys are candidate IDs and values are arrays of votes (each with a weight).

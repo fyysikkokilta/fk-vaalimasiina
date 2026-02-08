@@ -23,28 +23,50 @@ export default function Vote({ election, voter }: VotePageProps) {
     selectedCandidates: [] as string[],
     availableCandidates: election.candidates.map((c) => c.candidateId)
   })
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
 
   const selectedCandidates = candidates.selectedCandidates
   const availableCandidates = candidates.availableCandidates
+  const votingMethod = election.votingMethod ?? 'STV'
+  const isMajority = votingMethod === 'MAJORITY'
 
   const t = useTranslations('Vote')
 
-  const voteSchema = z.object({
-    voterId: z.uuid(t('validation.voterId_uuid')),
-    ballot: z
-      .array(
-        z.object({
-          candidateId: z.uuid(t('validation.candidateId_uuid')),
-          rank: z.number(t('validation.rank_number')).min(1, t('validation.rank_min'))
-        }),
-        t('validation.ballot_array')
-      )
-      .refine((ballot) => {
-        const ranks = ballot.map((v) => v.rank)
+  const ballotItemSchema = z.object({
+    candidateId: z.uuid(t('validation.candidateId_uuid')),
+    rank: z.number(t('validation.rank_number')).min(1, t('validation.rank_min'))
+  })
+
+  const ballotSchemaSTV = z
+    .object({
+      votingMethod: z.literal('STV'),
+      ballotItems: z.array(ballotItemSchema, t('validation.ballot_array'))
+    })
+    .refine(
+      (data) => {
+        const ranks = data.ballotItems.map((v) => v.rank)
         return (
           ranks.length === new Set(ranks).size && ranks.every((rank, index) => rank === index + 1)
         )
-      }, t('validation.ranks_unique'))
+      },
+      { message: t('validation.ranks_unique') }
+    )
+
+  const ballotSchemaMajority = z
+    .object({
+      votingMethod: z.literal('MAJORITY'),
+      ballotItems: z.array(ballotItemSchema, t('validation.ballot_array')).max(1)
+    })
+    .refine(
+      (data) =>
+        data.ballotItems.length <= 1 &&
+        (data.ballotItems.length === 0 || data.ballotItems[0].rank === 1),
+      { message: t('invalid_ballot') }
+    )
+
+  const voteSchema = z.object({
+    voterId: z.uuid(t('validation.voterId_uuid')),
+    ballot: z.discriminatedUnion('votingMethod', [ballotSchemaSTV, ballotSchemaMajority])
   })
 
   const {
@@ -142,6 +164,49 @@ export default function Vote({ election, voter }: VotePageProps) {
                 </>
               )}
             </div>
+          ) : isMajority ? (
+            <>
+              <div className="my-3 font-bold">{t('to_choose_one')}</div>
+              <div className="my-3 font-bold">{t('vote_instruction_majority')}</div>
+              <fieldset className="space-y-2">
+                <legend className="sr-only">{t('your_ballot')}</legend>
+                <label className="mb-3 flex cursor-pointer items-center gap-2 rounded-lg border p-3 hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="majority-choice"
+                    checked={selectedCandidateId === null}
+                    onChange={() => setSelectedCandidateId(null)}
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm">{t('abstain')}</span>
+                </label>
+                {election.candidates.map((candidate) => (
+                  <label
+                    key={candidate.candidateId}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg border p-3 hover:bg-gray-50"
+                  >
+                    <input
+                      type="radio"
+                      name="majority-choice"
+                      checked={selectedCandidateId === candidate.candidateId}
+                      onChange={() => setSelectedCandidateId(candidate.candidateId)}
+                      className="h-4 w-4"
+                    />
+                    <span className="text-sm font-medium">{candidate.name}</span>
+                  </label>
+                ))}
+              </fieldset>
+              <div className="mt-6 flex justify-center">
+                <Button
+                  variant="yellow"
+                  disabled={disableVote}
+                  actionStatus={voteActionStatus}
+                  onClick={() => setConfirmingVote(true)}
+                >
+                  {t('submit_vote')}
+                </Button>
+              </div>
+            </>
           ) : (
             <>
               <div className="my-3 font-bold">{t('to_choose', { seats: election.seats })}</div>
@@ -231,7 +296,19 @@ export default function Vote({ election, voter }: VotePageProps) {
                 </h3>
                 <div className="mt-4 text-center">
                   <p>{t('confirm_vote_description')}</p>
-                  {selectedCandidates.length > 0 ? (
+                  {isMajority ? (
+                    <div className="mt-4">
+                      {selectedCandidateId ? (
+                        <div className="rounded-lg border p-2">
+                          {getCandidateName(selectedCandidateId)}
+                        </div>
+                      ) : (
+                        <div className="rounded-lg border border-gray-200 p-2 text-gray-600">
+                          {t('abstain')}
+                        </div>
+                      )}
+                    </div>
+                  ) : selectedCandidates.length > 0 ? (
                     <div className="mt-4 space-y-2">
                       {selectedCandidates.map((candidateId, index) => (
                         <div key={candidateId} className="rounded-lg border p-2">
@@ -257,10 +334,20 @@ export default function Vote({ election, voter }: VotePageProps) {
                   onClick={() => {
                     const payload = {
                       voterId: voter.voterId,
-                      ballot: selectedCandidates.map((candidateId, index) => ({
-                        candidateId,
-                        rank: index + 1
-                      }))
+                      ballot: isMajority
+                        ? {
+                            votingMethod: 'MAJORITY' as const,
+                            ballotItems: selectedCandidateId
+                              ? [{ candidateId: selectedCandidateId, rank: 1 }]
+                              : []
+                          }
+                        : {
+                            votingMethod: 'STV' as const,
+                            ballotItems: selectedCandidates.map((candidateId, index) => ({
+                              candidateId,
+                              rank: index + 1
+                            }))
+                          }
                     }
                     const parsed = voteSchema.safeParse(payload)
                     if (!parsed.success) {

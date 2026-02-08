@@ -36,8 +36,11 @@ const messages = {
       'The voting for this voting link is not ongoing. The voting has probably already ended. If you think this is an error, please contact the chairperson or secretary.',
     to_choose:
       'In this voting, {seats, plural, =1 {1 candidate will be elected} other {# candidates will be elected}}',
+    to_choose_one: 'Choose one candidate (or abstain).',
     vote_instruction:
       'Drag the candidates to the Your ballot box and order them from top to bottom in the order you prefer. You can also move the candidates by double-clicking. You can vote for as many candidates as you want or leave a blank ballot.',
+    vote_instruction_majority:
+      'Select one candidate below. You may also abstain by not selecting anyone.',
     available_candidates: 'Candidates',
     your_ballot: 'Your ballot',
     submit_vote: 'Vote',
@@ -52,6 +55,7 @@ const messages = {
     confirm_vote_description:
       'Check your ballot and press the confirm vote button to confirm your vote. The vote cannot be changed after confirmation.',
     empty_ballot: 'Empty ballot',
+    abstain: 'Abstain (no choice)',
     cancel: 'Cancel',
     confirm: 'Confirm',
     invalid_ballot: 'Invalid ballot',
@@ -77,6 +81,8 @@ const messages = {
   },
   ElectionList: {
     title: 'Results',
+    voting_method_stv: 'Single Transferable Vote (STV)',
+    voting_method_majority: 'Plain majority',
     no_previous_results: 'No previous results',
     no_previous_results_description:
       'There have been no elections held yet or their results have not been published.',
@@ -127,6 +133,9 @@ const messages = {
   },
   PreviewElection: {
     seats: 'Seats',
+    voting_method: 'Voting method',
+    voting_method_stv: 'Single Transferable Vote (STV)',
+    voting_method_majority: 'Plain majority',
     candidates: 'Candidates',
     voters: 'Voters',
     email_list_instruction: "Add the voters' email addresses here separated by line breaks",
@@ -162,6 +171,7 @@ const messages = {
     seats: 'Seats',
     quota: 'Quota',
     candidate_name: 'Candidate',
+    votes: 'Votes',
     round: 'Round',
     result: 'Result',
     empty_votes: 'Empty',
@@ -179,9 +189,12 @@ const messages = {
     election_title: 'Title',
     description: 'Description',
     seats: 'Seats',
+    voting_method: 'Voting method',
+    voting_method_stv: 'Single Transferable Vote (STV)',
+    voting_method_majority: 'Plain majority',
     new_candidate: 'New candidate',
-    add_candidate: 'Add candidate',
-    remove_candidate: 'Remove candidate',
+    add_candidate: 'Add',
+    remove_candidate: 'Remove',
     candidates: 'Candidates',
     validation: {
       title_string: 'Title must be a string',

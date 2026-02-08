@@ -35,8 +35,11 @@ const messages = {
     election_not_ongoing_description:
       'Tämän äänestyslinkin äänestys ei ole käynnissä. Äänestys on todennäköisesti loppunut jo. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.',
     to_choose: 'Tässä äänestyksessä valitaan {seats, plural, =1 {1 ehdokas} other {# ehdokasta}}',
+    to_choose_one: 'Valitse yksi ehdokas (tai älä valitse ketään).',
     vote_instruction:
       'Raahaa haluamasi ehdokkaat Äänestyslippusi-laatikkoon ja järjestä ne ylhäältä alas haluamaasi järjestykseen. Ehdokkaita voi siirtää myös tuplaklikkaamalla. Voit äänestää niin monta ehdokasta kuin haluat tai jättää tyhjän äänen.',
+    vote_instruction_majority:
+      'Valitse alla yksi ehdokas. Voit myös olla valitsematta ketään (tyhjä ääni).',
     available_candidates: 'Ehdokkaat',
     your_ballot: 'Äänestyslippusi',
     submit_vote: 'Äänestä',
@@ -51,6 +54,7 @@ const messages = {
     confirm_vote_description:
       'Tarkasta äänestyslippusi ja paina vahvista ääni -nappia vahvistaaksesi äänesi. Ääntä ei voi enää muuttaa vahvistuksen jälkeen.',
     empty_ballot: 'Tyhjä äänestyslippu',
+    abstain: 'Tyhjä ääni (en valitse ketään)',
     cancel: 'Peruuta',
     confirm: 'Vahvista',
     invalid_ballot: 'Virheellinen äänestyslippu',
@@ -77,6 +81,8 @@ const messages = {
   },
   ElectionList: {
     title: 'Tulokset',
+    voting_method_stv: 'Siirtoääni (STV)',
+    voting_method_majority: 'Enemmistövaali',
     no_previous_results: 'Ei aiempia tuloksia',
     no_previous_results_description:
       'Tähän mennessä ei ole vielä järjestetty vaaleja tai niiden tuloksia ei ole julkaistu.',
@@ -127,6 +133,9 @@ const messages = {
   },
   PreviewElection: {
     seats: 'Paikkoja',
+    voting_method: 'Äänestystapa',
+    voting_method_stv: 'Siirtoääni (STV)',
+    voting_method_majority: 'Enemmistövaali',
     candidates: 'Ehdokkaat',
     voters: 'Äänestäjät',
     email_list_instruction: 'Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna',
@@ -162,6 +171,7 @@ const messages = {
     seats: 'Paikkoja',
     quota: 'Äänikynnys',
     candidate_name: 'Ehdokas',
+    votes: 'Äänet',
     round: 'Kierros',
     result: 'Tulos',
     empty_votes: 'Tyhjiä',
@@ -179,9 +189,12 @@ const messages = {
     election_title: 'Otsikko',
     description: 'Kuvaus',
     seats: 'Paikkoja',
+    voting_method: 'Äänestystapa',
+    voting_method_stv: 'Siirtoääni (STV)',
+    voting_method_majority: 'Enemmistövaali',
     new_candidate: 'Uusi ehdokas',
-    add_candidate: 'Lisää ehdokas',
-    remove_candidate: 'Poista ehdokas',
+    add_candidate: 'Lisää',
+    remove_candidate: 'Poista',
     candidates: 'Ehdokkaat',
     validation: {
       title_string: 'Otsikon tulee olla merkkijono',

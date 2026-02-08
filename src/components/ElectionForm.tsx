@@ -1,6 +1,8 @@
 'use client'
 
 import { Form } from '@base-ui/react/form'
+import { Radio } from '@base-ui/react/radio'
+import { RadioGroup } from '@base-ui/react/radio-group'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 import { z } from 'zod'
@@ -13,6 +15,7 @@ type ElectionFormData = {
   title: string
   description: string
   seats: number
+  votingMethod: 'STV' | 'MAJORITY'
   candidates: string[]
 }
 
@@ -45,6 +48,7 @@ export default function ElectionForm({
         .string(t('validation.description_string'))
         .min(1, t('validation.description_nonempty')),
       seats: z.coerce.number(t('validation.seats_number')).min(1, t('validation.seats_min')),
+      votingMethod: z.enum(['STV', 'MAJORITY']),
       candidates: z
         .array(
           z.string(t('validation.candidate_string')).min(1, t('validation.candidate_nonempty')),
@@ -81,7 +85,7 @@ export default function ElectionForm({
     setNewCandidate('')
     setErrors(undefined)
     setFormErrors([])
-    onValidSubmit(result.data as ElectionFormData | ElectionFormDataEdit)
+    onValidSubmit(result.data)
   }
 
   return (
@@ -97,44 +101,77 @@ export default function ElectionForm({
               ))}
             </div>
           )}
-          <div>
+          <div className="space-y-4">
             <Field.Root name="title">
               <Field.Label>{t('election_title')}</Field.Label>
               <Field.Control type="text" defaultValue={election.title} />
               <Field.Error />
             </Field.Root>
-            <div className="mt-4 mb-4">
-              <Field.Root name="description">
-                <Field.Label>{t('description')}</Field.Label>
-                <Field.Control
-                  render={(props: React.ComponentProps<'textarea'>) => (
-                    <textarea
-                      {...props}
-                      name="description"
-                      rows={4}
-                      defaultValue={election.description}
-                      className={inputClassName}
-                    />
-                  )}
-                />
-                <Field.Error />
-              </Field.Root>
-            </div>
+            <Field.Root name="description">
+              <Field.Label>{t('description')}</Field.Label>
+              <Field.Control
+                render={(props: React.ComponentProps<'textarea'>) => (
+                  <textarea
+                    {...props}
+                    name="description"
+                    rows={4}
+                    defaultValue={election.description}
+                    className={inputClassName}
+                  />
+                )}
+              />
+              <Field.Error />
+            </Field.Root>
             <Field.Root name="seats">
               <Field.Label>{t('seats')}</Field.Label>
-              <Field.Control type="number" min={1} defaultValue={election.seats} />
+              <Field.Control type="number" defaultValue={election.seats} />
               <Field.Error />
             </Field.Root>
           </div>
-          <div>
-            <div className="mb-4">
+          <div className="space-y-4">
+            <Field.Root name="votingMethod">
+              <RadioGroup
+                name="votingMethod"
+                defaultValue={election.votingMethod ?? 'STV'}
+                className="flex flex-col gap-2"
+                aria-labelledby="voting-method-legend"
+              >
+                <div id="voting-method-legend" className="block text-sm font-medium text-gray-700">
+                  {t('voting_method')}
+                </div>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <Radio.Root
+                      value="STV"
+                      aria-label={t('voting_method_stv')}
+                      className="data-checked:border-fk-black data-checked:bg-fk-black flex h-4 w-4 items-center justify-center rounded-full border border-gray-300"
+                    >
+                      <Radio.Indicator className="h-2 w-2 rounded-full bg-white" />
+                    </Radio.Root>
+                    <span>{t('voting_method_stv')}</span>
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <Radio.Root
+                      value="MAJORITY"
+                      aria-label={t('voting_method_majority')}
+                      className="data-checked:border-fk-black data-checked:bg-fk-black flex h-4 w-4 items-center justify-center rounded-full border border-gray-300"
+                    >
+                      <Radio.Indicator className="h-2 w-2 rounded-full bg-white" />
+                    </Radio.Root>
+                    <span>{t('voting_method_majority')}</span>
+                  </label>
+                </div>
+              </RadioGroup>
+              <Field.Error />
+            </Field.Root>
+            <div>
               <label
                 htmlFor="newCandidate"
                 className="mb-2 block text-sm font-medium text-gray-700"
               >
                 {t('new_candidate')}
               </label>
-              <div className="flex gap-2">
+              <div className="flex items-start gap-2">
                 <input
                   value={newCandidate}
                   onChange={(e) => setNewCandidate(e.target.value)}
@@ -160,10 +197,8 @@ export default function ElectionForm({
                 </p>
               )}
             </div>
-            <div className="mb-4">
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                {t('candidates')}
-              </label>
+            <div>
+              <label className="text-sm font-medium text-gray-700">{t('candidates')}</label>
               <ul className="space-y-2">
                 {election.candidates.map((candidate, i) => (
                   <li

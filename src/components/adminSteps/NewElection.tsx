@@ -18,7 +18,8 @@ export default function NewElection() {
     title: '',
     description: '',
     seats: 0,
-    candidates: [] as unknown as [string, ...string[]]
+    votingMethod: 'STV',
+    candidates: []
   })
 
   const addCandidate = (candidateName: string) => {
@@ -34,7 +35,7 @@ export default function NewElection() {
 
       return {
         ...electionState,
-        candidates: updatedCandidates as [string, ...string[]]
+        candidates: updatedCandidates
       }
     })
   }

@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-import { calculateSTVResult, ValidVotingResult } from '../src/algorithm/stvAlgorithm'
+import { calculateSTVResult } from '../src/algorithm/stvAlgorithm'
+import type { ValidVotingResult } from '../src/algorithm/types'
 import { Ballot, createElectionWithVotersAndBallots, Election, resetDatabase } from './utils/db'
 
 let election: Election

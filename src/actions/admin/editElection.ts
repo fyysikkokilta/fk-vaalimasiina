@@ -15,6 +15,7 @@ const editElectionSchema = z
     title: z.string('Title must be a string').min(1, 'Title must not be empty'),
     description: z.string('Description must be a string').min(1, 'Description must not be empty'),
     seats: z.number('Seats must be a number').min(1, 'Seats must be at least 1'),
+    votingMethod: z.enum(['STV', 'MAJORITY']),
     candidates: z
       .array(
         z.string('Candidate must be a string').min(1, 'Candidate must not be empty'),
@@ -30,38 +31,43 @@ const editElectionSchema = z
 export const editElection = actionClient
   .inputSchema(editElectionSchema)
   .use(isAuthorizedMiddleware)
-  .action(async ({ parsedInput: { electionId, title, description, seats, candidates } }) => {
-    return db.transaction(async (transaction) => {
-      const elections = await transaction
-        .update(electionsTable)
-        .set({
-          title,
-          description,
-          seats,
-          status: 'CREATED'
-        })
-        .where(
-          and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'UPDATING'))
+  .action(
+    async ({
+      parsedInput: { electionId, title, description, seats, votingMethod, candidates }
+    }) => {
+      return db.transaction(async (transaction) => {
+        const elections = await transaction
+          .update(electionsTable)
+          .set({
+            title,
+            description,
+            seats,
+            votingMethod,
+            status: 'CREATED'
+          })
+          .where(
+            and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'UPDATING'))
+          )
+          .returning({
+            electionId: electionsTable.electionId
+          })
+
+        if (!elections[0]) {
+          throw new ActionError('Election not found')
+        }
+
+        await transaction.delete(candidatesTable).where(eq(candidatesTable.electionId, electionId))
+
+        await transaction.insert(candidatesTable).values(
+          candidates.map((candidate) => ({
+            electionId,
+            name: candidate
+          }))
         )
-        .returning({
-          electionId: electionsTable.electionId
-        })
 
-      if (!elections[0]) {
-        throw new ActionError('Election not found')
-      }
+        revalidatePath('/[locale]/admin', 'page')
 
-      await transaction.delete(candidatesTable).where(eq(candidatesTable.electionId, electionId))
-
-      await transaction.insert(candidatesTable).values(
-        candidates.map((candidate) => ({
-          electionId,
-          name: candidate
-        }))
-      )
-
-      revalidatePath('/[locale]/admin', 'page')
-
-      return { message: 'Election edited' }
-    })
-  })
+        return { message: 'Election edited' }
+      })
+    }
+  )

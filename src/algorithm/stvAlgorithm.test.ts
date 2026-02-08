@@ -1,30 +1,32 @@
 import { describe, expect, it } from 'vitest'
 
-import { Ballot, calculateSTVResult } from './stvAlgorithm'
+import { calculateSTVResult } from './stvAlgorithm'
+import type { Ballot, Election } from './types'
 
-const createElection = (candidates: string[], seats: number) => ({
-  electionId: 'test-election',
-  title: 'Test Election',
-  description: 'A test election',
-  status: 'ONGOING' as const,
-  candidates: candidates.map((name, index) => ({
-    candidateId: index.toString(),
+const createElection = (candidates: string[], seats: number) =>
+  ({
     electionId: 'test-election',
-    name
-  })),
-  seats,
-  date: new Date(),
-  csvFilePath: null
-})
+    title: 'Test Election',
+    description: 'A test election',
+    status: 'ONGOING' as const,
+    candidates: candidates.map((name, index) => ({
+      candidateId: index.toString(),
+      electionId: 'test-election',
+      name
+    })),
+    seats,
+    date: new Date(),
+    csvFilePath: null,
+    votingMethod: 'STV'
+  }) satisfies Election
 
-const createBallot = (votes: string[]) => ({
-  ballotId: 'test-ballot',
-  electionId: 'test-election',
-  votes: votes.map((candidateId, i) => ({
-    candidateId,
-    rank: i + 1
-  }))
-})
+const createBallot = (votes: string[]) =>
+  ({
+    votes: votes.map((candidateId, i) => ({
+      candidateId,
+      rank: i + 1
+    }))
+  }) satisfies Ballot
 
 describe('STV Algorithm', () => {
   it('should select single candidate with no votes', () => {
@@ -71,8 +73,6 @@ describe('STV Algorithm', () => {
     expect(result).toEqual({
       ballots: [
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -119,8 +119,6 @@ describe('STV Algorithm', () => {
     expect(result).toEqual({
       ballots: [
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '1',
@@ -176,8 +174,6 @@ describe('STV Algorithm', () => {
     expect(result).toEqual({
       ballots: [
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '1',
@@ -241,8 +237,6 @@ describe('STV Algorithm', () => {
     expect(result).toEqual({
       ballots: [
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '1',
@@ -255,8 +249,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -320,8 +312,6 @@ describe('STV Algorithm', () => {
     expect(result).toEqual({
       ballots: [
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '1',
@@ -334,8 +324,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -415,8 +403,6 @@ describe('STV Algorithm', () => {
     expect(result).toEqual({
       ballots: [
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '1',
@@ -433,8 +419,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -451,8 +435,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -469,8 +451,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '1',
@@ -487,8 +467,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -505,8 +483,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -630,8 +606,6 @@ describe('STV Algorithm', () => {
     expect(result).toEqual({
       ballots: [
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -648,8 +622,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -666,8 +638,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -684,8 +654,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '1',
@@ -702,8 +670,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -720,8 +686,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -738,8 +702,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -756,8 +718,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '0',
@@ -774,8 +734,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -792,8 +750,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -810,8 +766,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',
@@ -828,8 +782,6 @@ describe('STV Algorithm', () => {
           ]
         },
         {
-          ballotId: 'test-ballot',
-          electionId: 'test-election',
           votes: [
             {
               candidateId: '2',

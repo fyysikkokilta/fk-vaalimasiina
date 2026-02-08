@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 import { downloadElectionCsv } from '~/actions/downloadElectionCsv'
-import type { Ballot, Election, ValidVotingResult } from '~/algorithm/stvAlgorithm'
+import type { Ballot, Election, ValidMajorityResult, ValidVotingResult } from '~/algorithm/types'
 import { generateCsvContent } from '~/utils/csvGenerator'
 import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
@@ -12,13 +12,16 @@ import { Button } from './ui/Button'
 
 export default function ElectionActions({
   election,
-  votingResult
+  votingResult,
+  votingMethod
 }: {
   election: Election
-  votingResult: ValidVotingResult
+  votingResult: ValidVotingResult | ValidMajorityResult
+  votingMethod: 'STV' | 'MAJORITY'
 }) {
   const [minutesCopied, setMinutesCopied] = useState(false)
   const t = useTranslations('ElectionResults')
+  const ballots = votingResult.ballots
 
   const handleCsvDownload = async () => {
     try {
@@ -36,17 +39,17 @@ export default function ElectionActions({
         document.body.removeChild(link)
       } else {
         // S3 not configured or file doesn't exist - fallback to client-side generation
-        exportBallotsToCSV(votingResult.ballots, election)
+        exportBallotsToCSV(ballots, election)
       }
     } catch (error) {
       console.error('Error downloading CSV:', error)
       // Fallback to client-side generation on any error
-      exportBallotsToCSV(votingResult.ballots, election)
+      exportBallotsToCSV(ballots, election)
     }
   }
 
   const exportBallotsToCSV = (ballots: Ballot[], election: Election) => {
-    const csvContent = generateCsvContent(ballots, election)
+    const csvContent = generateCsvContent(ballots, { ...election, votingMethod })
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
 
@@ -57,7 +60,25 @@ export default function ElectionActions({
     a.click()
   }
 
-  const getMinutesParagraphs = async (votingResult: ValidVotingResult) => {
+  const getMinutesParagraphsMajority = async (votingResult: ValidMajorityResult) => {
+    const totalVotes = votingResult.totalVotes
+    const emptyVotes = votingResult.totalVotes - votingResult.nonEmptyVotes
+    const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes !== 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes !== 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
+    const resultsString = votingResult.candidateResults
+      .map((c) => `${c.name} ${c.voteCount} ääntä`)
+      .join('; ')
+    const winnersParagraph =
+      votingResult.winners.length > 0
+        ? `Valituiksi tulivat: ${votingResult.winners.map(({ name }) => name).join(' ja ')}.`
+        : 'Yhtään ehdokasta ei valittu (kaikki äänestivät tyhjää).'
+    await navigator.clipboard.writeText(
+      [firstParagraph, `Tulokset: ${resultsString}`, winnersParagraph].join('\n\n')
+    )
+    setMinutesCopied(true)
+    setTimeout(() => setMinutesCopied(false), 3000)
+  }
+
+  const getMinutesParagraphsSTV = async (votingResult: ValidVotingResult) => {
     const totalVotes = votingResult.totalVotes
     const emptyVotes = votingResult.totalVotes - votingResult.nonEmptyVotes
 
@@ -118,12 +139,20 @@ export default function ElectionActions({
     setTimeout(() => setMinutesCopied(false), 3000)
   }
 
+  const handleCopyMinutes = () => {
+    if (votingMethod === 'MAJORITY') {
+      void getMinutesParagraphsMajority(votingResult as ValidMajorityResult)
+    } else {
+      void getMinutesParagraphsSTV(votingResult as ValidVotingResult)
+    }
+  }
+
   return (
     <div className="flex flex-col justify-center gap-4 md:flex-row">
       <Button onClick={handleCsvDownload} variant="secondary">
         {t('export_csv')}
       </Button>
-      <Button onClick={() => getMinutesParagraphs(votingResult)} variant="secondary">
+      <Button onClick={handleCopyMinutes} variant="secondary">
         {minutesCopied ? t('minutes_copied_to_clipboard') : t('export_minutes')}
       </Button>
     </div>

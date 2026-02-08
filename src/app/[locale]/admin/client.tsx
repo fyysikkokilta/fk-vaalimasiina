@@ -2,11 +2,11 @@
 
 import type { AdminElection } from '~/data/getAdminElection'
 
-import EditElection from './_adminSteps/EditElection'
-import NewElection from './_adminSteps/NewElection'
-import PreviewElection from './_adminSteps/PreviewElection'
-import Results from './_adminSteps/Results'
-import VotingInspection from './_adminSteps/VotingInspection'
+import EditElection from '~/components/adminSteps/EditElection'
+import NewElection from '~/components/adminSteps/NewElection'
+import PreviewElection from '~/components/adminSteps/PreviewElection'
+import Results from '~/components/adminSteps/Results'
+import VotingInspection from '~/components/adminSteps/VotingInspection'
 
 export default function Admin({ adminElection }: { adminElection: AdminElection }) {
   if (!adminElection) {

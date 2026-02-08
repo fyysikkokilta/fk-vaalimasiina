@@ -18,7 +18,7 @@ export default function EditElection({ election }: ElectionStepProps) {
     InferSafeActionFnInput<typeof editElection>['parsedInput']
   >({
     ...election,
-    candidates: election.candidates.map((candidate) => candidate.name) as [string, ...string[]]
+    candidates: election.candidates.map((candidate) => candidate.name)
   })
 
   const addCandidate = (candidateName: string) => {
@@ -34,7 +34,7 @@ export default function EditElection({ election }: ElectionStepProps) {
 
       return {
         ...electionState,
-        candidates: updatedCandidates as [string, ...string[]]
+        candidates: updatedCandidates
       }
     })
   }

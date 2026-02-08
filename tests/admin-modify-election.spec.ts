@@ -32,7 +32,7 @@ test('should show correct election data', async ({ page }) => {
   await expect(page.getByLabel('Title')).toHaveValue('Election 1')
   await expect(page.getByLabel('Description')).toHaveValue('Description 1')
   await expect(page.getByLabel('Seats')).toHaveValue('1')
-  await expect(page.getByRole('button', { name: 'Remove candidate' })).toHaveCount(1)
+  await expect(page.getByRole('button', { name: 'Remove' })).toHaveCount(1)
   await expect(page.getByText('Candidate 1')).toBeVisible()
 })
 
@@ -42,7 +42,7 @@ test('should modify election', async ({ page }) => {
   await page.getByLabel('Seats').fill('2')
 
   await page.getByLabel('New candidate').fill('Candidate 2')
-  await page.getByRole('button', { name: 'Add candidate' }).click()
+  await page.getByRole('button', { name: 'Add' }).click()
   await expect(page.getByText('Candidate 2')).toBeVisible()
 
   await page.getByRole('button', { name: 'Preview' }).click()
@@ -61,7 +61,7 @@ test('should cancel modify election', async ({ page }) => {
   await page.getByLabel('Seats').fill('2')
 
   await page.getByLabel('New candidate').fill('Candidate 2')
-  await page.getByRole('button', { name: 'Add candidate' }).click()
+  await page.getByRole('button', { name: 'Add' }).click()
   await expect(page.getByText('Candidate 2')).toBeVisible()
 
   await page.getByRole('button', { name: 'Cancel' }).click()

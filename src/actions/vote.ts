@@ -9,22 +9,43 @@ import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
 import { routing } from '~/i18n/routing'
 import { isPgUniqueViolation } from '~/utils/dbErrors'
 
-const voteSchema = z.object({
-  voterId: z.uuid('Voter identifier must be a valid UUID'),
-  ballot: z
-    .array(
-      z.object({
-        candidateId: z.uuid('Candidate identifier must be a valid UUID'),
-        rank: z.number('Rank must be a number').min(1, 'Rank must be at least 1')
-      }),
-      'Ballot must be an array'
-    )
-    .refine((ballot) => {
-      const ranks = ballot.map((vote) => vote.rank)
+const ballotItemSchema = z.object({
+  candidateId: z.uuid('Candidate identifier must be a valid UUID'),
+  rank: z.number('Rank must be a number').min(1, 'Rank must be at least 1')
+})
+
+const ballotSchemaSTV = z
+  .object({
+    votingMethod: z.literal('STV'),
+    ballotItems: z.array(ballotItemSchema, 'Ballot must be an array')
+  })
+  .refine(
+    (data) => {
+      const ranks = data.ballotItems.map((v) => v.rank)
       return (
         ranks.length === new Set(ranks).size && ranks.every((rank, index) => rank === index + 1)
       )
-    }, 'Ranks must be unique')
+    },
+    { message: 'Ranks must be unique' }
+  )
+
+const ballotSchemaMajority = z
+  .object({
+    votingMethod: z.literal('MAJORITY'),
+    ballotItems: z
+      .array(ballotItemSchema, 'Ballot must be an array')
+      .max(1, 'Only one candidate can be selected')
+  })
+  .refine(
+    (data) =>
+      data.ballotItems.length <= 1 &&
+      (data.ballotItems.length === 0 || data.ballotItems[0].rank === 1),
+    { message: 'Only one candidate can be selected' }
+  )
+
+const voteSchema = z.object({
+  voterId: z.uuid('Voter identifier must be a valid UUID'),
+  ballot: z.discriminatedUnion('votingMethod', [ballotSchemaSTV, ballotSchemaMajority])
 })
 
 export const vote = actionClient
@@ -54,8 +75,13 @@ export const vote = actionClient
       throw new ActionError('Voting is not ongoing')
     }
 
+    // Check that the voting method matches the election's voting method
+    if (ballot.votingMethod !== election.votingMethod) {
+      throw new ActionError('Invalid voting method')
+    }
+
     // Check that every candidate in the ballot is a valid candidate
-    const validCandidates = ballot.every((ballotItem) =>
+    const validCandidates = ballot.ballotItems.every((ballotItem) =>
       election.candidates.some(
         (candidate) =>
           candidate.candidateId === ballotItem.candidateId &&
@@ -74,9 +100,9 @@ export const vote = actionClient
           .values({ electionId: election.electionId })
           .returning({ ballotId: ballotsTable.ballotId })
 
-        if (ballot.length > 0) {
+        if (ballot.ballotItems.length > 0) {
           await transaction.insert(votesTable).values(
-            ballot.map((vote) => ({
+            ballot.ballotItems.map((vote) => ({
               ballotId: ballots[0].ballotId,
               candidateId: vote.candidateId,
               rank: vote.rank

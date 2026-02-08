@@ -6,17 +6,12 @@ import { useState } from 'react'
 import Pagination from '~/components/Pagination'
 import TitleWrapper from '~/components/TitleWrapper'
 import { Link } from '~/i18n/navigation'
+import type { Election } from '~/algorithm/types'
 
 const ITEMS_PER_PAGE = 18
 
-interface Election {
-  electionId: string
-  title: string
-  date: Date
-}
-
 interface ElectionListClientProps {
-  elections: Election[]
+  elections: Omit<Election, 'candidates'>[]
 }
 
 export default function ElectionListClient({ elections }: ElectionListClientProps) {
@@ -53,6 +48,11 @@ export default function ElectionListClient({ elections }: ElectionListClientProp
                   <div className="font-medium">{election.title}</div>
                   <div className="mt-1 text-sm text-gray-500">
                     {election.date.toLocaleDateString('fi-FI')}
+                  </div>
+                  <div className="mt-0.5 text-xs text-gray-400">
+                    {election.votingMethod === 'MAJORITY'
+                      ? t('voting_method_majority')
+                      : t('voting_method_stv')}
                   </div>
                 </Link>
               </li>

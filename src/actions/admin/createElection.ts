@@ -13,6 +13,7 @@ const createElectionSchema = z
     title: z.string('Title must be a string').min(1, 'Title must not be empty'),
     description: z.string('Description must be a string').min(1, 'Description must not be empty'),
     seats: z.number('Seats must be a number').min(1, 'Seats must be at least 1'),
+    votingMethod: z.enum(['STV', 'MAJORITY']),
     candidates: z
       .array(
         z.string('Candidate must be a string').min(1, 'Candidate must not be empty'),
@@ -28,7 +29,7 @@ const createElectionSchema = z
 export const createElection = actionClient
   .inputSchema(createElectionSchema)
   .use(isAuthorizedMiddleware)
-  .action(async ({ parsedInput: { title, description, seats, candidates } }) => {
+  .action(async ({ parsedInput: { title, description, seats, votingMethod, candidates } }) => {
     return db.transaction(async (transaction) => {
       const elections = await transaction
         .insert(electionsTable)
@@ -36,7 +37,8 @@ export const createElection = actionClient
           {
             title,
             description,
-            seats
+            seats,
+            votingMethod
           }
         ])
         .returning({

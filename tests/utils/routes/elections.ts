@@ -8,12 +8,14 @@ export const createElection = async ({
   description,
   seats,
   status,
+  votingMethod = 'STV',
   candidates
 }: {
   title: string
   description: string
   seats: number
   status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
+  votingMethod?: 'STV' | 'MAJORITY'
   candidates: { name: string }[]
 }) => {
   const election = await db.transaction(async (transaction) => {
@@ -24,7 +26,8 @@ export const createElection = async ({
           title,
           description,
           seats,
-          status
+          status,
+          votingMethod
         }
       ])
       .returning()
