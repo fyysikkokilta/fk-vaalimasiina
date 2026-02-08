@@ -175,9 +175,6 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-      - name: Run unit tests
-        run: pnpm test:unit
-
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: always()

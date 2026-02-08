@@ -30,7 +30,6 @@
   "include": [
     ".lintstagedrc.ts",
     "drizzle.config.ts",
-    "eslint.config.ts",
     "global.d.ts",
     "next-env.d.ts",
     "next.config.ts",
@@ -39,7 +38,6 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
-    "vitest.config.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

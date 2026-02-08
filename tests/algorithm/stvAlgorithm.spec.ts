@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { expect, test } from '@playwright/test'
 
-import { calculateSTVResult } from './stvAlgorithm'
-import type { Ballot, Election } from './types'
+import { calculateSTVResult } from '~/algorithm/stvAlgorithm'
+import type { Ballot, Election } from '~/algorithm/types'
 
 const createElection = (candidates: string[], seats: number) =>
   ({
@@ -28,8 +28,8 @@ const createBallot = (votes: string[]) =>
     }))
   }) satisfies Ballot
 
-describe('STV Algorithm', () => {
-  it('should select single candidate with no votes', () => {
+test.describe('STV Algorithm', () => {
+  test('should select single candidate with no votes', () => {
     const election = createElection(['Alice'], 1)
     const ballots: Ballot[] = []
     const result = calculateSTVResult(election, ballots, 0)
@@ -66,7 +66,7 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should select single candidate with one vote', () => {
+  test('should select single candidate with one vote', () => {
     const election = createElection(['Alice'], 1)
     const ballots = [createBallot(['0'])]
     const result = calculateSTVResult(election, ballots, 1)
@@ -112,7 +112,7 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should select single candidate from multiple candidates with one vote', () => {
+  test('should select single candidate from multiple candidates with one vote', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot(['1'])]
     const result = calculateSTVResult(election, ballots, 1)
@@ -167,7 +167,7 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should select two candidates from two candidates with one vote', () => {
+  test('should select two candidates from two candidates with one vote', () => {
     const election = createElection(['Alice', 'Bob'], 2)
     const ballots = [createBallot(['1', '0'])]
     const result = calculateSTVResult(election, ballots, 1)
@@ -230,7 +230,7 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should select two candidates from two candidates with two votes', () => {
+  test('should select two candidates from two candidates with two votes', () => {
     const election = createElection(['Alice', 'Bob'], 2)
     const ballots = [createBallot(['1', '0']), createBallot(['0', '1'])]
     const result = calculateSTVResult(election, ballots, 2)
@@ -305,7 +305,7 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should select two candidates from three candidates with two votes', () => {
+  test('should select two candidates from three candidates with two votes', () => {
     const election = createElection(['Alice', 'Bob', 'Charlie'], 2)
     const ballots = [createBallot(['1', '0']), createBallot(['0', '1'])]
     const result = calculateSTVResult(election, ballots, 2)
@@ -389,7 +389,7 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should select correct candidate with multiple candidates and voting rounds', () => {
+  test('should select correct candidate with multiple candidates and voting rounds', () => {
     const election = createElection(['Alice', 'Bob', 'Charlie'], 2)
     const ballots = [
       createBallot(['1', '0', '2']),
@@ -586,7 +586,7 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should select correct candidates with decimal votes', () => {
+  test('should select correct candidates with decimal votes', () => {
     const election = createElection(['Alice', 'Bob', 'Charlie'], 2)
     const ballots = [
       createBallot(['2', '1', '0']),
@@ -919,14 +919,14 @@ describe('STV Algorithm', () => {
     })
   })
 
-  it('should handle more votes than voters', () => {
+  test('should handle more votes than voters', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot(['0']), createBallot(['1']), createBallot(['0'])]
     const result = calculateSTVResult(election, ballots, 2)
     expect(result.validResult).toBe(false)
   })
 
-  it('should handle tie-breaking between candidates', () => {
+  test('should handle tie-breaking between candidates', () => {
     const election = createElection(['Alice', 'Bob', 'Charlie'], 2)
     const ballots = [createBallot(['0']), createBallot(['1']), createBallot(['2'])]
     const result = calculateSTVResult(election, ballots, 3)
@@ -937,7 +937,7 @@ describe('STV Algorithm', () => {
     expect(result.roundResults[1].candidateResults.filter((c) => c.isSelected)).toHaveLength(2)
   })
 
-  it('should handle all empty votes', () => {
+  test('should handle all empty votes', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot([]), createBallot([]), createBallot([])]
     const result = calculateSTVResult(election, ballots, 3)
@@ -946,7 +946,7 @@ describe('STV Algorithm', () => {
     expect(result.roundResults[0].emptyVotes).toBe(3)
   })
 
-  it('should handle exact quota matches', () => {
+  test('should handle exact quota matches', () => {
     const election = createElection(['Alice', 'Bob', 'Charlie'], 2)
     const ballots = [
       createBallot(['0']),
@@ -962,7 +962,7 @@ describe('STV Algorithm', () => {
     expect(result.winners).toHaveLength(2)
   })
 
-  it('should handle maximum preference numbers', () => {
+  test('should handle maximum preference numbers', () => {
     const election = createElection(['A', 'B', 'C', 'D', 'E'], 2)
     const ballot = createBallot(['0', '1', '2', '3', '4'])
     const result = calculateSTVResult(election, [ballot], 1)
@@ -971,7 +971,7 @@ describe('STV Algorithm', () => {
     expect(result.roundResults[0].candidateResults[0].voteCount).toBe(1)
   })
 
-  it('should handle FK Captain 2022', () => {
+  test('should handle FK Captain 2022', () => {
     const election = createElection(['A', 'B', 'C', 'D', 'E', 'F'], 2)
     const ballots = [
       ['5', '3', '4', '2', '7', '6'],

@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { expect, test } from '@playwright/test'
 
-import type { Ballot, Election } from './types'
-import { calculateMajorityResult } from './majorityAlgorithm'
+import { calculateMajorityResult } from '~/algorithm/majorityAlgorithm'
+import type { Ballot, Election } from '~/algorithm/types'
 
 const createElection = (candidates: string[], seats: number) =>
   ({
@@ -26,8 +26,8 @@ function createBallot(candidateId: string | null) {
   } satisfies Ballot
 }
 
-describe('majorityAlgorithm', () => {
-  it('returns invalid result when totalVotes !== voterCount', () => {
+test.describe('majorityAlgorithm', () => {
+  test('returns invalid result when totalVotes !== voterCount', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot('c0')]
     const result = calculateMajorityResult(election, ballots, 2)
@@ -38,7 +38,7 @@ describe('majorityAlgorithm', () => {
     }
   })
 
-  it('single winner with one vote', () => {
+  test('single winner with one vote', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot('c0')]
     const result = calculateMajorityResult(election, ballots, 1)
@@ -53,7 +53,7 @@ describe('majorityAlgorithm', () => {
     }
   })
 
-  it('single winner with majority of votes', () => {
+  test('single winner with majority of votes', () => {
     const election = createElection(['Alice', 'Bob', 'Carol'], 1)
     const ballots = [createBallot('c0'), createBallot('c0'), createBallot('c1'), createBallot('c2')]
     const result = calculateMajorityResult(election, ballots, 4)
@@ -66,7 +66,7 @@ describe('majorityAlgorithm', () => {
     }
   })
 
-  it('multi-winner: top N by vote count', () => {
+  test('multi-winner: top N by vote count', () => {
     const election = createElection(['Alice', 'Bob', 'Carol', 'Dave'], 2)
     const ballots = [
       createBallot('c0'),
@@ -85,7 +85,7 @@ describe('majorityAlgorithm', () => {
     }
   })
 
-  it('counts empty ballots as non-emptyVotes only when they have a choice', () => {
+  test('counts empty ballots as non-emptyVotes only when they have a choice', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot('c0'), createBallot(null), createBallot('c1')]
     const result = calculateMajorityResult(election, ballots, 3)
@@ -98,7 +98,7 @@ describe('majorityAlgorithm', () => {
     }
   })
 
-  it('all abstentions: no winners', () => {
+  test('all abstentions: no winners', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot(null), createBallot(null)]
     const result = calculateMajorityResult(election, ballots, 2)
@@ -110,7 +110,7 @@ describe('majorityAlgorithm', () => {
     }
   })
 
-  it('tie-breaking is deterministic', () => {
+  test('tie-breaking is deterministic', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballots = [createBallot('c0'), createBallot('c1')]
     const result1 = calculateMajorityResult(election, ballots, 2)
@@ -123,7 +123,7 @@ describe('majorityAlgorithm', () => {
     }
   })
 
-  it('uses first preference only when ballot has multiple ranks', () => {
+  test('uses first preference only when ballot has multiple ranks', () => {
     const election = createElection(['Alice', 'Bob'], 1)
     const ballot: Ballot = {
       votes: [
