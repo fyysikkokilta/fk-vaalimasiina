@@ -15,12 +15,18 @@ import { ElectionStep } from '~/settings/electionStepSettings'
 
 const PREVIEW_EMAILS_FORM_ID = 'preview-emails-form'
 
+function getEmails(emailsText: string): string[] {
+  return emailsText
+    .split('\n')
+    .map((email) => email.trim())
+    .map((email) => email.toLowerCase())
+    .filter(Boolean)
+}
+
 export default function PreviewElection({
   election: { electionId, title, description, seats, candidates }
 }: ElectionStepProps) {
-  const [errors, setErrors] = useState<
-    Record<string, string | string[]> | undefined
-  >(undefined)
+  const [errors, setErrors] = useState<Record<string, string | string[]> | undefined>(undefined)
 
   const t = useTranslations('PreviewElection')
 
@@ -28,25 +34,12 @@ export default function PreviewElection({
     emails: z
       .array(z.email(t('validation.email_email')), t('validation.emails_array'))
       .min(1, t('validation.emails_nonempty'))
-      .refine(
-        (items) => new Set(items).size === items.length,
-        t('validation.emails_unique')
-      )
+      .refine((items) => new Set(items).size === items.length, t('validation.emails_unique'))
   })
 
-  const { execute: executeEditing, status: editingActionStatus } =
-    useAction(startEditing)
+  const { execute: executeEditing, status: editingActionStatus } = useAction(startEditing)
 
-  const { execute: executeVoting, status: votingActionStatus } =
-    useAction(startVoting)
-
-  const getEmails = (emailsText: string) => {
-    return emailsText
-      .split('\n')
-      .map((email) => email.trim())
-      .map((email) => email.toLowerCase())
-      .filter(Boolean)
-  }
+  const { execute: executeVoting, status: votingActionStatus } = useAction(startVoting)
 
   const handleFormSubmit = (formValues: Record<string, string>) => {
     const emailsList = getEmails(formValues.emails ?? '')
@@ -71,11 +64,7 @@ export default function PreviewElection({
       onBack={() => executeEditing({ electionId })}
       onNext={() => {}}
     >
-      <Form
-        id={PREVIEW_EMAILS_FORM_ID}
-        errors={errors}
-        onFormSubmit={handleFormSubmit}
-      >
+      <Form id={PREVIEW_EMAILS_FORM_ID} errors={errors} onFormSubmit={handleFormSubmit}>
         <div className="mx-auto max-w-lg p-6">
           <div className="flex flex-col items-center">
             <h3 className="mb-3 text-xl font-semibold">{title}</h3>
@@ -88,10 +77,7 @@ export default function PreviewElection({
             <h4 className="mb-2 font-medium">{t('candidates')}</h4>
             <ul className="w-full space-y-2">
               {candidates.map((candidate, index) => (
-                <li
-                  key={candidate.candidateId}
-                  className="rounded-lg border border-gray-200 p-3"
-                >
+                <li key={candidate.candidateId} className="rounded-lg border border-gray-200 p-3">
                   {index + 1}
                   {'. '}
                   {candidate.name}

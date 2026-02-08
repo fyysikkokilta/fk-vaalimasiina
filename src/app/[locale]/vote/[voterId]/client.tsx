@@ -35,17 +35,14 @@ export default function Vote({ election, voter }: VotePageProps) {
       .array(
         z.object({
           candidateId: z.uuid(t('validation.candidateId_uuid')),
-          rank: z
-            .number(t('validation.rank_number'))
-            .min(1, t('validation.rank_min'))
+          rank: z.number(t('validation.rank_number')).min(1, t('validation.rank_min'))
         }),
         t('validation.ballot_array')
       )
       .refine((ballot) => {
         const ranks = ballot.map((v) => v.rank)
         return (
-          ranks.length === new Set(ranks).size &&
-          ranks.every((rank, index) => rank === index + 1)
+          ranks.length === new Set(ranks).size && ranks.every((rank, index) => rank === index + 1)
         )
       }, t('validation.ranks_unique'))
   })
@@ -68,9 +65,7 @@ export default function Vote({ election, voter }: VotePageProps) {
     const candidateId = event.currentTarget.id
     setCandidates((prev) => ({
       selectedCandidates: [...prev.selectedCandidates, candidateId],
-      availableCandidates: prev.availableCandidates.filter(
-        (c) => c !== candidateId
-      )
+      availableCandidates: prev.availableCandidates.filter((c) => c !== candidateId)
     }))
   }
 
@@ -78,9 +73,7 @@ export default function Vote({ election, voter }: VotePageProps) {
     const candidateId = event.currentTarget.id
     setCandidates((prev) => ({
       availableCandidates: [...prev.availableCandidates, candidateId],
-      selectedCandidates: prev.selectedCandidates.filter(
-        (c) => c !== candidateId
-      )
+      selectedCandidates: prev.selectedCandidates.filter((c) => c !== candidateId)
     }))
   }
 
@@ -101,12 +94,8 @@ export default function Vote({ election, voter }: VotePageProps) {
     return (
       <TitleWrapper title={t('title')}>
         <div className="text-fk-black flex flex-col items-center rounded-lg text-center">
-          <h2 className="mb-3 text-xl font-semibold">
-            {t('election_not_ongoing')}
-          </h2>
-          <p className="text-fk-black">
-            {t('election_not_ongoing_description')}
-          </p>
+          <h2 className="mb-3 text-xl font-semibold">{t('election_not_ongoing')}</h2>
+          <p className="text-fk-black">{t('election_not_ongoing_description')}</p>
         </div>
         <div className="mt-4 flex justify-center">
           <Link
@@ -137,9 +126,7 @@ export default function Vote({ election, voter }: VotePageProps) {
           {!!voter.hasVoted || !!result.data?.ballotId ? (
             <div className="rounded-lg bg-green-50 p-4 text-center text-green-700">
               <h4 className="mb-3 text-lg font-semibold">
-                {result.data?.ballotId
-                  ? t('thanks_for_voting')
-                  : t('already_voted')}
+                {result.data?.ballotId ? t('thanks_for_voting') : t('already_voted')}
               </h4>
               {!!result.data?.ballotId && (
                 <>
@@ -150,24 +137,18 @@ export default function Vote({ election, voter }: VotePageProps) {
                     variant="yellow"
                     className="mt-3"
                   >
-                    {ballotCopied
-                      ? t('audit_copied_to_clipboard')
-                      : t('audit_button')}
+                    {ballotCopied ? t('audit_copied_to_clipboard') : t('audit_button')}
                   </Button>
                 </>
               )}
             </div>
           ) : (
             <>
-              <div className="my-3 font-bold">
-                {t('to_choose', { seats: election.seats })}
-              </div>
+              <div className="my-3 font-bold">{t('to_choose', { seats: election.seats })}</div>
               <div className="my-3 font-bold">{t('vote_instruction')}</div>
               <DragDropProvider
                 onDragStart={() => setDisableVote(true)}
-                onDragOver={(event) =>
-                  setCandidates((prev) => move(prev, event))
-                }
+                onDragOver={(event) => setCandidates((prev) => move(prev, event))}
                 onDragEnd={() => setDisableVote(false)}
               >
                 <div className="flex flex-col gap-4 md:flex-row">
@@ -193,9 +174,7 @@ export default function Vote({ election, voter }: VotePageProps) {
                     </DroppableContainer>
                   </div>
                   <div className="flex-1">
-                    <h5 className="mb-2 font-medium">
-                      {t('available_candidates')}
-                    </h5>
+                    <h5 className="mb-2 font-medium">{t('available_candidates')}</h5>
                     <DroppableContainer
                       id="availableCandidates"
                       className="bg-fk-black mb-3 min-h-[200px] rounded-lg border p-2"
@@ -255,10 +234,7 @@ export default function Vote({ election, voter }: VotePageProps) {
                   {selectedCandidates.length > 0 ? (
                     <div className="mt-4 space-y-2">
                       {selectedCandidates.map((candidateId, index) => (
-                        <div
-                          key={candidateId}
-                          className="rounded-lg border p-2"
-                        >
+                        <div key={candidateId} className="rounded-lg border p-2">
                           {index + 1}
                           {'. '}
                           {getCandidateName(candidateId)}

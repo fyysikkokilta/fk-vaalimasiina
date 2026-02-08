@@ -1,9 +1,6 @@
 import type { Ballot, Election } from '~/algorithm/stvAlgorithm'
 
-export function generateCsvContent(
-  ballots: Ballot[],
-  election: Election
-): string {
+export function generateCsvContent(ballots: Ballot[], election: Election): string {
   const headers = Array.from(
     { length: election.candidates.length },
     (_, i) => `Preference ${i + 1}`
@@ -11,15 +8,11 @@ export function generateCsvContent(
 
   const rows = ballots.map((ballot) =>
     ballot.votes.map(
-      ({ candidateId }) =>
-        election.candidates.find((c) => c.candidateId === candidateId)!.name
+      ({ candidateId }) => election.candidates.find((c) => c.candidateId === candidateId)!.name
     )
   )
 
-  const csvContent = [
-    headers.join(';'),
-    ...rows.map((row) => row.join(';'))
-  ].join('\n')
+  const csvContent = [headers.join(';'), ...rows.map((row) => row.join(';'))].join('\n')
 
   return csvContent
 }

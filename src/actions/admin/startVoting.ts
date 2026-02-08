@@ -15,10 +15,7 @@ const startVotingSchema = z.object({
   emails: z
     .array(z.email('Email must be a valid email'), 'Emails must be an array')
     .min(1, 'There must be at least one email')
-    .refine(
-      (items) => new Set(items).size === items.length,
-      'Emails must be unique'
-    )
+    .refine((items) => new Set(items).size === items.length, 'Emails must be unique')
 })
 
 export const startVoting = actionClient
@@ -29,12 +26,7 @@ export const startVoting = actionClient
       const elections = await transaction
         .update(electionsTable)
         .set({ status: 'ONGOING' })
-        .where(
-          and(
-            eq(electionsTable.electionId, electionId),
-            eq(electionsTable.status, 'CREATED')
-          )
-        )
+        .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'CREATED')))
         .returning({
           title: electionsTable.title,
           description: electionsTable.description,

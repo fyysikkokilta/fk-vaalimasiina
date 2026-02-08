@@ -68,8 +68,8 @@ const EmailTemplate = ({
           <strong>Valittavien määrä:</strong> {election.seats}
         </Text>
         <Text>
-          Voit äänestää vain kerran eikä omaa ääntä voi muuttaa äänestämisen
-          jälkeen. Äänestyslinkki on henkilökohtainen, ethän jaa sitä eteenpäin.
+          Voit äänestää vain kerran eikä omaa ääntä voi muuttaa äänestämisen jälkeen. Äänestyslinkki
+          on henkilökohtainen, ethän jaa sitä eteenpäin.
         </Text>
         <Button
           href={votingLinkFi}
@@ -99,8 +99,8 @@ const EmailTemplate = ({
           <strong>Seats:</strong> {election.seats}
         </Text>
         <Text>
-          You can only vote once and you cannot change your vote after voting.
-          The voting link is personal, please do not share it.
+          You can only vote once and you cannot change your vote after voting. The voting link is
+          personal, please do not share it.
         </Text>
         <Button
           href={votingLinkEn}

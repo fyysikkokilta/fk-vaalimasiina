@@ -8,9 +8,7 @@ import type { ElectionPageProps } from '~/data/getElection'
 
 import { shuffleWithSeed } from './shuffleWithSeed'
 
-export type Election =
-  | ElectionPageProps['election']
-  | ElectionStepProps['election']
+export type Election = ElectionPageProps['election'] | ElectionStepProps['election']
 
 export type Ballot = ElectionPageProps['ballots'][number]
 
@@ -67,9 +65,7 @@ export type VotingResult = ValidVotingResult | InvalidVotingResult
 
 // Function to compute the current vote counts for each candidate based on the voteMap.
 // voteMap is a Map where keys are candidate IDs and values are arrays of votes (each with a weight).
-const getCurrentVoteCountsOfCandidates = (
-  voteMap: VoteMap
-): [CandidateId, number][] => {
+const getCurrentVoteCountsOfCandidates = (voteMap: VoteMap): [CandidateId, number][] => {
   // Initialize an empty array to hold tuples of candidate IDs and their total votes.
   const counts: [CandidateId, number][] = []
   // Iterate over each candidate in the vote map.
@@ -86,10 +82,7 @@ const getCurrentVoteCountsOfCandidates = (
 // Function to find the next candidate preference from a ballot.
 // It returns the first candidate in the ballot (ordered by preference)
 // that is still present in the voteMap.
-const findNextPreference = (
-  voteMap: VoteMap,
-  vote: BallotData
-): CandidateId | undefined => {
+const findNextPreference = (voteMap: VoteMap, vote: BallotData): CandidateId | undefined => {
   return vote.find((c) => voteMap.has(c))
 }
 
@@ -141,9 +134,7 @@ export const calculateSTVResult = (
   // Process each ballot that is not empty.
   nonEmptyBallots.forEach(({ votes }) => {
     // Sort the candidate preferences in each ballot by their rank (the lower rank, the higher the preference).
-    const candidateIds = votes
-      .sort((a, b) => a.rank - b.rank)
-      .map((v) => v.candidateId)
+    const candidateIds = votes.toSorted((a, b) => a.rank - b.rank).map((v) => v.candidateId)
     // Select the candidate with the highest preference (first in order).
     const id = candidateIds[0]
     if (id) {
@@ -169,18 +160,14 @@ export const calculateSTVResult = (
     const voteCounts = getCurrentVoteCountsOfCandidates(voteMap)
     // Identify candidates whose total votes meet or exceed the quota, or all remaining if acceptance applies.
     const electedCandidates = new Set(
-      voteCounts
-        .filter(([, votes]) => votes >= quota || acceptAllCandidates)
-        .map(([id]) => id)
+      voteCounts.filter(([, votes]) => votes >= quota || acceptAllCandidates).map(([id]) => id)
     )
     // Find the minimum vote count among all candidate vote counts.
     const minVotes = Math.min(...voteCounts.map(([, votes]) => votes))
 
     // Use EPSILON to handle potential floating-point errors when comparing votes.
     // Find candidates with vote counts within EPSILON of the minimum.
-    const candidatesWithMinVotes = voteCounts.filter(
-      ([, votes]) => votes <= minVotes + EPSILON
-    )
+    const candidatesWithMinVotes = voteCounts.filter(([, votes]) => votes <= minVotes + EPSILON)
 
     /**
      * If there is a tie, we need to randomly select one of the candidates
@@ -261,7 +248,7 @@ export const calculateSTVResult = (
         isEliminatedThisRound: c === candidateToBeDropped?.[0] // Only true for the candidate eliminated during this round.
       }))
       // Sort the candidates alphabetically by name.
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .toSorted((a, b) => a.name.localeCompare(b.name))
 
     // Add newly elected candidates to the overall winner set.
     electedCandidates.forEach((c) => winnerSet.add(c))
@@ -278,11 +265,8 @@ export const calculateSTVResult = (
     roundResults.push({
       round,
       candidateResults,
-      emptyVotes:
-        totalVotes -
-        candidateResults.reduce((sum, { voteCount }) => sum + voteCount, 0),
-      tieBreaker:
-        candidatesWithMinVotes.length > 1 && electedCandidates.size === 0
+      emptyVotes: totalVotes - candidateResults.reduce((sum, { voteCount }) => sum + voteCount, 0),
+      tieBreaker: candidatesWithMinVotes.length > 1 && electedCandidates.size === 0
     })
 
     // Increment the round counter.
@@ -302,7 +286,7 @@ export const calculateSTVResult = (
       name: election.candidates.find((c2) => c2.candidateId === c)!.name
     }))
     // Sort the winners alphabetically by name.
-    .sort((a, b) => a.name.localeCompare(b.name))
+    .toSorted((a, b) => a.name.localeCompare(b.name))
 
   // Return the valid voting result with all relevant details.
   return {

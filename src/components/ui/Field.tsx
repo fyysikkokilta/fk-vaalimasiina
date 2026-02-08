@@ -15,11 +15,7 @@ export const Field = {
     HTMLSpanElement,
     React.ComponentProps<typeof FieldParts.Field.Label> & { className?: string }
   >(({ className = '', ...props }, ref) => (
-    <FieldParts.Field.Label
-      ref={ref}
-      className={`${labelClassName} ${className}`}
-      {...props}
-    />
+    <FieldParts.Field.Label ref={ref} className={`${labelClassName} ${className}`} {...props} />
   )),
   Control: React.forwardRef<
     HTMLInputElement,
@@ -28,21 +24,13 @@ export const Field = {
       render?: React.ElementType
     }
   >(({ className = '', ...props }, ref) => (
-    <FieldParts.Field.Control
-      ref={ref}
-      className={`${inputClassName} ${className}`}
-      {...props}
-    />
+    <FieldParts.Field.Control ref={ref} className={`${inputClassName} ${className}`} {...props} />
   )),
   Error: React.forwardRef<
     HTMLDivElement,
     React.ComponentProps<typeof FieldParts.Field.Error> & { className?: string }
   >(({ className = '', ...props }, ref) => (
-    <FieldParts.Field.Error
-      ref={ref}
-      className={`${errorClassName} ${className}`}
-      {...props}
-    />
+    <FieldParts.Field.Error ref={ref} className={`${errorClassName} ${className}`} {...props} />
   ))
 }
 

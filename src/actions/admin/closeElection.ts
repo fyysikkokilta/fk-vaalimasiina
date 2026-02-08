@@ -65,10 +65,7 @@ export const closeElection = actionClient
           csvFilePath: filePath
         })
         .where(
-          and(
-            eq(electionsTable.electionId, electionId),
-            eq(electionsTable.status, 'FINISHED')
-          )
+          and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'FINISHED'))
         )
         .returning({
           status: electionsTable.status

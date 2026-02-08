@@ -19,9 +19,7 @@ interface ElectionListClientProps {
   elections: Election[]
 }
 
-export default function ElectionListClient({
-  elections
-}: ElectionListClientProps) {
+export default function ElectionListClient({ elections }: ElectionListClientProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const t = useTranslations('ElectionList')
 

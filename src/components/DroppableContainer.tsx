@@ -8,11 +8,7 @@ interface DroppableContainerProps {
   className?: string
 }
 
-export default function DroppableContainer({
-  id,
-  children,
-  className
-}: DroppableContainerProps) {
+export default function DroppableContainer({ id, children, className }: DroppableContainerProps) {
   const { ref } = useDroppable({
     id,
     type: 'column',

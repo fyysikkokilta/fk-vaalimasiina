@@ -129,34 +129,27 @@ Other Drizzle features can be accessed using `pnpx drizzle-kit [command]`.
 The voting process operates as follows:
 
 1. **Check-in**
-
    - A member attends the meeting and checks in with the secretary.
    - The member is then marked as present for the meeting.
 
 2. **Voting Setup**
-
    - When the voting session begins, a list of regular members' emails is input into the system.
 
 3. **Distributing Voting Links**
-
    - Upon starting the voting process, each regular member receives an email containing a unique voting link.
 
 4. **Casting Votes**
-
    - Members use their unique link to vote for their candidates in order of preference.
    - Once a vote is submitted, the system records the member's identity and vote, but only temporarily.
    - The system stores voting data and voter identity separately in distinct tables to ensure anonymity. After the vote is processed, there is no way to trace back who voted for whom.
 
 5. **Ballot Confirmation**
-
    - After registering their vote, each member receives a unique ballot ID.
 
 6. **Displaying Results**
-
    - Once all members have voted, the voting can be closed and results are shown.
 
 7. **Auditing**
-
    - Before the election is closed, members can verify that their vote has been correctly registered using the ballot ID in an auditing view.
 
 8. **Closing**
@@ -179,7 +172,6 @@ The steps to calculate the result are as follows:
 - A **quota** (the minimum number of votes a candidate needs to be elected) is determined using the **Droop quota formula**:
 
   $\text{Quota} = \left(\frac{\text{Total Valid Votes}}{\text{Seats + 1}}\right) + 1$
-
   - **Total Valid Votes**: Total number of valid ballots cast.
   - **Seats**: Number of seats to be filled.
   - The result is rounded down to the nearest whole number.

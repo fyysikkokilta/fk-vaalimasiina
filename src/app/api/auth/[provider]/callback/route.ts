@@ -21,8 +21,7 @@ export async function GET(
   }
 
   const cookieStore = await cookies()
-  const locale = (cookieStore.get('NEXT_LOCALE')?.value ||
-    routing.defaultLocale) as 'en' | 'fi'
+  const locale = (cookieStore.get('NEXT_LOCALE')?.value || routing.defaultLocale) as 'en' | 'fi'
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code') || ''
   const error = searchParams.get('error')
@@ -103,10 +102,7 @@ export async function GET(
     redirect({ href: '/admin', locale })
   } catch (error) {
     // Log error type only, never log full error as it may contain tokens/secrets
-    console.error(
-      'OAuth callback error:',
-      error instanceof Error ? error.message : 'Unknown error'
-    )
+    console.error('OAuth callback error:', error instanceof Error ? error.message : 'Unknown error')
     redirect({ href: '/login?error=server_error', locale })
   }
 }

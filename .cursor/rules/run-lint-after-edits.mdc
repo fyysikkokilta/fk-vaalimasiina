@@ -7,6 +7,6 @@ alwaysApply: true
 
 After making code changes, **always run the project linter** to catch issues before finishing.
 
-- Run `pnpm run lint` (or `pnpm exec eslint . --fix` if autofix is needed) after editing source files.
+- Run `pnpm run lint` (or `pnpm lint --fix` if autofix is needed) and `pnpm format` after editing source files.
 - If lint reports errors, fix them in the same session before considering the task done.
 - Prefer running lint on the files or directories you changed rather than the whole project only when the change set is small and you want a quick check; otherwise run full lint.

@@ -33,12 +33,7 @@ export const endVoting = actionClient
       const statuses = await transaction
         .update(electionsTable)
         .set({ status: 'FINISHED' })
-        .where(
-          and(
-            eq(electionsTable.electionId, electionId),
-            eq(electionsTable.status, 'ONGOING')
-          )
-        )
+        .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'ONGOING')))
         .returning({
           status: electionsTable.status
         })

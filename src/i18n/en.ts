@@ -4,8 +4,7 @@ const messages = {
     info: 'This is the frontpage of the Voting Machine! You will get a unique voting link by email when the voting starts.',
     info_2:
       'Only regular members of the guild are allowed to vote. Please exit the meeting if you are not a regular member. If you have received a voting link but are not a regular member, please inform the chairperson or secretary immediately.',
-    info_3:
-      'If you have any questions or problems, please contact the chairperson or secretary.'
+    info_3: 'If you have any questions or problems, please contact the chairperson or secretary.'
   },
   NotFound: {
     title: 'The page you are looking for was not found',
@@ -70,8 +69,7 @@ const messages = {
     signin_description: 'Sign in with your account to access the admin panel.',
     signin_with: 'Sign in with {provider}',
     signin_with_google: 'Sign in with Google',
-    no_providers_configured:
-      'No OAuth providers are configured. Please contact the administrator.',
+    no_providers_configured: 'No OAuth providers are configured. Please contact the administrator.',
     error_access_denied: 'Access denied. Please try again.',
     error_unauthorized: 'You are not authorized to access this application.',
     error_server_error: 'A server error occurred. Please try again later.',
@@ -131,8 +129,7 @@ const messages = {
     seats: 'Seats',
     candidates: 'Candidates',
     voters: 'Voters',
-    email_list_instruction:
-      "Add the voters' email addresses here separated by line breaks",
+    email_list_instruction: "Add the voters' email addresses here separated by line breaks",
     email_list_placeholder: 'email@email.com\nemail2@mail.com',
     voter_count: 'Voter count',
     invalid_voter_data: 'Invalid voter data',
@@ -197,8 +194,7 @@ const messages = {
       candidate_nonempty: 'Candidate must not be empty',
       candidates_array: 'Candidates must be an array',
       candidates_nonempty: 'There must be at least one candidate',
-      candidates_geq_seats:
-        'There must be at least as many candidates as there are seats',
+      candidates_geq_seats: 'There must be at least as many candidates as there are seats',
       electionId_uuid: 'Election identifier must be a valid UUID'
     }
   },

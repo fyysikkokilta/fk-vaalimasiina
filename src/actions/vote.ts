@@ -15,17 +15,14 @@ const voteSchema = z.object({
     .array(
       z.object({
         candidateId: z.uuid('Candidate identifier must be a valid UUID'),
-        rank: z
-          .number('Rank must be a number')
-          .min(1, 'Rank must be at least 1')
+        rank: z.number('Rank must be a number').min(1, 'Rank must be at least 1')
       }),
       'Ballot must be an array'
     )
     .refine((ballot) => {
       const ranks = ballot.map((vote) => vote.rank)
       return (
-        ranks.length === new Set(ranks).size &&
-        ranks.every((rank, index) => rank === index + 1)
+        ranks.length === new Set(ranks).size && ranks.every((rank, index) => rank === index + 1)
       )
     }, 'Ranks must be unique')
 })

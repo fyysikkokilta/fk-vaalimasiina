@@ -20,9 +20,7 @@ test.beforeEach(async ({ page, request }) => {
 })
 
 test('should show modify election form', async ({ page }) => {
-  await expect(
-    page.getByRole('heading', { name: 'Edit election' })
-  ).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Edit election' })).toBeVisible()
 })
 
 test('should show correct navigation buttons', async ({ page }) => {
@@ -34,9 +32,7 @@ test('should show correct election data', async ({ page }) => {
   await expect(page.getByLabel('Title')).toHaveValue('Election 1')
   await expect(page.getByLabel('Description')).toHaveValue('Description 1')
   await expect(page.getByLabel('Seats')).toHaveValue('1')
-  await expect(
-    page.getByRole('button', { name: 'Remove candidate' })
-  ).toHaveCount(1)
+  await expect(page.getByRole('button', { name: 'Remove candidate' })).toHaveCount(1)
   await expect(page.getByText('Candidate 1')).toBeVisible()
 })
 

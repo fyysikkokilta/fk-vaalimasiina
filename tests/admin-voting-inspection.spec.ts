@@ -59,9 +59,7 @@ test.describe('with no given votes', () => {
   })
 
   test('should not allow to end voting', async ({ page }) => {
-    await expect(
-      page.getByRole('button', { name: 'End voting' })
-    ).toBeDisabled()
+    await expect(page.getByRole('button', { name: 'End voting' })).toBeDisabled()
   })
 })
 
@@ -105,16 +103,12 @@ test.describe('with some votes', () => {
   })
 
   test("shouldn't allow to end voting", async ({ page }) => {
-    await expect(
-      page.getByRole('button', { name: 'End voting' })
-    ).toBeDisabled()
+    await expect(page.getByRole('button', { name: 'End voting' })).toBeDisabled()
   })
 
   test('should allow to abort voting', async ({ page }) => {
     await page.getByRole('button', { name: 'Abort voting' }).click()
-    await expect(
-      page.getByRole('heading', { name: 'Election 1' })
-    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Election 1' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
   })
 })
@@ -176,9 +170,7 @@ test.describe('with all votes', () => {
   test('should allow to end voting', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'End voting' })).toBeEnabled()
     await page.getByRole('button', { name: 'End voting' }).click()
-    await expect(
-      page.getByRole('heading', { name: 'Results', exact: true })
-    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Results', exact: true })).toBeVisible()
   })
 })
 
@@ -190,29 +182,21 @@ test.describe('change email form', () => {
     await expect(page.getByText('Email changed')).toBeVisible()
   })
 
-  test("shouldn't allow to change email with invalid email", async ({
-    page
-  }) => {
+  test("shouldn't allow to change email with invalid email", async ({ page }) => {
     await page.getByLabel('Email to change').fill('email4@email.com')
     await page.getByLabel('New email').fill('email5')
     await page.getByRole('button', { name: 'Change email' }).click()
-    await expect(
-      page.getByText('New email must be a valid email')
-    ).toBeVisible()
+    await expect(page.getByText('New email must be a valid email')).toBeVisible()
   })
 
-  test("shouldn't allow to change an old email that doesn't exist", async ({
-    page
-  }) => {
+  test("shouldn't allow to change an old email that doesn't exist", async ({ page }) => {
     await page.getByLabel('Email to change').fill('email5@email.com')
     await page.getByLabel('New email').fill('email6@email.com')
     await page.getByRole('button', { name: 'Change email' }).click()
     await expect(page.getByText('Voter not found')).toBeVisible()
   })
 
-  test("shouldn't allow to change email to one that exists", async ({
-    page
-  }) => {
+  test("shouldn't allow to change email to one that exists", async ({ page }) => {
     await page.getByLabel('Email to change').fill('email4@email.com')
     await page.getByLabel('New email').fill('email3@email.com')
     await page.getByRole('button', { name: 'Change email' }).click()

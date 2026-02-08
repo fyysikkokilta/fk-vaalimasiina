@@ -18,23 +18,14 @@ export const abortVoting = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const statuses = await db.transaction(async (transaction) => {
-      await transaction
-        .delete(votersTable)
-        .where(eq(votersTable.electionId, electionId))
+      await transaction.delete(votersTable).where(eq(votersTable.electionId, electionId))
 
-      await transaction
-        .delete(ballotsTable)
-        .where(eq(ballotsTable.electionId, electionId))
+      await transaction.delete(ballotsTable).where(eq(ballotsTable.electionId, electionId))
 
       return await transaction
         .update(electionsTable)
         .set({ status: 'CREATED' })
-        .where(
-          and(
-            eq(electionsTable.electionId, electionId),
-            eq(electionsTable.status, 'ONGOING')
-          )
-        )
+        .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'ONGOING')))
         .returning({
           status: electionsTable.status
         })

@@ -10,9 +10,7 @@ export function generateStaticParams() {
   return []
 }
 
-export async function generateMetadata({
-  params
-}: PageProps<'/[locale]/vote/[voterId]'>) {
+export async function generateMetadata({ params }: PageProps<'/[locale]/vote/[voterId]'>) {
   const { voterId } = await params
   const t = await getTranslations('metadata.vote')
 
@@ -26,9 +24,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function VotePage({
-  params
-}: PageProps<'/[locale]/vote/[voterId]'>) {
+export default async function VotePage({ params }: PageProps<'/[locale]/vote/[voterId]'>) {
   const { voterId } = await params
 
   if (!isUUID(voterId)) {

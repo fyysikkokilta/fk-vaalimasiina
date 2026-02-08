@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": ["DOM", "DOM.Iterable", "ES2024"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -43,11 +43,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "data",
-    "node_modules",
-    "playwright-report",
-    "public",
-    "test-results"
-  ]
+  "exclude": ["data", "node_modules", "playwright-report", "public", "test-results"]
 }

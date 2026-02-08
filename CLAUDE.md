@@ -8,21 +8,21 @@ FK Vaalimasiina is an electronic voting system for the Guild of Physics, built w
 
 ## Commands
 
-| Task | Command |
-|---|---|
-| Dev server | `pnpm dev` |
-| Build | `pnpm build` |
-| Lint | `pnpm lint` |
-| Lint + autofix | `pnpm exec eslint . --fix` |
-| Type check | `pnpm type:check` |
-| Unit tests | `pnpm test:unit` |
-| Single unit test | `pnpm test:unit src/algorithm/stvAlgorithm.test.ts` |
-| E2E tests | `npx playwright test` |
-| Single E2E test | `npx playwright test tests/voter-voting.spec.ts` |
-| Format | `pnpm prettier:format` |
-| DB migrations | `pnpm db:migrate` |
-| Generate migration | `pnpm db:generate-migration` |
-| Generate test data | `pnpm generate-election` |
+| Task               | Command                                             |
+| ------------------ | --------------------------------------------------- |
+| Dev server         | `pnpm dev`                                          |
+| Build              | `pnpm build`                                        |
+| Lint               | `pnpm lint`                                         |
+| Lint + autofix     | `pnpm lint --fix`                                   |
+| Type check         | `pnpm type:check`                                   |
+| Unit tests         | `pnpm test:unit`                                    |
+| Single unit test   | `pnpm test:unit src/algorithm/stvAlgorithm.test.ts` |
+| E2E tests          | `npx playwright test`                               |
+| Single E2E test    | `npx playwright test tests/voter-voting.spec.ts`    |
+| Format             | `pnpm format`                                       |
+| DB migrations      | `pnpm db:migrate`                                   |
+| Generate migration | `pnpm db:generate-migration`                        |
+| Generate test data | `pnpm generate-election`                            |
 
 Package manager is **pnpm** (enforced via `preinstall` hook).
 
@@ -30,9 +30,9 @@ Package manager is **pnpm** (enforced via `preinstall` hook).
 
 ### Routing & i18n
 
-All pages live under `src/app/[locale]/` with `en` and `fi` locales (next-intl). **Do not** import `Link`, `redirect`, `useRouter`, or `usePathname` from `next/link` or `next/navigation` — use `~/i18n/navigation` instead. This is enforced by ESLint `no-restricted-imports`.
+All pages live under `src/app/[locale]/` with `en` and `fi` locales (next-intl). **Do not** import `Link`, `redirect`, `useRouter`, or `usePathname` from `next/link` or `next/navigation` — use `~/i18n/navigation` instead. This is enforced by oxlint `no-restricted-imports`.
 
-All user-facing text must use translations from `src/i18n/en.ts` and `src/i18n/fi.ts`. The `react/jsx-no-literals` ESLint rule forbids hardcoded strings in JSX.
+All user-facing text must use translations from `src/i18n/en.ts` and `src/i18n/fi.ts`. Avoid hardcoded strings in JSX; use translations.
 
 ### Server Actions
 
@@ -69,9 +69,9 @@ Validated with `@t3-oss/env-nextjs` in `src/env.ts`. Import as `import { env } f
 
 - **Commits**: Conventional Commits format — `feat:`, `fix:`, `refactor:`, `chore:`, etc. Imperative mood, lowercase, no period. One logical change per commit.
 - **Linting**: Always run `pnpm lint` after code changes and fix errors before finishing.
-- **Imports**: Sorted by `eslint-plugin-simple-import-sort` (auto-fixable).
-- **Styling**: Tailwind CSS 4 with Prettier plugin for class sorting. Single quotes, no trailing commas.
-- **Pre-commit hook**: lint-staged runs `tsc --noEmit` and `eslint --fix` on staged files.
+- **Imports**: Optionally sorted by oxfmt `experimentalSortImports` when enabled.
+- **Styling**: Tailwind CSS 4 with oxfmt (experimentalTailwindcss) for class sorting. Single quotes, no trailing commas.
+- **Pre-commit hook**: lint-staged runs `tsc --noEmit`, `oxlint --fix`, and `oxfmt` on staged files.
 
 ## Testing
 

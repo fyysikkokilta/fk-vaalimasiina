@@ -969,32 +969,20 @@ describe('STV Algorithm', () => {
 
   it('should handle more votes than voters', () => {
     const election = createElection(['Alice', 'Bob'], 1)
-    const ballots = [
-      createBallot(['0']),
-      createBallot(['1']),
-      createBallot(['0'])
-    ]
+    const ballots = [createBallot(['0']), createBallot(['1']), createBallot(['0'])]
     const result = calculateSTVResult(election, ballots, 2)
     expect(result.validResult).toBe(false)
   })
 
   it('should handle tie-breaking between candidates', () => {
     const election = createElection(['Alice', 'Bob', 'Charlie'], 2)
-    const ballots = [
-      createBallot(['0']),
-      createBallot(['1']),
-      createBallot(['2'])
-    ]
+    const ballots = [createBallot(['0']), createBallot(['1']), createBallot(['2'])]
     const result = calculateSTVResult(election, ballots, 3)
     expect(result.validResult).toBe(true)
     if (!result.validResult) return
     expect(result.roundResults[0].tieBreaker).toBe(true)
-    expect(
-      result.roundResults[0].candidateResults.filter((c) => c.isSelected)
-    ).toHaveLength(0)
-    expect(
-      result.roundResults[1].candidateResults.filter((c) => c.isSelected)
-    ).toHaveLength(2)
+    expect(result.roundResults[0].candidateResults.filter((c) => c.isSelected)).toHaveLength(0)
+    expect(result.roundResults[1].candidateResults.filter((c) => c.isSelected)).toHaveLength(2)
   })
 
   it('should handle all empty votes', () => {

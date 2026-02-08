@@ -20,12 +20,7 @@ export const cancelEditing = actionClient
     const statuses = await db
       .update(electionsTable)
       .set({ status: 'CREATED' })
-      .where(
-        and(
-          eq(electionsTable.electionId, electionId),
-          eq(electionsTable.status, 'UPDATING')
-        )
-      )
+      .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'UPDATING')))
       .returning({ status: electionsTable.status })
 
     if (!statuses[0]) {

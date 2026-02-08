@@ -55,8 +55,7 @@ export const WELL_KNOWN_PROVIDERS: Record<
   microsoft: {
     name: 'Microsoft',
     displayName: 'Microsoft',
-    authorizationUrl:
-      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+    authorizationUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
     tokenUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
     userInfoUrl: 'https://graph.microsoft.com/v1.0/me',
     scopes: ['openid', 'email', 'profile'],
@@ -94,10 +93,7 @@ export async function extractUserInfo(
   const userData = (await userResponse.json()) as Record<string, unknown>
 
   // Handle GitHub special case - email might be null, need to fetch from emails endpoint
-  if (
-    provider.id === 'github' &&
-    (!userData.email || userData.email === null)
-  ) {
+  if (provider.id === 'github' && (!userData.email || userData.email === null)) {
     const emailsResponse = await fetch('https://api.github.com/user/emails', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -112,9 +108,7 @@ export async function extractUserInfo(
         verified: boolean
       }>
       const primaryEmail =
-        emails.find((e) => e.primary && e.verified) ||
-        emails.find((e) => e.verified) ||
-        emails[0]
+        emails.find((e) => e.primary && e.verified) || emails.find((e) => e.verified) || emails[0]
       if (primaryEmail) {
         userData.email = primaryEmail.email
       }
@@ -124,9 +118,7 @@ export async function extractUserInfo(
   // Handle Microsoft special case - uses 'mail' instead of 'email'
   if (provider.id === 'microsoft') {
     return {
-      email: (userData.mail ||
-        userData.userPrincipalName ||
-        userData.email) as string,
+      email: (userData.mail || userData.userPrincipalName || userData.email) as string,
       name: (userData.displayName || userData.name || '') as string
     }
   }

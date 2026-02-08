@@ -35,27 +35,19 @@ export default function ElectionForm({
 }) {
   const t = useTranslations('ElectionForm')
   const [newCandidate, setNewCandidate] = useState('')
-  const [errors, setErrors] = useState<
-    Record<string, string | string[]> | undefined
-  >(undefined)
+  const [errors, setErrors] = useState<Record<string, string | string[]> | undefined>(undefined)
   const [formErrors, setFormErrors] = useState<string[]>([])
 
   const createSchema = z
     .object({
-      title: z
-        .string(t('validation.title_string'))
-        .min(1, t('validation.title_nonempty')),
+      title: z.string(t('validation.title_string')).min(1, t('validation.title_nonempty')),
       description: z
         .string(t('validation.description_string'))
         .min(1, t('validation.description_nonempty')),
-      seats: z.coerce
-        .number(t('validation.seats_number'))
-        .min(1, t('validation.seats_min')),
+      seats: z.coerce.number(t('validation.seats_number')).min(1, t('validation.seats_min')),
       candidates: z
         .array(
-          z
-            .string(t('validation.candidate_string'))
-            .min(1, t('validation.candidate_nonempty')),
+          z.string(t('validation.candidate_string')).min(1, t('validation.candidate_nonempty')),
           t('validation.candidates_array')
         )
         .min(1, t('validation.candidates_nonempty'))
@@ -94,12 +86,7 @@ export default function ElectionForm({
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <Form
-        id={formId}
-        errors={errors}
-        onFormSubmit={handleFormSubmit}
-        className="contents"
-      >
+      <Form id={formId} errors={errors} onFormSubmit={handleFormSubmit} className="contents">
         <div className="contents">
           {formErrors.length > 0 && (
             <div className="col-span-full space-y-1 text-red-600">
@@ -135,11 +122,7 @@ export default function ElectionForm({
             </div>
             <Field.Root name="seats">
               <Field.Label>{t('seats')}</Field.Label>
-              <Field.Control
-                type="number"
-                min={1}
-                defaultValue={election.seats}
-              />
+              <Field.Control type="number" min={1} defaultValue={election.seats} />
               <Field.Error />
             </Field.Root>
           </div>
@@ -173,9 +156,7 @@ export default function ElectionForm({
               </div>
               {errors?.candidates && (
                 <p className="mt-1 text-sm text-red-600" role="alert">
-                  {Array.isArray(errors.candidates)
-                    ? errors.candidates[0]
-                    : errors.candidates}
+                  {Array.isArray(errors.candidates) ? errors.candidates[0] : errors.candidates}
                 </p>
               )}
             </div>

@@ -21,9 +21,7 @@ export default function VotingInspection({
   voters
 }: ElectionStepProps) {
   const [showRemainingVoters, setShowRemainingVoters] = useState(false)
-  const [errors, setErrors] = useState<
-    Record<string, string | string[]> | undefined
-  >(undefined)
+  const [errors, setErrors] = useState<Record<string, string | string[]> | undefined>(undefined)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const t = useTranslations('VotingInspection')
@@ -33,29 +31,24 @@ export default function VotingInspection({
     newEmail: z.email(t('validation.newEmail_email'))
   })
 
-  const { execute: executeAbort, status: abortActionStatus } =
-    useAction(abortVoting)
+  const { execute: executeAbort, status: abortActionStatus } = useAction(abortVoting)
 
-  const { execute: executeVoting, status: votingActionStatus } =
-    useAction(endVoting)
+  const { execute: executeVoting, status: votingActionStatus } = useAction(endVoting)
 
-  const { execute: executeEmail, status: emailActionStatus } = useAction(
-    changeEmail,
-    {
-      onSuccess: ({ data }) => {
-        if (data?.message) {
-          setSuccessMessage(data.message)
-          setTimeout(() => setSuccessMessage(null), 3000)
-        }
-        setErrors(undefined)
-      },
-      onError: ({ error }) => {
-        if (error.serverError) {
-          setErrors({ serverError: [error.serverError] })
-        }
+  const { execute: executeEmail, status: emailActionStatus } = useAction(changeEmail, {
+    onSuccess: ({ data }) => {
+      if (data?.message) {
+        setSuccessMessage(data.message)
+        setTimeout(() => setSuccessMessage(null), 3000)
+      }
+      setErrors(undefined)
+    },
+    onError: ({ error }) => {
+      if (error.serverError) {
+        setErrors({ serverError: [error.serverError] })
       }
     }
-  )
+  })
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -127,9 +120,7 @@ export default function VotingInspection({
                 className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800"
                 role="alert"
               >
-                {Array.isArray(errors.serverError)
-                  ? errors.serverError[0]
-                  : errors.serverError}
+                {Array.isArray(errors.serverError) ? errors.serverError[0] : errors.serverError}
               </div>
             )}
             <Field.Root name="oldEmail">
@@ -142,11 +133,7 @@ export default function VotingInspection({
               <Field.Control />
               <Field.Error />
             </Field.Root>
-            <Button
-              type="submit"
-              variant="yellow"
-              actionStatus={emailActionStatus}
-            >
+            <Button type="submit" variant="yellow" actionStatus={emailActionStatus}>
               {t('change_email')}
             </Button>
           </Form>
@@ -157,9 +144,7 @@ export default function VotingInspection({
                 variant="yellow"
                 onClick={() => setShowRemainingVoters((value) => !value)}
               >
-                {showRemainingVoters
-                  ? t('hide_remaining_voters')
-                  : t('show_remaining_voters')}
+                {showRemainingVoters ? t('hide_remaining_voters') : t('show_remaining_voters')}
               </Button>
             </div>
             {showRemainingVoters &&

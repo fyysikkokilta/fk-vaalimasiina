@@ -9,12 +9,9 @@ const baseClasses =
   'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer'
 
 const variantClasses = {
-  primary:
-    'bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-900',
-  secondary:
-    'bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:ring-gray-500',
-  yellow:
-    'bg-fk-yellow text-fk-black hover:bg-amber-500 focus-visible:ring-amber-500',
+  primary: 'bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-900',
+  secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:ring-gray-500',
+  yellow: 'bg-fk-yellow text-fk-black hover:bg-amber-500 focus-visible:ring-amber-500',
   danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600',
   outline:
     'border border-amber-50 text-white hover:bg-white/10 hover:text-white/90 focus-visible:ring-amber-50'
@@ -36,8 +33,7 @@ export interface ButtonProps extends Omit<
   className?: string
 }
 
-const isPending = (s: HookActionStatus | undefined) =>
-  s === 'executing' || s === 'transitioning'
+const isPending = (s: HookActionStatus | undefined) => s === 'executing' || s === 'transitioning'
 const hasError = (s: HookActionStatus | undefined) => s === 'hasErrored'
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -73,14 +69,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         aria-invalid={error ? true : undefined}
         {...props}
       >
-        {pending && (
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin" aria-hidden />
-        )}
+        {pending && <Loader2 className="h-4 w-4 shrink-0 animate-spin" aria-hidden />}
         {error && !pending && (
-          <AlertCircle
-            className="h-4 w-4 shrink-0 text-red-600"
-            aria-hidden="true"
-          />
+          <AlertCircle className="h-4 w-4 shrink-0 text-red-600" aria-hidden="true" />
         )}
         {children}
       </BaseButton>

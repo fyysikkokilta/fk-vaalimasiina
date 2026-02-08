@@ -1,15 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-import {
-  calculateSTVResult,
-  ValidVotingResult
-} from '../src/algorithm/stvAlgorithm'
-import {
-  Ballot,
-  createElectionWithVotersAndBallots,
-  Election,
-  resetDatabase
-} from './utils/db'
+import { calculateSTVResult, ValidVotingResult } from '../src/algorithm/stvAlgorithm'
+import { Ballot, createElectionWithVotersAndBallots, Election, resetDatabase } from './utils/db'
 
 let election: Election
 let ballots: Ballot[]
@@ -34,9 +26,7 @@ test.beforeEach(async ({ page, request }) => {
 })
 
 test('should show election title and description', async ({ page }) => {
-  await expect(
-    page.getByRole('heading', { name: 'Public Election' })
-  ).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Public Election' })).toBeVisible()
   await expect(page.getByText('Election description')).toBeVisible()
 })
 
@@ -52,50 +42,30 @@ test('should show initial votes', async ({ page }) => {
 
 test('should show correct vote numbers in initial votes', async ({ page }) => {
   const votes = ballots.length
-  const nonEmptyVotes = ballots.filter(
-    (ballot) => ballot.votes.length > 0
-  ).length
+  const nonEmptyVotes = ballots.filter((ballot) => ballot.votes.length > 0).length
   // Initial votes are in the blue section above the table (section, not thead)
-  const initialVotesSection = page
-    .locator('#results_by_candidate')
-    .locator('section.bg-blue-50')
-  await expect(
-    initialVotesSection.getByText(`${votes}`, { exact: true })
-  ).toBeVisible()
-  await expect(
-    initialVotesSection.getByText(`${nonEmptyVotes}`, { exact: true })
-  ).toBeVisible()
-  await expect(
-    initialVotesSection.getByText(`${election.seats}`, { exact: true })
-  ).toBeVisible()
-  await expect(
-    initialVotesSection.getByText(`${result.quota}`, { exact: true })
-  ).toBeVisible()
+  const initialVotesSection = page.locator('#results_by_candidate').locator('section.bg-blue-50')
+  await expect(initialVotesSection.getByText(`${votes}`, { exact: true })).toBeVisible()
+  await expect(initialVotesSection.getByText(`${nonEmptyVotes}`, { exact: true })).toBeVisible()
+  await expect(initialVotesSection.getByText(`${election.seats}`, { exact: true })).toBeVisible()
+  await expect(initialVotesSection.getByText(`${result.quota}`, { exact: true })).toBeVisible()
 })
 
 test('should show full results by candidate table', async ({ page }) => {
   // Header was removed, table is directly visible
   await expect(page.locator('#results_by_candidate')).toBeVisible()
   await expect(
-    page
-      .locator('#results_by_candidate')
-      .getByRole('columnheader', { name: 'Candidate' })
+    page.locator('#results_by_candidate').getByRole('columnheader', { name: 'Candidate' })
   ).toBeVisible()
 })
 
-test('should show all candidates in by-candidate table with result column', async ({
-  page
-}) => {
+test('should show all candidates in by-candidate table with result column', async ({ page }) => {
   const byCandidateSection = page.locator('#results_by_candidate table')
   await expect(byCandidateSection).toBeVisible()
 
-  const candidateNames = result.roundResults[0].candidateResults.map(
-    (c) => c.name
-  )
+  const candidateNames = result.roundResults[0].candidateResults.map((c) => c.name)
   for (const name of candidateNames) {
-    await expect(
-      byCandidateSection.getByRole('row').filter({ hasText: name })
-    ).toBeVisible()
+    await expect(byCandidateSection.getByRole('row').filter({ hasText: name })).toBeVisible()
   }
 
   for (const winner of result.winners) {
@@ -107,9 +77,7 @@ test('should show all candidates in by-candidate table with result column', asyn
 
 test('should show empty votes row in by-candidate table', async ({ page }) => {
   const byCandidateSection = page.locator('#results_by_candidate')
-  await expect(
-    byCandidateSection.getByRole('row').filter({ hasText: 'Empty' })
-  ).toBeVisible()
+  await expect(byCandidateSection.getByRole('row').filter({ hasText: 'Empty' })).toBeVisible()
 })
 
 test('should show winners highlighted in table', async ({ page }) => {
@@ -129,19 +97,11 @@ test('should show winners highlighted in table', async ({ page }) => {
 })
 
 test('should not show round navigation buttons', async ({ page }) => {
-  await expect(
-    page.getByRole('button', { name: 'Previous', exact: true })
-  ).not.toBeVisible()
-  await expect(
-    page.getByRole('button', { name: 'Next', exact: true })
-  ).not.toBeVisible()
+  await expect(page.getByRole('button', { name: 'Previous', exact: true })).not.toBeVisible()
+  await expect(page.getByRole('button', { name: 'Next', exact: true })).not.toBeVisible()
 })
 
 test('should show export actions', async ({ page }) => {
-  await expect(
-    page.getByRole('button', { name: 'Download ballots as CSV' })
-  ).toBeVisible()
-  await expect(
-    page.getByRole('button', { name: 'Copy results to clipboard' })
-  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Download ballots as CSV' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Copy results to clipboard' })).toBeVisible()
 })

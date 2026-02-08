@@ -4,8 +4,7 @@ const messages = {
     info: 'Tämä on vaalimasiinan etusivu! Saat sähköpostitse uniikin äänestyslinkin, kun äänestys alkaa.',
     info_2:
       'Vain killan varsinaiset jäsenet saavat äänestää. Poistu kokouksesta, jos et ole varsinainen jäsen. Jos olet saanut äänestyslinkin, mutta et ole varsinainen jäsen, ilmoita asiasta puheenjohtajalle tai sihteerille välittömästi.',
-    info_3:
-      'Jos sinulla on kysyttävää tai ongelmia, ota yhteyttä puheenjohtajaan tai sihteeriin.'
+    info_3: 'Jos sinulla on kysyttävää tai ongelmia, ota yhteyttä puheenjohtajaan tai sihteeriin.'
   },
   NotFound: {
     title: 'Etsimääsi sivua ei löytynyt',
@@ -35,8 +34,7 @@ const messages = {
     election_not_ongoing: 'Tämän äänestyslinkin äänestys ei ole käynnissä',
     election_not_ongoing_description:
       'Tämän äänestyslinkin äänestys ei ole käynnissä. Äänestys on todennäköisesti loppunut jo. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.',
-    to_choose:
-      'Tässä äänestyksessä valitaan {seats, plural, =1 {1 ehdokas} other {# ehdokasta}}',
+    to_choose: 'Tässä äänestyksessä valitaan {seats, plural, =1 {1 ehdokas} other {# ehdokasta}}',
     vote_instruction:
       'Raahaa haluamasi ehdokkaat Äänestyslippusi-laatikkoon ja järjestä ne ylhäältä alas haluamaasi järjestykseen. Ehdokkaita voi siirtää myös tuplaklikkaamalla. Voit äänestää niin monta ehdokasta kuin haluat tai jättää tyhjän äänen.',
     available_candidates: 'Ehdokkaat',
@@ -67,8 +65,7 @@ const messages = {
   },
   Login: {
     title: 'Hallintaan kirjautuminen',
-    signin_description:
-      'Kirjaudu sisään tililläsi päästäksesi ylläpitopaneeliin.',
+    signin_description: 'Kirjaudu sisään tililläsi päästäksesi ylläpitopaneeliin.',
     signin_with: 'Kirjaudu {provider}',
     signin_with_google: 'Kirjaudu Google',
     no_providers_configured:
@@ -124,24 +121,20 @@ const messages = {
     hide_remaining_voters: 'Piilota jäljellä olevat äänestäjät',
     remaining_voters_empty: 'Kaikki ovat äänestäneet',
     validation: {
-      oldEmail_email:
-        'Vaihdettavan sähköpostin tulee olla kelvollinen sähköpostiosoite',
-      newEmail_email:
-        'Uuden sähköpostin tulee olla kelvollinen sähköpostiosoite'
+      oldEmail_email: 'Vaihdettavan sähköpostin tulee olla kelvollinen sähköpostiosoite',
+      newEmail_email: 'Uuden sähköpostin tulee olla kelvollinen sähköpostiosoite'
     }
   },
   PreviewElection: {
     seats: 'Paikkoja',
     candidates: 'Ehdokkaat',
     voters: 'Äänestäjät',
-    email_list_instruction:
-      'Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna',
+    email_list_instruction: 'Lisää tähän äänestäjien sähköpostiosoitteet rivinvaihdolla erotettuna',
     email_list_placeholder: 'sähköposti@mail.com\nsähköposti2@mail.com\n',
     voter_count: 'Äänestäjien määrä',
     invalid_voter_data: 'Virheelliset äänestäjätiedot',
     validation: {
-      email_email:
-        'Sähköpostiosoitteen tulee olla kelvollinen sähköpostiosoite',
+      email_email: 'Sähköpostiosoitteen tulee olla kelvollinen sähköpostiosoite',
       emails_array: 'Sähköpostiosoitteiden tulee olla taulukko',
       emails_nonempty: 'Sähköpostiosoitteita tulee olla vähintään yksi',
       emails_unique: 'Sähköpostiosoitteiden tulee olla uniikkeja'

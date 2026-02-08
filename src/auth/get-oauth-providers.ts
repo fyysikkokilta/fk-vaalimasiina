@@ -48,9 +48,11 @@ function parseSingleProvider(providerId: string): OAuthProviderConfig | null {
     const authUrl = process.env[`${prefix}AUTHORIZATION_URL`]
     const tokenUrl = process.env[`${prefix}TOKEN_URL`]
     const userInfoUrl = process.env[`${prefix}USERINFO_URL`]
-    const scopes = process.env[`${prefix}SCOPES`]
-      ?.split(',')
-      .map((s) => s.trim()) || ['openid', 'email', 'profile']
+    const scopes = process.env[`${prefix}SCOPES`]?.split(',').map((s) => s.trim()) || [
+      'openid',
+      'email',
+      'profile'
+    ]
     const displayName = process.env[`${prefix}DISPLAY_NAME`] || providerId
 
     if (!authUrl || !tokenUrl || !userInfoUrl) {
@@ -113,9 +115,7 @@ export function getPublicOAuthProviders(): PublicOAuthProvider[] {
  * @param providerId - The OAuth provider ID
  * @returns Provider config with secrets, or undefined if not found/configured
  */
-export function getOAuthProvider(
-  providerId: string
-): OAuthProviderConfig | undefined {
+export function getOAuthProvider(providerId: string): OAuthProviderConfig | undefined {
   // Check cache first
   if (providerCache.has(providerId)) {
     return providerCache.get(providerId)

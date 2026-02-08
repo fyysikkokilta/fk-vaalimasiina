@@ -38,9 +38,7 @@ const roboto = Roboto({
   variable: '--font-roboto'
 })
 
-export default async function RootLayout({
-  children
-}: LayoutProps<'/[locale]'>) {
+export default async function RootLayout({ children }: LayoutProps<'/[locale]'>) {
   const curLocale = await locale()
 
   return (
@@ -48,11 +46,7 @@ export default async function RootLayout({
       {/*<Script src="https://unpkg.com/react-scan/dist/auto.global.js" />*/}
       <body className="bg-fk-yellow text-fk-black flex h-dvh flex-col">
         <NextIntlClientProvider>
-          <NextTopLoader
-            color="#fbdb1d"
-            showSpinner={false}
-            showForHashAnchor={false}
-          />
+          <NextTopLoader color="#fbdb1d" showSpinner={false} showForHashAnchor={false} />
           <Header />
           <main className="m-5 flex flex-1 shrink-0 flex-col items-center">
             <div className="fii-background flex max-w-5xl justify-center rounded-lg bg-white py-4 shadow-md">

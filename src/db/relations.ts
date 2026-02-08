@@ -33,16 +33,13 @@ export const hasVotedRelations = relations(hasVotedTable, ({ one }) => ({
   })
 }))
 
-export const candidatesRelations = relations(
-  candidatesTable,
-  ({ one, many }) => ({
-    election: one(electionsTable, {
-      fields: [candidatesTable.electionId],
-      references: [electionsTable.electionId]
-    }),
-    votes: many(votesTable)
-  })
-)
+export const candidatesRelations = relations(candidatesTable, ({ one, many }) => ({
+  election: one(electionsTable, {
+    fields: [candidatesTable.electionId],
+    references: [electionsTable.electionId]
+  }),
+  votes: many(votesTable)
+}))
 
 export const ballotsRelations = relations(ballotsTable, ({ one, many }) => ({
   election: one(electionsTable, {

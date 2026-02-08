@@ -4,11 +4,7 @@ import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 import { downloadElectionCsv } from '~/actions/downloadElectionCsv'
-import type {
-  Ballot,
-  Election,
-  ValidVotingResult
-} from '~/algorithm/stvAlgorithm'
+import type { Ballot, Election, ValidVotingResult } from '~/algorithm/stvAlgorithm'
 import { generateCsvContent } from '~/utils/csvGenerator'
 import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
@@ -66,11 +62,9 @@ export default function ElectionActions({
     const emptyVotes = votingResult.totalVotes - votingResult.nonEmptyVotes
 
     const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes !== 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes !== 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
-    const firstDecimalVotesRound = votingResult.roundResults.find(
-      ({ candidateResults }) => {
-        return candidateResults.some(({ voteCount }) => voteCount % 1 !== 0)
-      }
-    )
+    const firstDecimalVotesRound = votingResult.roundResults.find(({ candidateResults }) => {
+      return candidateResults.some(({ voteCount }) => voteCount % 1 !== 0)
+    })
     const secondParagraph = firstDecimalVotesRound
       ? `Siirtoäänivaalitavasta johtuen päädyttiin desimaaliääniin ${firstDecimalVotesRound.round} kierroksella. Äänet on kirjattu pöytäkirjaan kahden desimaalin tarkkuudella.`
       : null
@@ -80,23 +74,13 @@ export default function ElectionActions({
         const quota = votingResult.quota
         const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${candidateResults
           .map(
-            ({
-              name,
-              voteCount,
-              isSelected,
-              isEliminated,
-              isEliminatedThisRound
-            }) =>
+            ({ name, voteCount, isSelected, isEliminated, isEliminatedThisRound }) =>
               `${name} ${!isEliminated || isEliminatedThisRound ? roundToTwoDecimals(voteCount) : '-'}${isSelected ? ' (valittu)' : ''}`
           )
           .join('; ')}; tyhjiä ${roundToTwoDecimals(emptyVotes)}.`
 
-        const winnersThisRound = candidateResults.filter(
-          (c) => c.isSelectedThisRound
-        )
-        const winnersNames = winnersThisRound
-          .map(({ name }) => name)
-          .join(' ja ')
+        const winnersThisRound = candidateResults.filter((c) => c.isSelectedThisRound)
+        const winnersNames = winnersThisRound.map(({ name }) => name).join(' ja ')
 
         const winnersString =
           winnersThisRound.length > 0
@@ -111,16 +95,11 @@ export default function ElectionActions({
           : null
 
         const winnersExtraParagraph =
-          winnersThisRound.length > 0 &&
-          round < votingResult.roundResults.length
+          winnersThisRound.length > 0 && round < votingResult.roundResults.length
             ? `${round + 1}. kierroksella jaettiin ${winnersNames}n äänikynnyksen ylittäneet ${winnersThisRound.map(({ voteCount }) => roundToTwoDecimals(voteCount - quota)).join(' ja ')} ääntä muille ehdokkaille siirtoäänivaalitavan määräämillä kertoimilla painotettuna.`
             : null
 
-        const paragraph = [
-          voteNameString,
-          winnersString,
-          droppedCandidateString
-        ]
+        const paragraph = [voteNameString, winnersString, droppedCandidateString]
           .filter((s) => s)
           .join(' ')
 
@@ -144,10 +123,7 @@ export default function ElectionActions({
       <Button onClick={handleCsvDownload} variant="secondary">
         {t('export_csv')}
       </Button>
-      <Button
-        onClick={() => getMinutesParagraphs(votingResult)}
-        variant="secondary"
-      >
+      <Button onClick={() => getMinutesParagraphs(votingResult)} variant="secondary">
         {minutesCopied ? t('minutes_copied_to_clipboard') : t('export_minutes')}
       </Button>
     </div>

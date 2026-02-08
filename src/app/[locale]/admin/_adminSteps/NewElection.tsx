@@ -30,9 +30,7 @@ export default function NewElection() {
 
   const removeCandidate = (index: number) => {
     setNewElection((electionState) => {
-      const updatedCandidates = electionState.candidates.filter(
-        (_, i) => i !== index
-      )
+      const updatedCandidates = electionState.candidates.filter((_, i) => i !== index)
 
       return {
         ...electionState,

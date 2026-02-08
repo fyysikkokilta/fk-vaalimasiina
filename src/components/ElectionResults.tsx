@@ -67,9 +67,7 @@ function ResultsTable({
     let eliminationRound: number | undefined
 
     for (const roundResult of votingResult.roundResults) {
-      const candidate = roundResult.candidateResults.find(
-        (c) => c.id === candidateId
-      )
+      const candidate = roundResult.candidateResults.find((c) => c.id === candidateId)
       if (candidate?.isSelectedThisRound) {
         electionRound = roundResult.round
       }
@@ -83,11 +81,7 @@ function ResultsTable({
 
   return (
     <div
-      id={
-        showAllImmediately
-          ? 'results_by_candidate'
-          : 'results_by_candidate_paged'
-      }
+      id={showAllImmediately ? 'results_by_candidate' : 'results_by_candidate_paged'}
       className="mb-3 min-w-0 overflow-hidden rounded-lg border border-gray-200"
     >
       <section
@@ -111,9 +105,7 @@ function ResultsTable({
             }
           ].map(({ key, value }) => (
             <div key={key}>
-              <div className="text-xs font-medium text-gray-500 uppercase">
-                {t(key)}
-              </div>
+              <div className="text-xs font-medium text-gray-500 uppercase">{t(key)}</div>
               <div className="text-sm font-medium text-gray-900">{value}</div>
             </div>
           ))}
@@ -143,14 +135,10 @@ function ResultsTable({
 
           <tbody className="divide-y divide-gray-200">
             {allCandidates.map((candidate, candidateIdx) => {
-              const { electionRound, eliminationRound } = getCandidateStatus(
-                candidate.id
-              )
+              const { electionRound, eliminationRound } = getCandidateStatus(candidate.id)
 
-              const showElected =
-                electionRound && isResultsVisible(electionRound - 1)
-              const showEliminated =
-                eliminationRound && isResultsVisible(eliminationRound - 1)
+              const showElected = electionRound && isResultsVisible(electionRound - 1)
+              const showEliminated = eliminationRound && isResultsVisible(eliminationRound - 1)
 
               const bgClass = showElected
                 ? 'bg-green-50'
@@ -162,23 +150,18 @@ function ResultsTable({
                 <tr key={candidate.id} className={bgClass}>
                   <td
                     className={`sticky left-0 z-10 border-r border-gray-200 p-3 text-sm ${bgClass} ${
-                      showElected
-                        ? 'font-semibold text-green-700'
-                        : 'font-medium text-gray-900'
+                      showElected ? 'font-semibold text-green-700' : 'font-medium text-gray-900'
                     }`}
                   >
                     {candidate.name}
                   </td>
                   {visibleRounds.map((round, roundIdx) => {
                     const cellVisible = isCellVisible(roundIdx, candidateIdx)
-                    const roundCandidate = round.candidateResults.find(
-                      (c) => c.id === candidate.id
-                    )
+                    const roundCandidate = round.candidateResults.find((c) => c.id === candidate.id)
                     const voteCount = roundCandidate?.voteCount ?? null
                     const isEliminatedAfterThisRound =
                       eliminationRound && round.round > eliminationRound
-                    const meetsQuota =
-                      voteCount != null && voteCount >= votingResult.quota
+                    const meetsQuota = voteCount != null && voteCount >= votingResult.quota
 
                     return (
                       <td
@@ -200,15 +183,9 @@ function ResultsTable({
                     )
                   })}
                   <td className={`p-3 text-left text-sm ${bgClass}`}>
-                    {showElected && (
-                      <span className="text-green-600">
-                        {t('chosen_before')}
-                      </span>
-                    )}
+                    {showElected && <span className="text-green-600">{t('chosen_before')}</span>}
                     {showEliminated && (
-                      <span className="text-red-600">
-                        {t('eliminated_before')}
-                      </span>
+                      <span className="text-red-600">{t('eliminated_before')}</span>
                     )}
                   </td>
                 </tr>
@@ -221,10 +198,7 @@ function ResultsTable({
               {visibleRounds.map((round, roundIdx) => {
                 const visible = isEmptyVotesVisible(roundIdx)
                 return (
-                  <td
-                    key={round.round}
-                    className="bg-red-50 p-3 text-center text-sm text-gray-900"
-                  >
+                  <td key={round.round} className="bg-red-50 p-3 text-center text-sm text-gray-900">
                     {visible ? roundToTwoDecimals(round.emptyVotes) : ''}
                   </td>
                 )
@@ -271,9 +245,7 @@ export default function ElectionResults({
             {votingResult.voterCount}
           </span>
         </div>
-        <div className="rounded-lg bg-red-100 p-4 text-red-700">
-          {t('invalid_result')}
-        </div>
+        <div className="rounded-lg bg-red-100 p-4 text-red-700">{t('invalid_result')}</div>
       </div>
     )
   }

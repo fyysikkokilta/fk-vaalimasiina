@@ -16,24 +16,17 @@ export default function Audit({ election, ballots }: AuditPageProps) {
     setSearch(value)
   }
 
-  const foundBallot = ballots.find(
-    (audit) => audit.ballotId.toLowerCase().trim() === search
-  )
+  const foundBallot = ballots.find((audit) => audit.ballotId.toLowerCase().trim() === search)
 
   return !election || !ballots ? (
     <TitleWrapper title={t('title')}>
-      <h2 className="mb-2 text-xl font-semibold">
-        {t('no_finished_election')}
-      </h2>
+      <h2 className="mb-2 text-xl font-semibold">{t('no_finished_election')}</h2>
       <p className="text-fk-black">{t('no_finished_election_description')}</p>
     </TitleWrapper>
   ) : (
     <TitleWrapper title={t('title')}>
       <div className="mb-4">
-        <label
-          htmlFor="searchBallot"
-          className="mb-2 block font-medium text-gray-700"
-        >
+        <label htmlFor="searchBallot" className="mb-2 block font-medium text-gray-700">
           {t('search_ballot')}
         </label>
         <Input
@@ -51,18 +44,13 @@ export default function Audit({ election, ballots }: AuditPageProps) {
         </div>
       ) : foundBallot ? (
         <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">
-            {t('ballot')}
-          </h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900">{t('ballot')}</h3>
           <div className="space-y-2">
             {foundBallot.votes.length > 0 ? (
               foundBallot.votes
-                .sort((a, b) => a.rank - b.rank)
+                .toSorted((a, b) => a.rank - b.rank)
                 .map((vote, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center space-x-2 rounded bg-gray-50 p-2"
-                  >
+                  <div key={index} className="flex items-center space-x-2 rounded bg-gray-50 p-2">
                     <span className="min-w-8 font-medium text-gray-700">
                       {vote.rank}
                       {'.'}
@@ -70,8 +58,7 @@ export default function Audit({ election, ballots }: AuditPageProps) {
                     <span className="text-gray-900">
                       {
                         election.candidates.find(
-                          (candidate) =>
-                            candidate.candidateId === vote.candidateId
+                          (candidate) => candidate.candidateId === vote.candidateId
                         )?.name
                       }
                     </span>
@@ -79,18 +66,14 @@ export default function Audit({ election, ballots }: AuditPageProps) {
                 ))
             ) : (
               <div className="py-4 text-center">
-                <span className="text-gray-500 italic">
-                  {t('empty_ballot')}
-                </span>
+                <span className="text-gray-500 italic">{t('empty_ballot')}</span>
               </div>
             )}
           </div>
         </div>
       ) : (
         <div className="py-8 text-center">
-          <p className="text-lg text-red-500">
-            {t('placeholder_incorrect_id')}
-          </p>
+          <p className="text-lg text-red-500">{t('placeholder_incorrect_id')}</p>
         </div>
       )}
     </TitleWrapper>

@@ -1,10 +1,6 @@
 import { expect, Locator, Page } from '@playwright/test'
 
-export const dragCandidate = async (
-  page: Page,
-  draggable: Locator,
-  droppable: Locator
-) => {
+export const dragCandidate = async (page: Page, draggable: Locator, droppable: Locator) => {
   await expect(draggable).not.toHaveAttribute('data-dnd-dragging')
 
   // Get bounding boxes for precise positioning

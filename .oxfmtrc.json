@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "trailingComma": "none",
+  "singleQuote": true,
+  "semi": false,
+  "endOfLine": "lf",
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "useTabs": false,
+  "tabWidth": 2,
+  "ignorePatterns": [
+    "**/.git",
+    "data",
+    "dist",
+    "node_modules",
+    "playwright-report",
+    "test-results",
+    ".env",
+    "**/drizzle"
+  ],
+  "experimentalTailwindcss": {}
+}

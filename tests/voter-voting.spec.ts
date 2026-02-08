@@ -41,9 +41,7 @@ test.describe('voting page', () => {
   })
 
   test('should show election title', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: 'Election 1' })
-    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Election 1' })).toBeVisible()
   })
 
   test('should show candidates in available candidates', async ({ page }) => {
@@ -74,26 +72,16 @@ test.describe('voting', () => {
       .locator('#selectedCandidates')
       .getByRole('button', { name: 'Candidate 1' })
 
-    await dragCandidate(
-      page,
-      candidateNotSelected,
-      page.locator('#selectedCandidates')
-    )
+    await dragCandidate(page, candidateNotSelected, page.locator('#selectedCandidates'))
     await expect(candidateNotSelected).not.toBeVisible()
     await expect(candidateSelected).toBeVisible()
 
-    await dragCandidate(
-      page,
-      candidateSelected,
-      page.locator('#availableCandidates')
-    )
+    await dragCandidate(page, candidateSelected, page.locator('#availableCandidates'))
     await expect(candidateSelected).not.toBeVisible()
     await expect(candidateNotSelected).toBeVisible()
   })
 
-  test('should allow to add and remove candidates by double-clicking', async ({
-    page
-  }) => {
+  test('should allow to add and remove candidates by double-clicking', async ({ page }) => {
     // Double-click a candidate from available to selected
     const candidateNotSelected = page
       .locator('#availableCandidates')
@@ -113,9 +101,7 @@ test.describe('voting', () => {
     await expect(candidateSelected).not.toBeVisible()
   })
 
-  test('should allow multiple candidates to be added by double-clicking', async ({
-    page
-  }) => {
+  test('should allow multiple candidates to be added by double-clicking', async ({ page }) => {
     // Add first candidate
     const candidateNotSelected = page
       .locator('#availableCandidates')
@@ -148,30 +134,22 @@ test.describe('voting', () => {
   test('should show confirm vote dialog', async ({ page }) => {
     await dragCandidate(
       page,
-      page
-        .locator('#availableCandidates')
-        .getByRole('button', { name: 'Candidate 1' }),
+      page.locator('#availableCandidates').getByRole('button', { name: 'Candidate 1' }),
       page.locator('#selectedCandidates')
     )
     await page.getByRole('button', { name: 'Vote' }).click()
     await expect(page.getByText('Vote confirmation')).toBeVisible()
     const modalLocator = page.getByRole('dialog')
     await expect(modalLocator).toBeVisible()
-    await expect(
-      modalLocator.getByRole('button', { name: 'Confirm' })
-    ).toBeVisible()
-    await expect(
-      modalLocator.getByRole('button', { name: 'Cancel' })
-    ).toBeVisible()
+    await expect(modalLocator.getByRole('button', { name: 'Confirm' })).toBeVisible()
+    await expect(modalLocator.getByRole('button', { name: 'Cancel' })).toBeVisible()
     await expect(modalLocator.locator('text=Candidate 1')).toBeVisible()
   })
 
   test('should submit vote', async ({ page }) => {
     await dragCandidate(
       page,
-      page
-        .locator('#availableCandidates')
-        .getByRole('button', { name: 'Candidate 1' }),
+      page.locator('#availableCandidates').getByRole('button', { name: 'Candidate 1' }),
       page.locator('#selectedCandidates')
     )
     await page.getByRole('button', { name: 'Vote' }).click()
@@ -183,26 +161,20 @@ test.describe('voting', () => {
   test('should show ballot id copy button after voting', async ({ page }) => {
     await dragCandidate(
       page,
-      page
-        .locator('#availableCandidates')
-        .getByRole('button', { name: 'Candidate 1' }),
+      page.locator('#availableCandidates').getByRole('button', { name: 'Candidate 1' }),
       page.locator('#selectedCandidates')
     )
 
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await expect(
-      page.getByRole('button', { name: 'Copy ballot ID' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Copy ballot ID' })).toBeVisible()
   })
 
   test('should copy ballot id after voting', async ({ page }) => {
     await dragCandidate(
       page,
-      page
-        .locator('#availableCandidates')
-        .getByRole('button', { name: 'Candidate 1' }),
+      page.locator('#availableCandidates').getByRole('button', { name: 'Candidate 1' }),
       page.locator('#selectedCandidates')
     )
 
@@ -210,19 +182,13 @@ test.describe('voting', () => {
     await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Copy ballot ID' }).click()
-    await expect(
-      page.locator('text=Ballot ID copied to clipboard')
-    ).toBeVisible()
+    await expect(page.locator('text=Ballot ID copied to clipboard')).toBeVisible()
   })
 
-  test("shouldn't show copy ballot id button after refreshing page", async ({
-    page
-  }) => {
+  test("shouldn't show copy ballot id button after refreshing page", async ({ page }) => {
     await dragCandidate(
       page,
-      page
-        .locator('#availableCandidates')
-        .getByRole('button', { name: 'Candidate 1' }),
+      page.locator('#availableCandidates').getByRole('button', { name: 'Candidate 1' }),
       page.locator('#selectedCandidates')
     )
 
@@ -233,9 +199,7 @@ test.describe('voting', () => {
 
     await page.reload()
     await expect(page.getByText('You have already voted!')).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Copy ballot ID' })
-    ).not.toBeVisible()
+    await expect(page.getByRole('button', { name: 'Copy ballot ID' })).not.toBeVisible()
   })
 })
 
@@ -244,30 +208,20 @@ test.describe('audit view', () => {
     await page.goto(`/vote/${voters[0].voterId}`)
   })
 
-  test('should show search bar and placeholder initially', async ({
-    page,
-    request
-  }) => {
+  test('should show search bar and placeholder initially', async ({ page, request }) => {
     await changeElectionStatus(election.electionId, 'FINISHED', request)
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()
 
     // Should show search input and placeholder text
     await expect(page.getByLabel('Search ballot')).toBeVisible()
-    await expect(
-      page.getByText('Enter a ballot ID to view the ballot')
-    ).toBeVisible()
+    await expect(page.getByText('Enter a ballot ID to view the ballot')).toBeVisible()
   })
 
-  test('should show ballot when correct ID is entered', async ({
-    page,
-    request
-  }) => {
+  test('should show ballot when correct ID is entered', async ({ page, request }) => {
     await dragCandidate(
       page,
-      page
-        .locator('#availableCandidates')
-        .getByRole('button', { name: 'Candidate 1' }),
+      page.locator('#availableCandidates').getByRole('button', { name: 'Candidate 1' }),
       page.locator('#selectedCandidates')
     )
     await page.getByRole('button', { name: 'Vote' }).click()
@@ -290,10 +244,7 @@ test.describe('audit view', () => {
     await expect(page.getByText(ballotId)).not.toBeVisible()
   })
 
-  test('should show empty ballot when ballot has no votes', async ({
-    page,
-    request
-  }) => {
+  test('should show empty ballot when ballot has no votes', async ({ page, request }) => {
     await page.getByRole('button', { name: 'Vote' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
     await page.getByRole('button', { name: 'Copy ballot ID' }).click()
@@ -313,10 +264,7 @@ test.describe('audit view', () => {
     await expect(page.getByText(ballotId)).not.toBeVisible()
   })
 
-  test('should show error message when incorrect ID is entered', async ({
-    page,
-    request
-  }) => {
+  test('should show error message when incorrect ID is entered', async ({ page, request }) => {
     await changeElectionStatus(election.electionId, 'FINISHED', request)
     await page.goto('/audit')
     await expect(page.getByRole('heading', { name: 'Auditing' })).toBeVisible()

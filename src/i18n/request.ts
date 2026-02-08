@@ -11,9 +11,7 @@ export default getRequestConfig(async ({ locale }) => {
   // Server actions don't have access to root params, so we need to use the passed locale instead
   if (!locale) {
     const paramValue = await rootParams.locale()
-    locale = hasLocale(routing.locales, paramValue)
-      ? paramValue
-      : routing.defaultLocale
+    locale = hasLocale(routing.locales, paramValue) ? paramValue : routing.defaultLocale
   }
 
   const messages = locale === 'fi' ? fi : en

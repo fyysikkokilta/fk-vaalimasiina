@@ -60,6 +60,9 @@ jobs:
       - name: Lint and fix
         run: pnpm lint --fix
 
+      - name: Format check
+        run: pnpm format:check
+
       - name: Check for uncommitted changes
         run: |
           if [ -n "$(git status --porcelain)" ]; then

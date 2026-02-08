@@ -27,9 +27,7 @@ export default async function LoginPage() {
           <div className="w-full max-w-md">
             <div className="space-y-4">
               <div className="text-center">
-                <p className="mb-6 text-red-600">
-                  {t('no_providers_configured')}
-                </p>
+                <p className="mb-6 text-red-600">{t('no_providers_configured')}</p>
               </div>
             </div>
           </div>

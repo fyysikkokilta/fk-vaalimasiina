@@ -42,16 +42,10 @@ export async function uploadCsvToS3(fileName: string, csvContent: string) {
   }
 
   try {
-    await client.putObject(
-      env.S3_BUCKET_NAME!,
-      fileName,
-      csvContent,
-      csvContent.length,
-      {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename="${fileName}"`
-      }
-    )
+    await client.putObject(env.S3_BUCKET_NAME!, fileName, csvContent, csvContent.length, {
+      'Content-Type': 'text/csv',
+      'Content-Disposition': `attachment; filename="${fileName}"`
+    })
 
     return fileName
   } catch (error) {
@@ -60,7 +54,7 @@ export async function uploadCsvToS3(fileName: string, csvContent: string) {
       'Error uploading CSV to S3:',
       error instanceof Error ? error.message : 'Unknown error'
     )
-    throw new Error('Failed to upload CSV file to storage')
+    throw new Error('Failed to upload CSV file to storage', { cause: error })
   }
 }
 
@@ -124,6 +118,6 @@ export async function getSignedDownloadUrl(fileName: string) {
       'Error generating signed URL:',
       error instanceof Error ? error.message : 'Unknown error'
     )
-    throw new Error('Failed to generate download URL')
+    throw new Error('Failed to generate download URL', { cause: error })
   }
 }

@@ -9,15 +9,11 @@ test.beforeEach(async ({ page, request }) => {
 })
 
 test('should show new election form', async ({ page }) => {
-  await expect(
-    page.getByRole('heading', { name: 'New election' })
-  ).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'New election' })).toBeVisible()
 })
 
 test('should show correct navigation buttons', async ({ page }) => {
-  await expect(
-    page.getByRole('button', { name: 'Create election' })
-  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Create election' })).toBeVisible()
 })
 
 test('should create a new election', async ({ page }) => {

@@ -8,11 +8,7 @@ import PreviewElection from './_adminSteps/PreviewElection'
 import Results from './_adminSteps/Results'
 import VotingInspection from './_adminSteps/VotingInspection'
 
-export default function Admin({
-  adminElection
-}: {
-  adminElection: AdminElection
-}) {
+export default function Admin({ adminElection }: { adminElection: AdminElection }) {
   if (!adminElection) {
     return <NewElection />
   }

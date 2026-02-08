@@ -26,8 +26,7 @@ export default function Pagination({
   return (
     <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
       <div className="text-sm text-gray-700">
-        {translations.page} <span className="font-medium">{currentPage}</span>{' '}
-        {'/ '}
+        {translations.page} <span className="font-medium">{currentPage}</span> {'/ '}
         <span className="font-medium">{totalPages}</span>
       </div>
       <div className="flex gap-2">

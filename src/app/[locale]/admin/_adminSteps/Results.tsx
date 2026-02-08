@@ -8,11 +8,7 @@ import ElectionResults from '~/components/ElectionResults'
 import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
-export default function Results({
-  election,
-  ballots,
-  voters
-}: ElectionStepProps) {
+export default function Results({ election, ballots, voters }: ElectionStepProps) {
   const { execute, status: closeActionStatus } = useAction(closeElection)
 
   return (

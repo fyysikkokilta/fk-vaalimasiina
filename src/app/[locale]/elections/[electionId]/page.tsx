@@ -11,9 +11,7 @@ export function generateStaticParams() {
   return []
 }
 
-export async function generateMetadata({
-  params
-}: PageProps<'/[locale]/elections/[electionId]'>) {
+export async function generateMetadata({ params }: PageProps<'/[locale]/elections/[electionId]'>) {
   const { electionId } = await params
   const t = await getTranslations('metadata.election')
   const electionBallotsVoterCount = await getElection(electionId)
@@ -31,9 +29,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function Election({
-  params
-}: PageProps<'/[locale]/elections/[electionId]'>) {
+export default async function Election({ params }: PageProps<'/[locale]/elections/[electionId]'>) {
   const { electionId } = await params
 
   if (!isUUID(electionId)) {
@@ -57,10 +53,7 @@ export default async function Election({
           {t('back_to_list')}
         </Link>
       </div>
-      <ElectionResults
-        {...electionBallotsVoterCount}
-        showAllImmediately={true}
-      />
+      <ElectionResults {...electionBallotsVoterCount} showAllImmediately={true} />
     </TitleWrapper>
   )
 }

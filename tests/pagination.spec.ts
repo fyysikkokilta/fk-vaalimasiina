@@ -28,17 +28,13 @@ test.describe('Election list page', () => {
     await expect(electionCards).toHaveCount(18)
   })
 
-  test('should show pagination controls when more than 18 elections', async ({
-    page
-  }) => {
+  test('should show pagination controls when more than 18 elections', async ({ page }) => {
     // Check pagination info
     await expect(page.getByText('Page 1 / 2')).toBeVisible()
 
     // Check navigation buttons
     await expect(page.getByRole('button', { name: 'Previous' })).toBeDisabled()
-    await expect(
-      page.getByRole('button', { name: 'Next', exact: true })
-    ).toBeEnabled()
+    await expect(page.getByRole('button', { name: 'Next', exact: true })).toBeEnabled()
   })
 
   test('should navigate to second page', async ({ page }) => {
@@ -53,9 +49,7 @@ test.describe('Election list page', () => {
 
     // Check navigation buttons updated
     await expect(page.getByRole('button', { name: 'Previous' })).toBeEnabled()
-    await expect(
-      page.getByRole('button', { name: 'Next', exact: true })
-    ).toBeDisabled()
+    await expect(page.getByRole('button', { name: 'Next', exact: true })).toBeDisabled()
   })
 
   test('should navigate back to first page', async ({ page }) => {
@@ -69,15 +63,10 @@ test.describe('Election list page', () => {
 
     // Check navigation buttons
     await expect(page.getByRole('button', { name: 'Previous' })).toBeDisabled()
-    await expect(
-      page.getByRole('button', { name: 'Next', exact: true })
-    ).toBeEnabled()
+    await expect(page.getByRole('button', { name: 'Next', exact: true })).toBeEnabled()
   })
 
-  test('should not show pagination when 18 or fewer elections', async ({
-    page,
-    request
-  }) => {
+  test('should not show pagination when 18 or fewer elections', async ({ page, request }) => {
     await resetDatabase(request)
 
     // Create exactly 18 closed elections
@@ -97,19 +86,13 @@ test.describe('Election list page', () => {
 
     // Should not show pagination controls
     await expect(page.getByText('Page')).not.toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Previous' })
-    ).not.toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Next', exact: true })
-    ).not.toBeVisible()
+    await expect(page.getByRole('button', { name: 'Previous' })).not.toBeVisible()
+    await expect(page.getByRole('button', { name: 'Next', exact: true })).not.toBeVisible()
   })
 
   test('should show election dates on each card', async ({ page }) => {
     const firstElectionCard = page.locator('ul li').first()
-    await expect(
-      firstElectionCard.locator(`text=${new Date().getFullYear()}`)
-    ).toBeVisible()
+    await expect(firstElectionCard.locator(`text=${new Date().getFullYear()}`)).toBeVisible()
   })
 
   test('should maintain election order (newest first)', async ({ page }) => {
@@ -160,18 +143,13 @@ test.describe('Pagination component edge cases', () => {
 
     // Should show no results message
     await expect(page.getByText('No previous results')).toBeVisible()
-    await expect(
-      page.getByText('There have been no elections held yet')
-    ).toBeVisible()
+    await expect(page.getByText('There have been no elections held yet')).toBeVisible()
 
     // Should not show pagination
     await expect(page.getByText('Page')).not.toBeVisible()
   })
 
-  test('should handle audit page with no finished election', async ({
-    page,
-    request
-  }) => {
+  test('should handle audit page with no finished election', async ({ page, request }) => {
     await resetDatabase(request)
 
     await page.goto('/audit')

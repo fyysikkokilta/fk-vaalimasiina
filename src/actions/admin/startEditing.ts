@@ -20,12 +20,7 @@ export const startEditing = actionClient
     const statuses = await db
       .update(electionsTable)
       .set({ status: 'UPDATING' })
-      .where(
-        and(
-          eq(electionsTable.electionId, electionId),
-          eq(electionsTable.status, 'CREATED')
-        )
-      )
+      .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'CREATED')))
       .returning({ status: electionsTable.status })
 
     if (!statuses[0]) {

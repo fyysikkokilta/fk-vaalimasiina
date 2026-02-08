@@ -22,10 +22,7 @@ export async function POST(req: Request) {
     : null
 
   if (!paths || paths.length === 0) {
-    return NextResponse.json(
-      { error: 'Missing or empty paths array' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Missing or empty paths array' }, { status: 400 })
   }
 
   paths.forEach((path) => revalidatePath(path, 'page'))

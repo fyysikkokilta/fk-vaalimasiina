@@ -6,11 +6,7 @@ import { z } from 'zod'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
-import {
-  fileExistsInS3,
-  getSignedDownloadUrl,
-  isS3Configured
-} from '~/utils/s3Storage'
+import { fileExistsInS3, getSignedDownloadUrl, isS3Configured } from '~/utils/s3Storage'
 
 const downloadElectionCsvSchema = z.object({
   electionId: z.uuid('Election identifier must be a valid UUID')

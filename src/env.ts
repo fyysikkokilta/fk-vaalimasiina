@@ -47,9 +47,7 @@ export const env = createEnv({
       .string()
       .default('false')
       .transform((val) => val === 'true'),
-    NODE_ENV: z
-      .enum(['development', 'production', 'test'])
-      .default('development')
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development')
   },
   /**
    * Client-side environment variables
@@ -59,26 +57,17 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASE_URL: z.url().default('https://vaalit.fyysikkokilta.fi'),
     NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT: z.string().default('Vaalimasiina'),
-    NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT: z
-      .string()
-      .default('Vaalimasiina'),
-    NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT: z
-      .string()
-      .default('fyysikkokilta.fi'),
-    NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK: z
-      .url()
-      .default('https://fyysikkokilta.fi')
+    NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT: z.string().default('Vaalimasiina'),
+    NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT: z.string().default('fyysikkokilta.fi'),
+    NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK: z.url().default('https://fyysikkokilta.fi')
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-    NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT:
-      process.env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT,
+    NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT: process.env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT,
     NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT:
       process.env.NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT,
-    NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT:
-      process.env.NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT,
-    NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK:
-      process.env.NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK
+    NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT: process.env.NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT,
+    NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK: process.env.NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK
   },
   emptyStringAsUndefined: true,
   skipValidation: process.env.SKIP_ENV_VALIDATION === 'true'

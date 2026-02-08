@@ -50,10 +50,7 @@ export const votersTable = pgTable(
     email: varchar('email').notNull()
   },
   (table) => [
-    uniqueIndex('unique_voters_electionId_email').on(
-      table.electionId,
-      sql`lower(${table.email})`
-    )
+    uniqueIndex('unique_voters_electionId_email').on(table.electionId, sql`lower(${table.email})`)
   ]
 )
 
@@ -107,10 +104,7 @@ export const votesTable = pgTable(
   },
   (table) => [
     unique('unique_votes_ballotId_rank').on(table.ballotId, table.rank),
-    unique('unique_votes_ballotId_candidateId').on(
-      table.ballotId,
-      table.candidateId
-    ),
+    unique('unique_votes_ballotId_candidateId').on(table.ballotId, table.candidateId),
     check('check_votes_rank', sql`${table.rank} > 0`)
   ]
 )

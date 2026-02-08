@@ -6,13 +6,7 @@ import { Link } from '~/i18n/navigation'
 
 import LanguageSwitcher from './LanguageSwitcher'
 
-function HeaderLink({
-  href,
-  children
-}: {
-  href: string
-  children: React.ReactNode
-}) {
+function HeaderLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <Link
       href={href}
@@ -46,16 +40,8 @@ export default async function Header() {
         </nav>
         <div className="relative mr-2 md:hidden">
           <input type="checkbox" id="nav-toggle" className="peer hidden" />
-          <label
-            htmlFor="nav-toggle"
-            className="block cursor-pointer p-2 text-white"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+          <label htmlFor="nav-toggle" className="block cursor-pointer p-2 text-white">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

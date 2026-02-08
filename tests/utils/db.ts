@@ -54,10 +54,7 @@ export const changeElectionStatus = async (
   return changeStatus(electionId, status)
 }
 
-export const insertVoters = async (data: {
-  electionId: string
-  emails: string[]
-}) => {
+export const insertVoters = async (data: { electionId: string; emails: string[] }) => {
   return createVoters(data.electionId, data.emails)
 }
 
@@ -94,10 +91,7 @@ export const createElectionWithVotersAndBallots = async (
   )
   const voters = await insertVoters({
     electionId: election.electionId,
-    emails: Array.from(
-      { length: voteCount },
-      (_, i) => `email${i + 1}@email.com`
-    )
+    emails: Array.from({ length: voteCount }, (_, i) => `email${i + 1}@email.com`)
   })
   const ballots = await insertVotes({
     electionId: election.electionId,
@@ -111,7 +105,7 @@ export const createElectionWithVotersAndBallots = async (
           candidateId: election.candidates[i].candidateId,
           rank: preference
         }))
-        .sort((a, b) => a.rank - b.rank)
+        .toSorted((a, b) => a.rank - b.rank)
         .slice(0, randomInt(0, candidateCount))
     }))
   })
