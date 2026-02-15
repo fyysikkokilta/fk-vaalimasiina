@@ -22,7 +22,7 @@ function MajorityResultsTable({
   const winnerIds = new Set(votingResult.winners.map((w) => w.id))
 
   return (
-    <div className="mb-3 min-w-0 overflow-hidden rounded-lg border border-gray-200">
+    <div className="mb-3 overflow-hidden rounded-lg border border-gray-200">
       <section
         className="border-b border-gray-200 bg-blue-50 px-4 py-3"
         aria-label={t('initial_votes')}
@@ -43,7 +43,7 @@ function MajorityResultsTable({
           ))}
         </div>
       </section>
-      <div className="min-w-0 overflow-x-auto">
+      <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse">
           <thead className="bg-gray-50">
             <tr>
@@ -153,7 +153,7 @@ function ResultsTable({
   return (
     <div
       id={showAllImmediately ? 'results_by_candidate' : 'results_by_candidate_paged'}
-      className="mb-3 min-w-0 overflow-hidden rounded-lg border border-gray-200"
+      className="mb-3 overflow-hidden rounded-lg border border-gray-200"
     >
       <section
         className="border-b border-gray-200 bg-blue-50 px-4 py-3"
@@ -183,11 +183,11 @@ function ResultsTable({
         </div>
       </section>
 
-      <div className="min-w-0 overflow-x-auto overflow-y-hidden max-md:overflow-x-scroll max-md:[-webkit-overflow-scrolling:touch]">
-        <table className="w-full min-w-[600px] table-auto border-collapse">
+      <div className="overflow-x-auto overflow-y-hidden max-md:overflow-x-scroll max-md:[-webkit-overflow-scrolling:touch]">
+        <table className="w-full table-auto border-collapse">
           <thead className="bg-gray-50">
             <tr>
-              <th className="sticky left-0 z-10 min-w-[140px] border-r border-gray-200 bg-gray-50 p-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+              <th className="sticky left-0 z-10 border-r border-gray-200 bg-gray-50 p-3 text-xs font-medium tracking-wider text-gray-500 uppercase">
                 {t('candidate_name')}
               </th>
               {visibleRounds.map((round) => (
@@ -198,7 +198,7 @@ function ResultsTable({
                   {t('round')} {round.round}
                 </th>
               ))}
-              <th className="min-w-[120px] p-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+              <th className="p-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                 {t('result')}
               </th>
             </tr>
@@ -220,7 +220,7 @@ function ResultsTable({
               return (
                 <tr key={candidate.id} className={bgClass}>
                   <td
-                    className={`sticky left-0 z-10 border-r border-gray-200 p-3 text-sm ${bgClass} ${
+                    className={`sticky left-0 z-10 w-fit border-r border-gray-200 p-3 text-sm ${bgClass} ${
                       showElected ? 'font-semibold text-green-700' : 'font-medium text-gray-900'
                     }`}
                   >
