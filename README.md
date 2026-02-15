@@ -61,8 +61,7 @@ This project uses `@t3-oss/env-nextjs` for environment variable validation. All 
 
 - `S3_ACCESS_KEY_ID`: S3-compatible storage access key ID (optional)
 - `S3_SECRET_ACCESS_KEY`: S3-compatible storage secret access key (optional)
-- `S3_BUCKET_NAME`: S3-compatible storage bucket name for storing election results (optional)
-- `S3_ENDPOINT`: S3-compatible storage endpoint URL (varies by provider, optional)
+- `S3_ENDPOINT`: S3-compatible storage endpoint URL with bucket name (varies by provider, optional)
 - `S3_REGION`: S3-compatible storage region (varies by provider, default: `auto`)
 
 #### Branding

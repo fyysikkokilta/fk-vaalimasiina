@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 import { downloadElectionCsv } from '~/actions/downloadElectionCsv'
-import type { Ballot, Election, ValidMajorityResult, ValidVotingResult } from '~/algorithm/types'
+import type { Election, ValidMajorityResult, ValidVotingResult } from '~/algorithm/types'
 import { generateCsvContent } from '~/utils/csvGenerator'
 import { roundToTwoDecimals } from '~/utils/roundToTwoDecimals'
 
@@ -24,35 +24,24 @@ export default function ElectionActions({
   const ballots = votingResult.ballots
 
   const handleCsvDownload = async () => {
+    let csvData = null
     try {
       const result = await downloadElectionCsv({
         electionId: election.electionId
       })
-
-      if (result?.data?.downloadUrl) {
-        // S3 storage is configured and file exists - download from S3
-        const link = document.createElement('a')
-        link.href = result.data.downloadUrl
-        link.download = `${election.title}.csv`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      } else {
-        // S3 not configured or file doesn't exist - fallback to client-side generation
-        exportBallotsToCSV(ballots, election)
+      if (result?.data?.electionCsvData) {
+        csvData = result.data.electionCsvData
       }
     } catch (error) {
       console.error('Error downloading CSV:', error)
-      // Fallback to client-side generation on any error
-      exportBallotsToCSV(ballots, election)
     }
-  }
 
-  const exportBallotsToCSV = (ballots: Ballot[], election: Election) => {
-    const csvContent = generateCsvContent(ballots, { ...election, votingMethod })
+    // If the CSV data is not found, generate it client-side
+    if (!csvData) {
+      csvData = generateCsvContent(ballots, { ...election, votingMethod })
+    }
 
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-
+    const blob = new Blob([csvData], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url

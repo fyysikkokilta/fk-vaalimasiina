@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
 import { electionsTable } from '~/db/schema'
-import { fileExistsInS3, getSignedDownloadUrl, isS3Configured } from '~/utils/s3Storage'
+import { getCsvFromS3, isS3Configured } from '~/utils/s3Storage'
 
 const downloadElectionCsvSchema = z.object({
   electionId: z.uuid('Election identifier must be a valid UUID')
@@ -18,7 +18,7 @@ export const downloadElectionCsv = actionClient
     try {
       // If S3 is not configured, return null to indicate fallback to client-side generation
       if (!isS3Configured()) {
-        return { downloadUrl: null }
+        return { electionCsvData: null }
       }
 
       // Get the election with CSV file path
@@ -37,27 +37,19 @@ export const downloadElectionCsv = actionClient
 
       if (!election.csvFilePath) {
         // No CSV file stored, return null to indicate fallback to client-side generation
-        return { downloadUrl: null }
+        return { electionCsvData: null }
       }
 
-      // Check if file exists in S3-compatible storage
-      const fileExists = await fileExistsInS3(election.csvFilePath)
-      if (!fileExists) {
-        console.warn('File does not exist in S3', election.csvFilePath)
-        // File doesn't exist, return null to indicate fallback to client-side generation
-        return { downloadUrl: null }
-      }
+      // Get the CSV data from S3
+      const electionCsvData = await getCsvFromS3(election.csvFilePath)
 
-      // Generate signed download URL
-      const downloadUrl = await getSignedDownloadUrl(election.csvFilePath)
-
-      return { downloadUrl }
+      return { electionCsvData }
     } catch (error) {
       console.error('Error downloading election CSV:', error)
       if (error instanceof ActionError) {
         throw error
       }
       // For other errors, return null to fallback to client-side generation
-      return { downloadUrl: null }
+      return { electionCsvData: null }
     }
   })
