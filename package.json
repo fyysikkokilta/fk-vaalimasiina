@@ -72,8 +72,7 @@
       "@swc/core",
       "esbuild",
       "sharp",
-      "simple-git-hooks",
-      "unrs-resolver"
+      "simple-git-hooks"
     ]
   }
 }
