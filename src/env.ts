@@ -38,6 +38,8 @@ export const env = createEnv({
     BRANDING_EMAIL_SUBJECT_PREFIX: z.string().default('Vaalimasiina'),
     BRANDING_MAIL_FOOTER_TEXT: z.string().default('Rakkaudella Fysistit'),
     BRANDING_MAIL_FOOTER_LINK: z.url().default('https://fyysikkokilta.fi'),
+    BRANDING_PRIMARY_COLOR: z.string().default('#fbdb1d'),
+    BRANDING_SECONDARY_COLOR: z.string().default('#201e1e'),
     S3_ACCESS_KEY_ID: z.string().optional(), // SECRET: S3 access key
     S3_SECRET_ACCESS_KEY: z.string().optional(), // SECRET: S3 secret key
     S3_ENDPOINT: z.url().optional(),
