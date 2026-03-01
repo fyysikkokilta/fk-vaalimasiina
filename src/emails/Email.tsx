@@ -35,7 +35,7 @@ const EmailTemplate = ({
   return (
     <Html>
       <Head>
-        <title>Vaalimasiina</title>
+        <title>{headerTitle}</title>
       </Head>
       <Body
         style={{
