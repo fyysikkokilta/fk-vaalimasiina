@@ -22,7 +22,8 @@ export const endVoting = actionClient
         with: {
           hasVoted: true
         },
-        where: (votersTable, { eq }) => eq(votersTable.electionId, electionId)
+        where: (innerVotersTable, { eq: eqInner }) =>
+          eqInner(innerVotersTable.electionId, electionId)
       })
 
       const everyoneVoted = voters.every((voter) => voter.hasVoted)

@@ -102,10 +102,10 @@ export const vote = actionClient
 
         if (ballot.ballotItems.length > 0) {
           await transaction.insert(votesTable).values(
-            ballot.ballotItems.map((vote) => ({
+            ballot.ballotItems.map((ballotItem) => ({
               ballotId: ballots[0].ballotId,
-              candidateId: vote.candidateId,
-              rank: vote.rank
+              candidateId: ballotItem.candidateId,
+              rank: ballotItem.rank
             }))
           )
         }

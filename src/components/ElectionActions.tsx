@@ -49,16 +49,16 @@ export default function ElectionActions({
     a.click()
   }
 
-  const getMinutesParagraphsMajority = async (votingResult: ValidMajorityResult) => {
-    const totalVotes = votingResult.totalVotes
-    const emptyVotes = votingResult.totalVotes - votingResult.nonEmptyVotes
+  const getMinutesParagraphsMajority = async (majorityResult: ValidMajorityResult) => {
+    const totalVotes = majorityResult.totalVotes
+    const emptyVotes = majorityResult.totalVotes - majorityResult.nonEmptyVotes
     const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes !== 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes !== 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
-    const resultsString = votingResult.candidateResults
+    const resultsString = majorityResult.candidateResults
       .map((c) => `${c.name} ${c.voteCount} ääntä`)
       .join('; ')
     const winnersParagraph =
-      votingResult.winners.length > 0
-        ? `Valituiksi tulivat: ${votingResult.winners.map(({ name }) => name).join(' ja ')}.`
+      majorityResult.winners.length > 0
+        ? `Valituiksi tulivat: ${majorityResult.winners.map(({ name }) => name).join(' ja ')}.`
         : 'Yhtään ehdokasta ei valittu (kaikki äänestivät tyhjää).'
     await navigator.clipboard.writeText(
       [firstParagraph, `Tulokset: ${resultsString}`, winnersParagraph].join('\n\n')
@@ -67,21 +67,21 @@ export default function ElectionActions({
     setTimeout(() => setMinutesCopied(false), 3000)
   }
 
-  const getMinutesParagraphsSTV = async (votingResult: ValidVotingResult) => {
-    const totalVotes = votingResult.totalVotes
-    const emptyVotes = votingResult.totalVotes - votingResult.nonEmptyVotes
+  const getMinutesParagraphsSTV = async (stvResult: ValidVotingResult) => {
+    const totalVotes = stvResult.totalVotes
+    const totalEmptyVotes = stvResult.totalVotes - stvResult.nonEmptyVotes
 
-    const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes !== 1 ? 'kappaletta' : 'kappale'}, joista ${emptyVotes} oli ${emptyVotes !== 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
-    const firstDecimalVotesRound = votingResult.roundResults.find(({ candidateResults }) => {
+    const firstParagraph = `Ääniä annettiin ${totalVotes} ${totalVotes !== 1 ? 'kappaletta' : 'kappale'}, joista ${totalEmptyVotes} oli ${totalEmptyVotes !== 1 ? 'tyhjiä' : 'tyhjä'}. Äänestystulos oli vaalikelpoinen.`
+    const firstDecimalVotesRound = stvResult.roundResults.find(({ candidateResults }) => {
       return candidateResults.some(({ voteCount }) => voteCount % 1 !== 0)
     })
     const secondParagraph = firstDecimalVotesRound
       ? `Siirtoäänivaalitavasta johtuen päädyttiin desimaaliääniin ${firstDecimalVotesRound.round} kierroksella. Äänet on kirjattu pöytäkirjaan kahden desimaalin tarkkuudella.`
       : null
 
-    const roundParagraphs = votingResult.roundResults.map(
+    const roundParagraphs = stvResult.roundResults.map(
       ({ round, candidateResults, tieBreaker, emptyVotes }) => {
-        const quota = votingResult.quota
+        const quota = stvResult.quota
         const voteNameString = `Tulos ${round}. kierroksella (äänikynnys ${quota}): ${candidateResults
           .map(
             ({ name, voteCount, isSelected, isEliminated, isEliminatedThisRound }) =>
@@ -105,7 +105,7 @@ export default function ElectionActions({
           : null
 
         const winnersExtraParagraph =
-          winnersThisRound.length > 0 && round < votingResult.roundResults.length
+          winnersThisRound.length > 0 && round < stvResult.roundResults.length
             ? `${round + 1}. kierroksella jaettiin ${winnersNames}n äänikynnyksen ylittäneet ${winnersThisRound.map(({ voteCount }) => roundToTwoDecimals(voteCount - quota)).join(' ja ')} ääntä muille ehdokkaille siirtoäänivaalitavan määräämillä kertoimilla painotettuna.`
             : null
 
@@ -117,7 +117,7 @@ export default function ElectionActions({
       }
     )
 
-    const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${votingResult.winners.map(({ name }) => name).join(' ja ')} Fyysikkokillan rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
+    const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${stvResult.winners.map(({ name }) => name).join(' ja ')} Fyysikkokillan rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
 
     await navigator.clipboard.writeText(
       [firstParagraph, secondParagraph, ...roundParagraphs, winnersParagraph]

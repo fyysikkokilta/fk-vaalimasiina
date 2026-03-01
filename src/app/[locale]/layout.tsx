@@ -27,7 +27,7 @@ export async function generateMetadata() {
 }
 
 export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }))
+  return routing.locales.map((localeParam) => ({ locale: localeParam }))
 }
 
 const roboto = Roboto({

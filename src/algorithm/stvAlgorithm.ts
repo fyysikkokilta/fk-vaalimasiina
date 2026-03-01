@@ -147,9 +147,9 @@ export const calculateSTVResult = (
         // Retrieve all votes allocated to this candidate.
         const votesOfWinner = voteMap.get(candidate)!
         // Compute the candidate's total votes.
-        const totalVotes = votesOfWinner.reduce((sum, v) => sum + v.weight, 0)
+        const candidateTotalVotes = votesOfWinner.reduce((sum, v) => sum + v.weight, 0)
         // Calculate the surplus votes (votes exceeding the quota).
-        const surplus = totalVotes - quota
+        const surplus = candidateTotalVotes - quota
 
         // Remove the candidate from the voteMap as they are now elected.
         voteMap.delete(candidate)
@@ -158,7 +158,7 @@ export const calculateSTVResult = (
         if (surplus > 0) {
           votesOfWinner.forEach((vote) => {
             // Adjust each vote's weight proportional to the surplus.
-            vote.weight = (vote.weight / totalVotes) * surplus
+            vote.weight = (vote.weight / candidateTotalVotes) * surplus
             // Find the next preferred candidate who is still active in voteMap.
             const secondaryPreference = findNextPreference(voteMap, vote.vote)
             if (secondaryPreference) {
