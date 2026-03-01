@@ -213,7 +213,7 @@ const messages = {
   },
   metadata: {
     title: 'Voting Machine',
-    description: 'Guild of Physics e-voting system',
+    description: 'E-voting system by Guild of Physics',
     vote: {
       title: 'Voting',
       description: 'Vote in the election'

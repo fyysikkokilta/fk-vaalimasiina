@@ -117,7 +117,7 @@ export default function ElectionActions({
       }
     )
 
-    const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${stvResult.winners.map(({ name }) => name).join(' ja ')} Fyysikkokillan rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
+    const winnersParagraph = `Äänestystuloksen perusteella päätettiin valita ${stvResult.winners.map(({ name }) => name).join(' ja ')} rooliin X vuodelle YYYY ajassa ZZ.ZZ.`
 
     await navigator.clipboard.writeText(
       [firstParagraph, secondParagraph, ...roundParagraphs, winnersParagraph]
