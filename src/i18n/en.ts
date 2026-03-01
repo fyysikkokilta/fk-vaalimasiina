@@ -33,7 +33,7 @@ const messages = {
     title: 'Voting',
     election_not_ongoing: 'The voting for this voting link is not ongoing',
     election_not_ongoing_description:
-      'The voting for this voting link is not ongoing. The voting has probably already ended. If you think this is an error, please contact the chairperson or secretary.',
+      'The voting has probably already ended. If you think this is an error, please contact the chairperson or secretary.',
     to_choose:
       'In this voting, {seats, plural, =1 {1 candidate will be elected} other {# candidates will be elected}}',
     to_choose_one: 'Choose one candidate (or abstain).',

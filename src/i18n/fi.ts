@@ -33,7 +33,7 @@ const messages = {
     title: 'Äänestäminen',
     election_not_ongoing: 'Tämän äänestyslinkin äänestys ei ole käynnissä',
     election_not_ongoing_description:
-      'Tämän äänestyslinkin äänestys ei ole käynnissä. Äänestys on todennäköisesti loppunut jo. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.',
+      'Äänestys on todennäköisesti loppunut jo. Jos tämä on mielestäsi virhe, ota yhteyttä puheenjohtajaan tai sihteeriin.',
     to_choose: 'Tässä äänestyksessä valitaan {seats, plural, =1 {1 ehdokas} other {# ehdokasta}}',
     to_choose_one: 'Valitse yksi ehdokas (tai älä valitse ketään).',
     vote_instruction:
