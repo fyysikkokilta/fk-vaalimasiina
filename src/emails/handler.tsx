@@ -56,7 +56,10 @@ export const sendVotingMail = async (
       ...params,
       branding: {
         footerText: env.BRANDING_MAIL_FOOTER_TEXT,
-        footerLink: env.BRANDING_MAIL_FOOTER_LINK
+        footerLink: env.BRANDING_MAIL_FOOTER_LINK,
+        primaryColor: env.BRANDING_PRIMARY_COLOR,
+        secondaryColor: env.BRANDING_SECONDARY_COLOR,
+        headerTitle: env.BRANDING_EMAIL_SUBJECT_PREFIX
       }
     }
     const emailPromises = to.map(async (voter) => {
