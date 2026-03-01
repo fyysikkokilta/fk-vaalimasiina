@@ -1,214 +1,68 @@
 # Guild of Physics' Voting Machine
 
-## Setup
+An electronic voting system for guild meetings. Supports **Single Transferable Vote (STV)** with Droop quota and **Plain Majority** voting methods.
 
-0. Have node and pnpm installed
-1. Clone the repository
-2. Install dependencies with `pnpm install`
-3. Copy `.env.example` to `.env` and configure your environment variables
-4. Setup a PostgreSQL database and update the `DATABASE_URL` in your `.env` file
-5. Setup the database by running migrations using `pnpm db:migrate`
-6. Start the project with `pnpm dev`
+## Quick Start
 
-## Environment Variables
+```bash
+# 1. Clone and install
+git clone https://github.com/fyysikkokilta/fk-vaalimasiina.git
+cd fk-vaalimasiina
+pnpm install
 
-This project uses `@t3-oss/env-nextjs` for environment variable validation. All environment variables are validated at runtime to ensure they are properly configured.
+# 2. Configure environment
+cp .env.example .env
+# Edit .env — at minimum set DATABASE_URL, AUTH_SECRET, ADMIN_EMAILS, OAUTH_PROVIDERS + credentials
 
-### Required Environment Variables
+# 3. Set up database
+pnpm db:migrate
 
-#### Database
+# 4. Start development server
+pnpm dev
+```
 
-- `DATABASE_URL`: PostgreSQL connection string
-  - Format: `postgresql://username:password@host:port/database`
-  - Examples:
-    - Local: `postgresql://postgres:password@localhost:5432/vaalimasiina`
-    - Railway: `postgresql://user:pass@containers-us-west-1.railway.app:5432/railway`
-    - Supabase: `postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres`
+See [docs/development.md](docs/development.md) for full development setup instructions.
 
-#### Application
+## Documentation
 
-- `BASE_URL`: Base URL of the application
-  - Development: `http://localhost:3000`
-  - Production: `https://vaalit.fyysikkokilta.fi`
-
-#### Authentication
-
-- `AUTH_SECRET`: Secret key for JWT tokens (generate a random string!)
-- `GOOGLE_CLIENT_ID`: Google OAuth client ID from Google Cloud Console
-- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret from Google Cloud Console
-- `ADMIN_EMAILS`: Comma-separated list of email addresses allowed to access admin panel
-
-#### Email
-
-- `MAIL_FROM`: Email address for sending emails
-  - Example: `Vaalimasiina <vaalit@fyysikkokilta.fi>`
-
-### Optional Environment Variables
-
-#### Email Configuration (for production)
-
-- `SMTP_HOST`: SMTP server hostname
-  - Examples:
-    - Gmail: `smtp.gmail.com`
-    - Outlook: `smtp-mail.outlook.com`
-    - Custom: `mail.example.com`
-- `SMTP_PORT`: SMTP server port (default: `587` for TLS, `465` for SSL)
-- `SMTP_SECURE`: Use SSL/TLS (default: `false`, set to `true` for port 465)
-- `SMTP_USER`: SMTP authentication username (usually your email address)
-- `SMTP_PASSWORD`: SMTP authentication password or app-specific password
-
-#### S3-Compatible Storage (optional - for election result persistence)
-
-- `S3_ACCESS_KEY_ID`: S3-compatible storage access key ID (optional)
-- `S3_SECRET_ACCESS_KEY`: S3-compatible storage secret access key (optional)
-- `S3_ENDPOINT`: S3-compatible storage endpoint URL with bucket name (varies by provider, optional)
-- `S3_REGION`: S3-compatible storage region (varies by provider, default: `auto`)
-
-#### Branding
-
-- `BRANDING_EMAIL_SUBJECT_PREFIX`: Email subject prefix (default: `Vaalimasiina`)
-- `BRANDING_MAIL_FOOTER_TEXT`: Email footer text (default: `Rakkaudella Fysistit`)
-- `BRANDING_MAIL_FOOTER_LINK`: Email footer link (default: `https://fyysikkokilta.fi`)
-
-#### Development & Debugging
-
-- `PORT`: Server port (default: `3000`)
-- `ANALYZE`: Enable bundle analysis (default: `false`)
-- `SKIP_ENV_VALIDATION`: Skip environment validation during build (default: `false`)
-
-### Client-Side Environment Variables
-
-These variables are exposed to the browser and can be customized for branding:
-
-- `NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT`: Header title (default: `Vaalimasiina`)
-- `NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT`: Short header title (default: `Vaalimasiina`)
-- `NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT`: Footer home text (default: `fyysikkokilta.fi`)
-- `NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK`: Footer home link (default: `https://fyysikkokilta.fi`)
-
-### Environment Validation
-
-The application will validate all environment variables on startup. If any required variables are missing or invalid, the application will fail to start with a clear error message.
-
-For development, you can set `SKIP_ENV_VALIDATION=true` to bypass validation during build.
-
-### Quick Setup
-
-1. Copy the example file:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-2. Update the required variables in `.env`:
-   - Set your `DATABASE_URL`
-   - Set up Google OAuth credentials in Google Cloud Console
-   - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` from Google OAuth
-   - Set `ADMIN_EMAILS` to comma-separated email addresses that should have admin access (e.g., `admin1@example.com,admin2@example.com`)
-   - Generate a random `AUTH_SECRET`
-   - Update `BASE_URL` for your environment
-
-3. Configure Google OAuth:
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a project and enable Google+ API
-   - Create OAuth 2.0 credentials
-   - Add authorized redirect URI: `[YOUR_BASE_URL]/api/auth/google/callback`
-
-**Note for Testing**: Tests automatically use `test@email.com` for admin authentication. This email is automatically authorized in development and test environments, so you don't need to include it in your `ADMIN_EMAILS` configuration for local development or testing.
-
-## Migrations
-
-Migrations can be run with command `pnpm db:migrate`. The `DATABASE_URL` environment variable must be set.
-
-A new migration can be created using `pnpm db:generate-migration`.
-
-Other Drizzle features can be accessed using `pnpx drizzle-kit [command]`.
+| Guide                                  | Description                                 |
+| -------------------------------------- | ------------------------------------------- |
+| [Customization](docs/customization.md) | Branding, colors, logo, translations        |
+| [Deployment](docs/deployment.md)       | Docker, CI/CD, production setup             |
+| [OAuth Setup](docs/oauth-setup.md)     | Google, GitHub, Microsoft, custom providers |
+| [Development](docs/development.md)     | Dev environment, testing, contributing      |
 
 ## Voting System Overview
 
 The voting process operates as follows:
 
-1. **Check-in**
-   - A member attends the meeting and checks in with the secretary.
-   - The member is then marked as present for the meeting.
+1. **Check-in** — A member attends the meeting and is marked present by the secretary.
+2. **Voting Setup** — When voting begins, a list of member emails is entered into the system.
+3. **Distributing Voting Links** — Each member receives a unique voting link by email.
+4. **Casting Votes** — Members rank candidates in order of preference via their link. The system stores voter identity and ballot data in separate tables to ensure anonymity — after a vote is processed, it cannot be traced back to the voter.
+5. **Ballot Confirmation** — Each member receives a unique ballot ID after voting.
+6. **Displaying Results** — Once voting closes, results are calculated and shown.
+7. **Auditing** — Members can verify their vote using the ballot ID in an auditing view.
+8. **Closing** — The election is closed after results are reviewed. A new election can then be created.
 
-2. **Voting Setup**
-   - When the voting session begins, a list of regular members' emails is input into the system.
+## Result Calculation
 
-3. **Distributing Voting Links**
-   - Upon starting the voting process, each regular member receives an email containing a unique voting link.
+The system uses the **STV algorithm** with the **Droop quota**:
 
-4. **Casting Votes**
-   - Members use their unique link to vote for their candidates in order of preference.
-   - Once a vote is submitted, the system records the member's identity and vote, but only temporarily.
-   - The system stores voting data and voter identity separately in distinct tables to ensure anonymity. After the vote is processed, there is no way to trace back who voted for whom.
+$$\text{Quota} = \left\lfloor\frac{\text{Total Valid Votes}}{\text{Seats} + 1}\right\rfloor + 1$$
 
-5. **Ballot Confirmation**
-   - After registering their vote, each member receives a unique ballot ID.
+Steps:
 
-6. **Displaying Results**
-   - Once all members have voted, the voting can be closed and results are shown.
+1. Count first-preference votes
+2. Elect candidates reaching the quota
+3. Transfer surplus votes at a fractional transfer value
+4. Eliminate the lowest candidate if no quota is reached; redistribute their votes
+5. Repeat until all seats are filled
 
-7. **Auditing**
-   - Before the election is closed, members can verify that their vote has been correctly registered using the ballot ID in an auditing view.
+Tiebreaking uses a deterministic seeded shuffle based on the election UUID (same result on every run, but random per election). See [`src/algorithm/stvAlgorithm.ts`](src/algorithm/stvAlgorithm.ts) for the implementation.
 
-8. **Closing**
-   - When the results have been gone through and the auditing has been made, the election can be closed.
-   - After this a new election can be created.
-
-### Result Calculation Overview
-
-The Voting Machine uses the STV algorithm combined with the Droop quota. The code for the algorithm is [here](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/src/algorithm/stvAlgorithm.ts?plain=1).
-
-The steps to calculate the result are as follows:
-
-1. **Voting Process**
-
-- **Voters rank candidates** by preference, marking them as `1` (first preference), `2` (second preference), `3` (third preference), etc.
-- A voter can rank as many or as few candidates as they wish.
-
-2. **Counting the Votes: Setting the Quota**
-
-- A **quota** (the minimum number of votes a candidate needs to be elected) is determined using the **Droop quota formula**:
-
-  $\text{Quota} = \left(\frac{\text{Total Valid Votes}}{\text{Seats + 1}}\right) + 1$
-  - **Total Valid Votes**: Total number of valid ballots cast.
-  - **Seats**: Number of seats to be filled.
-  - The result is rounded down to the nearest whole number.
-
-3. **First Count: Determining Initial Winners**
-
-- Each ballot is counted for the voter's **first preference**.
-- Any candidate who reaches or exceeds the quota is **elected**.
-
-4. **Transferring Surplus Votes**
-
-- If a candidate receives more votes than the quota, the **surplus** is transferred to the remaining candidates.
-- To ensure fairness, **surplus votes** are transferred at a reduced value (known as the **transfer value**):
-
-  $\text{Transfer Value} = \frac{\text{Surplus Votes}}{\text{Total Votes Received by the Candidate}}$
-
-- This means only a fraction of each vote is passed on to the next preferred candidate.
-
-5. **Elimination Process**
-
-- If no candidate reaches the quota after all surpluses are transferred, the candidate with the **fewest votes** is eliminated.
-- The eliminated candidate's votes are redistributed to the next preferred candidate on each ballot.
-- This process of **elimination and redistribution** continues until all seats are filled.
-
-  5.1. **Multiple candidates with fewest votes**
-
-- It is possible that multiple candidates have the minimum amount of votes in this case the candidate to be dropped is chosen by a draw.
-- The code for the randomization is [here](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/src/algorithm/stvAlgorithm.ts?plain=1#L185-L201).
-- In short the election id or UUID (Universal Unique Identifier) is used to seed a random number generator. Since the UUID is itself random, this ensures the result of the draw is random, but stays the same everytime the code is run. Using the random number generator the list of candidates with fewest votes is shuffled and the first in that list after shuffling is the candidate to be dropped.
-
-6. **Repeating the Process**
-
-- The counting process is repeated:
-  - Elect candidates when they meet the quota.
-  - Transfer surpluses if there are any.
-  - Eliminate the lowest-ranked candidates if needed.
-- The algorithm stops when all seats are filled.
+For **Plain Majority** elections, the top N candidates by first-preference vote count are elected.
 
 ## Database Schema
 
-![Database schema](https://github.com/fyysikkokilta/fk-vaalimasiina/blob/master/docs/images/database-schema.png?raw=true)
+![Database schema](docs/images/database-schema.png)
