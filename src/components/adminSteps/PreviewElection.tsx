@@ -39,7 +39,14 @@ export default function PreviewElection({
 
   const { execute: executeEditing, status: editingActionStatus } = useAction(startEditing)
 
-  const { execute: executeVoting, status: votingActionStatus } = useAction(startVoting)
+  const { execute: executeVoting, status: votingActionStatus } = useAction(startVoting, {
+    onSuccess: () => setErrors(undefined),
+    onError: ({ error }) => {
+      if (error.serverError) {
+        setErrors({ serverError: [error.serverError] })
+      }
+    }
+  })
 
   const handleFormSubmit = (formValues: Record<string, string>) => {
     const emailsList = getEmails(formValues.emails ?? '')
@@ -65,6 +72,16 @@ export default function PreviewElection({
       onNext={() => {}}
     >
       <Form id={PREVIEW_EMAILS_FORM_ID} errors={errors} onFormSubmit={handleFormSubmit}>
+        {errors?.serverError && (
+          <div className="mx-auto max-w-lg px-6 pt-6">
+            <div
+              className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800"
+              role="alert"
+            >
+              {Array.isArray(errors.serverError) ? errors.serverError[0] : errors.serverError}
+            </div>
+          </div>
+        )}
         <div className="mx-auto max-w-lg p-6">
           <div className="flex flex-col items-center">
             <h3 className="mb-3 text-xl font-semibold">{title}</h3>

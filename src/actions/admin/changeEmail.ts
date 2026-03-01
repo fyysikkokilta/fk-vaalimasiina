@@ -51,10 +51,10 @@ export const changeEmail = actionClient
         }
       ]
 
-      const success = await sendVotingMail(to, {
+      const result = await sendVotingMail(to, {
         election: voterElectionPairs[0].election
       })
-      if (!success) {
+      if (!result.success) {
         throw new ActionError('Mail sending failed')
       }
       return { message: 'Email changed' }

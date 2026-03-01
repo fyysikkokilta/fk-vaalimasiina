@@ -44,49 +44,57 @@ export const sendVotingMail = async (
   if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') {
     console.log('Sending voting mail to:', to)
     console.log('Params:', params)
-    return true
+    return { success: true as const }
   }
-  try {
-    const subjectPrefix = env.BRANDING_EMAIL_SUBJECT_PREFIX
-    const subject = `${subjectPrefix} - ${params.election.title}`
 
-    const transporter = getSmtpTransporter()
+  const subjectPrefix = env.BRANDING_EMAIL_SUBJECT_PREFIX
+  const subject = `${subjectPrefix} - ${params.election.title}`
 
-    const commonParams = {
-      ...params,
-      branding: {
-        footerText: env.BRANDING_MAIL_FOOTER_TEXT,
-        footerLink: env.BRANDING_MAIL_FOOTER_LINK,
-        primaryColor: env.BRANDING_PRIMARY_COLOR,
-        secondaryColor: env.BRANDING_SECONDARY_COLOR,
-        headerTitle: env.BRANDING_EMAIL_SUBJECT_PREFIX
-      }
+  const transporter = getSmtpTransporter()
+
+  const commonParams = {
+    ...params,
+    branding: {
+      footerText: env.BRANDING_MAIL_FOOTER_TEXT,
+      footerLink: env.BRANDING_MAIL_FOOTER_LINK,
+      primaryColor: env.BRANDING_PRIMARY_COLOR,
+      secondaryColor: env.BRANDING_SECONDARY_COLOR,
+      headerTitle: env.BRANDING_EMAIL_SUBJECT_PREFIX
     }
-    const emailPromises = to.map(async (voter) => {
-      const html = await render(
-        <EmailTemplate
-          {...commonParams}
-          votingLinkFi={`${env.NEXT_PUBLIC_BASE_URL}/fi/vote/${voter.voterId}`}
-          votingLinkEn={`${env.NEXT_PUBLIC_BASE_URL}/en/vote/${voter.voterId}`}
-        />
-      )
-
-      return transporter.sendMail({
-        from: env.MAIL_FROM,
-        to: voter.email,
-        subject,
-        html
-      })
-    })
-
-    await Promise.all(emailPromises)
-    return true
-  } catch (error) {
-    // Log error type only to avoid leaking SMTP credentials in stack traces
-    console.error(
-      'Error sending voting mail:',
-      error instanceof Error ? error.message : 'Unknown error'
-    )
-    return false
   }
+
+  const emailPromises = to.map(async (voter) => {
+    const html = await render(
+      <EmailTemplate
+        {...commonParams}
+        votingLinkFi={`${env.NEXT_PUBLIC_BASE_URL}/fi/vote/${voter.voterId}`}
+        votingLinkEn={`${env.NEXT_PUBLIC_BASE_URL}/en/vote/${voter.voterId}`}
+      />
+    )
+
+    return transporter.sendMail({
+      from: env.MAIL_FROM,
+      to: voter.email,
+      subject,
+      html
+    })
+  })
+
+  const results = await Promise.allSettled(emailPromises)
+  const failedEmails: string[] = []
+
+  results.forEach((result, i) => {
+    if (result.status === 'rejected') {
+      console.error(
+        `Failed to send email to ${to[i].email}:`,
+        result.reason instanceof Error ? result.reason.message : 'Unknown error'
+      )
+      failedEmails.push(to[i].email)
+    }
+  })
+
+  if (failedEmails.length > 0) {
+    return { success: false as const, failedEmails }
+  }
+  return { success: true as const }
 }

@@ -51,9 +51,11 @@ export const startVoting = actionClient
           voterId: votersTable.voterId
         })
 
-      const success = await sendVotingMail(voters, { election: elections[0] })
-      if (!success) {
-        throw new ActionError('Mail sending failed')
+      const result = await sendVotingMail(voters, { election: elections[0] })
+      if (!result.success) {
+        throw new ActionError(
+          `Mail sending failed for ${result.failedEmails.length} voter(s): ${result.failedEmails.join(', ')}`
+        )
       }
 
       revalidatePath('/[locale]/vote/[voterId]', 'page')
