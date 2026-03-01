@@ -203,6 +203,29 @@ test.describe('voting', () => {
   })
 })
 
+test.describe('non-ongoing election', () => {
+  test('should show not-ongoing message when election is FINISHED', async ({ page, request }) => {
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
+    await page.goto(`/vote/${voters[0].voterId}`)
+    await expect(page.getByText('The voting for this voting link is not ongoing')).toBeVisible()
+  })
+
+  test('should show not-ongoing message when election is CLOSED', async ({ page, request }) => {
+    await changeElectionStatus(election.electionId, 'CLOSED', request)
+    await page.goto(`/vote/${voters[0].voterId}`)
+    await expect(page.getByText('The voting for this voting link is not ongoing')).toBeVisible()
+  })
+
+  test('should show back to frontpage link when election is not ongoing', async ({
+    page,
+    request
+  }) => {
+    await changeElectionStatus(election.electionId, 'FINISHED', request)
+    await page.goto(`/vote/${voters[0].voterId}`)
+    await expect(page.getByRole('link', { name: 'Back to frontpage' })).toBeVisible()
+  })
+})
+
 test.describe('audit view', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`/vote/${voters[0].voterId}`)

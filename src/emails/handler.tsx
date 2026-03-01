@@ -40,10 +40,30 @@ export const sendVotingMail = async (
   to: { email: string; voterId: string }[],
   params: VotingMailParams
 ) => {
-  // Skip actual email sending in development and test environments
+  // Capture emails instead of sending in development and test environments
   if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') {
-    console.log('Sending voting mail to:', to)
-    console.log('Params:', params)
+    const { captureTestEmail, getTestEmailFailure } = await import('./testCapture')
+    const subject = `${env.BRANDING_EMAIL_SUBJECT_PREFIX} - ${params.election.title}`
+
+    if (getTestEmailFailure()) {
+      const failedEmails = to.map((v) => v.email)
+      failedEmails.forEach((email) => {
+        console.error(`Simulated SMTP failure for ${email}`)
+      })
+      return { success: false as const, failedEmails }
+    }
+
+    for (const voter of to) {
+      captureTestEmail({
+        to: voter.email,
+        subject,
+        electionTitle: params.election.title,
+        votingLinkFi: `${env.NEXT_PUBLIC_BASE_URL}/fi/vote/${voter.voterId}`,
+        votingLinkEn: `${env.NEXT_PUBLIC_BASE_URL}/en/vote/${voter.voterId}`
+      })
+    }
+
+    console.log('Captured voting mail for:', to.map((v) => v.email).join(', '))
     return { success: true as const }
   }
 
