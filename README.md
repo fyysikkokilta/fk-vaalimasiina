@@ -65,4 +65,48 @@ For **Plain Majority** elections, the top N candidates by first-preference vote 
 
 ## Database Schema
 
-![Database schema](docs/images/database-schema.png)
+The diagram below reflects the schema defined in [`src/db/schema.ts`](src/db/schema.ts) (Drizzle ORM, PostgreSQL).
+
+```mermaid
+erDiagram
+  elections {
+    uuid election_id PK
+    varchar title
+    varchar description
+    int seats
+    election_status status
+    voting_method voting_method
+    timestamp date
+    varchar csv_file_path
+  }
+  voters {
+    uuid voter_id PK
+    uuid election_id FK
+    varchar email
+  }
+  has_voted {
+    uuid has_voted_id PK
+    uuid voter_id FK
+  }
+  candidates {
+    uuid candidate_id PK
+    uuid election_id FK
+    varchar name
+  }
+  ballots {
+    uuid ballot_id PK
+    uuid election_id FK
+  }
+  votes {
+    uuid vote_id PK
+    uuid ballot_id FK
+    uuid candidate_id FK
+    int rank
+  }
+  elections ||--o{ voters : "has"
+  elections ||--o{ candidates : "has"
+  elections ||--o{ ballots : "has"
+  voters ||--o| has_voted : "has voted"
+  ballots ||--o{ votes : "contains"
+  candidates ||--o{ votes : "receives"
+```
