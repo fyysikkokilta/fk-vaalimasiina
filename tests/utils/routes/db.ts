@@ -1,21 +1,14 @@
 import { db } from '~/db'
-import {
-  ballotsTable,
-  candidatesTable,
-  electionsTable,
-  hasVotedTable,
-  votersTable,
-  votesTable
-} from '~/db/schema'
+import { ballots, candidates, elections, hasVoted, voters, votes } from '~/db/schema'
 
 export const clearTables = async () => {
   await db.transaction(async (transaction) => {
-    await transaction.delete(ballotsTable)
-    await transaction.delete(candidatesTable)
-    await transaction.delete(electionsTable)
-    await transaction.delete(votersTable)
-    await transaction.delete(votesTable)
-    await transaction.delete(hasVotedTable)
+    await transaction.delete(ballots)
+    await transaction.delete(candidates)
+    await transaction.delete(elections)
+    await transaction.delete(voters)
+    await transaction.delete(votes)
+    await transaction.delete(hasVoted)
   })
 
   return { message: 'Database reset successfully' }

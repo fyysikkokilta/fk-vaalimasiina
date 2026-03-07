@@ -10,8 +10,12 @@ export const getElections = cache(async () => {
     return []
   }
 
-  return db.query.electionsTable.findMany({
-    where: (electionsTable, { eq }) => eq(electionsTable.status, 'CLOSED'),
-    orderBy: (electionsTable, { desc }) => desc(electionsTable.date)
+  return db.query.elections.findMany({
+    where: {
+      status: 'CLOSED'
+    },
+    orderBy: {
+      date: 'desc'
+    }
   })
 })

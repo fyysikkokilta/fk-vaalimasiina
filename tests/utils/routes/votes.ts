@@ -1,5 +1,5 @@
 import { db } from '~/db'
-import { ballotsTable, hasVotedTable, votesTable } from '~/db/schema'
+import { ballots, hasVoted, votes } from '~/db/schema'
 
 export const createVotes = async (
   electionId: string,
@@ -9,8 +9,8 @@ export const createVotes = async (
   }[]
 ) => {
   return db.transaction(async (transaction) => {
-    const ballots = await transaction
-      .insert(ballotsTable)
+    const insertedBallots = await transaction
+      .insert(ballots)
       .values(
         voterIdBallotPairs.map(() => ({
           electionId
@@ -18,10 +18,10 @@ export const createVotes = async (
       )
       .returning()
 
-    const votes = await transaction
-      .insert(votesTable)
+    const insertedVotes = await transaction
+      .insert(votes)
       .values(
-        ballots
+        insertedBallots
           .map((ballot, index) =>
             voterIdBallotPairs[index].ballot.map((vote) => ({
               ballotId: ballot.ballotId,
@@ -33,15 +33,15 @@ export const createVotes = async (
       )
       .returning()
 
-    await transaction.insert(hasVotedTable).values(
+    await transaction.insert(hasVoted).values(
       voterIdBallotPairs.map(({ voterId }) => ({
         voterId
       }))
     )
 
-    return ballots.map((ballot) => ({
+    return insertedBallots.map((ballot) => ({
       ...ballot,
-      votes: votes.filter((vote) => vote.ballotId === ballot.ballotId)
+      votes: insertedVotes.filter((vote) => vote.ballotId === ballot.ballotId)
     }))
   })
 }

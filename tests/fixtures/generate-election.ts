@@ -28,7 +28,7 @@ const main = async () => {
 
   const title = 'Test Election'
   const description = 'Vote for your favorite'
-  const candidates = voteFixture.reduce<{ name: string }[]>((acc, votes) => {
+  const candidatesData = voteFixture.reduce<{ name: string }[]>((acc, votes) => {
     votes.forEach((name) => {
       if (!acc.some((c) => c.name === name)) {
         acc.push({ name })
@@ -41,7 +41,7 @@ const main = async () => {
     title,
     description,
     seats,
-    candidates,
+    candidatesData,
     status: 'CLOSED' as const
   }
 

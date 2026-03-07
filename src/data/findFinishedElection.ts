@@ -10,11 +10,13 @@ export const findFinishedElection = cache(async () => {
     return { election: null, ballots: [] }
   }
 
-  const election = await db.query.electionsTable.findFirst({
+  const election = await db.query.elections.findFirst({
     columns: {
       status: false
     },
-    where: (electionsTable, { eq }) => eq(electionsTable.status, 'FINISHED'),
+    where: {
+      status: 'FINISHED'
+    },
     with: {
       candidates: {
         columns: {
@@ -35,7 +37,9 @@ export const findFinishedElection = cache(async () => {
           }
         },
         // BallotId is random, so this makes the order not the same as order of creation
-        orderBy: (ballotsTable) => ballotsTable.ballotId
+        orderBy: {
+          ballotId: 'asc'
+        }
       }
     }
   })

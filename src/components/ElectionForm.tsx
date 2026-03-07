@@ -16,7 +16,7 @@ type ElectionFormData = {
   description: string
   seats: number
   votingMethod: 'STV' | 'MAJORITY'
-  candidates: string[]
+  candidatesData: string[]
 }
 
 type ElectionFormDataEdit = ElectionFormData & { electionId: string }
@@ -49,14 +49,14 @@ export default function ElectionForm({
         .min(1, t('validation.description_nonempty')),
       seats: z.coerce.number(t('validation.seats_number')).min(1, t('validation.seats_min')),
       votingMethod: z.enum(['STV', 'MAJORITY']),
-      candidates: z
+      candidatesData: z
         .array(
           z.string(t('validation.candidate_string')).min(1, t('validation.candidate_nonempty')),
           t('validation.candidates_array')
         )
         .min(1, t('validation.candidates_nonempty'))
     })
-    .refine((data) => data.candidates.length >= data.seats, {
+    .refine((data) => data.candidatesData.length >= data.seats, {
       message: t('validation.candidates_geq_seats'),
       path: ['candidates']
     })
@@ -69,7 +69,7 @@ export default function ElectionForm({
     const toParse = {
       ...formValues,
       electionId: election?.electionId,
-      candidates: election.candidates
+      candidatesData: election.candidatesData
     }
 
     const schema = isEdit ? editSchema : createSchema
@@ -200,7 +200,7 @@ export default function ElectionForm({
             <div>
               <label className="text-sm font-medium text-gray-700">{t('candidates')}</label>
               <ul className="space-y-2">
-                {election.candidates.map((candidate, i) => (
+                {election.candidatesData.map((candidate, i) => (
                   <li
                     key={i}
                     className="flex items-center justify-between rounded-lg border border-gray-200 p-3"

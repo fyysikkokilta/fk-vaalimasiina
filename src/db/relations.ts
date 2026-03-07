@@ -1,61 +1,53 @@
-import { relations } from 'drizzle-orm/relations'
+import { defineRelations } from 'drizzle-orm'
+import * as schema from './schema'
 
-import {
-  ballotsTable,
-  candidatesTable,
-  electionsTable,
-  hasVotedTable,
-  votersTable,
-  votesTable
-} from './schema'
-
-export const electionsRelations = relations(electionsTable, ({ many }) => ({
-  candidates: many(candidatesTable),
-  ballots: many(ballotsTable),
-  voters: many(votersTable)
-}))
-
-export const votersRelations = relations(votersTable, ({ one }) => ({
-  election: one(electionsTable, {
-    fields: [votersTable.electionId],
-    references: [electionsTable.electionId]
-  }),
-  hasVoted: one(hasVotedTable, {
-    fields: [votersTable.voterId],
-    references: [hasVotedTable.voterId]
-  })
-}))
-
-export const hasVotedRelations = relations(hasVotedTable, ({ one }) => ({
-  voter: one(votersTable, {
-    fields: [hasVotedTable.voterId],
-    references: [votersTable.voterId]
-  })
-}))
-
-export const candidatesRelations = relations(candidatesTable, ({ one, many }) => ({
-  election: one(electionsTable, {
-    fields: [candidatesTable.electionId],
-    references: [electionsTable.electionId]
-  }),
-  votes: many(votesTable)
-}))
-
-export const ballotsRelations = relations(ballotsTable, ({ one, many }) => ({
-  election: one(electionsTable, {
-    fields: [ballotsTable.electionId],
-    references: [electionsTable.electionId]
-  }),
-  votes: many(votesTable)
-}))
-
-export const votesRelations = relations(votesTable, ({ one }) => ({
-  ballot: one(ballotsTable, {
-    fields: [votesTable.ballotId],
-    references: [ballotsTable.ballotId]
-  }),
-  candidate: one(candidatesTable, {
-    fields: [votesTable.candidateId],
-    references: [candidatesTable.candidateId]
-  })
+export const relations = defineRelations(schema, (r) => ({
+  ballots: {
+    election: r.one.elections({
+      from: r.ballots.electionId,
+      to: r.elections.electionId
+    }),
+    votes: r.many.votes({
+      from: r.ballots.ballotId,
+      to: r.votes.ballotId
+    })
+  },
+  elections: {
+    ballots: r.many.ballots(),
+    candidates: r.many.candidates(),
+    voters: r.many.voters()
+  },
+  candidates: {
+    election: r.one.elections({
+      from: r.candidates.electionId,
+      to: r.elections.electionId
+    }),
+    votes: r.many.votes({
+      from: r.candidates.candidateId,
+      to: r.votes.candidateId
+    })
+  },
+  hasVoted: {
+    voter: r.one.voters({
+      from: r.hasVoted.voterId,
+      to: r.voters.voterId
+    })
+  },
+  votes: {
+    ballot: r.one.ballots({
+      from: r.votes.ballotId,
+      to: r.ballots.ballotId
+    }),
+    candidate: r.one.candidates({
+      from: r.votes.candidateId,
+      to: r.candidates.candidateId
+    })
+  },
+  voters: {
+    hasVoteds: r.many.hasVoted(),
+    election: r.one.elections({
+      from: r.voters.electionId,
+      to: r.elections.electionId
+    })
+  }
 }))

@@ -1,9 +1,9 @@
 import { db } from '~/db'
-import { votersTable } from '~/db/schema'
+import { voters } from '~/db/schema'
 
 export const createVoters = async (electionId: string, emails: string[]) => {
   return db
-    .insert(votersTable)
+    .insert(voters)
     .values(
       emails.map((email) => ({
         electionId,

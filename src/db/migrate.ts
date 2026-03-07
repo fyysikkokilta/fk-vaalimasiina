@@ -5,12 +5,12 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import path from 'path'
 import { Pool } from 'pg'
 
-const pool = new Pool({
+const client = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 1
 })
 
-const db = drizzle(pool)
+const db = drizzle({ client })
 
 try {
   await migrate(db, {

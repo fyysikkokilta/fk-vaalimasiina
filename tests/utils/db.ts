@@ -28,7 +28,7 @@ export const insertElection = async (
     title: string
     description: string
     seats: number
-    candidates: { name: string }[]
+    candidatesData: { name: string }[]
     status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
     votingMethod?: 'STV' | 'MAJORITY'
   },
@@ -83,7 +83,7 @@ export const createElectionWithVotersAndBallots = async (
       title,
       description,
       seats,
-      candidates: Array.from({ length: candidateCount }, (_, i) => ({
+      candidatesData: Array.from({ length: candidateCount }, (_, i) => ({
         name: `Candidate ${i + 1}`
       })),
       status
@@ -129,7 +129,7 @@ export const createMajorityElectionWithVotersAndBallots = async (
       title,
       description,
       seats,
-      candidates: candidateNames.map((name) => ({ name })),
+      candidatesData: candidateNames.map((name) => ({ name })),
       status,
       votingMethod: 'MAJORITY'
     },

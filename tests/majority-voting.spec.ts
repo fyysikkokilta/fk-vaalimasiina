@@ -19,7 +19,7 @@ test.describe('majority voting', () => {
         title: 'Majority Election',
         description: 'Pick one',
         seats: 1,
-        candidates: [{ name: 'Alice' }, { name: 'Bob' }],
+        candidatesData: [{ name: 'Alice' }, { name: 'Bob' }],
         status: 'ONGOING',
         votingMethod: 'MAJORITY'
       },

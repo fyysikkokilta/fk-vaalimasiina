@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient } from '~/actions/safe-action'
 import { db } from '~/db'
-import { candidatesTable, electionsTable } from '~/db/schema'
+import { candidates, elections } from '~/db/schema'
 
 const createElectionSchema = z
   .object({
@@ -14,7 +14,7 @@ const createElectionSchema = z
     description: z.string('Description must be a string').min(1, 'Description must not be empty'),
     seats: z.number('Seats must be a number').min(1, 'Seats must be at least 1'),
     votingMethod: z.enum(['STV', 'MAJORITY']),
-    candidates: z
+    candidatesData: z
       .array(
         z.string('Candidate must be a string').min(1, 'Candidate must not be empty'),
         'Candidates must be an array'
@@ -22,17 +22,17 @@ const createElectionSchema = z
       .min(1, 'There must be at least one candidate')
   })
   .refine(
-    (data) => data.candidates.length >= data.seats,
+    (data) => data.candidatesData.length >= data.seats,
     'There must be at least as many candidates as there are seats'
   )
 
 export const createElection = actionClient
   .inputSchema(createElectionSchema)
   .use(isAuthorizedMiddleware)
-  .action(async ({ parsedInput: { title, description, seats, votingMethod, candidates } }) => {
+  .action(async ({ parsedInput: { title, description, seats, votingMethod, candidatesData } }) => {
     return db.transaction(async (transaction) => {
-      const elections = await transaction
-        .insert(electionsTable)
+      const electionsResult = await transaction
+        .insert(elections)
         .values([
           {
             title,
@@ -42,20 +42,20 @@ export const createElection = actionClient
           }
         ])
         .returning({
-          electionId: electionsTable.electionId
+          electionId: elections.electionId
         })
 
       await transaction
-        .insert(candidatesTable)
+        .insert(candidates)
         .values(
-          candidates.map((candidate) => ({
-            electionId: elections[0].electionId,
+          candidatesData.map((candidate) => ({
+            electionId: electionsResult[0].electionId,
             name: candidate
           }))
         )
         .returning({
-          candidateId: candidatesTable.candidateId,
-          name: candidatesTable.name
+          candidateId: candidates.candidateId,
+          name: candidates.name
         })
 
       revalidatePath('/[locale]/admin', 'page')

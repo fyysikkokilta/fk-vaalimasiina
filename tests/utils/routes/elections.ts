@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 
 import { db } from '~/db'
-import { candidatesTable, electionsTable } from '~/db/schema'
+import { candidates, elections } from '~/db/schema'
 
 export const createElection = async ({
   title,
@@ -9,18 +9,18 @@ export const createElection = async ({
   seats,
   status,
   votingMethod = 'STV',
-  candidates
+  candidatesData
 }: {
   title: string
   description: string
   seats: number
   status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
   votingMethod?: 'STV' | 'MAJORITY'
-  candidates: { name: string }[]
+  candidatesData: { name: string }[]
 }) => {
   const election = await db.transaction(async (transaction) => {
-    const elections = await transaction
-      .insert(electionsTable)
+    const insertedElections = await transaction
+      .insert(elections)
       .values([
         {
           title,
@@ -33,16 +33,16 @@ export const createElection = async ({
       .returning()
 
     const insertedCandidates = await transaction
-      .insert(candidatesTable)
+      .insert(candidates)
       .values(
-        candidates.map((candidate) => ({
-          electionId: elections[0].electionId,
+        candidatesData.map((candidate) => ({
+          electionId: insertedElections[0].electionId,
           name: candidate.name
         }))
       )
       .returning()
 
-    return { ...elections[0], candidates: insertedCandidates }
+    return { ...insertedElections[0], candidates: insertedCandidates }
   })
 
   return election
@@ -53,11 +53,11 @@ export const changeStatus = async (
   status: 'CREATED' | 'UPDATING' | 'ONGOING' | 'FINISHED' | 'CLOSED'
 ) => {
   const election = await db
-    .update(electionsTable)
+    .update(elections)
     .set({
       status
     })
-    .where(eq(electionsTable.electionId, electionId))
+    .where(eq(elections.electionId, electionId))
     .returning()
 
   return election[0]

@@ -21,13 +21,13 @@ export default function Vote({ election, voter }: VotePageProps) {
   const [ballotCopied, setBallotCopied] = useState(false)
   const [candidates, setCandidates] = useState({
     selectedCandidates: [] as string[],
-    availableCandidates: election.candidates.map((c) => c.candidateId)
+    availableCandidates: election?.candidates.map((c) => c.candidateId) ?? []
   })
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
 
   const selectedCandidates = candidates.selectedCandidates
   const availableCandidates = candidates.availableCandidates
-  const votingMethod = election.votingMethod ?? 'STV'
+  const votingMethod = election?.votingMethod ?? 'STV'
   const isMajority = votingMethod === 'MAJORITY'
 
   const t = useTranslations('Vote')
@@ -145,7 +145,7 @@ export default function Vote({ election, voter }: VotePageProps) {
             {t('back_to_frontpage')}
           </Link>
           <p className="mb-4">{election.description}</p>
-          {!!voter.hasVoted || !!result.data?.ballotId ? (
+          {voter.hasVoteds.length > 0 || !!result.data?.ballotId ? (
             <div className="rounded-lg bg-green-50 p-4 text-center text-green-700">
               <h4 className="mb-3 text-lg font-semibold">
                 {result.data?.ballotId ? t('thanks_for_voting') : t('already_voted')}

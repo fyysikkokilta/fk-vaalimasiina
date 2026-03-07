@@ -1,0 +1,505 @@
+{
+  "id": "50e17933-2596-446f-8762-4630f498adf9",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "version": "8",
+  "dialect": "postgres",
+  "ddl": [
+    {
+      "isRlsEnabled": false,
+      "name": "ballots",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "ballot_id"
+      ],
+      "nameExplicit": false,
+      "name": "ballots_pkey",
+      "schema": "public",
+      "table": "ballots",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "ballot_id",
+      "schema": "public",
+      "table": "ballots",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "election_id",
+      "schema": "public",
+      "table": "ballots",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "election_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "elections",
+      "columnsTo": [
+        "election_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "ballots_election_id_elections_election_id_fk",
+      "schema": "public",
+      "table": "ballots",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "candidates",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "candidate_id"
+      ],
+      "nameExplicit": false,
+      "name": "candidates_pkey",
+      "schema": "public",
+      "table": "candidates",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "candidate_id",
+      "schema": "public",
+      "table": "candidates",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "election_id",
+      "schema": "public",
+      "table": "candidates",
+      "entityType": "columns"
+    },
+    {
+      "type": "varchar",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "schema": "public",
+      "table": "candidates",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "election_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "elections",
+      "columnsTo": [
+        "election_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "candidates_election_id_elections_election_id_fk",
+      "schema": "public",
+      "table": "candidates",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "elections",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "election_id"
+      ],
+      "nameExplicit": false,
+      "name": "elections_pkey",
+      "schema": "public",
+      "table": "elections",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "election_id",
+      "schema": "public",
+      "table": "elections",
+      "entityType": "columns"
+    },
+    {
+      "type": "varchar",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "title",
+      "schema": "public",
+      "table": "elections",
+      "entityType": "columns"
+    },
+    {
+      "type": "varchar",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "description",
+      "schema": "public",
+      "table": "elections",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "seats",
+      "schema": "public",
+      "table": "elections",
+      "entityType": "columns"
+    },
+    {
+      "type": "election_status",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'CREATED'",
+      "generated": null,
+      "identity": null,
+      "name": "status",
+      "schema": "public",
+      "table": "elections",
+      "entityType": "columns"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "voters",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "voter_id"
+      ],
+      "nameExplicit": false,
+      "name": "voters_pkey",
+      "schema": "public",
+      "table": "voters",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "voter_id",
+      "schema": "public",
+      "table": "voters",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "election_id",
+      "schema": "public",
+      "table": "voters",
+      "entityType": "columns"
+    },
+    {
+      "type": "varchar",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "email",
+      "schema": "public",
+      "table": "voters",
+      "entityType": "columns"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "has_voted",
+      "schema": "public",
+      "table": "voters",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "election_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "email",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_voters_electionId_email",
+      "schema": "public",
+      "table": "voters",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "election_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "elections",
+      "columnsTo": [
+        "election_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "voters_election_id_elections_election_id_fk",
+      "schema": "public",
+      "table": "voters",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "votes",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "vote_id"
+      ],
+      "nameExplicit": false,
+      "name": "votes_pkey",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "vote_id",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "ballot_id",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "candidate_id",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "preference_number",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "ballot_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "preference_number",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_votes_ballotId_preferenceNumber",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "ballot_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "candidate_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_votes_ballotId_candidateId",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "ballot_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "ballots",
+      "columnsTo": [
+        "ballot_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "votes_ballot_id_ballots_ballot_id_fk",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "fks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "candidate_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "candidates",
+      "columnsTo": [
+        "candidate_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "votes_candidate_id_candidates_candidate_id_fk",
+      "schema": "public",
+      "table": "votes",
+      "entityType": "fks"
+    },
+    {
+      "values": [
+        "CREATED",
+        "ONGOING",
+        "FINISHED",
+        "CLOSED"
+      ],
+      "name": "election_status",
+      "schema": "public",
+      "entityType": "enums"
+    }
+  ],
+  "renames": []
+}

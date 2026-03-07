@@ -20,7 +20,7 @@ test.beforeEach(async ({ request }) => {
       title: 'Election 1',
       description: 'Description 1',
       seats: 1,
-      candidates: [{ name: 'Candidate 1' }, { name: 'Candidate 2' }],
+      candidatesData: [{ name: 'Candidate 1' }, { name: 'Candidate 2' }],
       status: 'ONGOING'
     },
     request

@@ -13,7 +13,7 @@ test.beforeEach(async ({ page, request }) => {
       title: 'Email Test Election',
       description: 'Testing email delivery',
       seats: 1,
-      candidates: [{ name: 'Candidate 1' }],
+      candidatesData: [{ name: 'Candidate 1' }],
       status: 'CREATED'
     },
     request

@@ -10,9 +10,12 @@ export const getAdminElection = cache(async () => {
     return null
   }
 
-  const elections = await db.query.electionsTable.findMany({
-    where: (electionsTable, { eq, not }) =>
-      not(eq(electionsTable.status, 'CLOSED')),
+  const elections = await db.query.elections.findMany({
+    where: {
+      NOT: {
+        status: 'CLOSED'
+      }
+    },
     with: {
       candidates: {
         columns: {
@@ -25,7 +28,7 @@ export const getAdminElection = cache(async () => {
           email: true
         },
         with: {
-          hasVoted: {
+          hasVoteds: {
             columns: {
               hasVotedId: true
             }

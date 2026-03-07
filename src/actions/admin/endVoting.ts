@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
-import { electionsTable, votersTable } from '~/db/schema'
+import { elections, voters } from '~/db/schema'
 
 const endVotingSchema = z.object({
   electionId: z.uuid('Election identifier must be a valid UUID')
@@ -18,25 +18,26 @@ export const endVoting = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     return db.transaction(async (transaction) => {
-      const voters = await transaction.query.votersTable.findMany({
+      const votersResult = await transaction.query.voters.findMany({
         with: {
-          hasVoted: true
+          hasVoteds: true
         },
-        where: (innerVotersTable, { eq: eqInner }) =>
-          eqInner(innerVotersTable.electionId, electionId)
+        where: {
+          electionId
+        }
       })
 
-      const everyoneVoted = voters.every((voter) => voter.hasVoted)
+      const everyoneVoted = votersResult.every((voter) => voter.hasVoteds.length > 0)
 
       if (!everyoneVoted) {
         throw new ActionError('Not everyone has voted')
       }
       const statuses = await transaction
-        .update(electionsTable)
+        .update(elections)
         .set({ status: 'FINISHED' })
-        .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'ONGOING')))
+        .where(and(eq(elections.electionId, electionId), eq(elections.status, 'ONGOING')))
         .returning({
-          status: electionsTable.status
+          status: elections.status
         })
 
       if (!statuses[0]) {
@@ -44,11 +45,11 @@ export const endVoting = actionClient
       }
 
       await transaction
-        .update(votersTable)
+        .update(voters)
         .set({
           email: sql`encode(sha256(concat('', gen_random_uuid())::bytea), 'hex')`
         })
-        .where(eq(votersTable.electionId, electionId))
+        .where(eq(voters.electionId, electionId))
 
       revalidatePath('/[locale]/audit', 'page')
       revalidatePath('/[locale]/vote/[voterId]', 'page')

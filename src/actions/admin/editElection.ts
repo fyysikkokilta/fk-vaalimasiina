@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
-import { candidatesTable, electionsTable } from '~/db/schema'
+import { candidates, elections } from '~/db/schema'
 
 const editElectionSchema = z
   .object({
@@ -16,7 +16,7 @@ const editElectionSchema = z
     description: z.string('Description must be a string').min(1, 'Description must not be empty'),
     seats: z.number('Seats must be a number').min(1, 'Seats must be at least 1'),
     votingMethod: z.enum(['STV', 'MAJORITY']),
-    candidates: z
+    candidatesData: z
       .array(
         z.string('Candidate must be a string').min(1, 'Candidate must not be empty'),
         'Candidates must be an array'
@@ -24,7 +24,7 @@ const editElectionSchema = z
       .min(1, 'There must be at least one candidate')
   })
   .refine(
-    (data) => data.candidates.length >= data.seats,
+    (data) => data.candidatesData.length >= data.seats,
     'There must be at least as many candidates as there are seats'
   )
 
@@ -33,11 +33,11 @@ export const editElection = actionClient
   .use(isAuthorizedMiddleware)
   .action(
     async ({
-      parsedInput: { electionId, title, description, seats, votingMethod, candidates }
+      parsedInput: { electionId, title, description, seats, votingMethod, candidatesData }
     }) => {
       return db.transaction(async (transaction) => {
-        const elections = await transaction
-          .update(electionsTable)
+        const electionsResult = await transaction
+          .update(elections)
           .set({
             title,
             description,
@@ -45,21 +45,19 @@ export const editElection = actionClient
             votingMethod,
             status: 'CREATED'
           })
-          .where(
-            and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'UPDATING'))
-          )
+          .where(and(eq(elections.electionId, electionId), eq(elections.status, 'UPDATING')))
           .returning({
-            electionId: electionsTable.electionId
+            electionId: elections.electionId
           })
 
-        if (!elections[0]) {
+        if (!electionsResult[0]) {
           throw new ActionError('Election not found')
         }
 
-        await transaction.delete(candidatesTable).where(eq(candidatesTable.electionId, electionId))
+        await transaction.delete(candidates).where(eq(candidates.electionId, electionId))
 
-        await transaction.insert(candidatesTable).values(
-          candidates.map((candidate) => ({
+        await transaction.insert(candidates).values(
+          candidatesData.map((candidate) => ({
             electionId,
             name: candidate
           }))

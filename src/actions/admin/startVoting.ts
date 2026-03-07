@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
-import { electionsTable, votersTable } from '~/db/schema'
+import { elections, voters } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 
 const startVotingSchema = z.object({
@@ -23,23 +23,23 @@ export const startVoting = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId, emails } }) => {
     return db.transaction(async (transaction) => {
-      const elections = await transaction
-        .update(electionsTable)
+      const electionsResult = await transaction
+        .update(elections)
         .set({ status: 'ONGOING' })
-        .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'CREATED')))
+        .where(and(eq(elections.electionId, electionId), eq(elections.status, 'CREATED')))
         .returning({
-          title: electionsTable.title,
-          description: electionsTable.description,
-          seats: electionsTable.seats,
-          status: electionsTable.status
+          title: elections.title,
+          description: elections.description,
+          seats: elections.seats,
+          status: elections.status
         })
 
-      if (!elections[0]) {
+      if (!electionsResult[0]) {
         throw new ActionError('Election not found')
       }
 
-      const voters = await transaction
-        .insert(votersTable)
+      const votersResult = await transaction
+        .insert(voters)
         .values(
           emails.map((email) => ({
             electionId,
@@ -47,11 +47,11 @@ export const startVoting = actionClient
           }))
         )
         .returning({
-          email: votersTable.email,
-          voterId: votersTable.voterId
+          email: voters.email,
+          voterId: voters.voterId
         })
 
-      const result = await sendVotingMail(voters, { election: elections[0] })
+      const result = await sendVotingMail(votersResult, { election: electionsResult[0] })
       if (!result.success) {
         throw new ActionError(
           `Mail sending failed for ${result.failedEmails.length} voter(s): ${result.failedEmails.join(', ')}`

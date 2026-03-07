@@ -10,11 +10,13 @@ export const getVoter = cache(async (voterId: string) => {
     return null
   }
 
-  const voter = await db.query.votersTable.findFirst({
+  const voter = await db.query.voters.findFirst({
     columns: {
       voterId: true
     },
-    where: (votersTable, { eq }) => eq(votersTable.voterId, voterId),
+    where: {
+      voterId
+    },
     with: {
       election: {
         with: {
@@ -26,7 +28,7 @@ export const getVoter = cache(async (voterId: string) => {
           }
         }
       },
-      hasVoted: {
+      hasVoteds: {
         columns: {
           hasVotedId: true
         }

@@ -1,113 +1,104 @@
-import { sql } from 'drizzle-orm'
 import {
-  check,
-  integer,
   pgEnum,
   pgTable,
-  timestamp,
-  unique,
-  uniqueIndex,
   uuid,
-  varchar
+  varchar,
+  integer,
+  timestamp,
+  uniqueIndex,
+  unique,
+  check
 } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm'
 
-export const statusEnum = pgEnum('election_status', [
+export const electionStatus = pgEnum('election_status', [
   'CREATED',
   'UPDATING',
   'ONGOING',
   'FINISHED',
   'CLOSED'
 ])
+export const votingMethod = pgEnum('voting_method', ['STV', 'MAJORITY'])
 
-export const votingMethodEnum = pgEnum('voting_method', ['STV', 'MAJORITY'])
+export const ballots = pgTable('ballots', {
+  ballotId: uuid('ballot_id').defaultRandom().primaryKey(),
+  electionId: uuid('election_id')
+    .notNull()
+    .references(() => elections.electionId, { onDelete: 'cascade' })
+})
 
-export const electionsTable = pgTable(
+export const candidates = pgTable('candidates', {
+  candidateId: uuid('candidate_id').defaultRandom().primaryKey(),
+  electionId: uuid('election_id')
+    .notNull()
+    .references(() => elections.electionId, { onDelete: 'cascade' }),
+  name: varchar('name').notNull()
+})
+
+export const elections = pgTable(
   'elections',
   {
-    electionId: uuid('election_id').primaryKey().notNull().defaultRandom(),
+    electionId: uuid('election_id').defaultRandom().primaryKey(),
     title: varchar('title').notNull(),
     description: varchar('description').notNull(),
     seats: integer('seats').notNull(),
-    status: statusEnum('status').notNull().default('CREATED'),
-    votingMethod: votingMethodEnum('voting_method').notNull().default('STV'),
-    date: timestamp('date').notNull().defaultNow(),
-    csvFilePath: varchar('csv_file_path')
+    status: electionStatus('status').default('CREATED').notNull(),
+    date: timestamp('date').defaultNow().notNull(),
+    csvFilePath: varchar('csv_file_path'),
+    votingMethod: votingMethod('voting_method').default('STV').notNull()
   },
   (table) => [
     uniqueIndex('unique_active_election')
-      .on(sql`(TRUE)`)
+      .using('btree', sql`(TRUE)`)
       .where(sql`${table.status} <> 'CLOSED'`),
     check('check_elections_seats', sql`${table.seats} > 0`)
   ]
 )
 
-export const votersTable = pgTable(
-  'voters',
-  {
-    voterId: uuid('voter_id').primaryKey().notNull().defaultRandom(),
-    electionId: uuid('election_id')
-      .notNull()
-      .references(() => electionsTable.electionId, {
-        onDelete: 'cascade'
-      }),
-    email: varchar('email').notNull()
-  },
-  (table) => [
-    uniqueIndex('unique_voters_electionId_email').on(table.electionId, sql`lower(${table.email})`)
-  ]
-)
-
-export const hasVotedTable = pgTable(
+export const hasVoted = pgTable(
   'has_voted',
   {
-    hasVotedId: uuid('has_voted_id').primaryKey().notNull().defaultRandom(),
+    hasVotedId: uuid('has_voted_id').defaultRandom().primaryKey(),
     voterId: uuid('voter_id')
       .notNull()
-      .references(() => votersTable.voterId, {
-        onDelete: 'cascade'
-      })
+      .references(() => voters.voterId, { onDelete: 'cascade' })
   },
   (table) => [unique('unique_voters_voterId').on(table.voterId)]
 )
 
-export const candidatesTable = pgTable('candidates', {
-  candidateId: uuid('candidate_id').primaryKey().notNull().defaultRandom(),
-  electionId: uuid('election_id')
-    .notNull()
-    .references(() => electionsTable.electionId, {
-      onDelete: 'cascade'
-    }),
-  name: varchar('name').notNull()
-})
+export const voters = pgTable(
+  'voters',
+  {
+    voterId: uuid('voter_id').defaultRandom().primaryKey(),
+    electionId: uuid('election_id')
+      .notNull()
+      .references(() => elections.electionId, { onDelete: 'cascade' }),
+    email: varchar('email').notNull()
+  },
+  (table) => [
+    uniqueIndex('unique_voters_electionId_email').using(
+      'btree',
+      table.electionId.asc().nullsLast(),
+      sql`lower(${table.email}::text)`
+    )
+  ]
+)
 
-export const ballotsTable = pgTable('ballots', {
-  ballotId: uuid('ballot_id').primaryKey().notNull().defaultRandom(),
-  electionId: uuid('election_id')
-    .notNull()
-    .references(() => electionsTable.electionId, {
-      onDelete: 'cascade'
-    })
-})
-
-export const votesTable = pgTable(
+export const votes = pgTable(
   'votes',
   {
-    voteId: uuid('vote_id').primaryKey().notNull().defaultRandom(),
+    voteId: uuid('vote_id').defaultRandom().primaryKey(),
     ballotId: uuid('ballot_id')
       .notNull()
-      .references(() => ballotsTable.ballotId, {
-        onDelete: 'cascade'
-      }),
+      .references(() => ballots.ballotId, { onDelete: 'cascade' }),
     candidateId: uuid('candidate_id')
       .notNull()
-      .references(() => candidatesTable.candidateId, {
-        onDelete: 'cascade'
-      }),
+      .references(() => candidates.candidateId, { onDelete: 'cascade' }),
     rank: integer('rank').notNull()
   },
   (table) => [
-    unique('unique_votes_ballotId_rank').on(table.ballotId, table.rank),
     unique('unique_votes_ballotId_candidateId').on(table.ballotId, table.candidateId),
+    unique('unique_votes_ballotId_rank').on(table.ballotId, table.rank),
     check('check_votes_rank', sql`${table.rank} > 0`)
   ]
 )

@@ -3,17 +3,14 @@ import { Pool } from 'pg'
 
 import { env } from '~/env'
 
-import * as relations from './relations'
-import * as schema from './schema'
+import { relations } from './relations'
 
-const pool = new Pool({
+const client = new Pool({
   connectionString: env.DATABASE_URL
 })
 
-export const db = drizzle(pool, {
-  schema: {
-    ...schema,
-    ...relations
-  },
+export const db = drizzle({
+  client,
+  relations,
   logger: env.NODE_ENV === 'development'
 })

@@ -58,8 +58,8 @@ export default function VotingInspection({
     return () => clearInterval(interval)
   }, [])
 
-  const remainingVoters = voters.filter((voter) => !voter.hasVoted)
-  const votersWhoVoted = voters.filter((voter) => voter.hasVoted)
+  const remainingVoters = voters.filter((voter) => voter.hasVoteds.length === 0)
+  const votersWhoVoted = voters.filter((voter) => voter.hasVoteds.length > 0)
 
   const handleChangeEmailSubmit = (formValues: Record<string, string>) => {
     const result = changeEmailSchema.safeParse(formValues)

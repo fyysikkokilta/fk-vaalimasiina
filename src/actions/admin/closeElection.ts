@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
-import { ballotsTable, electionsTable } from '~/db/schema'
+import { elections } from '~/db/schema'
 import { generateCsvContent, generateCsvFileName } from '~/utils/csvGenerator'
 import { isS3Configured, uploadCsvToS3 } from '~/utils/s3Storage'
 
@@ -21,11 +21,11 @@ export const closeElection = actionClient
   .action(async ({ parsedInput: { electionId } }) => {
     try {
       // First, get the election data
-      const election = await db.query.electionsTable.findFirst({
-        where: and(
-          eq(electionsTable.electionId, electionId),
-          eq(electionsTable.status, 'FINISHED')
-        ),
+      const election = await db.query.elections.findFirst({
+        where: {
+          electionId,
+          status: 'FINISHED'
+        },
         with: {
           candidates: true
         }
@@ -40,11 +40,15 @@ export const closeElection = actionClient
       // Only generate and upload CSV if S3 is configured
       if (isS3Configured()) {
         // Get ballots and votes for CSV generation
-        const ballots = await db.query.ballotsTable.findMany({
-          where: eq(ballotsTable.electionId, electionId),
+        const ballots = await db.query.ballots.findMany({
+          where: {
+            electionId
+          },
           with: {
             votes: {
-              orderBy: (votes, { asc }) => [asc(votes.rank)]
+              orderBy: {
+                rank: 'asc'
+              }
             }
           }
         })
@@ -59,16 +63,14 @@ export const closeElection = actionClient
 
       // Update election status and store file path (if S3 is configured)
       const statuses = await db
-        .update(electionsTable)
+        .update(elections)
         .set({
           status: 'CLOSED',
           csvFilePath: filePath
         })
-        .where(
-          and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'FINISHED'))
-        )
+        .where(and(eq(elections.electionId, electionId), eq(elections.status, 'FINISHED')))
         .returning({
-          status: electionsTable.status
+          status: elections.status
         })
 
       if (!statuses[0]) {

@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
-import { electionsTable, votersTable } from '~/db/schema'
+import { elections, voters } from '~/db/schema'
 import { sendVotingMail } from '~/emails/handler'
 import { isPgUniqueViolation } from '~/utils/dbErrors'
 
@@ -23,20 +23,20 @@ export const changeEmail = actionClient
     const normalizedNewEmail = newEmail.trim().toLowerCase()
     try {
       const voterElectionPairs = await db
-        .update(votersTable)
+        .update(voters)
         .set({ email: normalizedNewEmail })
-        .from(electionsTable)
-        .where(eq(votersTable.email, normalizedOldEmail))
+        .from(elections)
+        .where(eq(voters.email, normalizedOldEmail))
         .returning({
           voter: {
-            voterId: votersTable.voterId,
-            email: votersTable.email
+            voterId: voters.voterId,
+            email: voters.email
           },
           election: {
-            electionId: electionsTable.electionId,
-            title: electionsTable.title,
-            description: electionsTable.description,
-            seats: electionsTable.seats
+            electionId: elections.electionId,
+            title: elections.title,
+            description: elections.description,
+            seats: elections.seats
           }
         })
 

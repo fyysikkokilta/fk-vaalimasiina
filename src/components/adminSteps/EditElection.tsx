@@ -18,23 +18,23 @@ export default function EditElection({ election }: ElectionStepProps) {
     InferSafeActionFnInput<typeof editElection>['parsedInput']
   >({
     ...election,
-    candidates: election.candidates.map((candidate) => candidate.name)
+    candidatesData: election?.candidates.map((candidate) => candidate.name) ?? []
   })
 
   const addCandidate = (candidateName: string) => {
     setEditedElection((electionState) => ({
       ...electionState,
-      candidates: [...electionState.candidates, candidateName]
+      candidatesData: [...electionState.candidatesData, candidateName]
     }))
   }
 
   const removeCandidate = (index: number) => {
     setEditedElection((electionState) => {
-      const updatedCandidates = electionState.candidates.filter((_, i) => i !== index)
+      const updatedCandidates = electionState.candidatesData.filter((_, i) => i !== index)
 
       return {
         ...electionState,
-        candidates: updatedCandidates
+        candidatesData: updatedCandidates
       }
     })
   }

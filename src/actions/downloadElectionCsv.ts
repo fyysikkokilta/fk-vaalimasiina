@@ -1,11 +1,9 @@
 'use server'
 
-import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
-import { electionsTable } from '~/db/schema'
 import { getCsvFromS3, isS3Configured } from '~/utils/s3Storage'
 
 const downloadElectionCsvSchema = z.object({
@@ -22,8 +20,10 @@ export const downloadElectionCsv = actionClient
       }
 
       // Get the election with CSV file path
-      const election = await db.query.electionsTable.findFirst({
-        where: eq(electionsTable.electionId, electionId),
+      const election = await db.query.elections.findFirst({
+        where: {
+          electionId
+        },
         columns: {
           csvFilePath: true,
           status: true,

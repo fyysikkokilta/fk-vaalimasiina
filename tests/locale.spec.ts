@@ -23,7 +23,7 @@ test('Finnish voting page renders in Finnish', async ({ request, page }) => {
       title: 'Test Election',
       description: 'Test',
       seats: 1,
-      candidates: [{ name: 'Candidate 1' }],
+      candidatesData: [{ name: 'Candidate 1' }],
       status: 'ONGOING'
     },
     request

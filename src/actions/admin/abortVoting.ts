@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { isAuthorizedMiddleware } from '~/actions/middleware/isAuthorized'
 import { actionClient, ActionError } from '~/actions/safe-action'
 import { db } from '~/db'
-import { ballotsTable, electionsTable, votersTable } from '~/db/schema'
+import { ballots, elections, voters } from '~/db/schema'
 
 const abortVotingSchema = z.object({
   electionId: z.uuid('Election identifier must be a valid UUID')
@@ -18,16 +18,16 @@ export const abortVoting = actionClient
   .use(isAuthorizedMiddleware)
   .action(async ({ parsedInput: { electionId } }) => {
     const statuses = await db.transaction(async (transaction) => {
-      await transaction.delete(votersTable).where(eq(votersTable.electionId, electionId))
+      await transaction.delete(voters).where(eq(voters.electionId, electionId))
 
-      await transaction.delete(ballotsTable).where(eq(ballotsTable.electionId, electionId))
+      await transaction.delete(ballots).where(eq(ballots.electionId, electionId))
 
       return await transaction
-        .update(electionsTable)
+        .update(elections)
         .set({ status: 'CREATED' })
-        .where(and(eq(electionsTable.electionId, electionId), eq(electionsTable.status, 'ONGOING')))
+        .where(and(eq(elections.electionId, electionId), eq(elections.status, 'ONGOING')))
         .returning({
-          status: electionsTable.status
+          status: elections.status
         })
     })
 
