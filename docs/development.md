@@ -39,19 +39,19 @@ In development and test environments:
 
 ## Available Scripts
 
-| Command                      | Description                              |
-| ---------------------------- | ---------------------------------------- |
-| `pnpm dev`                   | Start development server with hot reload |
-| `pnpm build`                 | Create production build                  |
-| `pnpm start`                 | Start production server (after build)    |
-| `pnpm lint`                  | Lint with oxlint                         |
-| `pnpm lint --fix`            | Lint and auto-fix                        |
-| `pnpm format`                | Format code with oxfmt                   |
-| `pnpm format:check`          | Check formatting without fixing          |
-| `pnpm type:check`            | TypeScript type check (`tsc --noEmit`)   |
-| `pnpm db:migrate`            | Run pending database migrations          |
-| `pnpm db:generate-migration` | Generate migration from schema changes   |
-| `pnpm generate-election`     | Generate test election data              |
+| Command                  | Description                              |
+| ------------------------ | ---------------------------------------- |
+| `pnpm dev`               | Start development server with hot reload |
+| `pnpm build`             | Create production build                  |
+| `pnpm start`             | Start production server (after build)    |
+| `pnpm lint`              | Lint with oxlint                         |
+| `pnpm lint --fix`        | Lint and auto-fix                        |
+| `pnpm format`            | Format code with oxfmt                   |
+| `pnpm format:check`      | Check formatting without fixing          |
+| `pnpm type:check`        | TypeScript type check (`tsc --noEmit`)   |
+| `pnpm db:migrate`        | Run pending database migrations          |
+| `pnpm db:generate`       | Generate migration from schema changes   |
+| `pnpm generate-election` | Generate test election data              |
 
 ## Testing
 
@@ -101,7 +101,7 @@ The schema is defined in `src/db/schema.ts` using Drizzle ORM. Key tables:
 ### Making Schema Changes
 
 1. Edit `src/db/schema.ts`
-2. Generate a migration: `pnpm db:generate-migration`
+2. Generate a migration: `pnpm db:generate`
 3. Review the generated SQL in `src/drizzle/`
 4. Apply: `pnpm db:migrate`
 5. Commit both the schema change and migration file

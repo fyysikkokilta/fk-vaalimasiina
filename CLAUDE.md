@@ -21,7 +21,7 @@ FK Vaalimasiina is an electronic voting system for the Guild of Physics, built w
 | Format             | `pnpm format`                                    |
 | Check formatting   | `pnpm format:check`                              |
 | DB migrations      | `pnpm db:migrate`                                |
-| Generate migration | `pnpm db:generate-migration`                     |
+| Generate migration | `pnpm db:generate`                               |
 | Generate test data | `pnpm generate-election`                         |
 
 Package manager is **pnpm** (enforced via `preinstall` hook).

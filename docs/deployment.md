@@ -152,7 +152,7 @@ Requires `DATABASE_URL` to be set.
 After editing `src/db/schema.ts`, generate a migration:
 
 ```bash
-pnpm db:generate-migration
+pnpm db:generate
 ```
 
 This creates a new SQL file in `src/drizzle/`. Commit it and run `pnpm db:migrate` to apply.
