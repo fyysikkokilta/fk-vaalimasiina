@@ -1,5 +1,6 @@
 'use client'
 
+import { Field } from '@base-ui/react/field'
 import { Form } from '@base-ui/react/form'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
@@ -12,7 +13,6 @@ import { endVoting } from '~/actions/admin/endVoting'
 import { pollVotes } from '~/actions/admin/pollVotes'
 import AdminNavigation from '~/components/AdminNavigation'
 import { Button } from '~/components/ui/Button'
-import { Field } from '~/components/ui/Field'
 import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
@@ -124,14 +124,18 @@ export default function VotingInspection({
               </div>
             )}
             <Field.Root name="oldEmail">
-              <Field.Label>{t('old_email')}</Field.Label>
+              <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
+                {t('old_email')}
+              </Field.Label>
               <Field.Control />
-              <Field.Error />
+              <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <Field.Root name="newEmail">
-              <Field.Label>{t('new_email')}</Field.Label>
+              <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
+                {t('new_email')}
+              </Field.Label>
               <Field.Control />
-              <Field.Error />
+              <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <Button type="submit" variant="yellow" actionStatus={emailActionStatus}>
               {t('change_email')}

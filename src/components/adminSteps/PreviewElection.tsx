@@ -1,15 +1,15 @@
 'use client'
 
+import { Field } from '@base-ui/react/field'
 import { Form } from '@base-ui/react/form'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
-import { type ComponentProps, useState } from 'react'
+import { useState } from 'react'
 import { z } from 'zod'
 
 import { startEditing } from '~/actions/admin/startEditing'
 import { startVoting } from '~/actions/admin/startVoting'
 import AdminNavigation from '~/components/AdminNavigation'
-import { Field, inputClassName } from '~/components/ui/Field'
 import type { ElectionStepProps } from '~/data/getAdminElection'
 import { ElectionStep } from '~/settings/electionStepSettings'
 
@@ -109,20 +109,21 @@ export default function PreviewElection({
             <h4 className="mt-6 font-medium">{t('voters')}</h4>
             <div className="w-full">
               <Field.Root name="emails">
-                <Field.Label>{t('email_list_instruction')}</Field.Label>
+                <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
+                  {t('email_list_instruction')}
+                </Field.Label>
                 <Field.Control
-                  render={(props: ComponentProps<'textarea'>) => (
+                  render={
                     <textarea
-                      {...props}
                       name="emails"
                       rows={5}
                       defaultValue=""
                       placeholder={t('email_list_placeholder')}
-                      className={inputClassName}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
-                  )}
+                  }
                 />
-                <Field.Error />
+                <Field.Error className="mt-1 text-sm text-red-600" />
               </Field.Root>
             </div>
           </div>

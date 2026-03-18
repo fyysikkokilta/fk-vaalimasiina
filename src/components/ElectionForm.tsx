@@ -1,14 +1,14 @@
 'use client'
 
+import { Field } from '@base-ui/react/field'
 import { Form } from '@base-ui/react/form'
 import { Radio } from '@base-ui/react/radio'
 import { RadioGroup } from '@base-ui/react/radio-group'
 import { useTranslations } from 'next-intl'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { z } from 'zod'
 
 import { Button } from '~/components/ui/Button'
-import { Field, inputClassName } from '~/components/ui/Field'
 
 type ElectionFormData = {
   electionId?: string
@@ -103,29 +103,34 @@ export default function ElectionForm({
           )}
           <div className="space-y-4">
             <Field.Root name="title">
-              <Field.Label>{t('election_title')}</Field.Label>
+              <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
+                {t('election_title')}
+              </Field.Label>
               <Field.Control type="text" defaultValue={election.title} />
-              <Field.Error />
+              <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <Field.Root name="description">
-              <Field.Label>{t('description')}</Field.Label>
+              <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
+                {t('description')}
+              </Field.Label>
               <Field.Control
-                render={(props: React.ComponentProps<'textarea'>) => (
+                render={
                   <textarea
-                    {...props}
                     name="description"
                     rows={4}
                     defaultValue={election.description}
-                    className={inputClassName}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
-                )}
+                }
               />
-              <Field.Error />
+              <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <Field.Root name="seats">
-              <Field.Label>{t('seats')}</Field.Label>
+              <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
+                {t('seats')}
+              </Field.Label>
               <Field.Control type="number" defaultValue={election.seats} />
-              <Field.Error />
+              <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
           </div>
           <div className="space-y-4">
@@ -162,7 +167,7 @@ export default function ElectionForm({
                   </label>
                 </div>
               </RadioGroup>
-              <Field.Error />
+              <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <div>
               <label
@@ -177,7 +182,7 @@ export default function ElectionForm({
                   onChange={(e) => setNewCandidate(e.target.value)}
                   type="text"
                   id="newCandidate"
-                  className={inputClassName}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
                 <Button
                   type="button"
