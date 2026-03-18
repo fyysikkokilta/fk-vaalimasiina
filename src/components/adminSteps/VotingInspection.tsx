@@ -127,14 +127,14 @@ export default function VotingInspection({
               <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
                 {t('old_email')}
               </Field.Label>
-              <Field.Control />
+              <Field.Control className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
               <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <Field.Root name="newEmail">
               <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
                 {t('new_email')}
               </Field.Label>
-              <Field.Control />
+              <Field.Control className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
               <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <Button type="submit" variant="yellow" actionStatus={emailActionStatus}>

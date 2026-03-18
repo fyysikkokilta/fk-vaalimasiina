@@ -38,7 +38,7 @@ test('should create a new election with plain majority voting', async ({ page })
   await page.getByLabel('Title').fill('Majority Test Election')
   await page.getByLabel('Description').fill('Plain majority test')
   await page.getByLabel('Seats').fill('1')
-  await page.getByRole('radio', { name: 'Plain majority' }).check()
+  await page.getByRole('radio').nth(1).check()
 
   await page.getByLabel('New candidate').fill('Candidate A')
   await page.getByRole('button', { name: 'Add' }).click()

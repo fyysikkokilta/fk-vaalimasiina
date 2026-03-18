@@ -106,7 +106,11 @@ export default function ElectionForm({
               <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
                 {t('election_title')}
               </Field.Label>
-              <Field.Control type="text" defaultValue={election.title} />
+              <Field.Control
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                type="text"
+                defaultValue={election.title}
+              />
               <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
             <Field.Root name="description">
@@ -129,7 +133,11 @@ export default function ElectionForm({
               <Field.Label className="mb-2 block text-sm font-medium text-gray-700">
                 {t('seats')}
               </Field.Label>
-              <Field.Control type="number" defaultValue={election.seats} />
+              <Field.Control
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                type="number"
+                defaultValue={election.seats}
+              />
               <Field.Error className="mt-1 text-sm text-red-600" />
             </Field.Root>
           </div>
