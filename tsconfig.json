@@ -34,7 +34,7 @@
     "next-env.d.ts",
     "next.config.ts",
     "playwright.config.ts",
-    "postcss.config.js",
+    "postcss.config.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
