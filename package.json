@@ -63,7 +63,7 @@
     "typescript": "^5.9.3"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpx lint-staged"
+    "pre-commit": "pnpm exec lint-staged"
   },
   "packageManager": "pnpm@10.32.1",
   "pnpm": {
