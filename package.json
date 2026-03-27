@@ -34,7 +34,7 @@
     "next-intl": "^4.8.3",
     "next-safe-action": "^8.1.8",
     "nextjs-toploader": "^3.9.17",
-    "nodemailer": "^8.0.2",
+    "nodemailer": "^8.0.4",
     "pg": "^8.20.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
