@@ -55,7 +55,7 @@ jobs:
         run: pnpm typegen
 
       - name: Type check
-        run: pnpm type:check
+        run: pnpm typecheck
 
       - name: Lint and fix
         run: pnpm lint --fix
