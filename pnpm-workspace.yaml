@@ -3,8 +3,5 @@ minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - next
   - '@next/*'
-autoInstallPeers: false
-peerDependencyRules:
-  ignoreMissing:
-    - mssql
-    - '@types/mssql'
+  - 'drizzle-orm'
+  - 'drizzle-kit'

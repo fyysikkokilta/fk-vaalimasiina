@@ -33,7 +33,7 @@ export interface ButtonProps extends Omit<
   className?: string
 }
 
-const isPending = (s: HookActionStatus | undefined) => s === 'executing' || s === 'transitioning'
+const isPending = (s: HookActionStatus | undefined) => s === 'executing'
 const hasError = (s: HookActionStatus | undefined) => s === 'hasErrored'
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
