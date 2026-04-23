@@ -1,15 +1,5 @@
 /* eslint-disable react/jsx-no-literals */
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Text
-} from '@react-email/components'
+import { Body, Button, Container, Head, Heading, Hr, Html, Link, Text } from 'react-email'
 
 const EmailTemplate = ({
   election,

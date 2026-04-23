@@ -13,17 +13,16 @@
     "format:check": "oxfmt --check",
     "typegen": "next typegen",
     "generate-election": "tsx ./tests/fixtures/generate-election.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx ./src/db/migrate.ts",
     "preinstall": "pnpx only-allow pnpm",
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "@base-ui/react": "^1.4.0",
+    "@base-ui/react": "^1.4.1",
     "@dnd-kit/helpers": "^0.4.0",
     "@dnd-kit/react": "^0.4.0",
-    "@react-email/components": "^1.0.12",
     "@t3-oss/env-nextjs": "^0.13.11",
     "csv-parse": "^6.2.1",
     "dotenv": "^17.4.2",
@@ -38,34 +37,35 @@
     "pg": "^8.20.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-email": "^6.0.0",
     "s3mini": "^0.9.4",
     "seedrandom": "^3.0.5",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
-    "@tailwindcss/postcss": "^4.2.2",
+    "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "^25.6.0",
     "@types/nodemailer": "^8.0.0",
     "@types/pg": "^8.20.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/seedrandom": "^3.0.8",
+    "@typescript/native-preview": "7.0.0-dev.20260421.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "drizzle-kit": "1.0.0-beta.22",
     "lint-staged": "^16.4.0",
-    "oxfmt": "^0.45.0",
-    "oxlint": "^1.60.0",
+    "oxfmt": "^0.46.0",
+    "oxlint": "^1.61.0",
     "postcss": "^8.5.10",
     "simple-git-hooks": "^2.13.1",
-    "tailwindcss": "^4.2.2",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "tailwindcss": "^4.2.4",
+    "tsx": "^4.21.0"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
   },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.33.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",

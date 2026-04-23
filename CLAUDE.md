@@ -71,7 +71,7 @@ Validated with `@t3-oss/env-nextjs` in `src/env.ts`. Import as `import { env } f
 - **Linting**: Always run `pnpm lint` after code changes and fix errors before finishing.
 - **Imports**: Optionally sorted by oxfmt `experimentalSortImports` when enabled.
 - **Styling**: Tailwind CSS 4 with oxfmt (experimentalTailwindcss) for class sorting. Single quotes, no trailing commas.
-- **Pre-commit hook**: lint-staged runs `tsc --noEmit`, `oxlint --fix`, and `oxfmt` on staged files.
+- **Pre-commit hook**: lint-staged runs `tsgo --noEmit`, `oxlint --fix`, and `oxfmt` on staged files.
 
 ## Testing
 

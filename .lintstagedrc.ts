@@ -7,7 +7,7 @@ const buildOxfmtCommand = (filenames: string[]) =>
   `oxfmt --no-error-on-unmatched-pattern ${filenames.map((f) => path.relative(process.cwd(), f)).join(' ')}`
 
 const lintStagedConfig = {
-  '**/*.ts?(x)': () => 'tsc --noEmit',
+  '**/*.ts?(x)': () => 'tsgo --noEmit',
   '**/*.{js,jsx,ts,tsx}': [buildOxlintCommand],
   '**/*.{js,jsx,ts,tsx,json,css,md}': [buildOxfmtCommand]
 }

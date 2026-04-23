@@ -3,5 +3,3 @@ minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - next
   - '@next/*'
-  - 'drizzle-orm'
-  - 'drizzle-kit'
