@@ -1,6 +1,6 @@
 import {
+  snakeCase,
   pgEnum,
-  pgTable,
   uuid,
   varchar,
   integer,
@@ -20,32 +20,32 @@ export const electionStatus = pgEnum('election_status', [
 ])
 export const votingMethod = pgEnum('voting_method', ['STV', 'MAJORITY'])
 
-export const ballots = pgTable('ballots', {
-  ballotId: uuid('ballot_id').defaultRandom().primaryKey(),
-  electionId: uuid('election_id')
+export const ballots = snakeCase.table('ballots', {
+  ballotId: uuid().defaultRandom().primaryKey(),
+  electionId: uuid()
     .notNull()
     .references(() => elections.electionId, { onDelete: 'cascade' })
 })
 
-export const candidates = pgTable('candidates', {
-  candidateId: uuid('candidate_id').defaultRandom().primaryKey(),
-  electionId: uuid('election_id')
+export const candidates = snakeCase.table('candidates', {
+  candidateId: uuid().defaultRandom().primaryKey(),
+  electionId: uuid()
     .notNull()
     .references(() => elections.electionId, { onDelete: 'cascade' }),
-  name: varchar('name').notNull()
+  name: varchar().notNull()
 })
 
-export const elections = pgTable(
+export const elections = snakeCase.table(
   'elections',
   {
-    electionId: uuid('election_id').defaultRandom().primaryKey(),
-    title: varchar('title').notNull(),
-    description: varchar('description').notNull(),
-    seats: integer('seats').notNull(),
-    status: electionStatus('status').default('CREATED').notNull(),
-    date: timestamp('date').defaultNow().notNull(),
-    csvFilePath: varchar('csv_file_path'),
-    votingMethod: votingMethod('voting_method').default('STV').notNull()
+    electionId: uuid().defaultRandom().primaryKey(),
+    title: varchar().notNull(),
+    description: varchar().notNull(),
+    seats: integer().notNull(),
+    status: electionStatus().default('CREATED').notNull(),
+    date: timestamp().defaultNow().notNull(),
+    csvFilePath: varchar(),
+    votingMethod: votingMethod().default('STV').notNull()
   },
   (table) => [
     uniqueIndex('unique_active_election')
@@ -55,25 +55,25 @@ export const elections = pgTable(
   ]
 )
 
-export const hasVoted = pgTable(
+export const hasVoted = snakeCase.table(
   'has_voted',
   {
-    hasVotedId: uuid('has_voted_id').defaultRandom().primaryKey(),
-    voterId: uuid('voter_id')
+    hasVotedId: uuid().defaultRandom().primaryKey(),
+    voterId: uuid()
       .notNull()
       .references(() => voters.voterId, { onDelete: 'cascade' })
   },
   (table) => [unique('unique_voters_voterId').on(table.voterId)]
 )
 
-export const voters = pgTable(
+export const voters = snakeCase.table(
   'voters',
   {
-    voterId: uuid('voter_id').defaultRandom().primaryKey(),
-    electionId: uuid('election_id')
+    voterId: uuid().defaultRandom().primaryKey(),
+    electionId: uuid()
       .notNull()
       .references(() => elections.electionId, { onDelete: 'cascade' }),
-    email: varchar('email').notNull()
+    email: varchar().notNull()
   },
   (table) => [
     uniqueIndex('unique_voters_electionId_email').using(
@@ -84,17 +84,17 @@ export const voters = pgTable(
   ]
 )
 
-export const votes = pgTable(
+export const votes = snakeCase.table(
   'votes',
   {
-    voteId: uuid('vote_id').defaultRandom().primaryKey(),
-    ballotId: uuid('ballot_id')
+    voteId: uuid().defaultRandom().primaryKey(),
+    ballotId: uuid()
       .notNull()
       .references(() => ballots.ballotId, { onDelete: 'cascade' }),
-    candidateId: uuid('candidate_id')
+    candidateId: uuid()
       .notNull()
       .references(() => candidates.candidateId, { onDelete: 'cascade' }),
-    rank: integer('rank').notNull()
+    rank: integer().notNull()
   },
   (table) => [
     unique('unique_votes_ballotId_candidateId').on(table.ballotId, table.candidateId),

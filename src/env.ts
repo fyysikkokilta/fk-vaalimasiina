@@ -44,10 +44,6 @@ export const env = createEnv({
     S3_SECRET_ACCESS_KEY: z.string().optional(), // SECRET: S3 secret key
     S3_ENDPOINT: z.url().optional(),
     S3_REGION: z.string().default('auto'),
-    ANALYZE: z
-      .string()
-      .default('false')
-      .transform((val) => val === 'true'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development')
   },
   /**

@@ -1,5 +1,7 @@
-# https://pnpm.io/supply-chain-security
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  sharp: true
+  simple-git-hooks: true
 minimumReleaseAge: 1440
-minimumReleaseAgeExclude:
-  - next
-  - '@next/*'
