@@ -57,7 +57,7 @@
     "lint-staged": "^17.0.4",
     "oxfmt": "^0.48.0",
     "oxlint": "^1.63.0",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.18",
     "simple-git-hooks": "^2.13.1",
     "tailwindcss": "^4.3.0",
     "tsx": "^4.21.0"
