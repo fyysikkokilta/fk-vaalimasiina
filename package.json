@@ -29,7 +29,7 @@
     "drizzle-orm": "1.0.0-rc.2",
     "jose": "^6.2.3",
     "lucide-react": "^1.14.0",
-    "next": "^16.2.6",
+    "next": "^16.2.11",
     "next-intl": "^4.11.2",
     "next-safe-action": "^8.5.2",
     "nextjs-toploader": "^3.9.17",
