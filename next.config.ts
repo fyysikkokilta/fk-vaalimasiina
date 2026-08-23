@@ -8,8 +8,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   experimental: {
     globalNotFound: true,
-    inlineCss: true,
-    rootParams: true
+    inlineCss: true
   },
   headers() {
     return [

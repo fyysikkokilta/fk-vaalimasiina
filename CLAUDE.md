@@ -14,7 +14,7 @@ FK Vaalimasiina is an electronic voting system for the Guild of Physics, built w
 | Build              | `pnpm build`                                     |
 | Lint               | `pnpm lint`                                      |
 | Lint + autofix     | `pnpm lint --fix`                                |
-| Type check         | `pnpm type:check`                                |
+| Type check         | `pnpm typecheck`                                 |
 | Algorithm tests    | `npx playwright test tests/algorithm/`           |
 | E2E tests          | `npx playwright test`                            |
 | Single E2E test    | `npx playwright test tests/voter-voting.spec.ts` |
@@ -71,10 +71,20 @@ Validated with `@t3-oss/env-nextjs` in `src/env.ts`. Import as `import { env } f
 - **Linting**: Always run `pnpm lint` after code changes and fix errors before finishing.
 - **Imports**: Optionally sorted by oxfmt `experimentalSortImports` when enabled.
 - **Styling**: Tailwind CSS 4 with oxfmt (experimentalTailwindcss) for class sorting. Single quotes, no trailing commas.
-- **Pre-commit hook**: lint-staged runs `tsgo --noEmit`, `oxlint --fix`, and `oxfmt` on staged files.
+- **Pre-commit hook**: lint-staged runs `tsc --noEmit`, `oxlint --fix`, and `oxfmt` on staged files.
 
 ## Testing
 
 - **Algorithm tests** (Playwright): `tests/algorithm/*.spec.ts` — STV and majority algorithm logic (no browser needed; run with `npx playwright test tests/algorithm/`).
 - **E2E tests** (Playwright): `tests/*.spec.ts`. Runs against `http://localhost:3000/en/`. Workers: 1, not parallel. Dev server starts automatically if not running.
 - In test/dev mode, `test@email.com` is auto-authorized as admin.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

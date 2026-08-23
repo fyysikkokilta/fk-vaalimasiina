@@ -39,7 +39,8 @@
     "src/**/*.tsx",
     "tests/**/*.ts",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    ".next/dev/dev/types/**/*.ts"
   ],
   "exclude": ["data", "node_modules", "playwright-report", "public", "test-results"]
 }

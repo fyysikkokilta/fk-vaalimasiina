@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-- **Node.js** 24 or later
-- **pnpm** 10 or later (`npm install -g pnpm` or via [corepack](https://nodejs.org/api/corepack.html))
+- **Node.js** 26 or later
+- **pnpm** 11 or later (`npm install -g pnpm` or via [corepack](https://nodejs.org/api/corepack.html))
 - **PostgreSQL** 14 or later (local install, Docker, or a managed service)
 
 ## Setup
