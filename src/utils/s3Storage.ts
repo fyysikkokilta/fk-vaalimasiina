@@ -29,14 +29,7 @@ export async function uploadCsvToS3(fileName: string, csvContent: string) {
   }
 
   try {
-    await client.putObject(
-      fileName,
-      csvContent,
-      'text/csv',
-      undefined,
-      undefined,
-      csvContent.length
-    )
+    await client.putObject(fileName, csvContent, 'text/csv')
 
     return fileName
   } catch (error) {
