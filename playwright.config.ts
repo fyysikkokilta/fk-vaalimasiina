@@ -57,7 +57,7 @@ export default defineConfig({
           use: {
             ...devices['Desktop Firefox'],
             contextOptions: {
-              permissions: ['clipboard-read', 'clipboard-write']
+              permissions: ['clipboard-read']
             }
           }
         },
@@ -67,7 +67,7 @@ export default defineConfig({
           use: {
             ...devices['Desktop Safari'],
             contextOptions: {
-              permissions: ['clipboard-read', 'clipboard-write']
+              permissions: ['clipboard-read']
             }
           }
         }

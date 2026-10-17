@@ -8,7 +8,9 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   experimental: {
     globalNotFound: true,
-    inlineCss: true
+    inlineCss: true,
+    turbopackGc: true,
+    turbopackRustReactCompiler: true
   },
   headers() {
     return [
