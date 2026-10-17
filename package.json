@@ -16,6 +16,10 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx ./src/db/migrate.ts",
+    "test": "playwright test",
+    "test:algorithm": "PW_ALGORITHM_ONLY=1 playwright test tests/algorithm/ --project=chromium",
+    "test:db": "docker run --rm -d --name vaalimasiina-test-db -p 55432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=vaalimasiina_test postgres:18",
+    "test:db:stop": "docker stop vaalimasiina-test-db",
     "preinstall": "pnpx only-allow pnpm",
     "prepare": "simple-git-hooks"
   },

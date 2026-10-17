@@ -52,36 +52,33 @@ In development and test environments:
 | `pnpm db:migrate`        | Run pending database migrations          |
 | `pnpm db:generate`       | Generate migration from schema changes   |
 | `pnpm generate-election` | Generate test election data              |
+| `pnpm test`              | Run all Playwright tests (see Testing)   |
+| `pnpm test:db`           | Start throwaway test Postgres (Docker)   |
 
 ## Testing
 
-### Algorithm Tests (fast, no browser)
+Tests use Playwright. They need Docker (for a throwaway Postgres) and nothing else: no `.env` setup.
 
 ```bash
-npx playwright test tests/algorithm/
+pnpm test:db                  # start the test database on port 55432
+pnpm test                     # run every test in every browser
+pnpm test:db:stop             # stop and delete the test database
 ```
 
-Tests the STV and Majority voting algorithms with known inputs and expected outputs. No browser or server needed.
-
-### End-to-End Tests
+Useful variants:
 
 ```bash
-npx playwright test
+pnpm test tests/voter-voting.spec.ts   # one file
+pnpm test --project=chromium           # one browser
+pnpm test:algorithm                    # STV and majority algorithm tests only: no dev server, no database
+npx playwright show-report             # open the report of the last run
 ```
 
-Requires a running dev server (auto-started if not running). Uses Chromium. Tests cover the full voting flow: admin login, election setup, voter voting, results display.
+How it works:
 
-To run a single test file:
-
-```bash
-npx playwright test tests/voter-voting.spec.ts
-```
-
-To see test report:
-
-```bash
-npx playwright show-report
-```
+- **Env:** `playwright.config.ts` sets every required variable to a test default. It deliberately does not read `.env`, because the tests clear every table and must never hit your dev database. S3 and OAuth variables are set empty so `next dev` does not pick them up from `.env` either. Variables already set in your shell win (CI only sets `DATABASE_URL` and `NEXT_PUBLIC_BASE_URL`).
+- **Database:** a global setup runs the migrations against the test database before the tests start.
+- **Dev server:** Playwright starts its own `pnpm dev`. Stop your own dev server first: it uses your `.env`, so Playwright refuses to reuse it and fails with "port 3000 is already used".
 
 ## Database
 

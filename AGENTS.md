@@ -8,21 +8,22 @@ FK Vaalimasiina is an electronic voting system for the Guild of Physics, built w
 
 ## Commands
 
-| Task               | Command                                          |
-| ------------------ | ------------------------------------------------ |
-| Dev server         | `pnpm dev`                                       |
-| Build              | `pnpm build`                                     |
-| Lint               | `pnpm lint`                                      |
-| Lint + autofix     | `pnpm lint --fix`                                |
-| Type check         | `pnpm typecheck`                                 |
-| Algorithm tests    | `npx playwright test tests/algorithm/`           |
-| E2E tests          | `npx playwright test`                            |
-| Single E2E test    | `npx playwright test tests/voter-voting.spec.ts` |
-| Format             | `pnpm format`                                    |
-| Check formatting   | `pnpm format:check`                              |
-| DB migrations      | `pnpm db:migrate`                                |
-| Generate migration | `pnpm db:generate`                               |
-| Generate test data | `pnpm generate-election`                         |
+| Task               | Command                                |
+| ------------------ | -------------------------------------- |
+| Dev server         | `pnpm dev`                             |
+| Build              | `pnpm build`                           |
+| Lint               | `pnpm lint`                            |
+| Lint + autofix     | `pnpm lint --fix`                      |
+| Type check         | `pnpm typecheck`                       |
+| Test database      | `pnpm test:db` (Docker, port 55432)    |
+| Algorithm tests    | `pnpm test:algorithm`                  |
+| E2E tests          | `pnpm test`                            |
+| Single E2E test    | `pnpm test tests/voter-voting.spec.ts` |
+| Format             | `pnpm format`                          |
+| Check formatting   | `pnpm format:check`                    |
+| DB migrations      | `pnpm db:migrate`                      |
+| Generate migration | `pnpm db:generate`                     |
+| Generate test data | `pnpm generate-election`               |
 
 Package manager is **pnpm** (enforced via `preinstall` hook).
 
@@ -75,8 +76,8 @@ Validated with `@t3-oss/env-nextjs` in `src/env.ts`. Import as `import { env } f
 
 ## Testing
 
-- **Algorithm tests** (Playwright): `tests/algorithm/*.spec.ts` — STV and majority algorithm logic (no browser needed; run with `npx playwright test tests/algorithm/`).
-- **E2E tests** (Playwright): `tests/*.spec.ts`. Runs against `http://localhost:3000/en/`. Workers: 1, not parallel. Dev server starts automatically if not running.
+- **Algorithm tests** (Playwright): `tests/algorithm/*.spec.ts` — STV and majority algorithm logic (no server or DB needed; run with `pnpm test:algorithm`).
+- **E2E tests** (Playwright): `tests/*.spec.ts`. Runs against `http://localhost:3000/en/`. Workers: 1, not parallel. Needs `pnpm test:db` running; the run migrates it, starts its own dev server (never reuses a running one) and ignores `.env` — test env defaults live in `playwright.config.ts`.
 - In test/dev mode, `test@email.com` is auto-authorized as admin.
 
 <!-- BEGIN:nextjs-agent-rules -->

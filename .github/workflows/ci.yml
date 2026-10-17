@@ -82,23 +82,13 @@ jobs:
         ports:
           - 5432:5432
 
+    # Overrides of the workflow-level env above; everything else comes from the
+    # test defaults in playwright.config.ts
     env:
-      SKIP_ENV_VALIDATION: 'true'
+      SKIP_ENV_VALIDATION: 'false'
       NODE_ENV: test
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vaalimasiina_test
-      AUTH_SECRET: test-auth-secret-key-for-ci-testing-only
-      GOOGLE_CLIENT_ID: test-google-client-id
-      GOOGLE_CLIENT_SECRET: test-google-client-secret
-      ADMIN_EMAILS: test@email.com
-      MAIL_FROM: 'Vaalimasiina <vaalit@fyysikkokilta.fi>'
       NEXT_PUBLIC_BASE_URL: http://localhost:3000
-      NEXT_PUBLIC_BRANDING_HEADER_TITLE_TEXT: Vaalimasiina
-      NEXT_PUBLIC_BRANDING_HEADER_TITLE_SHORT_TEXT: Vaalimasiina
-      NEXT_PUBLIC_BRANDING_FOOTER_HOME_TEXT: fyysikkokilta.fi
-      NEXT_PUBLIC_BRANDING_FOOTER_HOME_LINK: https://fyysikkokilta.fi
-      BRANDING_EMAIL_SUBJECT_PREFIX: Vaalimasiina
-      BRANDING_MAIL_FOOTER_TEXT: Rakkaudella Fysistit
-      BRANDING_MAIL_FOOTER_LINK: https://fyysikkokilta.fi
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vaalimasiina_test
 
     steps:
       - name: Checkout repository
@@ -127,9 +117,6 @@ jobs:
           sudo mkdir -p "$GITHUB_WORKSPACE/.apt-cache/archives"
           echo 'Dir::Cache "'"$GITHUB_WORKSPACE"'/.apt-cache";' | sudo tee /etc/apt/apt.conf.d/99-ci-apt-cache.conf
 
-      - name: Run database migrations
-        run: pnpm db:migrate
-
       - name: Cache Playwright Browsers
         uses: actions/cache@v6
         with:
@@ -145,7 +132,7 @@ jobs:
         run: sudo chown -R "$(whoami):$(whoami)" "$GITHUB_WORKSPACE/.apt-cache"
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: pnpm test
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7
